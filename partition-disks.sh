@@ -44,12 +44,11 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /de
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/home
 mount /dev/"$DISK1"1 /mnt/boot
 pacman -Sy --noconfirm archlinux-keyring
-pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia git
+pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia git iptables-nft
 genfstab -U /mnt >> /mnt/etc/fstab
 cd /mnt
 mkdir git
 cd /mnt/git
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
-chmod +x /mnt/git/mdadm-encrypted-btrfs/sysuser-setup.sh
 cd /

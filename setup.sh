@@ -13,7 +13,7 @@ MIRRORCOUNTRIES="France,Germany"
 GRUBRESOLUTION="2560x1440"
 
 pacman -Syu
-pacman -S plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare ksystemlog okular print-manager spectacle sweeper sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq iptables-nft pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp qemu-arch-extra bridge-utils openbsd-netcat sof-firmware nss-mdns acpid ntfs-3g nvidia-settings
+pacman -S --noconfirm plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare ksystemlog okular print-manager spectacle sweeper sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp qemu-arch-extra bridge-utils openbsd-netcat sof-firmware nss-mdns acpid ntfs-3g nvidia-settings
 groupadd sudo
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 useradd -m -G sudo "$SYSUSER"
@@ -23,11 +23,12 @@ passwd root
 passwd "$SYSUSER"
 passwd "$VIRTUSER"
 passwd "$HOMEUSER"
+chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
+echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 mkdir /etc/sddm.conf.d
 echo "[Theme]" > /etc/sddm.conf.d/kde_settings.conf
 echo "Current=Sweet" >> /etc/sddm.conf.d/kde_settings.conf
-echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 cd /
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 timedatectl set-ntp true
@@ -78,5 +79,5 @@ cp -r /boot.bak/* /boot/
 umount /boot
 mount /dev/"$DISK1"1 /boot
 mdadm --detail --scan >> /etc/mdadm.conf
-sed -i 's/name=archiso:0 //' /etc/mdadm.conf
+sed -i 's/name=archiso:md0 //' /etc/mdadm.conf
 rm -rf /git
