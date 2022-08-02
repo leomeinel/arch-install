@@ -2,9 +2,9 @@
 
 DISK1="vda"
 DISK2="vdb"
+KEYMAP="de-latin1"
 
-loadkeys de-latin1
-ls /sys/firmware/efi/efivars
+loadkeys "$KEYMAP"
 timedatectl set-ntp true
 sgdisk -o /dev/"$DISK1"
 sgdisk -o /dev/"$DISK2"
@@ -16,11 +16,11 @@ mdadm --misc --zero-superblock /dev/"$DISK1"2
 mdadm --misc --zero-superblock /dev/"$DISK2"2
 mkfs.fat -n BOOT -F32 /dev/"$DISK1"1
 mkfs.fat -n BOOT -F32 /dev/"$DISK2"1
-mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 /dev/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
-cryptsetup open --type plain -d /dev/urandom /dev/md0 to_be_wiped
+mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 /dev/md/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
+cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
-cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md0
-cryptsetup luksOpen /dev/md0 md0_crypt
+cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
+cryptsetup luksOpen /dev/md/md0 md0_crypt
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
 mount /dev/mapper/md0_crypt /mnt
 cd /mnt
@@ -53,4 +53,3 @@ git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
 chmod +x /mnt/git/mdadm-encrypted-btrfs/sysuser-setup.sh
 cd /
-# Now do "arch-chroot /mnt" and /git/mdadm-encrypted-btrfs/setup.sh
