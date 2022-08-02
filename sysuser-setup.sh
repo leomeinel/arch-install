@@ -7,4 +7,6 @@ git clone https://aur.archlinux.org/paru.git
 cd paru
 rustup default stable
 makepkg -si
+cd
+rm -rf ./paru
 paru -S waterfox-g4-bin

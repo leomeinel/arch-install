@@ -72,6 +72,4 @@ mount /dev/"$DISK1"1 /boot
 mdadm --detail --scan >> /etc/mdadm.conf
 mdadm --assemble --scan
 rm -rf /git
-exit
-cd /
 # Now reboot
