@@ -24,6 +24,9 @@ passwd "$SYSUSER"
 passwd "$VIRTUSER"
 passwd "$HOMEUSER"
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
+mkdir /etc/sddm.conf.d
+echo "[Theme]" > /etc/sddm.conf.d/kde_settings.conf
+echo "Current=Sweet" >> /etc/sddm.conf.d/kde_settings.conf
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 cd /
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
@@ -75,5 +78,5 @@ cp -r /boot.bak/* /boot/
 umount /boot
 mount /dev/"$DISK1"1 /boot
 mdadm --detail --scan >> /etc/mdadm.conf
-mdadm --assemble --scan
+sed -i 's/name=archiso:0 //' /etc/mdadm.conf
 rm -rf /git

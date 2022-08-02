@@ -9,4 +9,4 @@ rustup default stable
 makepkg -si
 cd
 rm -rf ./git
-paru -S waterfox-g4-bin
+paru -S waterfox-g4-bin sweet-kde-git papirus-icon-theme
