@@ -8,5 +8,5 @@ cd paru
 rustup default stable
 makepkg -si
 cd
-rm -rf ./paru
+rm -rf ./git
 paru -S waterfox-g4-bin
