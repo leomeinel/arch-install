@@ -43,7 +43,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /de
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/var
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/home
 mount /dev/"$DISK1"1 /mnt/boot
-pacman -Sy archlinux-keyring
+pacman --noconfirm -Sy archlinux-keyring
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia git
 genfstab -U /mnt >> /mnt/etc/fstab
 cd /mnt
