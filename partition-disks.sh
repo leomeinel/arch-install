@@ -49,7 +49,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 cd /mnt
 mkdir git
 cd /mnt/git
-git clone https://github.com/LeoMeinel/arch-mdadm-encrypted-btrfs-install.git
+git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
 chmod +x /mnt/git/arch-mdadm-encrypted-btrfs-install/setup.sh
 chmod +x /mnt/git/arch-mdadm-encrypted-btrfs-install/sysuser-setup.sh
 cd /
