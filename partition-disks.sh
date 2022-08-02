@@ -29,7 +29,7 @@ btrfs subvolume create @tmp
 btrfs subvolume create @.snapshots
 btrfs subvolume create @var
 btrfs subvolume create @home
-cd
+cd /
 btrfs subvolume list /mnt
 umount /mnt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
@@ -46,4 +46,11 @@ mount /dev/"$DISK1"1 /mnt/boot
 pacman -Sy archlinux-keyring
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia git
 genfstab -U /mnt >> /mnt/etc/fstab
-# Now do "arch-chroot /mnt" and ./setup.sh
+cd /mnt
+mkdir git
+cd /mnt/git/arch-mdadm-encrypted-btrfs-install
+git clone https://github.com/LeoMeinel/arch-mdadm-encrypted-btrfs-install.git
+chmod +x /mnt/git/arch-mdadm-encrypted-btrfs-install/setup.sh
+chmod +x /mnt/git/arch-mdadm-encrypted-btrfs-install/sysuser-setup.sh
+cd /
+# Now do "arch-chroot /mnt" and /git/arch-mdadm-encrypted-btrfs-install/setup.sh

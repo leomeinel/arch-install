@@ -2,28 +2,24 @@
 
 DISK1="vda"
 DISK2="vdb"
+SYSUSER="systux"
+VIRTUSER="virt"
+HOMEUSER="leo"
 
 pacman -Syu
-pacman -S plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare ksystemlog okular print-manager spectacle sweeper sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq iptables-nft pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber git rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp qemu-arch-extra bridge-utils openbsd-netcat sof-firmware nss-mdns acpid ntfs-3g nvidia-settings
+pacman -S plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare ksystemlog okular print-manager spectacle sweeper sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq iptables-nft pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp qemu-arch-extra bridge-utils openbsd-netcat sof-firmware nss-mdns acpid ntfs-3g nvidia-settings
 groupadd sudo
 echo "%sudo ALL=(ALL:ALL) ALL" >> /etc/sudoers.d/sudo
-useradd -m -G sudo systux
-useradd -m -G libvirt virt
-useradd -m leo
+useradd -m -G sudo "$SYSUSER"
+useradd -m -G libvirt "$VIRTUSER"
+useradd -m "$HOMEUSER"
 passwd root
-passwd systux
-passwd virt
-passwd leo
-su systux
-cd /home/systux
-mkdir ./git
-cd git
-git clone https://aur.archlinux.org/paru.git
-cd paru
-rustup default stable
-makepkg -si
-paru -S waterfox-g4-bin
-exit
+passwd "$SYSUSER"
+passwd "$VIRTUSER"
+passwd "$HOMEUSER"
+# NOT WORKING
+su -c '/git/arch-mdadm-encrypted-btrfs-install/sysuser-setup.sh' "$SYSUSER"
+cd /
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 timedatectl set-ntp true
 hwclock --systohc
