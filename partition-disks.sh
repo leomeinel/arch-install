@@ -6,7 +6,6 @@ DISK2="vdb"
 loadkeys de-latin1
 ls /sys/firmware/efi/efivars
 timedatectl set-ntp true
-lsblk
 sgdisk -o /dev/"$DISK1"
 sgdisk -o /dev/"$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 /dev/"$DISK1"
@@ -18,7 +17,6 @@ mdadm --misc --zero-superblock /dev/"$DISK2"2
 mkfs.fat -n BOOT -F32 /dev/"$DISK1"1
 mkfs.fat -n BOOT -F32 /dev/"$DISK2"1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 /dev/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
-cat /proc/mdstat
 cryptsetup open --type plain -d /dev/urandom /dev/md0 to_be_wiped
 cryptsetup close to_be_wiped
 cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md0
