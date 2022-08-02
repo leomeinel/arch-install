@@ -18,7 +18,7 @@ passwd "$SYSUSER"
 passwd "$VIRTUSER"
 passwd "$HOMEUSER"
 # NOT WORKING
-su -c '/git/arch-mdadm-encrypted-btrfs-install/sysuser-setup.sh' "$SYSUSER"
+su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 cd /
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime

@@ -50,7 +50,7 @@ cd /mnt
 mkdir git
 cd /mnt/git
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
-chmod +x /mnt/git/arch-mdadm-encrypted-btrfs-install/setup.sh
-chmod +x /mnt/git/arch-mdadm-encrypted-btrfs-install/sysuser-setup.sh
+chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
+chmod +x /mnt/git/mdadm-encrypted-btrfs/sysuser-setup.sh
 cd /
-# Now do "arch-chroot /mnt" and /git/arch-mdadm-encrypted-btrfs-install/setup.sh
+# Now do "arch-chroot /mnt" and /git/mdadm-encrypted-btrfs/setup.sh
