@@ -27,9 +27,11 @@ chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 mkdir /etc/sddm.conf.d
-echo "[Theme]" > /etc/sddm.conf.d/kde_settings.conf
-echo "Current=Sweet" >> /etc/sddm.conf.d/kde_settings.conf
-cd /
+{
+  echo "[Theme]"
+  echo "Current=Sweet"
+} > /etc/sddm.conf.d/kde_settings.conf
+cd / || exit
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 timedatectl set-ntp true
 hwclock --systohc
@@ -38,21 +40,27 @@ sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
 sed -i 's/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 locale-gen
-echo "--save /etc/pacman.d/mirrorlist" > /etc/xdg/reflector/reflector.conf
-echo "--country $MIRRORCOUNTRIES" >> /etc/xdg/reflector/reflector.conf
-echo "--protocol https" >> /etc/xdg/reflector/reflector.conf
-echo "--latest 5" >> /etc/xdg/reflector/reflector.conf
-echo "--sort age" /etc/pacman.d/mirrorlist >> /etc/xdg/reflector/reflector.conf
+{
+  echo "--save /etc/pacman.d/mirrorlist"
+  echo "--country $MIRRORCOUNTRIES"
+  echo "--protocol https"
+  echo "--latest 5"
+  echo "--sort age"
+} > /etc/xdg/reflector/reflector.conf
 echo "KEYMAP=$KEYMAP" > /etc/vconsole.conf
 echo "$HOSTNAME" > /etc/hostname
-echo "127.0.0.1  localhost" > /etc/hosts
-echo "127.0.1.1  $HOSTNAME.$DOMAIN	$HOSTNAME" >> /etc/hosts
-echo "::1  ip6-localhost ip6-loopback" >> /etc/hosts
-echo "ff02::1  ip6-allnodes" >> /etc/hosts
-echo "ff02::2  ip6-allrouters" >> /etc/hosts
-echo "[zram0]" > /etc/systemd/zram-generator.conf
-echo "zram-size = ram / 2" >> /etc/systemd/zram-generator.conf
-echo "compression-algorithm = zstd" >> /etc/systemd/zram-generator.conf
+{
+  echo "127.0.0.1  localhost"
+  echo "127.0.1.1  $HOSTNAME.$DOMAIN	$HOSTNAME"
+  echo "::1  ip6-localhost ip6-loopback"
+  echo "ff02::1  ip6-allnodes"
+  echo "ff02::2  ip6-allrouters"
+} > /etc/hosts
+{
+  echo "[zram0]"
+  echo "zram-size = ram / 2"
+  echo "compression-algorithm = zstd"
+} > /etc/systemd/zram-generator.conf
 systemctl enable NetworkManager
 systemctl enable bluetooth
 systemctl enable cups
@@ -74,7 +82,7 @@ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 cp -r /boot /boot.bak
 umount /boot
-mount /dev/"$DISK1"1 /boot
+mount /dev/"$DISK2"1 /boot
 cp -r /boot.bak/* /boot/
 umount /boot
 mount /dev/"$DISK1"1 /boot
