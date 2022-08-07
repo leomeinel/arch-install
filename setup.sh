@@ -19,9 +19,13 @@ echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 useradd -m -G sudo "$SYSUSER"
 useradd -m -G libvirt "$VIRTUSER"
 useradd -m "$HOMEUSER"
+echo "Enter password for root"
 passwd root
+echo "Enter password for $SYSUSER"
 passwd "$SYSUSER"
+echo "Enter password for $VIRTUSER"
 passwd "$VIRTUSER"
+echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
