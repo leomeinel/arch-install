@@ -3,7 +3,7 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 ## Installation
 
-Make sure that any raid arrays and encryptions are removed before continuing!
+Make sure that any raid arrays, encryptions and partitions are removed before continuing!
 
 ```
 pacman -Sy git
