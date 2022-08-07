@@ -13,20 +13,20 @@ MIRRORCOUNTRIES="France,Germany"
 GRUBRESOLUTION="2560x1440"
 
 pacman --noconfirm -Syu
-pacman -S --noprogressbar --noconfirm plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare ksystemlog okular print-manager spectacle bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk11-openjdk jdk-openjdk jdk17-openjdk mariadb sqlite screen gradle arch-audit ark noto-fonts
-groupadd sudo
-echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 useradd -m -G sudo "$SYSUSER"
 useradd -m -G libvirt "$VIRTUSER"
 useradd -m "$HOMEUSER"
 echo "Enter password for root"
-passwd root
+passwd root || exit
 echo "Enter password for $SYSUSER"
-passwd "$SYSUSER"
+passwd "$SYSUSER" || exit
 echo "Enter password for $VIRTUSER"
-passwd "$VIRTUSER"
+passwd "$VIRTUSER" || exit
 echo "Enter password for $HOMEUSER"
-passwd "$HOMEUSER"
+passwd "$HOMEUSER" || exit
+groupadd sudo
+pacman -S --noprogressbar --noconfirm plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare ksystemlog okular print-manager spectacle bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk11-openjdk jdk-openjdk jdk17-openjdk mariadb sqlite screen gradle arch-audit ark noto-fonts
+echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
