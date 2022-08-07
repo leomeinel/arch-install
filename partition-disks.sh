@@ -6,7 +6,7 @@ KEYMAP="de-latin1"
 
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
-cryptsetup erase /dev/md/md0_crypt
+cryptsetup erase /dev/md/md0
 wipefs -a /dev/md/md0_crypt
 sgdisk -o /dev/"$DISK1"
 sgdisk -o /dev/"$DISK2"
