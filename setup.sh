@@ -87,5 +87,5 @@ cp -r /boot.bak/* /boot/
 umount /boot
 mount /dev/"$DISK1"1 /boot
 mdadm --detail --scan >> /etc/mdadm.conf
-sed -i 's/name=archiso:md0 //' /etc/mdadm.conf
+sed -i 's/name=archiso:md0 /md0/' /etc/mdadm.conf
 rm -rf /git
