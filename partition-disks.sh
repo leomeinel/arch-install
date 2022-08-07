@@ -6,8 +6,6 @@ KEYMAP="de-latin1"
 
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
-shred /dev/"$DISK1"
-shred /dev/"$DISK2"
 sgdisk -o /dev/"$DISK1"
 sgdisk -o /dev/"$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 /dev/"$DISK1"
