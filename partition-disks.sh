@@ -6,14 +6,14 @@ KEYMAP="de-latin1"
 
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
+shred /dev/"$DISK1"
+shred /dev/"$DISK2"
 sgdisk -o /dev/"$DISK1"
 sgdisk -o /dev/"$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 /dev/"$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 /dev/"$DISK2"
 sgdisk -n 0:0:0 -t 1:fd00 /dev/"$DISK1"
 sgdisk -n 0:0:0 -t 1:fd00 /dev/"$DISK2"
-mdadm --misc --zero-superblock /dev/"$DISK1"2
-mdadm --misc --zero-superblock /dev/"$DISK2"2
 mkfs.fat -n BOOT -F32 /dev/"$DISK1"1
 mkfs.fat -n BOOT -F32 /dev/"$DISK2"1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 /dev/md/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
