@@ -6,6 +6,8 @@ KEYMAP="de-latin1"
 
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
+cryptsetup erase /dev/md/md0_crypt
+wipefs -a /dev/md/md0_crypt
 sgdisk -o /dev/"$DISK1"
 sgdisk -o /dev/"$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 /dev/"$DISK1"
@@ -19,9 +21,6 @@ mkfs.fat -n BOOT -F32 /dev/"$DISK2"1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 /dev/md/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
-cryptsetup erase /dev/md/md0
-wipefs -a /dev/md/md0
-cryptsetup luksDump /dev/md/md0
 cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
 cryptsetup luksOpen /dev/md/md0 md0_crypt
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
