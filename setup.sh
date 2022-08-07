@@ -13,7 +13,7 @@ MIRRORCOUNTRIES="France,Germany"
 GRUBRESOLUTION="2560x1440"
 
 pacman --noconfirm -Syu
-groupadd sudo
+groupadd -r sudo
 groupadd -r libvirt
 useradd -m -G sudo "$SYSUSER"
 useradd -m -G libvirt "$VIRTUSER"
