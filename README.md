@@ -14,3 +14,10 @@ exit
 umount -a
 reboot
 ```
+
+If you have devices that are encrypted before installation run
+```
+lsblk (encrypted partitions = <partition>)
+cryptsetup erase /dev/<partition>
+wipefs -a /dev/<partition>
+```
