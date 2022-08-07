@@ -3,6 +3,13 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 ## Installation
 
+If you have devices that were encrypted before installation run this before continuing!
+```
+lsblk (encrypted device = <device>)
+cryptsetup erase /dev/<device>
+wipefs -a /dev/<device>
+```
+
 ```
 pacman -Sy git
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
@@ -13,11 +20,4 @@ arch-chroot /mnt
 exit
 umount -a
 reboot
-```
-
-If you have devices that are encrypted before installation run
-```
-lsblk (encrypted partitions = <partition>)
-cryptsetup erase /dev/<partition>
-wipefs -a /dev/<partition>
 ```
