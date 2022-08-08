@@ -34,6 +34,7 @@ btrfs subvolume delete /.snapshots
 mkdir /.snapshots
 mount -a
 chmod 750 /.snapshots
+chmod a+rx /.snapshots
 chown :sudo /.snapshots
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/root
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/var
