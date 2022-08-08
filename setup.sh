@@ -104,21 +104,6 @@ systemctl enable nftables
 systemctl enable sddm
 systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
-mkdir -p /etc/pacman.d/hooks
-{
-  echo "[Trigger]"
-  echo "Operation = Upgrade"
-  echo "Operation = Install"
-  echo "Operation = Remove"
-  echo "Type = Path"
-  echo "Target = boot/*"
-  echo ""
-  echo "[Action]"
-  echo "Depends = rsync"
-  echo "Description = Backing up /boot..."
-  echo "When = PreTransaction"
-  echo "Exec = /usr/bin/rsync -a --delete /boot /.bootbackup"
-} > /etc/pacman.d/hooks/95-bootbackup.hook
 sed -i 's/MODULES=()/MODULES=(btrfs)/' /etc/mkinitcpio.conf
 sed -i 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -p linux
@@ -138,5 +123,20 @@ chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
-rm -rf /git
+mkdir -p /etc/pacman.d/hooks
+{
+  echo "[Trigger]"
+  echo "Operation = Upgrade"
+  echo "Operation = Install"
+  echo "Operation = Remove"
+  echo "Type = Path"
+  echo "Target = boot/*"
+  echo ""
+  echo "[Action]"
+  echo "Depends = rsync"
+  echo "Description = Backing up /boot..."
+  echo "When = PreTransaction"
+  echo "Exec = /usr/bin/rsync -a --delete /boot /.bootbackup"
+} > /etc/pacman.d/hooks/95-bootbackup.hook
 passwd -l root
+rm -rf /git
