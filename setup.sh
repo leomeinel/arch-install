@@ -33,11 +33,24 @@ snapper -c home create-config /home
 btrfs subvolume delete /.snapshots
 mkdir /.snapshots
 mount -a
-chmod a+rx /.snapshots
+chmod 750 /.snapshots
 chown :sudo /.snapshots
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/root
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/var
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/home
+sed -i 's/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/' /etc/snapper/configs/root
+sed -i 's/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/' /etc/snapper/configs/var
+sed -i 's/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/' /etc/snapper/configs/home
+sed -i 's/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/' /etc/snapper/configs/root
+sed -i 's/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/' /etc/snapper/configs/var
+sed -i 's/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/' /etc/snapper/configs/home
+sed -i 's/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/' /etc/snapper/configs/root
+sed -i 's/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/' /etc/snapper/configs/var
+sed -i 's/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/' /etc/snapper/configs/home
+sed -i 's/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /etc/snapper/configs/root
+sed -i 's/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /etc/snapper/configs/var
+sed -i 's/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /etc/snapper/configs/home
+
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
@@ -89,6 +102,23 @@ systemctl enable libvirtd
 systemctl enable acpid
 systemctl enable nftables
 systemctl enable sddm
+systemctl enable snapper-timeline.timer
+systemctl enable snapper-cleanup.timer
+mkdir -p /etc/pacman.d/hooks
+{
+  echo "[Trigger]"
+  echo "Operation = Upgrade"
+  echo "Operation = Install"
+  echo "Operation = Remove"
+  echo "Type = Path"
+  echo "Target = boot/*"
+  echo ""
+  echo "[Action]"
+  echo "Depends = rsync"
+  echo "Description = Backing up /boot..."
+  echo "When = PreTransaction"
+  echo "Exec = /usr/bin/rsync -a --delete /boot /.bootbackup"
+} > /etc/pacman.d/hooks/95-bootbackup.hook
 sed -i 's/MODULES=()/MODULES=(btrfs)/' /etc/mkinitcpio.conf
 sed -i 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -p linux
