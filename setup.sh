@@ -18,8 +18,6 @@ groupadd -r libvirt
 useradd -r -m -G sudo "$SYSUSER"
 useradd -m -G libvirt "$VIRTUSER"
 useradd -m "$HOMEUSER"
-echo "Enter password for root"
-passwd root || exit
 echo "Enter password for $SYSUSER"
 passwd "$SYSUSER" || exit
 echo "Enter password for $VIRTUSER"
@@ -98,3 +96,4 @@ su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
 rm -rf /git
+passwd -l root
