@@ -92,7 +92,7 @@ cp -r /boot.bak/* /boot/
 umount /boot
 mount /dev/"$DISK1"1 /boot
 mdadm --detail --scan >> /etc/mdadm.conf
-sed -i 's/name=archiso:md0 /name=md0 /' /etc/mdadm.conf
+sed -i 's/name=archiso:md0 /name="$HOSTNAME":md0 /' /etc/mdadm.conf
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
