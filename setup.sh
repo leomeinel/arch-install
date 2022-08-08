@@ -25,6 +25,19 @@ passwd "$VIRTUSER" || exit
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER" || exit
 pacman -S --noprogressbar --noconfirm plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare ksystemlog okular print-manager spectacle bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk11-openjdk jdk-openjdk jdk17-openjdk mariadb screen gradle arch-audit ark noto-fonts rsync snapper
+umount /.snapshots
+rm -rf /.snapshots
+snapper -c root create-config /
+snapper -c var create-config /var
+snapper -c home create-config /home
+btrfs subvolume delete /.snapshots
+mkdir /.snapshots
+mount -a
+chmod a+rx /.snapshots
+chown :sudo /.snapshots
+sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/root
+sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/var
+sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/home
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
