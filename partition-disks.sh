@@ -24,7 +24,7 @@ mount /dev/mapper/md0_crypt /mnt
 cd /mnt || exit
 btrfs subvolume create @
 btrfs subvolume create @tmp
-btrfs subvolume create @.snapshots
+btrfs subvolume create @snapshots
 btrfs subvolume create @var
 btrfs subvolume create @home
 cd /
