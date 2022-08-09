@@ -31,22 +31,24 @@ btrfs subvolume create @var_snapshots
 btrfs subvolume create @home_snapshots
 cd /
 umount /mnt
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
-mkdir -p /mnt/boot
-mkdir -p /mnt/tmp
-mkdir -p /mnt/.snapshots
-mkdir -p /mnt/var/.snapshots || exit
-mkdir -p /mnt/home/.snapshots || exit
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt || exit
+mkdir /mnt/boot
+mkdir /mnt/tmp
+mkdir /mnt/.snapshots
+mkdir /mnt/var
+mkdir /mnt/var/.snapshots
+mkdir /mnt/home
+mkdir /mnt/home/.snapshots
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var || exit
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home || exit
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp || exit
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots || exit
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md0_crypt /mnt/var/.snapshots || exit
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md0_crypt /mnt/home/.snapshots || exit
 mount /dev/"$DISK1"1 /mnt/boot
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia git iptables-nft
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt >> /mnt/etc/fstab || exit
 cd /mnt || exit
 mkdir git
 cd /mnt/git || exit
