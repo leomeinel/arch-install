@@ -16,3 +16,10 @@ exit
 umount -a
 reboot
 ```
+
+## Post Installation
+
+```
+sudo timedatectl set-ntp true
+sudo hwclock --systohc
+```
