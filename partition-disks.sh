@@ -17,8 +17,8 @@ mkfs.fat -n BOOT -F32 /dev/"$DISK2"1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 /dev/md/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
-cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
-cryptsetup luksOpen /dev/md/md0 md0_crypt
+cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0 || exit
+cryptsetup luksOpen /dev/md/md0 md0_crypt || exit
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
 mount /dev/mapper/md0_crypt /mnt
 cd /mnt || exit
