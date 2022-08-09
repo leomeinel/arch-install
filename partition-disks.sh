@@ -23,23 +23,26 @@ mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
 mount /dev/mapper/md0_crypt /mnt
 cd /mnt || exit
 btrfs subvolume create @
-btrfs subvolume create @tmp
-btrfs subvolume create @snapshots
 btrfs subvolume create @var
 btrfs subvolume create @home
+btrfs subvolume create @tmp
+btrfs subvolume create @snapshots
+btrfs subvolume create @var/snapshots
+btrfs subvolume create @home/snapshots
 cd /
-btrfs subvolume list /mnt
 umount /mnt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
 mkdir -p /mnt/boot
 mkdir -p /mnt/tmp
 mkdir -p /mnt/.snapshots
-mkdir -p /mnt/var
-mkdir -p /mnt/home
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/tmp
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/.snapshots
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/var
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/home
+mkdir -p /mnt/var/.snapshots
+mkdir -p /mnt/home/.snapshots
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md0_crypt /mnt/var/.snapshots
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md0_crypt /mnt/home/.snapshots
 mount /dev/"$DISK1"1 /mnt/boot
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia git iptables-nft
