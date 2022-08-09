@@ -99,10 +99,10 @@ UUID="$(blkid -s UUID -o value /dev/md/md0)"
 sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$UUID:md0_crypt root=\/dev\/mapper\/md0_crypt video=$GRUBRESOLUTION\"/" /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
-cp -r /boot /boot.bak
+cp -r /boot /.boot.bak
 umount /boot
 mount /dev/"$DISK2"1 /boot
-cp -r /boot.bak/* /boot/
+cp -r /.boot.bak/* /boot/
 umount /boot
 mount /dev/"$DISK1"1 /boot
 mdadm --detail --scan >> /etc/mdadm.conf
@@ -118,13 +118,13 @@ mkdir -p /etc/pacman.d/hooks
   echo "Operation = Install"
   echo "Operation = Remove"
   echo "Type = Path"
-  echo "Target = boot/*"
+  echo "Target = usr/lib/modules/*/vmlinuz"
   echo ""
   echo "[Action]"
   echo "Depends = rsync"
   echo "Description = Backing up /boot..."
   echo "When = PreTransaction"
-  echo "Exec = /usr/bin/rsync -a --delete /boot /.bootbackup"
+  echo "Exec = /usr/bin/rsync -a --delete /boot /.boot.bak"
 } > /etc/pacman.d/hooks/95-bootbackup.hook
 passwd -l root
 rm -rf /git
