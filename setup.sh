@@ -52,8 +52,6 @@ mkdir /etc/sddm.conf.d
 } > /etc/sddm.conf.d/kde_settings.conf
 cd / || exit
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
-timedatectl set-ntp true
-hwclock --systohc
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
 sed -i 's/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
