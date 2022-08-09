@@ -25,7 +25,7 @@ echo "Enter password for $VIRTUSER"
 passwd "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER" 
-pacman -S --noprogressbar --noconfirm plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare okular print-manager spectacle bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk11-openjdk jdk-openjdk jdk17-openjdk mariadb screen gradle arch-audit ark noto-fonts rsync snapper lrzip lzop p7zip unarchiver unrar
+pacman -S --noprogressbar --noconfirm plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk11-openjdk jdk-openjdk jdk17-openjdk mariadb screen gradle arch-audit ark noto-fonts rsync snapper lrzip lzop p7zip unarchiver unrar
 umount /.snapshots
 rm -rf /.snapshots
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /usr/share/snapper/config-templates/default
@@ -51,6 +51,7 @@ chown :sudo /home/.snapshots
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
+mv /usr/share/plasma/look-and-feel/com.github.eliverlara.sweet /usr/share/plasma/look-and-feel/Sweet
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 mkdir /etc/sddm.conf.d
 {
