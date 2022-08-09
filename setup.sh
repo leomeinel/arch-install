@@ -15,7 +15,7 @@ GRUBRESOLUTION="2560x1440"
 pacman --noconfirm -Syu
 groupadd -r sudo
 groupadd -r libvirt
-useradd -r -m -G sudo "$SYSUSER"
+useradd -m -G sudo "$SYSUSER"
 useradd -m -G libvirt "$VIRTUSER"
 useradd -m "$HOMEUSER"
 echo "Enter password for $SYSUSER"
