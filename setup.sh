@@ -57,7 +57,6 @@ mkdir /etc/sddm.conf.d
   echo "[Theme]"
   echo "Current=Sweet"
 } > /etc/sddm.conf.d/kde_settings.conf
-cd /
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
