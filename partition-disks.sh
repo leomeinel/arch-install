@@ -4,6 +4,7 @@ DISK1="vda"
 DISK2="vdb"
 KEYMAP="de-latin1"
 
+set -e
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
 sgdisk -o /dev/"$DISK1"
@@ -17,39 +18,35 @@ mkfs.fat -n BOOT -F32 /dev/"$DISK2"1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 /dev/md/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
-cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0 || exit
-cryptsetup luksOpen /dev/md/md0 md0_crypt || exit
+cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
+cryptsetup luksOpen /dev/md/md0 md0_crypt
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
 mount /dev/mapper/md0_crypt /mnt
-cd /mnt || exit
+cd /mnt
 btrfs subvolume create @
 btrfs subvolume create @var
 btrfs subvolume create @home
 btrfs subvolume create @tmp
 btrfs subvolume create @.snapshots
-btrfs subvolume create @var/.snapshots
-btrfs subvolume create @home/.snapshots
 cd /
 umount /mnt
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt || exit
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
 mkdir /mnt/boot
 mkdir /mnt/tmp
 mkdir /mnt/.snapshots
 mkdir /mnt/var
 mkdir /mnt/home
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var || exit
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home || exit
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp || exit
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots || exit
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md0_crypt /mnt/var/.snapshots || exit
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md0_crypt /mnt/home/.snapshots || exit
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
 mount /dev/"$DISK1"1 /mnt/boot
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia git iptables-nft
-genfstab -U /mnt >> /mnt/etc/fstab || exit
-cd /mnt || exit
+genfstab -U /mnt >> /mnt/etc/fstab
+cd /mnt
 mkdir /git
-cd /mnt/git || exit
+cd /mnt/git
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
 cd /
