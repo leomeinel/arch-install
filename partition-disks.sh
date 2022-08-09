@@ -27,8 +27,8 @@ btrfs subvolume create @var
 btrfs subvolume create @home
 btrfs subvolume create @tmp
 btrfs subvolume create @snapshots
-btrfs subvolume create @var/snapshots
-btrfs subvolume create @home/snapshots
+btrfs subvolume create @var_snapshots
+btrfs subvolume create @home_snapshots
 cd /
 umount /mnt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
