@@ -27,30 +27,20 @@ passwd "$HOMEUSER" || exit
 pacman -S --noprogressbar --noconfirm plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare okular print-manager spectacle bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk11-openjdk jdk-openjdk jdk17-openjdk mariadb screen gradle arch-audit ark noto-fonts rsync snapper lrzip lzop p7zip unarchiver unrar
 umount /.snapshots || exit
 rm -rf /.snapshots || exit
-snapper -c root create-config / || exit
-snapper -c var create-config /var || exit
-snapper -c home create-config /home || exit
+sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /usr/share/snapper/config-templates/default
+sed -i 's/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/' /usr/share/snapper/config-templates/default
+sed -i 's/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/' /usr/share/snapper/config-templates/default
+sed -i 's/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/' /usr/share/snapper/config-templates/default
+sed -i 's/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
+snapper --no-dbus -c root create-config / || exit
+snapper --no-dbus -c var create-config /var || exit
+snapper --no-dbus -c home create-config /home || exit
 btrfs subvolume delete /.snapshots || exit
 mkdir /.snapshots
 mount -a
 chmod 750 /.snapshots
 chmod a+rx /.snapshots
 chown :sudo /.snapshots
-sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/root
-sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/var
-sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /etc/snapper/configs/home
-sed -i 's/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/' /etc/snapper/configs/root
-sed -i 's/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/' /etc/snapper/configs/var
-sed -i 's/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/' /etc/snapper/configs/home
-sed -i 's/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/' /etc/snapper/configs/root
-sed -i 's/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/' /etc/snapper/configs/var
-sed -i 's/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/' /etc/snapper/configs/home
-sed -i 's/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/' /etc/snapper/configs/root
-sed -i 's/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/' /etc/snapper/configs/var
-sed -i 's/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/' /etc/snapper/configs/home
-sed -i 's/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /etc/snapper/configs/root
-sed -i 's/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /etc/snapper/configs/var
-sed -i 's/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /etc/snapper/configs/home
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
