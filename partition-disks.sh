@@ -35,8 +35,8 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /de
 mkdir -p /mnt/boot
 mkdir -p /mnt/tmp
 mkdir -p /mnt/.snapshots
-mkdir -p /mnt/var/.snapshots
-mkdir -p /mnt/home/.snapshots
+mkdir -p /mnt/var/.snapshots || exit
+mkdir -p /mnt/home/.snapshots || exit
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
