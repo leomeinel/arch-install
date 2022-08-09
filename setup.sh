@@ -25,12 +25,12 @@ passwd "$VIRTUSER" || exit
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER" || exit
 pacman -S --noprogressbar --noconfirm plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare okular print-manager spectacle bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk11-openjdk jdk-openjdk jdk17-openjdk mariadb screen gradle arch-audit ark noto-fonts rsync snapper lrzip lzop p7zip unarchiver unrar
-umount /.snapshots
-rm -rf /.snapshots
-snapper -c root create-config /
-snapper -c var create-config /var
-snapper -c home create-config /home
-btrfs subvolume delete /.snapshots
+umount /.snapshots || exit
+rm -rf /.snapshots || exit
+snapper -c root create-config / || exit
+snapper -c var create-config /var || exit
+snapper -c home create-config /home || exit
+btrfs subvolume delete /.snapshots || exit
 mkdir /.snapshots
 mount -a
 chmod 750 /.snapshots
