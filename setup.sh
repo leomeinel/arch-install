@@ -12,6 +12,7 @@ DOMAIN="meinel.dev"
 MIRRORCOUNTRIES="France,Germany"
 GRUBRESOLUTION="2560x1440"
 
+set -e
 pacman --noconfirm -Syu
 groupadd -r sudo
 groupadd -r libvirt
@@ -19,32 +20,24 @@ useradd -m -G sudo "$SYSUSER"
 useradd -m -G libvirt "$VIRTUSER"
 useradd -m "$HOMEUSER"
 echo "Enter password for $SYSUSER"
-passwd "$SYSUSER" || exit
+passwd "$SYSUSER"
 echo "Enter password for $VIRTUSER"
-passwd "$VIRTUSER" || exit
+passwd "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
-passwd "$HOMEUSER" || exit
+passwd "$HOMEUSER" 
 pacman -S --noprogressbar --noconfirm plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kmix kompare okular print-manager spectacle bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode chromium zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk11-openjdk jdk-openjdk jdk17-openjdk mariadb screen gradle arch-audit ark noto-fonts rsync snapper lrzip lzop p7zip unarchiver unrar
-umount /.snapshots || exit
-umount /var/.snapshots || exit
-umount /home/.snapshots || exit
-rm -rf /.snapshots || exit
-rm -rf /var/.snapshots || exit
-rm -rf /home/.snapshots || exit
+umount /.snapshots
+rm -rf /.snapshots
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/' /usr/share/snapper/config-templates/default
 sed -i 's/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/' /usr/share/snapper/config-templates/default
 sed -i 's/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/' /usr/share/snapper/config-templates/default
 sed -i 's/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/' /usr/share/snapper/config-templates/default
 sed -i 's/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
-snapper --no-dbus -c root create-config / || exit
-snapper --no-dbus -c var create-config /var || exit
-snapper --no-dbus -c home create-config /home || exit
-btrfs subvolume delete /.snapshots || exit
-btrfs subvolume delete @var/.snapshots || exit
-btrfs subvolume delete @home/.snapshots || exit
+snapper --no-dbus -c root create-config /
+snapper --no-dbus -c var create-config /var
+snapper --no-dbus -c home create-config /home
+btrfs subvolume delete /.snapshots
 mkdir /.snapshots
-mkdir /var/.snapshots
-mkdir /home/.snapshots
 mount -a
 chmod 750 /.snapshots
 chmod a+rx /.snapshots
@@ -64,7 +57,7 @@ mkdir /etc/sddm.conf.d
   echo "[Theme]"
   echo "Current=Sweet"
 } > /etc/sddm.conf.d/kde_settings.conf
-cd / || exit
+cd /
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
