@@ -10,4 +10,4 @@ rustup default stable
 makepkg -si
 cd
 rm -rf ./git
-paru --noprogressbar --noconfirm -S librewolf ungoogled-chromium sweet-kde-git papirus-icon-theme snap-pac-grub snapper-gui-git
+paru --noprogressbar --noconfirm -S librewolf ungoogled-chromium chromium-extension-web-store sweet-kde-git papirus-icon-theme snap-pac-grub snapper-gui-git
