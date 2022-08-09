@@ -22,13 +22,11 @@ cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
 cryptsetup luksOpen /dev/md/md0 md0_crypt
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
 mount /dev/mapper/md0_crypt /mnt
-cd /mnt
-btrfs subvolume create @
-btrfs subvolume create @var
-btrfs subvolume create @home
-btrfs subvolume create @tmp
-btrfs subvolume create @snapshots
-cd /
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@var
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@tmp
+btrfs subvolume create /mnt/@snapshots
 umount /mnt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
 mkdir /mnt/boot
@@ -48,4 +46,3 @@ mkdir /mnt/git
 cd /mnt/git
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
-cd /
