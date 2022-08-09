@@ -44,8 +44,7 @@ mount /dev/"$DISK1"1 /mnt/boot
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia git iptables-nft
 genfstab -U /mnt >> /mnt/etc/fstab
-cd /mnt
-mkdir /git
+mkdir /mnt/git
 cd /mnt/git
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
