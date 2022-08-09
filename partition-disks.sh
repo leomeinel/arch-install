@@ -35,14 +35,12 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /de
 mkdir /mnt/boot
 mkdir /mnt/tmp
 mkdir /mnt/.snapshots
-mkdir /mnt/var
-mkdir /mnt/var/.snapshots
-mkdir /mnt/home
-mkdir /mnt/home/.snapshots
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var || exit
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home || exit
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp || exit
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots || exit
+mkdir -p /mnt/var/.snapshots
+mkdir -p /mnt/home/.snapshots
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md0_crypt /mnt/var/.snapshots || exit
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md0_crypt /mnt/home/.snapshots || exit
 mount /dev/"$DISK1"1 /mnt/boot
@@ -50,7 +48,7 @@ pacman -Sy --noprogressbar --noconfirm archlinux-keyring
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia git iptables-nft
 genfstab -U /mnt >> /mnt/etc/fstab || exit
 cd /mnt || exit
-mkdir git
+mkdir /git
 cd /mnt/git || exit
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
