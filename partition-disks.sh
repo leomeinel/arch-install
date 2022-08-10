@@ -4,8 +4,10 @@ DISK1="vda"
 DISK2="vdb"
 KEYMAP="de-latin1"
 HOSTNAME="tux-stellaris-15"
+OLD_LUKS="md0_crypt"
 
 umount -AR /mnt
+cryptsetup luksClose "$OLD_LUKS"
 mdadm --stop --scan
 mdadm --remove /dev/"$DISK1"2
 mdadm --remove /dev/"$DISK2"2
