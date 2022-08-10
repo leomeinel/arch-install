@@ -10,7 +10,7 @@ OLD_MDADM="md0"
 umount -AR /mnt
 cryptsetup luksClose "$OLD_LUKS"
 cryptsetup erase /dev/md/"$OLD_MDADM"
-wipefs -a /dev/md/"$OLD_MDADM"
+sgdisk -Z /dev/md/"$OLD_MDADM"
 mdadm --stop --scan
 mdadm --zero-superblock /dev/"$DISK1"2
 mdadm --zero-superblock /dev/"$DISK2"2
