@@ -2,12 +2,11 @@
 
 DISK1="vda"
 DISK2="vdb"
-OLD_CRYPTNAME="md0_crypt"
-OLD_CRYPTDEVICE="md127"
 KEYMAP="de-latin1"
 
 umount -AR /mnt
 set -e
+sed -i "s/archiso/\"$HOSTNAME\"/" /etc/hostname
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
 sgdisk -Z /dev/"$DISK1"
@@ -16,8 +15,8 @@ sgdisk -n 0:0:+1G -t 1:ef00 /dev/"$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 /dev/"$DISK2"
 sgdisk -n 0:0:0 -t 1:fd00 /dev/"$DISK1"
 sgdisk -n 0:0:0 -t 1:fd00 /dev/"$DISK2"
-partx -u /dev/"$DISK1"
-partx -u /dev/"$DISK2"
+#partx -u /dev/"$DISK1"
+#partx -u /dev/"$DISK2"
 mkfs.fat -n BOOT -F32 /dev/"$DISK1"1
 mkfs.fat -n BOOT -F32 /dev/"$DISK2"1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 /dev/md/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
