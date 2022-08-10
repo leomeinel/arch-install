@@ -19,6 +19,7 @@ sgdisk -n 0:0:0 -t 1:fd00 /dev/"$DISK2"
 mkfs.fat -n BOOT -F32 /dev/"$DISK1"1
 mkfs.fat -n BOOT -F32 /dev/"$DISK2"1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 /dev/md/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
+mdadm --detail --scan >> /etc/mdadm.conf
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
 cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
