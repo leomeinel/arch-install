@@ -3,6 +3,7 @@
 DISK1="vda"
 DISK2="vdb"
 KEYMAP="de-latin1"
+HOSTNAME="tux-stellaris-15"
 
 umount -AR /mnt
 set -e
