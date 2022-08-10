@@ -4,10 +4,11 @@ DISK1="vda"
 DISK2="vdb"
 KEYMAP="de-latin1"
 
-umount -a
 set -e
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
+umount /dev/"$DISK1"
+umount /dev/"$DISK2"
 sgdisk -Z /dev/"$DISK1"
 sgdisk -Z /dev/"$DISK2"
 sgdisk -o /dev/"$DISK1"
