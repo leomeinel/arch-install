@@ -4,8 +4,7 @@ DISK1="vda"
 DISK2="vdb"
 KEYMAP="de-latin1"
 
-umount /dev/"$DISK1"
-umount /dev/"$DISK2"
+umount -AR /mnt
 set -e
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
