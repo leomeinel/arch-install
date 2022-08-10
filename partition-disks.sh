@@ -7,7 +7,7 @@ HOSTNAME="tux-stellaris-15"
 
 umount -AR /mnt
 set -e
-sed -i "s/archiso/\"$HOSTNAME\"/" /etc/hostname
+sed -i "s/archiso/$HOSTNAME/" /etc/hostname
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
 sgdisk -Z /dev/"$DISK1"
