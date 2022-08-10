@@ -112,7 +112,6 @@ mount /dev/"$DISK2"1 /boot
 cp -r /.boot.bak/* /boot/
 umount /boot
 mount /dev/"$DISK1"1 /boot
-mdadm --detail --scan >> /etc/mdadm.conf
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
