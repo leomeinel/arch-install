@@ -2,10 +2,14 @@
 
 DISK1="vda"
 DISK2="vdb"
+OLD_MDADM="md0"
 KEYMAP="de-latin1"
 HOSTNAME="tux-stellaris-15"
 
 umount -AR /mnt
+mdadm --stop /dev/md/"$OLD_MDADM"
+mdadm --zero-superblock /dev/"$DISK1"2
+mdadm --zero-superblock /dev/"$DISK2"2
 set -e
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
