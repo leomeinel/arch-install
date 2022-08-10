@@ -7,6 +7,7 @@ KEYMAP="de-latin1"
 set -e
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
+umount -a
 sgdisk -Z /dev/"$DISK1"
 sgdisk -Z /dev/"$DISK2"
 sgdisk -o /dev/"$DISK1"
