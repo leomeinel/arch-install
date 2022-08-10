@@ -13,7 +13,7 @@ MIRRORCOUNTRIES="Netherlands"
 GRUBRESOLUTION="2560x1440"
 
 set -e
-pacman --noconfirm -Syu
+pacman -Syu --noprogressbar --noconfirm
 groupadd -r sudo
 groupadd -r libvirt
 useradd -m -G sudo "$SYSUSER"
