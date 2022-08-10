@@ -6,10 +6,10 @@ SYSUSER="systux"
 VIRTUSER="virt"
 HOMEUSER="leo"
 KEYMAP="de-latin1"
-TIMEZONE="Europe/Paris"
+TIMEZONE="Europe/Amsterdam"
 HOSTNAME="tux-stellaris-15"
 DOMAIN="meinel.dev"
-MIRRORCOUNTRIES="France,Germany"
+MIRRORCOUNTRIES="Netherlands"
 GRUBRESOLUTION="2560x1440"
 
 set -e
