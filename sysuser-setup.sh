@@ -7,7 +7,7 @@ cd ./git
 git clone https://aur.archlinux.org/paru.git
 cd ./paru
 rustup default stable
-makepkg -si
+makepkg -si --noprogressbar --noconfirm --needed
 cd
 rm -rf ./git
 sudo sed -i 's/#LocalRepo/LocalRepo/;s/#Chroot/Chroot/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/' /etc/paru.conf
