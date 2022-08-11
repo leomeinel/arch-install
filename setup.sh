@@ -23,7 +23,16 @@ passwd "$SYSUSER"
 echo "Enter password for $VIRTUSER"
 passwd "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
-passwd "$HOMEUSER" 
+passwd "$HOMEUSER"
+sed -i 's/#CacheDir/CacheDir/;s/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10\nInclude = \/etc\/paru-chroot.conf/' /etc/pacman.conf
+{
+  echo "[options]"
+  echo "Cachedir = /var/lib/repo/paru"
+  echo ""
+  echo "[paru]"
+  echo "SigLevel = PackageOptional DatabaseOptional"
+  echo "Server = file:///var/lib/repo/paru"
+} > /etc/paru-chroot.conf
 pacman -S --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools
 umount /.snapshots
 rm -rf /.snapshots
@@ -48,15 +57,6 @@ chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
-sed -i 's/#CacheDir/CacheDir/;s/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10\nInclude = \/etc\/paru-chroot.conf/' /etc/pacman.conf
-{
-  echo "[options]"
-  echo "Cachedir = /var/lib/repo/paru"
-  echo ""
-  echo "[paru]"
-  echo "SigLevel = PackageOptional DatabaseOptional"
-  echo "Server = file:///var/lib/repo/paru"
-} > /etc/paru-chroot.conf
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
