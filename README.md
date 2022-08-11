@@ -1,4 +1,5 @@
 # mdadm-encrypted-btrfs
+
 Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 ## Installation
@@ -19,8 +20,9 @@ reboot
 
 ## Post Installation
 
+Log into sysuser account and run
+
 ```
-sudo timedatectl set-ntp true
-sudo hwclock --systohc
+~/.sysuser-setup.sh
 ```
 Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
