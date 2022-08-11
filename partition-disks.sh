@@ -32,18 +32,10 @@ cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
 cryptsetup luksOpen /dev/md/md0 md0_crypt
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
 mount /dev/mapper/md0_crypt /mnt
-btrfs subvolume create /mnt/@
-btrfs subvolume create /mnt/@var
-btrfs subvolume create /mnt/@home
-btrfs subvolume create /mnt/@tmp
-btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create {/mnt/@,/mnt/@var,/mnt/@home,/mnt/@tmp,/mnt/@snapshots}
 umount /mnt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
-mkdir /mnt/boot
-mkdir /mnt/tmp
-mkdir /mnt/.snapshots
-mkdir /mnt/var
-mkdir /mnt/home
+mkdir {/mnt/var,/mnt/home,/mnt/tmp,/mnt/.snapshots,/mnt/boot}
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
