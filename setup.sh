@@ -49,6 +49,14 @@ chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
+{
+  echo "[options]"
+  echo "Cachedir = /var/lib/repo/paru"
+  echo ""
+  echo "[paru]"
+  echo "SigLevel = PackageOptional DatabaseOptional"
+  echo "Server = file:///var/lib/repo/paru"
+} > /etc/paru-chroot.conf
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 mkdir /etc/sddm.conf.d
