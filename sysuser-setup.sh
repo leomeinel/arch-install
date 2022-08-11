@@ -1,7 +1,6 @@
 #!/bin/sh
 
 set -e
-cd
 mkdir ~/git
 cd ~/git
 git clone https://aur.archlinux.org/paru.git
