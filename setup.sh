@@ -48,7 +48,7 @@ chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
-chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
+sed -i 's/#CacheDir/CacheDir/;s/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10\nInclude = \/etc\/paru-chroot.conf/' /etc/pacman.conf
 {
   echo "[options]"
   echo "Cachedir = /var/lib/repo/paru"
@@ -57,6 +57,7 @@ chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
   echo "SigLevel = PackageOptional DatabaseOptional"
   echo "Server = file:///var/lib/repo/paru"
 } > /etc/paru-chroot.conf
+chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 mkdir /etc/sddm.conf.d
