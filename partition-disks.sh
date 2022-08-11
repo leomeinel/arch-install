@@ -32,7 +32,11 @@ cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
 cryptsetup luksOpen /dev/md/md0 md0_crypt
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
 mount /dev/mapper/md0_crypt /mnt
-btrfs subvolume create {/mnt/@,/mnt/@var,/mnt/@home,/mnt/@tmp,/mnt/@snapshots}
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@var
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@tmp
+btrfs subvolume create /mnt/@snapshots
 umount /mnt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
 mkdir {/mnt/var,/mnt/home,/mnt/tmp,/mnt/.snapshots,/mnt/boot}
