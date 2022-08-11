@@ -34,7 +34,7 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/' /etc/p
   echo "SigLevel = PackageOptional DatabaseOptional"
   echo "Server = file:///var/lib/repo/aur"
 } >> /etc/pacman.conf
-mkdir /var/lib/repo/aur
+mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.zst
 pacman -Sy
 pacman -S --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools
