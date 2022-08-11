@@ -27,7 +27,7 @@ passwd "$HOMEUSER"
 sed -i 's/#CacheDir/CacheDir/;s/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10\nInclude = \/etc\/paru-chroot.conf/' /etc/pacman.conf
 {
   echo "[options]"
-  echo "Cachedir = /var/lib/repo/paru"
+  echo "CacheDir = /var/lib/repo/paru"
   echo ""
   echo "[paru]"
   echo "SigLevel = PackageOptional DatabaseOptional"
