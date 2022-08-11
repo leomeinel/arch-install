@@ -27,11 +27,11 @@ passwd "$HOMEUSER"
 sed -i 's/#CacheDir/CacheDir/;s/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10\nInclude = \/etc\/paru-chroot.conf/' /etc/pacman.conf
 {
   echo "[options]"
-  echo "CacheDir = /var/lib/repo/paru"
+  echo "CacheDir = /var/lib/repo/aur"
   echo ""
-  echo "[paru]"
+  echo "[aur]"
   echo "SigLevel = PackageOptional DatabaseOptional"
-  echo "Server = file:///var/lib/repo/paru"
+  echo "Server = file:///var/lib/repo/aur"
 } > /etc/paru-chroot.conf
 pacman -S --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools
 umount /.snapshots
