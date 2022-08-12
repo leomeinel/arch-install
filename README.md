@@ -29,6 +29,4 @@ Log into sysuser account and run
 ```
 Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
 
-=> Install Sweet KDE & Papirus through System Settings
-
 => Reboot now
