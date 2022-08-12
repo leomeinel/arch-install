@@ -35,13 +35,14 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#Cach
 mkdir -p /etc/pacman.d/repo
 {
   echo "[options]"
-  echo "CacheDir = /var/lib/repo/aur/cache"
+  echo "CacheDir = /var/cache/aur/pkg"
   echo ""
   echo "[aur]"
   echo "SigLevel = PackageOptional DatabaseOptional"
   echo "Server = file:///var/lib/repo/aur"
 } > /etc/pacman.d/repo/aur.conf
-mkdir -p /var/lib/repo/aur/cache
+mkdir -p /var/cache/aur/pkg
+mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
 pacman -Sy
 pacman -S --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa kvantum papirus-icon-theme bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools pam-u2f
