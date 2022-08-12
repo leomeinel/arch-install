@@ -24,16 +24,20 @@ echo "Enter password for $VIRTUSER"
 passwd "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
-sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#CacheDir/CacheDir/' /etc/pacman.conf
+sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 50/;s/#CacheDir/CacheDir/' /etc/pacman.conf
 {
   echo ""
+  echo "[options]"
+  echo "Include = /etc/pacman.d/repo_aur.conf"
+} >> /etc/pacman.conf
+{
   echo "[options]"
   echo "CacheDir = /var/lib/repo/aur"
   echo ""
   echo "[aur]"
   echo "SigLevel = PackageOptional DatabaseOptional"
   echo "Server = file:///var/lib/repo/aur"
-} >> /etc/pacman.conf
+} > /etc/pacman.d/repo_aur.conf
 mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
 pacman -Sy
