@@ -24,5 +24,7 @@ Log into sysuser account and run
 
 ```
 ~/post-install.sh
+
 ```
 Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
+Reboot now
