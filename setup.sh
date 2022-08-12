@@ -95,7 +95,7 @@ echo "$HOSTNAME" > /etc/hostname
   echo "zram-size = ram / 2"
   echo "compression-algorithm = zstd"
 } > /etc/systemd/zram-generator.conf
-systemctl enable {NetworkManager,bluetooth,cups.service,avahi-daemon,tlp,reflector,reflector.timer,fstrim.timer,libvirtd,acpid,nftables,sddm,snapper-timeline.timer,snapper-cleanup.timer}
+systemctl enable {NetworkManager,bluetooth,cups.service,avahi-daemon,tlp,reflector,reflector.timer,fstrim.timer,libvirtd,acpid,nftables,sddm,snapper-timeline.timer,snapper-cleanup.timer,nvidia-resume.service}
 sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 UUID="$(blkid -s UUID -o value /dev/md/md0)"
