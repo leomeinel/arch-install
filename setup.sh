@@ -28,8 +28,9 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 50/;s/#Cach
 {
   echo ""
   echo "[options]"
-  echo "Include = /etc/pacman.d/repo_aur.conf"
+  echo "Include = /etc/pacman.d/repo/aur.conf"
 } >> /etc/pacman.conf
+mkdir -p /etc/pacman.d/repo
 {
   echo "[options]"
   echo "CacheDir = /var/lib/repo/aur"
@@ -37,7 +38,7 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 50/;s/#Cach
   echo "[aur]"
   echo "SigLevel = PackageOptional DatabaseOptional"
   echo "Server = file:///var/lib/repo/aur"
-} > /etc/pacman.d/repo_aur.conf
+} > /etc/pacman.d/repo/aur.conf
 mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
 pacman -Sy
