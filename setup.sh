@@ -24,7 +24,7 @@ echo "Enter password for $VIRTUSER"
 passwd "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
-sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 50/;s/#CacheDir/CacheDir/' /etc/pacman.conf
+sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#CacheDir/CacheDir/' /etc/pacman.conf
 {
   echo ""
   echo "[options]"
