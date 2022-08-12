@@ -46,7 +46,7 @@ mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 5 --sort age
 pacman -Sy
-pacman -S --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa krunner kvantum arc-gtk-theme otf-font-awesome bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools pam-u2f
+pacman -S --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa krunner kvantum arc-gtk-theme bleachbit sddm sddm-kcm plasma-nm neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils cups hplip alsa-utils openssh rsync reflector acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g nvidia-settings notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools pam-u2f
 umount /.snapshots
 rm -rf /.snapshots
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/;s/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/;s/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/;s/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/;s/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
@@ -73,7 +73,7 @@ echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 mkdir /etc/sddm.conf.d
 {
   echo "[Theme]"
-  echo "Current=Sweet"
+  echo "Current=Solarized"
 } > /etc/sddm.conf.d/kde_settings.conf
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/;s/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/;s/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
