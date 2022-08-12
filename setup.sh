@@ -129,5 +129,6 @@ mkdir -p /etc/pacman.d/hooks
 } > /etc/pacman.d/hooks/95-bootbackup.hook
 mdadm --detail --scan >> /etc/mdadm.conf
 archlinux-java set java-17-openjdk
+chown -R "$SYSUSER": /var/lib/repo/aur
 passwd -l root
 rm -rf /git
