@@ -15,8 +15,9 @@ vim /git/mdadm-encrypted-btrfs/setup.sh
 /git/mdadm-encrypted-btrfs/setup.sh
 exit
 umount -a
-reboot
 ```
+
+=> Reboot now
 
 ## Post Installation
 
@@ -27,4 +28,5 @@ Log into sysuser account and run
 
 ```
 Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
-Reboot now
+
+=> Reboot now
