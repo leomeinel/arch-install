@@ -18,6 +18,8 @@ groupadd -r libvirt
 useradd -m -G sudo "$SYSUSER"
 useradd -m -G libvirt "$VIRTUSER"
 useradd -m "$HOMEUSER"
+echo "Enter password for root"
+passwd root
 echo "Enter password for $SYSUSER"
 passwd "$SYSUSER"
 echo "Enter password for $VIRTUSER"
@@ -130,5 +132,4 @@ mkdir -p /etc/pacman.d/hooks
 mdadm --detail --scan >> /etc/mdadm.conf
 archlinux-java set java-17-openjdk
 chown -R "$SYSUSER": /var/lib/repo/aur
-passwd -l root
 rm -rf /git
