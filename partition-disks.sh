@@ -5,7 +5,7 @@ DISK2="vdb"
 KEYMAP="de-latin1"
 OLD_LUKS="md0_crypt"
 OLD_MDADM="md0"
-MIRRORCOUNTRIES="Netherlands"
+MIRRORCOUNTRIES="Netherlands,Germany"
 
 umount -AR /mnt
 cryptsetup luksClose "$OLD_LUKS"
