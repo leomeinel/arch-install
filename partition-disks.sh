@@ -50,8 +50,11 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring
 #pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs amd-ucode mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver git iptables-nft reflector
 #pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs amd-ucode nvidia nvidia-settings git iptables-nft reflector
+#pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs amd-ucode mesa xf86-video-intel vulkan-intel git iptables-nft reflector
 #pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver git iptables-nft reflector
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia nvidia-settings git iptables-nft reflector
+#pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode mesa xf86-video-intel vulkan-intel git iptables-nft reflector
+#pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector
 genfstab -U /mnt >> /mnt/etc/fstab
 mkdir /mnt/git
 cd /mnt/git
