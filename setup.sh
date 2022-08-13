@@ -3,7 +3,6 @@
 DISK1="vda"
 DISK2="vdb"
 KEYMAP="de-latin1"
-KEYLAYOUT="de"
 HOSTNAME="tux-stellaris-15"
 SYSUSER="systux"
 VIRTUSER="virt"
@@ -14,8 +13,6 @@ MIRRORCOUNTRIES="Netherlands"
 GRUBRESOLUTION="2560x1440"
 
 set -e
-localectl set-keymap "$KEYMAP"
-localectl set-x11-keymap "$KEYLAYOUT"
 groupadd -r sudo
 groupadd -r libvirt
 useradd -m -G sudo "$SYSUSER"
