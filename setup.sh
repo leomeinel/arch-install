@@ -138,4 +138,7 @@ mkdir -p /etc/pacman.d/hooks
 mdadm --detail --scan >> /etc/mdadm.conf
 archlinux-java set java-17-openjdk
 chown -R "$SYSUSER": /var/lib/repo/aur
+mkdir -p /usr/share/wallpapers/Custom/content
+# Move wallpapers to /usr/share/wallpapers/Custom/content
+chmod -R 755 /usr/share/wallpapers/Custom
 rm -rf /git
