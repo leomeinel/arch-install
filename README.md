@@ -25,8 +25,9 @@ Log into sysuser account and run
 
 ```
 ~/post-install.sh
-
 ```
+Edit PKGBUILD of multicolor-sddm-theme to not use sudo!
+
 Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
 
 => Reboot now
