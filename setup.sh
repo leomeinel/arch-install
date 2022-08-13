@@ -13,6 +13,8 @@ MIRRORCOUNTRIES="Netherlands"
 GRUBRESOLUTION="2560x1440"
 
 set -e
+localectl set-keymap "$KEYMAP"
+localectl set-x11-keymap "$KEYMAP"
 groupadd -r sudo
 groupadd -r libvirt
 useradd -m -G sudo "$SYSUSER"
