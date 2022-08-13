@@ -24,6 +24,7 @@ umount -a
 Log into sysuser account and run
 
 ```
+vim ~/post-install.sh
 ~/post-install.sh
 ```
 Edit PKGBUILD of multicolor-sddm-theme to not use sudo!
