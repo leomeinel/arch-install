@@ -69,7 +69,7 @@ chown :sudo /home/.snapshots
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
-sed -i 's/#LocalRepo/LocalRepo/;s/#Chroot/Chroot/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/' /etc/paru.conf
+sed -i 's/#LocalRepo/LocalRepo/;s/#Chroot/Chroot/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/;s/#FileManager = vifm/FileManager = vim/' /etc/paru.conf
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 mkdir /etc/sddm.conf.d
 {
