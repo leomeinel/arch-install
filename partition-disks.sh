@@ -51,7 +51,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /de
 mount /dev/"$DISK1"1 /mnt/boot
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 5 --sort age
-pacman -Sy --noprogressbar --noconfirm archlinux-keyring
+pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 PACKAGES="base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector mesa"
 if "$( lscpu -b | grep "Vendor ID:" | grep -q "GenuineIntel" )"
 then
