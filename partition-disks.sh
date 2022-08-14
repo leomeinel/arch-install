@@ -53,11 +53,11 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoPr
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 5 --sort age
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 PACKAGES="base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector mesa"
-if "$( lscpu -b | grep "Vendor ID:" | grep -q "GenuineIntel" )"
+if "$( lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" )"
 then
 PACKAGES="$PACKAGES intel-ucode"
 fi
-if "$( lscpu -b | grep "Vendor ID:" | grep -q "AuthenticAMD" )"
+if "$( lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" )"
 then
 PACKAGES="$PACKAGES amd-ucode"
 fi
