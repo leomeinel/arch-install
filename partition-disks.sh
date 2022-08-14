@@ -63,7 +63,7 @@ PACKAGES="$PACKAGES amd-ucode"
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" )"
 then
-PACKAGES="$PACKAGES nvidia nvidia-settings bumblebee primus bbswitch"
+PACKAGES="$PACKAGES nvidia nvidia-settings"
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
 then
