@@ -73,8 +73,8 @@ if "$( lshw -C display | grep "vendor:" | grep -q "Intel Corporation" )"
 then
 PACKAGES=$"$PACKAGES\nxf86-video-intel\nvulkan-intel"
 fi
-echo "$PACKAGES" > /git/packages.txt
-pacstrap /mnt - < /git/packages.txt
+echo "$PACKAGES" > /root/packages.txt
+pacstrap /mnt - < /root/packages.txt
 genfstab -U /mnt >> /mnt/etc/fstab
 mkdir /mnt/git
 cd /mnt/git
