@@ -3,47 +3,47 @@
 KEYMAP="de-latin1"
 MIRRORCOUNTRIES="Netherlands,Germany"
 
-SIZE1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '1p' | tr -d "[:space:]")"
-SIZE2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '2p' | tr -d "[:space:]")"
+SIZE1="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '1p' | tr -d "[:space:]")"
+SIZE2="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '2p' | tr -d "[:space:]")"
 if [ "$SIZE1" = "$SIZE2" ]
 then
-  DISK1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE1 //" | sed -n '1p' | tr -d "[:space:]")"
-  DISK2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE2 //" | sed -n '2p' | tr -d "[:space:]")"
+  DISK1="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '1p' | tr -d "[:space:]")"
+  DISK2="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '2p' | tr -d "[:space:]")"
 else
   echo "ERROR: There are not exactly 2 disks with the same size attached!"
   exit
 fi
 umount -AR /mnt
-if lsblk -rno TYPE,NAME | grep "crypt" | sed "s/crypt //" | tr -d "[:space:]"
+if lsblk -rno TYPE | grep -q "crypt"
 then
-  cryptsetup luksClose "$(lsblk -rno TYPE,NAME | grep "crypt" | sed "s/crypt //" | tr -d "[:space:]")"
-  if lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]"
+  cryptsetup luksClose "$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt //' | tr -d "[:space:]")"
+  if lsblk -rno TYPE | grep -q "raid1"
   then
-    cryptsetup erase /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]")"
-    sgdisk -Z /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]")"
+    cryptsetup erase "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1 //' | tr -d "[:space:]")"
+    sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1 //' | tr -d "[:space:]")"
     mdadm --stop --scan
-    mdadm --zero-superblock /dev/"$DISK1"2
-    mdadm --zero-superblock /dev/"$DISK2"2
+    mdadm --zero-superblock "$DISK1"2
+    mdadm --zero-superblock "$DISK2"2
   fi
-  elif lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]"
+  elif lsblk -rno TYPE | grep -q "raid1"
   then
-    sgdisk -Z /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]")"
+    sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1 //' | tr -d "[:space:]")"
     mdadm --stop --scan
-    mdadm --zero-superblock /dev/"$DISK1"2
-    mdadm --zero-superblock /dev/"$DISK2"2
+    mdadm --zero-superblock "$DISK1"2
+    mdadm --zero-superblock "$DISK2"2
 fi
 set -e
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
-sgdisk -Z /dev/"$DISK1"
-sgdisk -Z /dev/"$DISK2"
-sgdisk -n 0:0:+1G -t 1:ef00 /dev/"$DISK1"
-sgdisk -n 0:0:+1G -t 1:ef00 /dev/"$DISK2"
-sgdisk -n 0:0:0 -t 1:fd00 /dev/"$DISK1"
-sgdisk -n 0:0:0 -t 1:fd00 /dev/"$DISK2"
-mkfs.fat -n BOOT -F32 /dev/"$DISK1"1
-mkfs.fat -n BOOT -F32 /dev/"$DISK2"1
-mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 /dev/"$DISK1"2 /dev/"$DISK2"2
+sgdisk -Z "$DISK1"
+sgdisk -Z "$DISK2"
+sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
+sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
+sgdisk -n 0:0:0 -t 1:fd00 "$DISK1"
+sgdisk -n 0:0:0 -t 1:fd00 "$DISK2"
+mkfs.fat -n BOOT -F32 "$DISK1"1
+mkfs.fat -n BOOT -F32 "$DISK2"1
+mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1"2 "$DISK2"2
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
 cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
@@ -66,7 +66,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /de
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
-mount /dev/"$DISK1"1 /mnt/boot
+mount "$DISK1"1 /mnt/boot
 {
   echo "base"
   echo "base-devel"
