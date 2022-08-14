@@ -39,7 +39,11 @@ btrfs subvolume create /mnt/@tmp
 btrfs subvolume create /mnt/@snapshots
 umount /mnt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
-mkdir {/mnt/var,/mnt/home,/mnt/tmp,/mnt/.snapshots,/mnt/boot}
+mkdir /mnt/var
+mkdir /mnt/home
+mkdir /mnt/tmp
+mkdir /mnt/.snapshots
+mkdir /mnt/boot
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
@@ -48,22 +52,22 @@ mount /dev/"$DISK1"1 /mnt/boot
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 5 --sort age
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring
-if "$( lscpu -b | grep -q "Vendor ID:" | grep -q "GenuineIntel" )" && "$( lshw -C display | grep -q "vendor:" | grep -q "NVIDIA Corporation" )"
+if "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "GenuineIntel" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "NVIDIA Corporation" )"
 then
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia nvidia-settings git iptables-nft reflector
-elif "$( lscpu -b | grep -q "Vendor ID:" | grep -q "GenuineIntel" )" && "$( lshw -C display | grep -q "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
+elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "GenuineIntel" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
 then
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver git iptables-nft reflector
-elif "$( lscpu -b | grep -q "Vendor ID:" | grep -q "GenuineIntel" )" && "$( lshw -C display | grep -q "vendor:" | grep -q "Intel Corporation" )"
+elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "GenuineIntel" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Intel Corporation" )"
 then
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode mesa xf86-video-intel vulkan-intel git iptables-nft reflector
-elif "$( lscpu -b | grep -q "Vendor ID:" | grep -q "AuthenticAMD" )" && "$( lshw -C display | grep -q "vendor:" | grep -q "NVIDIA Corporation" )"
+elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "AuthenticAMD" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "NVIDIA Corporation" )"
 then
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs amd-ucode nvidia nvidia-settings git iptables-nft reflector
-elif "$( lscpu -b | grep -q "Vendor ID:" | grep -q "AuthenticAMD" )" && "$( lshw -C display | grep -q "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
+elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "AuthenticAMD" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
 then
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs amd-ucode mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver git iptables-nft reflector
-elif "$( lscpu -b | grep -q "Vendor ID:" | grep -q "AuthenticAMD" )" && "$( lshw -C display | grep -q "vendor:" | grep -q "Intel Corporation" )"
+elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "AuthenticAMD" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Intel Corporation" )"
 then
 pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs amd-ucode mesa xf86-video-intel vulkan-intel git iptables-nft reflector
 else
