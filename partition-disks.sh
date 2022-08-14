@@ -1,7 +1,7 @@
 #!/bin/bash
 
 KEYMAP="de-latin1"
-MIRRORCOUNTRIES="Netherlands,Germany"
+MIRRORCOUNTRIES="Netherlands,Germany,Denmark,France,United Kingdom"
 
 umount -AR /mnt
 set -e
@@ -89,7 +89,7 @@ mount "$DISK1"1 /mnt/boot
   echo "mesa"
 } > /root/packages.txt
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
-reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 10 --sort rate
+reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 50 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 if lscpu | grep "Vendor ID:" | grep -q "GenuineIntel"
 then
