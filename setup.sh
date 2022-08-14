@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 KEYMAP="de-latin1"
 HOSTNAME="tux-stellaris-15"
@@ -21,6 +21,14 @@ else
   echo "ERROR: There are not exactly 2 disks with the same size attached!"
   exit
 fi
+read -rp "Install to $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
+case "$choice" in
+  YES ) echo "Installing to $DISK1 and $DISK2..."
+  ;;
+  * ) echo "ERROR: User aborted installing to $DISK1 and $DISK2"
+  exit 1
+  ;;
+esac
 groupadd -r sudo
 groupadd -r libvirt
 useradd -m -G sudo "$SYSUSER"
