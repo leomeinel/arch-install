@@ -52,7 +52,7 @@ mount /dev/"$DISK1"1 /mnt/boot
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 5 --sort age
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring
-PACKAGES="base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector"
+PACKAGES="base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector mesa"
 if "$( lscpu -b | grep "Vendor ID:" | grep -q "GenuineIntel" )"
 then
 PACKAGES="$PACKAGES intel-ucode"
@@ -63,15 +63,15 @@ PACKAGES="$PACKAGES amd-ucode"
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" )"
 then
-PACKAGES="$PACKAGES nvidia nvidia-settings"
+PACKAGES="$PACKAGES nvidia nvidia-settings bumblebee primus bbswitch"
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
 then
-PACKAGES="$PACKAGES mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver"
+PACKAGES="$PACKAGES xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau"
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "Intel Corporation" )"
 then
-PACKAGES="$PACKAGES mesa xf86-video-intel vulkan-intel"
+PACKAGES="$PACKAGES xf86-video-intel vulkan-intel"
 fi
 pacstrap /mnt "$PACKAGES"
 genfstab -U /mnt >> /mnt/etc/fstab
