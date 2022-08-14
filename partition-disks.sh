@@ -56,17 +56,20 @@ PACKAGES="base base-devel linux linux-firmware linux-headers vim btrfs-progs git
 if "$( lscpu -b | grep "Vendor ID:" | grep -q "GenuineIntel" )"
 then
 PACKAGES="$PACKAGES intel-ucode"
-elif "$( lscpu -b | grep "Vendor ID:" | grep -q "AuthenticAMD" )"
+fi
+if "$( lscpu -b | grep "Vendor ID:" | grep -q "AuthenticAMD" )"
 then
 PACKAGES="$PACKAGES amd-ucode"
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" )"
 then
 PACKAGES="$PACKAGES nvidia nvidia-settings"
-elif "$( lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
+fi
+if "$( lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
 then
 PACKAGES="$PACKAGES mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver"
-elif "$( lshw -C display | grep "vendor:" | grep -q "Intel Corporation" )"
+fi
+if "$( lshw -C display | grep "vendor:" | grep -q "Intel Corporation" )"
 then
 PACKAGES="$PACKAGES mesa xf86-video-intel vulkan-intel"
 fi
