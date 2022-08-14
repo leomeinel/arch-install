@@ -1,5 +1,8 @@
 #!/bin/sh
 
+KEYMAP="de-latin1"
+MIRRORCOUNTRIES="Netherlands,Germany"
+
 SIZE1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '1p')"
 SIZE2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '2p')"
 if [ "$SIZE1" -eq "$SIZE2" ]
@@ -10,21 +13,25 @@ else
   echo "ERROR: There are not exactly 2 disks with the same size attached!"
   exit
 fi
-KEYMAP="de-latin1"
-OLD_LUKS="md0_crypt"
-OLD_MDADM="md0"
-MIRRORCOUNTRIES="Netherlands,Germany"
-
-sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
-reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 10 --sort rate
-pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 umount -AR /mnt
-cryptsetup luksClose "$OLD_LUKS"
-cryptsetup erase /dev/md/"$OLD_MDADM"
-sgdisk -Z /dev/md/"$OLD_MDADM"
-mdadm --stop --scan
-mdadm --zero-superblock /dev/"$DISK1"2
-mdadm --zero-superblock /dev/"$DISK2"2
+if lsblk -rno TYPE,NAME | grep "crypt" | sed "s/crypt //"
+then
+  cryptsetup luksClose "$(lsblk -rno TYPE,NAME | grep "crypt" | sed "s/crypt //")"
+  if lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //"
+  then
+    cryptsetup erase /dev/md/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
+    sgdisk -Z /dev/md/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
+    mdadm --stop --scan
+    mdadm --zero-superblock /dev/"$DISK1"2
+    mdadm --zero-superblock /dev/"$DISK2"2
+  fi
+  elif sblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //"
+  then
+    sgdisk -Z /dev/md/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
+    mdadm --stop --scan
+    mdadm --zero-superblock /dev/"$DISK1"2
+    mdadm --zero-superblock /dev/"$DISK2"2
+fi
 set -e
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
@@ -73,6 +80,9 @@ mount /dev/"$DISK1"1 /mnt/boot
   echo "reflector"
   echo "mesa"
 } > /root/packages.txt
+sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
+reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 10 --sort rate
+pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 if lscpu | grep "Vendor ID:" | grep -q "GenuineIntel"
 then
   echo "intel-ucode" >> /root/packages.txt
