@@ -65,22 +65,22 @@ pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
   echo "reflector"
   echo "mesa"
 } > /root/packages.txt
-if $( lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" )
+if lscpu | grep "Vendor ID:" | grep -q "GenuineIntel"
 then
 echo "intel-ucode" >> /root/packages.txt
 fi
-if $( lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" )
+if lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD"
 then
 echo "amd-ucode" >> /root/packages.txt
 fi
-if $( lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" )
+if lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation"
 then
 {
   echo "nvidia"
   echo "nvidia-settings"
 } >> /root/packages.txt
 fi
-if $( lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." )
+if lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc."
 then
 {
   echo "xf86-video-amdgpu"
@@ -89,7 +89,7 @@ then
   echo "mesa-vdpau"
 } >> /root/packages.txt
 fi
-if $( lshw -C display | grep "vendor:" | grep -q "Intel Corporation" )
+if lshw -C display | grep "vendor:" | grep -q "Intel Corporation"
 then
 {
   echo "xf86-video-intel"
