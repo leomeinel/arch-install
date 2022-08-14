@@ -5,7 +5,7 @@ MIRRORCOUNTRIES="Netherlands,Germany"
 
 SIZE1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '1p')"
 SIZE2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '2p')"
-if [ "$SIZE1" -eq "$SIZE2" ]
+if [ "$SIZE1" = "$SIZE2" ]
 then
   DISK1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE1 //" | sed -n '1p')"
   DISK2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE2 //" | sed -n '2p')"
