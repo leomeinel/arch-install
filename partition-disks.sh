@@ -3,6 +3,8 @@
 KEYMAP="de-latin1"
 MIRRORCOUNTRIES="Netherlands,Germany"
 
+umount -AR /mnt
+set -e
 SIZE1="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '1p' | tr -d "[:space:]")"
 SIZE2="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '2p' | tr -d "[:space:]")"
 if [ "$SIZE1" = "$SIZE2" ]
@@ -13,7 +15,6 @@ else
   echo "ERROR: There are not exactly 2 disks with the same size attached!"
   exit
 fi
-umount -AR /mnt
 if lsblk -rno TYPE | grep -q "crypt"
 then
   cryptsetup luksClose "$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt //' | tr -d "[:space:]")"
@@ -32,7 +33,6 @@ then
     mdadm --zero-superblock "$DISK1"2
     mdadm --zero-superblock "$DISK2"2
 fi
-set -e
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
 sgdisk -Z "$DISK1"
