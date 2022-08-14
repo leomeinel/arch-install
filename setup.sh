@@ -31,7 +31,7 @@ case "$choice" in
 esac
 groupadd -r sudo
 groupadd -r libvirt
-useradd -m -G sudo "$SYSUSER"
+useradd -m -G sudo,wheel "$SYSUSER"
 useradd -m -G libvirt "$VIRTUSER"
 useradd -m "$HOMEUSER"
 echo "Enter password for root"
