@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 DISK1="vda"
 DISK2="vdb"
@@ -52,28 +52,50 @@ mount /dev/"$DISK1"1 /mnt/boot
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 10 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
-PACKAGES=$"base\nbase-devel\nlinux\nlinux-firmware\nlinux-headers\nvim\nbtrfs-progs\ngit\niptables-nft\nreflector\nmesa"
+{
+  echo "base"
+  echo "base-devel"
+  echo "linux"
+  echo "linux-firmware"
+  echo "linux-headers"
+  echo "vim"
+  echo "btrfs-progs"
+  echo "git"
+  echo "iptables-nft"
+  echo "reflector"
+  echo "mesa"
+} > /root/packages.txt
 if "$( lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" )"
 then
-PACKAGES=$"$PACKAGES\nintel-ucode"
+echo "intel-ucode" >> /root/packages.txt
 fi
 if "$( lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" )"
 then
-PACKAGES=$"$PACKAGES\namd-ucode"
+echo "amd-ucode" >> /root/packages.txt
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" )"
 then
-PACKAGES=$"$PACKAGES\nnvidia\nnvidia-settings"
+{
+  echo "nvidia"
+  echo "nvidia-settings"
+} >> /root/packages.txt
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
 then
-PACKAGES=$"$PACKAGES\nxf86-video-amdgpu\nvulkan-radeon\nlibva-mesa-driver\nmesa-vdpau"
+{
+  echo "xf86-video-amdgpu"
+  echo "vulkan-radeon"
+  echo "libva-mesa-driver"
+  echo "mesa-vdpau"
+} >> /root/packages.txt
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "Intel Corporation" )"
 then
-PACKAGES=$"$PACKAGES\nxf86-video-intel\nvulkan-intel"
+{
+  echo "xf86-video-intel"
+  echo "vulkan-intel"
+} >> /root/packages.txt
 fi
-echo "$PACKAGES" > /root/packages.txt
 pacstrap /mnt - < /root/packages.txt
 genfstab -U /mnt >> /mnt/etc/fstab
 mkdir /mnt/git
