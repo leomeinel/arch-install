@@ -15,9 +15,9 @@ GRUBRESOLUTION="2560x1440"
 set -e
 groupadd -r sudo
 groupadd -r libvirt
-useradd -m -G sudo "$SYSUSER"
-useradd -m -G libvirt "$VIRTUSER"
-useradd -m "$HOMEUSER"
+useradd -m -G sudo,bumblebee "$SYSUSER"
+useradd -m -G libvirt,bumblebee "$VIRTUSER"
+useradd -m -G bumblebee "$HOMEUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
