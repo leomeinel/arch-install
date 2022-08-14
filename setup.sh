@@ -7,7 +7,7 @@ VIRTUSER="virt"
 HOMEUSER="leo"
 TIMEZONE="Europe/Amsterdam"
 DOMAIN="meinel.dev"
-MIRRORCOUNTRIES="Netherlands,Germany"
+MIRRORCOUNTRIES="Netherlands,Germany,Denmark,France,United Kingdom"
 GRUBRESOLUTION="2560x1440"
 
 set -e
