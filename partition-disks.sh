@@ -53,20 +53,20 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoPr
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 5 --sort age
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring
 PACKAGES="base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector"
-if "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "GenuineIntel" )"
+if "$( lscpu -b | grep "Vendor ID:" | grep -q "GenuineIntel" )"
 then
 PACKAGES="$PACKAGES intel-ucode"
-elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "AuthenticAMD" )"
+elif "$( lscpu -b | grep "Vendor ID:" | grep -q "AuthenticAMD" )"
 then
 PACKAGES="$PACKAGES amd-ucode"
 fi
-if "$( lshw -C display | grep -m 1 "vendor:" | grep -q "NVIDIA Corporation" )"
+if "$( lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" )"
 then
 PACKAGES="$PACKAGES nvidia nvidia-settings"
-elif "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
+elif "$( lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
 then
 PACKAGES="$PACKAGES mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver"
-elif "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Intel Corporation" )"
+elif "$( lshw -C display | grep "vendor:" | grep -q "Intel Corporation" )"
 then
 PACKAGES="$PACKAGES mesa xf86-video-intel vulkan-intel"
 fi
