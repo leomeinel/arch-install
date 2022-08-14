@@ -3,31 +3,31 @@
 KEYMAP="de-latin1"
 MIRRORCOUNTRIES="Netherlands,Germany"
 
-SIZE1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '1p' | tr -d [:space:])"
-SIZE2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '2p' | tr -d [:space:])"
+SIZE1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '1p' | tr -d "[:space:]")"
+SIZE2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '2p' | tr -d "[:space:]")"
 if [ "$SIZE1" = "$SIZE2" ]
 then
-  DISK1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE1 //" | sed -n '1p' | tr -d [:space:])"
-  DISK2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE2 //" | sed -n '2p' | tr -d [:space:])"
+  DISK1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE1 //" | sed -n '1p' | tr -d "[:space:]")"
+  DISK2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE2 //" | sed -n '2p' | tr -d "[:space:]")"
 else
   echo "ERROR: There are not exactly 2 disks with the same size attached!"
   exit
 fi
 umount -AR /mnt
-if lsblk -rno TYPE,NAME | grep "crypt" | sed "s/crypt //" | tr -d [:space:]
+if lsblk -rno TYPE,NAME | grep "crypt" | sed "s/crypt //" | tr -d "[:space:]"
 then
-  cryptsetup luksClose "$(lsblk -rno TYPE,NAME | grep "crypt" | sed "s/crypt //")" | tr -d [:space:]
-  if lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d [:space:]
+  cryptsetup luksClose "$(lsblk -rno TYPE,NAME | grep "crypt" | sed "s/crypt //" | tr -d "[:space:]")"
+  if lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]"
   then
-    cryptsetup erase /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")" | tr -d [:space:]
-    sgdisk -Z /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")" | tr -d [:space:]
+    cryptsetup erase /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]")"
+    sgdisk -Z /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]")"
     mdadm --stop --scan
     mdadm --zero-superblock /dev/"$DISK1"2
     mdadm --zero-superblock /dev/"$DISK2"2
   fi
-  elif lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d [:space:]
+  elif lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]"
   then
-    sgdisk -Z /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")" | tr -d [:space:]
+    sgdisk -Z /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //" | tr -d "[:space:]")"
     mdadm --stop --scan
     mdadm --zero-superblock /dev/"$DISK1"2
     mdadm --zero-superblock /dev/"$DISK2"2
