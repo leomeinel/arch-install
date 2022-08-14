@@ -60,7 +60,7 @@ mkdir -p /etc/pacman.d/repo
 mkdir -p /var/cache/aur/pkg
 mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
-reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 10 --sort rate
+reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 50 --sort rate
 pacman -Sy
 pacman -S --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa krunner kvantum powerdevil kinfocenter power-profiles-daemon arc-gtk-theme kde-gtk-config otf-font-awesome bleachbit sddm sddm-kcm plasma-nm ksystemlog neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils ethtool iw cups hplip alsa-utils openssh rsync acpi acpi_call openbsd-netcat nss-mdns acpid ntfs-3g notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools pam-u2f lshw
 umount /.snapshots
@@ -99,7 +99,7 @@ locale-gen
   echo "--save /etc/pacman.d/mirrorlist"
   echo "--country $MIRRORCOUNTRIES"
   echo "--protocol https"
-  echo "--latest 10"
+  echo "--latest 50"
   echo "--sort rate"
 } > /etc/xdg/reflector/reflector.conf
 echo "KEYMAP=$KEYMAP" > /etc/vconsole.conf
