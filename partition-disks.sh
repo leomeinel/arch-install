@@ -50,7 +50,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /de
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
 mount /dev/"$DISK1"1 /mnt/boot
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
-reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 5 --sort age
+reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 10 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 PACKAGES="base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector mesa"
 if "$( lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" )"
