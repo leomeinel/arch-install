@@ -52,28 +52,29 @@ mount /dev/"$DISK1"1 /mnt/boot
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 10 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
-PACKAGES="base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector mesa"
+PACKAGES=$'base\nbase-devel\nlinux\nlinux-firmware\nlinux-headers\nvim\nbtrfs-progs\ngit\niptables-nft\nreflector\nmesa'
 if "$( lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" )"
 then
-PACKAGES="$PACKAGES intel-ucode"
+PACKAGES=$'$PACKAGES\nintel-ucode'
 fi
 if "$( lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" )"
 then
-PACKAGES="$PACKAGES amd-ucode"
+PACKAGES=$'$PACKAGES\namd-ucode'
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" )"
 then
-PACKAGES="$PACKAGES nvidia nvidia-settings"
+PACKAGES=$'$PACKAGES\nnvidia\nnvidia-settings'
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
 then
-PACKAGES="$PACKAGES xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau"
+PACKAGES=$'$PACKAGES\nxf86-video-amdgpu\nvulkan-radeon\nlibva-mesa-driver\nmesa-vdpau'
 fi
 if "$( lshw -C display | grep "vendor:" | grep -q "Intel Corporation" )"
 then
-PACKAGES="$PACKAGES xf86-video-intel vulkan-intel"
+PACKAGES=$'$PACKAGES\nxf86-video-intel\nvulkan-intel'
 fi
-pacstrap /mnt "$PACKAGES"
+echo "$PACKAGES" > /git/packages.txt
+pacstrap /mnt - < /git/packages.txt
 genfstab -U /mnt >> /mnt/etc/fstab
 mkdir /mnt/git
 cd /mnt/git
