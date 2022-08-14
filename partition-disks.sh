@@ -59,6 +59,7 @@ PACKAGES="${PACKAGES} intel-ucode"
 elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "AuthenticAMD" )"
 then
 PACKAGES="${PACKAGES} amd-ucode"
+fi
 if "$( lshw -C display | grep -m 1 "vendor:" | grep -q "NVIDIA Corporation" )"
 then
 PACKAGES="${PACKAGES} nvidia nvidia-settings"
