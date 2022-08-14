@@ -46,7 +46,7 @@ mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 5 --sort age
 pacman -Sy
-pacman -S --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa krunner kvantum powerdevil kinfocenter power-profiles-daemon arc-gtk-theme kde-gtk-config otf-font-awesome bleachbit sddm sddm-kcm plasma-nm ksystemlog neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils ethtool iw cups hplip alsa-utils openssh rsync acpi acpi_call tlp openbsd-netcat nss-mdns acpid ntfs-3g notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools pam-u2f
+pacman -S --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa krunner kvantum powerdevil kinfocenter power-profiles-daemon arc-gtk-theme kde-gtk-config otf-font-awesome bleachbit sddm sddm-kcm plasma-nm ksystemlog neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils ethtool iw cups hplip alsa-utils openssh rsync acpi acpi_call openbsd-netcat nss-mdns acpid ntfs-3g notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools pam-u2f
 umount /.snapshots
 rm -rf /.snapshots
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/;s/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/;s/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/;s/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/;s/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
@@ -131,7 +131,7 @@ systemctl enable NetworkManager
 systemctl enable bluetooth
 systemctl enable cups.service
 systemctl enable avahi-daemon
-systemctl enable tlp
+systemctl enable power-profiles-daemon
 systemctl enable reflector
 systemctl enable reflector.timer
 systemctl enable fstrim.timer
