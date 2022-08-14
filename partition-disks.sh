@@ -13,8 +13,16 @@ then
   DISK2="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '2p' | tr -d "[:space:]")"
 else
   echo "ERROR: There are not exactly 2 disks with the same size attached!"
-  exit
+  exit 1
 fi
+read -p "Erase $DISK1 and $DISK1 (y/n)?" choice
+case "$choice" in
+  y|Y ) echo "Erasing $DISK1 and $DISK1..."
+  ;;
+  * ) echo "ERROR: User aborted erasing $DISK1 and $DISK1"
+  exit 1
+  ;;
+esac
 if lsblk -rno TYPE | grep -q "crypt"
 then
   cryptsetup luksClose "$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt //' | tr -d "[:space:]")"
