@@ -169,8 +169,8 @@ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 cp -r /boot /.boot.bak
 umount /boot
-mount /dev/"$DISK2"1 /boot
+mount "$DISK2"1 /boot
 cp -r /.boot.bak/* /boot/
 umount /boot
-mount /dev/"$DISK1"1 /boot
+mount "$DISK1"1 /boot
 rm -rf /git
