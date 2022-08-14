@@ -52,27 +52,24 @@ mount /dev/"$DISK1"1 /mnt/boot
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 5 --sort age
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring
-if "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "GenuineIntel" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "NVIDIA Corporation" )"
+PACKAGES="base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector"
+if "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "GenuineIntel" )"
 then
-pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode nvidia nvidia-settings git iptables-nft reflector
-elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "GenuineIntel" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
+PACKAGES="${PACKAGES} intel-ucode"
+elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "AuthenticAMD" )"
 then
-pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver git iptables-nft reflector
-elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "GenuineIntel" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Intel Corporation" )"
+PACKAGES="${PACKAGES} amd-ucode"
+if "$( lshw -C display | grep -m 1 "vendor:" | grep -q "NVIDIA Corporation" )"
 then
-pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs intel-ucode mesa xf86-video-intel vulkan-intel git iptables-nft reflector
-elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "AuthenticAMD" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "NVIDIA Corporation" )"
+PACKAGES="${PACKAGES} nvidia nvidia-settings"
+elif "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
 then
-pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs amd-ucode nvidia nvidia-settings git iptables-nft reflector
-elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "AuthenticAMD" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Advanced Micro Devices, Inc." )"
+PACKAGES="${PACKAGES} mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver"
+elif "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Intel Corporation" )"
 then
-pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs amd-ucode mesa xf86-video-amdgpu vulkan-radeon libva-mesa-driver git iptables-nft reflector
-elif "$( lscpu -b | grep -m 1 "Vendor ID:" | grep -q "AuthenticAMD" )" && "$( lshw -C display | grep -m 1 "vendor:" | grep -q "Intel Corporation" )"
-then
-pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs amd-ucode mesa xf86-video-intel vulkan-intel git iptables-nft reflector
-else
-pacstrap /mnt base base-devel linux linux-firmware linux-headers vim btrfs-progs git iptables-nft reflector
+PACKAGES="${PACKAGES} mesa xf86-video-intel vulkan-intel"
 fi
+pacstrap /mnt "$PACKAGES"
 genfstab -U /mnt >> /mnt/etc/fstab
 mkdir /mnt/git
 cd /mnt/git
