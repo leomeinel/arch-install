@@ -25,7 +25,7 @@ then
     mdadm --zero-superblock /dev/"$DISK1"2
     mdadm --zero-superblock /dev/"$DISK2"2
   fi
-  elif sblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //"
+  elif lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //"
   then
     sgdisk -Z /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
     mdadm --stop --scan
