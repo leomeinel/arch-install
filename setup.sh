@@ -127,7 +127,21 @@ cd /git
 git clone https://github.com/LeoMeinel/wallpapers.git
 mv /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
 chmod -R 755 /usr/share/wallpapers/Custom
-systemctl enable {NetworkManager,bluetooth,cups.service,avahi-daemon,tlp,reflector,reflector.timer,fstrim.timer,libvirtd,acpid,nftables,sddm,snapper-timeline.timer,snapper-cleanup.timer,nvidia-resume.service}
+systemctl enable NetworkManager
+systemctl enable bluetooth
+systemctl enable cups.service
+systemctl enable avahi-daemon
+systemctl enable tlp
+systemctl enable reflector
+systemctl enable reflector.timer
+systemctl enable fstrim.timer
+systemctl enable libvirtd
+systemctl enable acpid
+systemctl enable nftables
+systemctl enable sddm
+systemctl enable snapper-timeline.timer
+systemctl enable snapper-cleanup.timer
+systemctl enable nvidia-resume.service
 sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 UUID="$(blkid -s UUID -o value /dev/md/md0)"
