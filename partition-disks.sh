@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DISK1="vda"
 DISK2="vdb"
