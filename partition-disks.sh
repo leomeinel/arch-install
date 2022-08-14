@@ -15,7 +15,7 @@ else
   echo "ERROR: There are not exactly 2 disks with the same size attached!"
   exit 1
 fi
-read -p "Erase $DISK1 and $DISK2? (Type 'yes' in capital letters)" choice
+read -p "Erase $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
 case "$choice" in
   YES ) echo "Erasing $DISK1 and $DISK2..."
   ;;
