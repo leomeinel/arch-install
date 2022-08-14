@@ -15,9 +15,9 @@ GRUBRESOLUTION="2560x1440"
 set -e
 groupadd -r sudo
 groupadd -r libvirt
-useradd -m -G sudo,bumblebee "$SYSUSER"
-useradd -m -G libvirt,bumblebee "$VIRTUSER"
-useradd -m -G bumblebee "$HOMEUSER"
+useradd -m -G sudo "$SYSUSER"
+useradd -m -G libvirt "$VIRTUSER"
+useradd -m "$HOMEUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
@@ -142,7 +142,6 @@ systemctl enable sddm
 systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 systemctl enable nvidia-resume.service
-systemctl enable bumblebeed.service
 sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 UUID="$(blkid -s UUID -o value /dev/md/md0)"
