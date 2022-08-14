@@ -5,6 +5,7 @@ HOSTNAME="tux-stellaris-15"
 SYSUSER="systux"
 VIRTUSER="virt"
 HOMEUSER="leo"
+GUESTUSER="guest"
 TIMEZONE="Europe/Amsterdam"
 DOMAIN="meinel.dev"
 MIRRORCOUNTRIES="NL,DE,DK,FR"
@@ -34,6 +35,7 @@ groupadd -r libvirt
 useradd -m -G sudo,wheel "$SYSUSER"
 useradd -m -G libvirt "$VIRTUSER"
 useradd -m "$HOMEUSER"
+useradd -m "$GUESTUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
@@ -42,6 +44,8 @@ echo "Enter password for $VIRTUSER"
 passwd "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
+echo "Enter password for $GUESTUSER"
+passwd "$GUESTUSER"
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#CacheDir/CacheDir/' /etc/pacman.conf
 {
   echo ""
@@ -120,6 +124,7 @@ chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
+su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$GUESTUSER"
 sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 UUID="$(blkid -s UUID -o value /dev/md/md0)"
