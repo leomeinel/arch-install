@@ -1,7 +1,7 @@
 #!/bin/bash
 
 KEYMAP="de-latin1"
-MIRRORCOUNTRIES="NL,DE,DK,FR,GB"
+MIRRORCOUNTRIES="NL,DE,DK,FR"
 
 umount -AR /mnt
 set -e
