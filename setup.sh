@@ -1,7 +1,15 @@
 #!/bin/sh
 
-DISK1="vda"
-DISK2="vdb"
+SIZE1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '1p')"
+SIZE2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed 's/disk //' | grep -o '^\S*' | sed -n '2p')"
+if [ "$SIZE1" -eq "$SIZE2" ]
+then
+  DISK1="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE1 //" | sed -n '1p')"
+  DISK2="$(lsblk -rno TYPE,SIZE,NAME | grep "disk" | sed "s/disk //;s/$SIZE2 //" | sed -n '2p')"
+else
+  echo "ERROR: There are not exactly 2 disks with the same size attached!"
+  exit
+fi
 KEYMAP="de-latin1"
 HOSTNAME="tux-stellaris-15"
 SYSUSER="systux"
