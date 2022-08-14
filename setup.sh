@@ -19,14 +19,14 @@ then
   DISK2="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '2p' | tr -d "[:space:]")"
 else
   echo "ERROR: There are not exactly 2 disks with the same size attached!"
-  exit
+  exit 19
 fi
 read -rp "Install to $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
 case "$choice" in
   YES ) echo "Installing to $DISK1 and $DISK2..."
   ;;
   * ) echo "ERROR: User aborted installing to $DISK1 and $DISK2"
-  exit 1
+  exit 125
   ;;
 esac
 groupadd -r sudo
