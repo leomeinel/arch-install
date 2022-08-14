@@ -19,15 +19,15 @@ then
   cryptsetup luksClose "$(lsblk -rno TYPE,NAME | grep "crypt" | sed "s/crypt //")"
   if lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //"
   then
-    cryptsetup erase /dev/md/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
-    sgdisk -Z /dev/md/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
+    cryptsetup erase /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
+    sgdisk -Z /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
     mdadm --stop --scan
     mdadm --zero-superblock /dev/"$DISK1"2
     mdadm --zero-superblock /dev/"$DISK2"2
   fi
   elif sblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //"
   then
-    sgdisk -Z /dev/md/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
+    sgdisk -Z /dev/"$(lsblk -rno TYPE,NAME | grep "raid1" | sed "s/raid1 //")"
     mdadm --stop --scan
     mdadm --zero-superblock /dev/"$DISK1"2
     mdadm --zero-superblock /dev/"$DISK2"2
