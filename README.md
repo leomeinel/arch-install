@@ -33,4 +33,5 @@ Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to
 ## Information
 
 This scipt will only work on a system with exactly 2 disks attached. The disks have to be exactly the same size!
+
 All data on both disks will be wiped!
