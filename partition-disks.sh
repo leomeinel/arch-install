@@ -3,6 +3,8 @@
 KEYMAP="de-latin1"
 MIRRORCOUNTRIES="NL,DE,DK,FR"
 
+
+# Unmount everything from /mnt
 umount -AR /mnt
 
 # Fail on error
