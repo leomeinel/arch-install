@@ -14,7 +14,7 @@ chmod +x /root/mdadm-encrypted-btrfs/partition-disks.sh
 arch-chroot /mnt
 /git/mdadm-encrypted-btrfs/setup.sh
 exit
-umount -R /mnt
+umount -AR /mnt
 reboot
 ```
 
@@ -28,7 +28,7 @@ chmod +x /root/mdadm-encrypted-btrfs/partition-disks.sh
 arch-chroot /mnt
 /git/mdadm-encrypted-btrfs/setup.sh |& tee setup.sh.log
 exit
-umount -R /mnt
+umount -AR /mnt
 reboot
 ```
 
