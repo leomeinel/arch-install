@@ -170,7 +170,7 @@ systemctl enable nftables
 systemctl enable sddm
 systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
-if pacman -Qqd | grep -q "nvidia-utils"
+if pacman -Qq | grep -q "nvidia-utils"
 then
 systemctl enable nvidia-resume.service
 nvidia-xconfig
