@@ -8,7 +8,6 @@ set -e
 
 # Configure clock
 sudo timedatectl set-ntp true
-sudo hwclock --systohc
 
 # Configure $KEYMAP
 sudo localectl set-keymap "$KEYMAP"
