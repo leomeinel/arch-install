@@ -32,8 +32,6 @@ umount -R /mnt
 reboot
 ```
 
-=> Reboot now
-
 ## Post Installation
 
 Log into sysuser account and run
@@ -47,7 +45,6 @@ If you have an nvidia card, log into all other accounts and run
 ```
 ~/nvidia-install.sh
 ```
-
 
 Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
 
