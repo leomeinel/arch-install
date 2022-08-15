@@ -120,12 +120,11 @@ echo "$HOSTNAME" > /etc/hostname
   echo "zram-size = ram / 2"
   echo "compression-algorithm = zstd"
 } > /etc/systemd/zram-generator.conf
-chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
+mdadm --detail --scan >> /etc/mdadm.conf
 sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 UUID="$(blkid -s UUID -o value /dev/md/md0)"
 sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$UUID:md0_crypt root=\/dev\/mapper\/md0_crypt video=$GRUBRESOLUTION\"/" /etc/default/grub
-mdadm --detail --scan >> /etc/mdadm.conf
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 cp -r /boot /.boot.bak
@@ -175,6 +174,7 @@ then
 systemctl enable nvidia-resume.service
 nvidia-xconfig
 fi
+chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
