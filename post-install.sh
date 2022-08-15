@@ -14,7 +14,8 @@ paru -Syu
 sudo systemctl enable laptop-mode.service
 if pacman -Qqd | grep -q "nvidia-utils"
 then
-nvidia-settings -r
-echo "nvidia-settings -l &" > ~/.xprofile
+~/nvidia-install.sh
+rm -rf ~/nvidia-install.sh
 fi
 rm -rf ~/post-install.sh
+
