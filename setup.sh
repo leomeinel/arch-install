@@ -158,6 +158,23 @@ echo "$HOSTNAME" > /etc/hostname
 # Configure /etc/mdadm.conf
 mdadm --detail --scan >> /etc/mdadm.conf
 
+# Configure autobackup of /boot in /etc/pacman.d/hooks/95-bootbackup.hook
+mkdir -p /etc/pacman.d/hooks
+{
+  echo "[Trigger]"
+  echo "Operation = Upgrade"
+  echo "Operation = Install"
+  echo "Operation = Remove"
+  echo "Type = Path"
+  echo "Target = usr/lib/modules/*/vmlinuz"
+  echo ""
+  echo "[Action]"
+  echo "Depends = rsync"
+  echo "Description = Backing up /boot..."
+  echo "When = PreTransaction"
+  echo "Exec = /usr/bin/rsync -a --delete /boot /.boot.bak"
+} > /etc/pacman.d/hooks/95-bootbackup.hook
+
 # Configure dot-files
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
@@ -178,8 +195,6 @@ systemctl enable libvirtd
 systemctl enable acpid
 systemctl enable nftables
 systemctl enable sddm
-systemctl enable snapper-timeline.timer
-systemctl enable snapper-cleanup.timer
 if pacman -Qq | grep -q "nvidia-utils"
 then
   systemctl enable nvidia-resume.service
@@ -204,22 +219,11 @@ cp -r /.boot.bak/* /boot/
 umount /boot
 mount "$DISK1"1 /boot
 
-# Configure autobackup of /boot in /etc/pacman.d/hooks/95-bootbackup.hook
-mkdir -p /etc/pacman.d/hooks
-{
-  echo "[Trigger]"
-  echo "Operation = Upgrade"
-  echo "Operation = Install"
-  echo "Operation = Remove"
-  echo "Type = Path"
-  echo "Target = usr/lib/modules/*/vmlinuz"
-  echo ""
-  echo "[Action]"
-  echo "Depends = rsync"
-  echo "Description = Backing up /boot..."
-  echo "When = PreTransaction"
-  echo "Exec = /usr/bin/rsync -a --delete /boot /.boot.bak"
-} > /etc/pacman.d/hooks/95-bootbackup.hook
+# Enable some systemd services later because of grub-install ERROR:
+  # Detecting snapshots ...
+  # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md0_crypt> does not exist.
+systemctl enable snapper-timeline.timer
+systemctl enable snapper-cleanup.timer
 
 # Remove repo
 rm -rf /git
