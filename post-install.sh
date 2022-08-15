@@ -12,4 +12,9 @@ paru -S --needed librewolf-bin ungoogled-chromium chromium-extension-web-store s
 paru -Scc
 paru -Syu
 sudo systemctl enable laptop-mode.service
+if pacman -Qqd | grep -q "nvidia-utils"
+then
+nvidia-settings -r
+echo "nvidia-settings -l &" > ~/.xprofile
+fi
 rm -rf ~/post-install.sh
