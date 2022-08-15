@@ -24,9 +24,9 @@ Debug install (Write stdout to file)
 pacman -Sy git
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
 chmod +x /root/mdadm-encrypted-btrfs/partition-disks.sh
-/root/mdadm-encrypted-btrfs/partition-disks.sh |& tee output.txt
+/root/mdadm-encrypted-btrfs/partition-disks.sh |& tee partition-disks.sh.log
 arch-chroot /mnt
-/git/mdadm-encrypted-btrfs/setup.sh |& tee output.txt
+/git/mdadm-encrypted-btrfs/setup.sh |& tee setup.sh.log
 exit
 umount -R /mnt
 reboot
