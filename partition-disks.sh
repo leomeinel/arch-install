@@ -71,7 +71,7 @@ DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '2p' | tr -d "[:space:]")"
 DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
 
 # Configure raid1
-mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1"2 "$DISK2"2
+mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1P2" "$DISKP2"
 
 # Configure encryption
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
