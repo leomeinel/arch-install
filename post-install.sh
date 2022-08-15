@@ -21,8 +21,8 @@ paru -Syu
 # Enable systemd services
 sudo systemctl enable laptop-mode.service
 
-# Install nvidia config if needed
-if pacman -Qq | grep -q "nvidia-settings"
+# Generate nvidia config if needed
+if pacman -Qq "nvidia-settings"
 then
 ~/nvidia-install.sh
 rm -rf ~/nvidia-install.sh
