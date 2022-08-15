@@ -25,7 +25,7 @@ Log into sysuser account and run
 ~/post-install.sh
 ```
 
-Log into other accounts and run
+If you have an nvidia card, log into all other accounts and run
 
 ```
 ~/nvidia-install.sh
