@@ -12,7 +12,7 @@ chmod +x /root/mdadm-encrypted-btrfs/partition-disks.sh
 arch-chroot /mnt
 /git/mdadm-encrypted-btrfs/setup.sh
 exit
-umount -a
+umount -R /mnt
 ```
 
 => Reboot now
