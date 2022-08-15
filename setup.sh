@@ -54,7 +54,7 @@ passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
 passwd "$GUESTUSER"
 
-# Configure pacman, reflector and add local repo
+# Configure /etc/pacman.conf, /etc/xdg/reflector/reflector.conf, /etc/pacman.d/repo/aur.conf and add local repo /var/lib/repo/aur/aur.db.tar.gz
 {
   echo "--save /etc/pacman.d/mirrorlist"
   echo "--country $MIRRORCOUNTRIES"
@@ -85,20 +85,20 @@ repo-add /var/lib/repo/aur/aur.db.tar.gz
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm --needed plasma-desktop plasma-wayland-session kgpg dolphin gwenview kalendar kmail kompare okular print-manager spectacle plasma-pa krunner kvantum powerdevil kinfocenter power-profiles-daemon arc-gtk-theme kde-gtk-config cantarell-fonts otf-font-awesome bleachbit sddm sddm-kcm plasma-nm ksystemlog neofetch htop mpv libreoffice-still rxvt-unicode zram-generator virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber rustup grub grub-btrfs efibootmgr mtools inetutils bluez bluez-utils ethtool iw cups hplip alsa-utils openssh rsync acpi acpi_call openbsd-netcat nss-mdns acpid ntfs-3g notepadqq intellij-idea-community-edition jdk17-openjdk jdk-openjdk jdk11-openjdk mariadb screen gradle arch-audit ark noto-fonts snapper lrzip lzop p7zip unarchiver unrar devtools pam-u2f lshw man-db
 
-# Change ownership of local repo to $SYSUSER
+# Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
 
 # Set default java
 archlinux-java set java-17-openjdk
 
-# Add wallpapers
+# Add wallpapers to /usr/share/wallpapers/Custom/content
 mkdir -p /usr/share/wallpapers/Custom/content
 cd /git
 git clone https://github.com/LeoMeinel/wallpapers.git
 mv /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
 chmod -R 755 /usr/share/wallpapers/Custom
 
-# Create snapper configs
+# Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
 rm -rf /.snapshots
 sed -i 's/ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/;s/TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/;s/TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/;s/TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/;s/TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
@@ -125,14 +125,14 @@ su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 sed -i 's/#LocalRepo/LocalRepo/;s/#Chroot/Chroot/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/;s/#\[bin\]/\[bin\]/;s/#FileManager = vifm/FileManager = vim/' /etc/paru.conf
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
-# Configure sddm
+# Configure /etc/sddm.conf.d/kde_settings.conf
 mkdir /etc/sddm.conf.d
 {
   echo "[Theme]"
   echo "Current=Nordic-darker"
 } > /etc/sddm.conf.d/kde_settings.conf
 
-# Configure time, hostname, dns and locales
+# Configure /etc/localtime, /etc/locale.conf, /etc/vconsole.conf, /etc/hostname and /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/;s/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/;s/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/;s/#nl_NL.UTF-8 UTF-8/nl_NL.UTF-8 UTF-8/' /etc/locale.gen
@@ -148,14 +148,14 @@ echo "$HOSTNAME" > /etc/hostname
   echo "ff02::2  ip6-allrouters"
 } > /etc/hosts
 
-# Configure swap
+# Configure /etc/systemd/zram-generator.conf
 {
   echo "[zram0]"
   echo "zram-size = ram / 2"
   echo "compression-algorithm = zstd"
 } > /etc/systemd/zram-generator.conf
 
-# Configure mdadm
+# Configure /etc/mdadm.conf
 mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure dot-files
@@ -186,11 +186,11 @@ then
   nvidia-xconfig
 fi
 
-# Configure mkinitcpio
+# Configure /etc/mkinitcpio.conf
 sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 
-# Configure grub
+# Configure /etc/default/grub and /boot/grub/grub.cfg
 UUID="$(blkid -s UUID -o value /dev/md/md0)"
 sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$UUID:md0_crypt root=\/dev\/mapper\/md0_crypt video=$GRUBRESOLUTION\"/" /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
@@ -204,7 +204,7 @@ cp -r /.boot.bak/* /boot/
 umount /boot
 mount "$DISK1"1 /boot
 
-# Configure autobackup of /boot
+# Configure autobackup of /boot in /etc/pacman.d/hooks/95-bootbackup.hook
 mkdir -p /etc/pacman.d/hooks
 {
   echo "[Trigger]"
