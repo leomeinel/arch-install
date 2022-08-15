@@ -63,8 +63,12 @@ sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
 sgdisk -n 0:0:0 -t 1:fd00 "$DISK1"
 sgdisk -n 0:0:0 -t 1:fd00 "$DISK2"
-mkfs.fat -n BOOT -F32 "$DISK1"1
-mkfs.fat -n BOOT -F32 "$DISK2"1
+
+# Detect partitions and set variables accordingly
+DISK1P1="$(lsblk -rnpo NAME "$DISK1" | sed -n '2p' | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
+DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '2p' | tr -d "[:space:]")"
+DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
 
 # Configure raid1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1"2 "$DISK2"2
@@ -74,6 +78,10 @@ cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
 cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
 cryptsetup luksOpen /dev/md/md0 md0_crypt
+
+# Format boot
+mkfs.fat -n BOOT -F32 "$DISK1P1"
+mkfs.fat -n BOOT -F32 "$DISK2P1"
 
 # Configure btrfs
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
@@ -96,7 +104,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /de
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
-mount "$DISK1"1 /mnt/boot
+mount "$DISK1P1" /mnt/boot
 
 # Install packages
 {
