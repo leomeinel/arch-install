@@ -121,10 +121,6 @@ echo "$HOSTNAME" > /etc/hostname
   echo "compression-algorithm = zstd"
 } > /etc/systemd/zram-generator.conf
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$GUESTUSER"
 sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 UUID="$(blkid -s UUID -o value /dev/md/md0)"
@@ -179,4 +175,8 @@ then
 systemctl enable nvidia-resume.service
 nvidia-xconfig
 fi
+su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
+su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
+su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
+su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$GUESTUSER"
 rm -rf /git
