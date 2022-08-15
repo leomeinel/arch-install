@@ -93,8 +93,7 @@ archlinux-java set java-17-openjdk
 
 # Add wallpapers to /usr/share/wallpapers/Custom/content
 mkdir -p /usr/share/wallpapers/Custom/content
-cd /git
-git clone https://github.com/LeoMeinel/wallpapers.git
+git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
 mv /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
 chmod -R 755 /usr/share/wallpapers/Custom
 
