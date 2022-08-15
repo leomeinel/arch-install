@@ -152,7 +152,5 @@ pacstrap /mnt - < /root/packages.txt
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
-mkdir /mnt/git
-cd /mnt/git
-git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
+git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
