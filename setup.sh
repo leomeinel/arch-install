@@ -125,6 +125,7 @@ sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf bloc
 mkinitcpio -p linux
 UUID="$(blkid -s UUID -o value /dev/md/md0)"
 sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$UUID:md0_crypt root=\/dev\/mapper\/md0_crypt video=$GRUBRESOLUTION\"/" /etc/default/grub
+mdadm --detail --scan >> /etc/mdadm.conf
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 cp -r /boot /.boot.bak
@@ -148,7 +149,6 @@ mkdir -p /etc/pacman.d/hooks
   echo "When = PreTransaction"
   echo "Exec = /usr/bin/rsync -a --delete /boot /.boot.bak"
 } > /etc/pacman.d/hooks/95-bootbackup.hook
-mdadm --detail --scan >> /etc/mdadm.conf
 archlinux-java set java-17-openjdk
 chown -R "$SYSUSER": /var/lib/repo/aur
 mkdir -p /usr/share/wallpapers/Custom/content
