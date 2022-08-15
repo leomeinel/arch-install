@@ -15,9 +15,10 @@ arch-chroot /mnt
 /git/mdadm-encrypted-btrfs/setup.sh
 exit
 umount -R /mnt
+reboot
 ```
 
-Debug install (Write output to file)
+Debug install (Write stdout to file)
 
 ```
 pacman -Sy git
@@ -28,6 +29,7 @@ arch-chroot /mnt
 /git/mdadm-encrypted-btrfs/setup.sh |& tee output.txt
 exit
 umount -R /mnt
+reboot
 ```
 
 => Reboot now
