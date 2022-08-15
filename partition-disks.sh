@@ -25,18 +25,18 @@ case "$choice" in
 esac
 if lsblk -rno TYPE | grep -q "crypt"
 then
-  cryptsetup luksClose "$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt //' | tr -d "[:space:]")"
+  cryptsetup luksClose "$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | tr -d "[:space:]")"
   if lsblk -rno TYPE | grep -q "raid1"
   then
-    cryptsetup erase "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1 //' | tr -d "[:space:]")"
-    sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1 //' | tr -d "[:space:]")"
+    cryptsetup erase "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
+    sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
     mdadm --stop --scan
     mdadm --zero-superblock "$DISK1"2
     mdadm --zero-superblock "$DISK2"2
   fi
   elif lsblk -rno TYPE | grep -q "raid1"
   then
-    sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1 //' | tr -d "[:space:]")"
+    sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
     mdadm --stop --scan
     mdadm --zero-superblock "$DISK1"2
     mdadm --zero-superblock "$DISK2"2
