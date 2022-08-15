@@ -195,7 +195,7 @@ systemctl enable libvirtd
 systemctl enable acpid
 systemctl enable nftables
 systemctl enable sddm
-if pacman -Qq | grep -q "nvidia-utils"
+if pacman -Qq "nvidia-utils"
 then
   systemctl enable nvidia-resume.service
   nvidia-xconfig
