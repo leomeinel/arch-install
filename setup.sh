@@ -177,5 +177,6 @@ systemctl enable snapper-cleanup.timer
 if pacman -Qqd | grep -q "nvidia-utils"
 then
 systemctl enable nvidia-resume.service
+nvidia-xconfig
 fi
 rm -rf /git
