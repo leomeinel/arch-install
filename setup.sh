@@ -32,7 +32,7 @@ DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '2p' | tr -d "[:space:]")"
 # FIXME: Find a way to detect disks 100% reliably
 {
   echo "DISK1P1=\"\$(lsblk -rnpo NAME \"\$DISK1\" | sed -n '2p' | tr -d \"[:space:]\")"
-  echo "DISK1P1=\"\$(lsblk -rnpo NAME \"\$DISK2\" | sed -n '2p' | tr -d \"[:space:]\")"
+  echo "DISK2P1=\"\$(lsblk -rnpo NAME \"\$DISK2\" | sed -n '2p' | tr -d \"[:space:]\")"
 } >> /etc/environment
 # Prompt user
 read -rp "Install to $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
