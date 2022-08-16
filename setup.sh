@@ -29,6 +29,10 @@ fi
 # Detect partitions and set variables accordingly
 DISK1P1="$(lsblk -rnpo NAME "$DISK1" | sed -n '2p' | tr -d "[:space:]")"
 DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '2p' | tr -d "[:space:]")"
+{
+  echo "DISK1P1=\"$DISK1P1\""
+  echo "DISK2P1=\"$DISK2P1\""
+} >> /etc/environment
 
 # Prompt user
 read -rp "Install to $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
@@ -166,8 +170,13 @@ mkdir -p /etc/pacman.d/hooks/scripts
 {
   echo "#!/bin/sh"
   echo ""
-  echo "/usr/bin/cp -r /.boot.bak /.boot.bak.old"
+  echo "/usr/bin/rsync -a --delete /.boot.bak /.boot.bak.old"
   echo "/usr/bin/rsync -a --delete /boot /.boot.bak"
+  echo "/usr/bin/umount /boot"
+  echo "/usr/bin/mount \"$DISK2P1\" /boot"
+  echo "/usr/bin/rsync -a --delete /.boot.bak /boot"
+  echo "/usr/bin/umount /boot"
+  echo "/usr/bin/mount \"$DISK1P1\" /boot"
 } > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
 {
   echo "[Trigger]"
@@ -180,7 +189,7 @@ mkdir -p /etc/pacman.d/hooks/scripts
   echo "[Action]"
   echo "Depends = rsync"
   echo "Description = Backing up /boot..."
-  echo "When = PreTransaction"
+  echo "When = PostTransaction"
   echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-bootbackup.sh'"
 } > /etc/pacman.d/hooks/custom-bootbackup.hook
 
@@ -241,14 +250,6 @@ UUID="$(blkid -s UUID -o value /dev/md/md0)"
 sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$UUID:md0_crypt root=\/dev\/mapper\/md0_crypt video=$GRUBRESOLUTION\"/" /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
-
-# Backup and transfer /boot
-cp -r /boot /.boot.bak
-umount /boot
-mount "$DISK2P1" /boot
-cp -r /.boot.bak/* /boot/
-umount /boot
-mount "$DISK1P1" /boot
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
