@@ -29,10 +29,6 @@ fi
 # Detect partitions and set variables accordingly
 DISK1P1="$(lsblk -rnpo NAME "$DISK1" | sed -n '2p' | tr -d "[:space:]")"
 DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '2p' | tr -d "[:space:]")"
-{
-  echo "DISK1P1=\"$DISK1P1\""
-  echo "DISK2P1=\"$DISK2P1\""
-} >> /etc/environment
 
 # Prompt user
 read -rp "Install to $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
