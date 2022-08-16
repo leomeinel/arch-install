@@ -162,6 +162,7 @@ echo "$HOSTNAME" > /etc/hostname
 mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure autobackup of /boot in /etc/pacman.d/hooks/custom-bootbackup.hook
+# FIXME: Find a way to detect both possible boot partitions after the system is installed 100% reliably!
 mkdir -p /etc/pacman.d/hooks/scripts
 {
   echo "#!/bin/sh"
