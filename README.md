@@ -16,7 +16,7 @@ umount -AR /mnt
 reboot
 ```
 
-=> User `<...>.sh |& tee <logfile>.log` to create a log file.
+=> Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
 ## Post Installation
 
@@ -26,7 +26,7 @@ Log into sysuser account and run
 ~/post-install.sh
 ```
 
-If you have an nvidia card, log into all other accounts and run
+If you have an NVIDIA GPU, log into all other accounts and run
 
 ```
 ~/nvidia-install.sh
