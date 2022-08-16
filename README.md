@@ -4,8 +4,6 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 ## Installation
 
-Standard install
-
 ```
 pacman -Sy git
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
@@ -18,19 +16,7 @@ umount -AR /mnt
 reboot
 ```
 
-Debug install (Write stdout to file)
-
-```
-pacman -Sy git
-git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
-chmod +x /root/mdadm-encrypted-btrfs/partition-disks.sh
-/root/mdadm-encrypted-btrfs/partition-disks.sh |& tee partition-disks.sh.log
-arch-chroot /mnt
-/git/mdadm-encrypted-btrfs/setup.sh |& tee setup.sh.log
-exit
-umount -AR /mnt
-reboot
-```
+=> User `<...>.sh |& tee <logfile>.log` to create a log file.
 
 ## Post Installation
 
