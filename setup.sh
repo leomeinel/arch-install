@@ -161,8 +161,14 @@ echo "$HOSTNAME" > /etc/hostname
 # Configure /etc/mdadm.conf
 mdadm --detail --scan >> /etc/mdadm.conf
 
-# Configure autobackup of /boot in /etc/pacman.d/hooks/95-bootbackup.hook
-mkdir -p /etc/pacman.d/hooks
+# Configure autobackup of /boot in /etc/pacman.d/hooks/custom-bootbackup.hook
+mkdir -p /etc/pacman.d/hooks/scripts
+{
+  echo "#!/bin/sh"
+  echo ""
+  echo "/usr/bin/cp -r /.boot.bak /.boot.bak.old"
+  echo "/usr/bin/rsync -a --delete /boot /.boot.bak"
+} > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
 {
   echo "[Trigger]"
   echo "Operation = Upgrade"
@@ -175,8 +181,30 @@ mkdir -p /etc/pacman.d/hooks
   echo "Depends = rsync"
   echo "Description = Backing up /boot..."
   echo "When = PreTransaction"
-  echo "Exec = /usr/bin/rsync -a --delete /boot /.boot.bak"
-} > /etc/pacman.d/hooks/95-bootbackup.hook
+  echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-bootbackup.sh'"
+} > /etc/pacman.d/hooks/custom-bootbackup.hook
+
+# Configure autogen of list of explicitly installed packages in /etc/pacman.d/hooks/custom-pkglists.hook
+{
+  echo "#!/bin/sh"
+  echo ""
+  echo "/usr/bin/pacman -Qqen > /etc/pkglist_explicit.txt"
+  echo "/usr/bin/pacman -Qqem > /etc/pkglist_foreign.txt"
+  echo "/usr/bin/pacman -Qqd > /etc/pkglist_deps.txt"
+} > /etc/pacman.d/hooks/scripts/custom-pkglists.sh
+{
+  echo "[Trigger]"
+  echo "Operation = Install"
+  echo "Operation = Remove"
+  echo "Type = Package"
+  echo "Target = *"
+  echo ""
+  echo "[Action]"
+  echo "Description = Generating pkglists..."
+  echo "When = PostTransaction"
+  echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-pkglists.sh'"
+} > /etc/pacman.d/hooks/custom-pkglists.hook
+chmod -R 700 /etc/pacman.d/hooks/scripts
 
 # Configure dot-files
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
