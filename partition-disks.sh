@@ -3,7 +3,6 @@
 KEYMAP="de-latin1"
 MIRRORCOUNTRIES="NL,DE,DK,FR"
 
-
 # Unmount everything from /mnt
 umount -AR /mnt
 
@@ -11,13 +10,16 @@ umount -AR /mnt
 set -e
 
 # Detect disks
-SIZE1="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '1p' | tr -d "[:space:]")" &&
-SIZE2="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '2p' | tr -d "[:space:]")" &&
-[ "$SIZE1" = "$SIZE2" ] &&
-DISK1="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '1p' | tr -d "[:space:]")" &&
-DISK2="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '2p' | tr -d "[:space:]")" ||
-echo "ERROR: There are not exactly 2 disks with the same size attached!" &&
-exit 19
+SIZE1="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '1p' | tr -d "[:space:]")"
+SIZE2="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '2p' | tr -d "[:space:]")"
+if [ "$SIZE1" = "$SIZE2" ]
+then
+  DISK1="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '1p' | tr -d "[:space:]")"
+  DISK2="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '2p' | tr -d "[:space:]")"
+else
+  echo "ERROR: There are not exactly 2 disks with the same size attached!"
+  exit 19
+fi
 
 # Prompt user
 read -rp "Erase $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
@@ -132,13 +134,16 @@ lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
 } >> /root/packages.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
 {
-echo "xf86-video-amdgpu"
-echo "vulkan-radeon"
-echo "libva-mesa-driver"
-echo "mesa-vdpau"
+  echo "xf86-video-amdgpu"
+  echo "vulkan-radeon"
+  echo "libva-mesa-driver"
+  echo "mesa-vdpau"
 } >> /root/packages.txt
 lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
-{ echo "xf86-video-intel"; echo "vulkan-intel"; } >> /root/packages.txt
+{
+  echo "xf86-video-intel"
+  echo "vulkan-intel"
+} >> /root/packages.txt
 pacstrap /mnt - < /root/packages.txt
 
 # Configure /mnt/etc/fstab
