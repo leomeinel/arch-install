@@ -11,16 +11,13 @@ umount -AR /mnt
 set -e
 
 # Detect disks
-SIZE1="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '1p' | tr -d "[:space:]")"
-SIZE2="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '2p' | tr -d "[:space:]")"
-if [ "$SIZE1" = "$SIZE2" ]
-then
-  DISK1="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '1p' | tr -d "[:space:]")"
-  DISK2="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '2p' | tr -d "[:space:]")"
-else
-  echo "ERROR: There are not exactly 2 disks with the same size attached!"
-  exit 19
-fi
+SIZE1="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '1p' | tr -d "[:space:]")" &&
+SIZE2="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '2p' | tr -d "[:space:]")" &&
+[ "$SIZE1" = "$SIZE2" ] &&
+DISK1="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '1p' | tr -d "[:space:]")" &&
+DISK2="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '2p' | tr -d "[:space:]")" ||
+echo "ERROR: There are not exactly 2 disks with the same size attached!" &&
+exit 19
 
 # Prompt user
 read -rp "Erase $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
@@ -124,11 +121,24 @@ mount "$DISK1P1" /mnt/boot
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
-lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" && echo "intel-ucode" >> /root/packages.txt
-lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" && echo "amd-ucode" >> /root/packages.txt
-lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" && { echo "nvidia"; echo "nvidia-settings"; } >> /root/packages.txt
-lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." && { echo "xf86-video-amdgpu"; echo "vulkan-radeon"; echo "libva-mesa-driver"; echo "mesa-vdpau"; } >> /root/packages.txt
-lshw -C display | grep "vendor:" | grep -q "Intel Corporation" && { echo "xf86-video-intel"; echo "vulkan-intel"; } >> /root/packages.txt
+lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
+echo "intel-ucode" >> /root/packages.txt
+lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
+echo "amd-ucode" >> /root/packages.txt
+lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
+{
+  echo "nvidia"
+  echo "nvidia-settings"
+} >> /root/packages.txt
+lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
+{
+echo "xf86-video-amdgpu"
+echo "vulkan-radeon"
+echo "libva-mesa-driver"
+echo "mesa-vdpau"
+} >> /root/packages.txt
+lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
+{ echo "xf86-video-intel"; echo "vulkan-intel"; } >> /root/packages.txt
 pacstrap /mnt - < /root/packages.txt
 
 # Configure /mnt/etc/fstab
