@@ -26,14 +26,14 @@ else
   exit 19
 fi
 
-# Detect partitions and set variables accordingly
-DISK1P1="$(lsblk -rnpo NAME "$DISK1" | sed -n '2p' | tr -d "[:space:]")"
-DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '2p' | tr -d "[:space:]")"
-# FIXME: Find a way to detect disks 100% reliably
+# Detect partitions and set environment variables accordingly
 {
-  echo "DISK1P1=\"\$(lsblk -rnpo NAME \"\$DISK1\" | sed -n '2p' | tr -d \"[:space:]\")"
-  echo "DISK2P1=\"\$(lsblk -rnpo NAME \"\$DISK2\" | sed -n '2p' | tr -d \"[:space:]\")"
+  echo "DISK1P1_PARTUUID=\"$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")\""
+  echo "DISK1P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")\""
+  echo "DISK2P1_PARTUUID=\"$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
+  echo "DISK2P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
 } >> /etc/environment
+
 # Prompt user
 read -rp "Install to $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
 case "$choice" in
@@ -174,10 +174,10 @@ mkdir -p /etc/pacman.d/hooks/scripts
   echo "/usr/bin/rsync -a --delete /.boot.bak /.boot.bak.old"
   echo "/usr/bin/rsync -a --delete /boot /.boot.bak"
   echo "/usr/bin/umount /boot"
-  echo "/usr/bin/mount \"\$DISK2P1\" /boot"
+  echo "/usr/bin/mount PARTUUID=\"\$DISK2P1_PARTUUID\" /boot"
   echo "/usr/bin/rsync -a --delete /.boot.bak /boot"
   echo "/usr/bin/umount /boot"
-  echo "/usr/bin/mount \"\$DISK1P1\" /boot"
+  echo "/usr/bin/mount PARTUUID=\"\$DISK1P1_PARTUUID\" /boot"
 } > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
 {
   echo "[Trigger]"
