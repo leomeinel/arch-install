@@ -20,6 +20,7 @@ set -e
   echo "DISK1P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")\""
   echo "DISK2P1_PARTUUID=\"$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
   echo "DISK2P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
+  echo "EDITOR=\"vim\""
 } >> /etc/environment
 
 # Add groups and users
@@ -214,11 +215,7 @@ systemctl enable libvirtd
 systemctl enable acpid
 systemctl enable nftables
 systemctl enable sddm
-if pacman -Qq "nvidia-utils"
-then
-  systemctl enable nvidia-resume.service
-  nvidia-xconfig
-fi
+pacman -Qq "nvidia-utils" && systemctl enable nvidia-resume.service && nvidia-xconfig
 
 # Configure /etc/mkinitcpio.conf
 sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
