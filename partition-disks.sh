@@ -124,37 +124,11 @@ mount "$DISK1P1" /mnt/boot
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
-if lscpu | grep "Vendor ID:" | grep -q "GenuineIntel"
-then
-  echo "intel-ucode" >> /root/packages.txt
-fi
-if lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD"
-then
-  echo "amd-ucode" >> /root/packages.txt
-fi
-if lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation"
-then
-  {
-    echo "nvidia"
-    echo "nvidia-settings"
-  } >> /root/packages.txt
-fi
-if lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc."
-then
-  {
-    echo "xf86-video-amdgpu"
-    echo "vulkan-radeon"
-    echo "libva-mesa-driver"
-    echo "mesa-vdpau"
-  } >> /root/packages.txt
-fi
-if lshw -C display | grep "vendor:" | grep -q "Intel Corporation"
-then
-  {
-    echo "xf86-video-intel"
-    echo "vulkan-intel"
-  } >> /root/packages.txt
-fi
+lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" && echo "intel-ucode" >> /root/packages.txt
+lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" && echo "amd-ucode" >> /root/packages.txt
+lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" && { echo "nvidia"; echo "nvidia-settings"; } >> /root/packages.txt
+lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." && { echo "xf86-video-amdgpu"; echo "vulkan-radeon"; echo "libva-mesa-driver"; echo "mesa-vdpau"; } >> /root/packages.txt
+lshw -C display | grep "vendor:" | grep -q "Intel Corporation" && { echo "xf86-video-intel"; echo "vulkan-intel"; } >> /root/packages.txt
 pacstrap /mnt - < /root/packages.txt
 
 # Configure /mnt/etc/fstab
