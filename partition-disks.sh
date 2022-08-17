@@ -3,11 +3,12 @@
 KEYMAP="de-latin1"
 MIRRORCOUNTRIES="NL,DE,DK,FR"
 
-# Unmount everything from /mnt
-umount -AR /mnt
-
 # Fail on error
 set -e
+
+# Unmount everything from /mnt
+mountpoint -q /mnt &&
+umount -AR /mnt
 
 # Detect disks
 SIZE1="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '1p' | tr -d "[:space:]")"
