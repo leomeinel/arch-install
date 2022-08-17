@@ -14,18 +14,6 @@ GRUBRESOLUTION="2560x1440"
 # Fail on error
 set -e
 
-# Detect disks
-SIZE1="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '1p' | tr -d "[:space:]")"
-SIZE2="$(lsblk -rno TYPE,SIZE | grep "disk" | sed 's/disk//' | sed -n '2p' | tr -d "[:space:]")"
-if [ "$SIZE1" = "$SIZE2" ]
-then
-  DISK1="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '1p' | tr -d "[:space:]")"
-  DISK2="$(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | sed -n '2p' | tr -d "[:space:]")"
-else
-  echo "ERROR: There are not exactly 2 disks with the same size attached!"
-  exit 19
-fi
-
 # Detect partitions and set environment variables accordingly
 {
   echo "DISK1P1_PARTUUID=\"$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")\""
@@ -33,16 +21,6 @@ fi
   echo "DISK2P1_PARTUUID=\"$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
   echo "DISK2P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
 } >> /etc/environment
-
-# Prompt user
-read -rp "Install to $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
-case "$choice" in
-  YES ) echo "Installing to $DISK1 and $DISK2..."
-  ;;
-  * ) echo "ERROR: User aborted installing to $DISK1 and $DISK2"
-  exit 125
-  ;;
-esac
 
 # Add groups and users
 groupadd -r sudo
