@@ -215,7 +215,9 @@ systemctl enable libvirtd
 systemctl enable acpid
 systemctl enable nftables
 systemctl enable sddm
-pacman -Qq "nvidia-utils" && systemctl enable nvidia-resume.service && nvidia-xconfig
+pacman -Qq "nvidia-utils" &&
+systemctl enable nvidia-resume.service &&
+nvidia-xconfig
 
 # Configure /etc/mkinitcpio.conf
 sed -i 's/MODULES=()/MODULES=(btrfs)/;s/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
