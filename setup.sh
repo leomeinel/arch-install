@@ -149,11 +149,11 @@ mkdir -p /etc/pacman.d/hooks/scripts
 {
   echo "#!/bin/sh"
   echo ""
-  echo "/usr/bin/rsync -a --delete /.boot.bak /.boot.bak.old"
-  echo "/usr/bin/rsync -a --delete /boot /.boot.bak"
+  echo "/usr/bin/rsync -a --delete /.boot.bak/* /.boot.bak.old/"
+  echo "/usr/bin/rsync -a --delete /boot/* /.boot.bak/"
   echo "/usr/bin/umount /boot"
-  echo "/usr/bin/mount PARTUUID=\"\$DISK2P1_PARTUUID\" /boot"
-  echo "/usr/bin/rsync -a --delete /.boot.bak /boot"
+  echo "/usr/bin/mount PARTUUID=\"\$DISK2P1_PARTUUID\" /boot/"
+  echo "/usr/bin/rsync -a --delete /.boot.bak/* /boot/"
   echo "/usr/bin/umount /boot"
   echo "/usr/bin/mount PARTUUID=\"\$DISK1P1_PARTUUID\" /boot"
 } > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
