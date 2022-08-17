@@ -119,6 +119,7 @@ mount "$DISK1P1" /mnt/boot
   echo "iptables-nft"
   echo "reflector"
   echo "mesa"
+  echo "mdadm"
 } > /root/packages.txt
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
