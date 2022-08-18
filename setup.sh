@@ -173,7 +173,7 @@ mkdir -p /etc/pacman.d/hooks/scripts
   echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-bootbackup.sh'"
 } > /etc/pacman.d/hooks/custom-bootbackup.hook
 
-# Configure autogen of list of explicitly installed packages in /etc/pacman.d/hooks/custom-pkglists.hook 
+# Configure autogen of list of explicitly installed packages in /etc/pacman.d/hooks/custom-pkglists.hook
 {
   echo "#!/bin/sh"
   echo ""
