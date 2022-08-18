@@ -173,13 +173,16 @@ mkdir -p /etc/pacman.d/hooks/scripts
   echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-bootbackup.sh'"
 } > /etc/pacman.d/hooks/custom-bootbackup.hook
 
-# Configure autogen of list of explicitly installed packages in /etc/pacman.d/hooks/custom-pkglists.hook
+# Configure autogen of list of explicitly installed packages in /etc/pacman.d/hooks/custom-pkglists.hook 
 {
   echo "#!/bin/sh"
   echo ""
-  echo "/usr/bin/pacman -Qqen > /etc/pkglist_explicit.txt"
-  echo "/usr/bin/pacman -Qqem > /etc/pkglist_foreign.txt"
-  echo "/usr/bin/pacman -Qqd > /etc/pkglist_deps.txt"
+  echo "/usr/bin/pacman -Qqen > /var/log/pkglist_explicit.pacman.log"
+  echo "/usr/bin/chmod 644 /var/log/pkglist_explicit.pacman.log"
+  echo "/usr/bin/pacman -Qqem > /var/log/pkglist_foreign.pacman.log"
+  echo "/usr/bin/chmod 644 /var/log/pkglist_foreign.pacman.log"
+  echo "/usr/bin/pacman -Qqd > /var/log/pkglist_deps.pacman.log"
+  echo "/usr/bin/chmod 644 /var/log/pkglist_deps.pacman.log"
 } > /etc/pacman.d/hooks/scripts/custom-pkglists.sh
 {
   echo "[Trigger]"
