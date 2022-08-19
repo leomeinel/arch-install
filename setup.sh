@@ -162,6 +162,7 @@ pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
   echo "exa"
   echo "ripgrep"
   echo "fd"
+  echo "starship"
 } > /git/packages.txt
 
 # Change ownership of /var/lib/repo/aur to $SYSUSER
