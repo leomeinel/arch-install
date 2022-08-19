@@ -103,6 +103,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "mpv"
   echo "libreoffice-still"
   echo "rxvt-unicode"
+  echo "rxvt-unicode-terminfo"
   echo "zram-generator"
   echo "virt-manager"
   echo "qemu-desktop"
