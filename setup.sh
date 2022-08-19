@@ -20,7 +20,7 @@ set -e
   echo "DISK1P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")\""
   echo "DISK2P1_PARTUUID=\"$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
   echo "DISK2P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
-  echo "EDITOR=\"/usr/bin/vim\""
+  echo "EDITOR=\"/usr/bin/nvim\""
   echo "BROWSER=\"/usr/bin/chromium\""
 } >> /etc/environment
 
@@ -134,7 +134,6 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "nss-mdns"
   echo "acpid"
   echo "ntfs-3g"
-  echo "notepadqq"
   echo "intellij-idea-community-edition"
   echo "jdk11-openjdk"
   echo "jdk17-openjdk"
@@ -161,6 +160,10 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "ripgrep"
   echo "fd"
   echo "starship"
+  echo "neovim-qt"
+  echo "xclip"
+  echo "wl-clipboard"
+  echo "vifm"
 } > /git/packages.txt
 pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 
@@ -205,7 +208,7 @@ chown :sudo /home/.snapshots
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
-sed -i 's/#LocalRepo/LocalRepo/;s/#Chroot/Chroot/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/;s/#\[bin\]/\[bin\]/;s/#FileManager = vifm/FileManager = vim/' /etc/paru.conf
+sed -i 's/#LocalRepo/LocalRepo/;s/#Chroot/Chroot/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/;s/#\[bin\]/\[bin\]/;s/#FileManager = vifm/FileManager = vifm/' /etc/paru.conf
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
 # Configure /etc/sddm.conf.d/kde_settings.conf
