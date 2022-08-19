@@ -158,6 +158,10 @@ pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
   echo "lshw"
   echo "man-db"
   echo "sbsigntools"
+  echo "bat"
+  echo "exa"
+  echo "ripgrep"
+  echo "fd"
 } > /git/packages.txt
 
 # Change ownership of /var/lib/repo/aur to $SYSUSER
