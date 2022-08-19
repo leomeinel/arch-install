@@ -35,21 +35,23 @@ esac
 # Detect and erase old crypt and raid1 volumes
 if lsblk -rno TYPE | grep -q "crypt"
 then
+  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
+  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
   cryptsetup luksClose "$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | tr -d "[:space:]")"
   if lsblk -rno TYPE | grep -q "raid1"
   then
     cryptsetup erase "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
     sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
     mdadm --stop --scan
-    mdadm --zero-superblock "$DISK1"2
-    mdadm --zero-superblock "$DISK2"2
+    mdadm --zero-superblock "$DISK1P2"
+    mdadm --zero-superblock "$DISK2P2"
   fi
   elif lsblk -rno TYPE | grep -q "raid1"
   then
     sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
     mdadm --stop --scan
-    mdadm --zero-superblock "$DISK1"2
-    mdadm --zero-superblock "$DISK2"2
+    mdadm --zero-superblock "$DISK1P2"
+    mdadm --zero-superblock "$DISK2P2"
 fi
 
 # Load $KEYMAP and set time
