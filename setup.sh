@@ -177,6 +177,11 @@ git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
 mv /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
 chmod -R 755 /usr/share/wallpapers/Custom
 
+# Add gruvbox.yml to /usr/share/gruvbox/gruvbox.yml
+mkdir -p /usr/share/gruvbox
+mv /git/mdadm-encrypted-btrfs/gruvbox.yml /usr/share/gruvbox/
+chmod -R 755 /usr/share/gruvbox
+
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
 rm -rf /.snapshots
