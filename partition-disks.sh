@@ -119,7 +119,7 @@ mount "$DISK1P1" /mnt/boot
   echo "linux"
   echo "linux-firmware"
   echo "linux-headers"
-  echo "vim"
+  echo "neovim"
   echo "btrfs-progs"
   echo "git"
   echo "iptables-nft"
