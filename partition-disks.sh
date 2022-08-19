@@ -45,6 +45,8 @@ then
     mdadm --stop --scan
     mdadm --zero-superblock "$DISK1P2"
     mdadm --zero-superblock "$DISK2P2"
+    partprobe "$DISK1"
+    partprobe "$DISK2"
   fi
   elif lsblk -rno TYPE | grep -q "raid1"
   then
@@ -52,6 +54,8 @@ then
     mdadm --stop --scan
     mdadm --zero-superblock "$DISK1P2"
     mdadm --zero-superblock "$DISK2P2"
+    partprobe "$DISK1"
+    partprobe "$DISK2"
 fi
 
 # Load $KEYMAP and set time
