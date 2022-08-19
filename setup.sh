@@ -95,6 +95,7 @@ pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
   echo "arc-gtk-theme"
   echo "cantarell-fonts"
   echo "otf-font-awesome"
+  echo "ttf-nerd-fonts-symbols-mono"
   echo "sddm"
   echo "sddm-kcm"
   echo "ksystemlog"
