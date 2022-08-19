@@ -72,7 +72,6 @@ repo-add /var/lib/repo/aur/aur.db.tar.gz
 
 # Install packages
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
-pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 {
   echo "plasma-desktop"
   echo "plasma-wayland-session"
@@ -164,6 +163,7 @@ pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
   echo "fd"
   echo "starship"
 } > /git/packages.txt
+pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
