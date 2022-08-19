@@ -21,7 +21,7 @@ set -e
   echo "DISK2P1_PARTUUID=\"$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
   echo "DISK2P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
   echo "EDITOR=\"/usr/bin/vim\""
-  echo "TERM=\"/usr/bin/urxvt\""
+  echo "TERM=\"/usr/bin/alacritty\""
   echo "BROWSER=\"/usr/bin/chromium\""
 } >> /etc/environment
 
@@ -102,8 +102,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "htop"
   echo "mpv"
   echo "libreoffice-still"
-  echo "rxvt-unicode"
-  echo "rxvt-unicode-terminfo"
+  echo "alacritty"
   echo "zram-generator"
   echo "virt-manager"
   echo "qemu-desktop"
