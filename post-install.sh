@@ -14,7 +14,6 @@ sudo localectl set-keymap "$KEYMAP"
 sudo localectl set-x11-keymap "$KEYLAYOUT"
 
 # Install packages
-paru -Sy --needed - < ~/packages.txt
 {
   echo "librewolf-bin"
   echo "ungoogled-chromium"
@@ -30,6 +29,7 @@ paru -Sy --needed - < ~/packages.txt
   echo "nvim-packer-git"
   echo "macchina"
 } > ~/packages.txt
+paru -Sy --needed - < ~/packages.txt
 paru -Scc
 paru -Syu
 
