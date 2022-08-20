@@ -28,6 +28,7 @@ paru -Sy --needed - < ~/packages.txt
   echo "laptop-mode-tools"
   echo "neovim-symlinks"
   echo "nvim-packer-git"
+  echo "macchina"
 } > ~/packages.txt
 paru -Scc
 paru -Syu
