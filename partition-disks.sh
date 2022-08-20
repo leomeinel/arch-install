@@ -32,7 +32,7 @@ case "$choice" in
   ;;
 esac
 
-# Detect and erase old crypt and raid1 volumes
+# Detect and erase old crypt volumes
 if lsblk -rno TYPE | grep -q "crypt"
 then
   DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
@@ -48,8 +48,15 @@ then
     partprobe "$DISK1"
     partprobe "$DISK2"
   fi
-  elif lsblk -rno TYPE | grep -q "raid1"
+fi
+
+# Detect and erase closed crypt and raid1 volumes
+if lsblk -rno TYPE | grep -q "raid1"
   then
+  if cryptsetup isLuks "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
+  then
+    cryptsetup erase "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
+  fi
     sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
     mdadm --stop --scan
     mdadm --zero-superblock "$DISK1P2"
