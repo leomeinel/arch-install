@@ -159,6 +159,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "exa"
   echo "ripgrep"
   echo "fd"
+  echo "dust"
   echo "starship"
   echo "neovim-qt"
   echo "xclip"
