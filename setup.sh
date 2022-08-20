@@ -96,7 +96,6 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "sddm"
   echo "sddm-kcm"
   echo "ksystemlog"
-  echo "neofetch"
   echo "bleachbit"
   echo "htop"
   echo "mpv"
