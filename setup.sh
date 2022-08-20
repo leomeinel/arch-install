@@ -161,7 +161,6 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "fd"
   echo "dust"
   echo "procs"
-  echo "sd"
   echo "tokei"
   echo "grex"
   echo "git-delta"
