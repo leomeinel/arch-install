@@ -26,7 +26,6 @@ sudo localectl set-x11-keymap "$KEYLAYOUT"
   echo "sddm-nordic-theme-git"
   echo "laptop-mode-tools"
   echo "neovim-symlinks"
-  echo "nvim-packer-git"
   echo "macchina"
 } > ~/packages.txt
 paru -Sy --needed - < ~/packages.txt
