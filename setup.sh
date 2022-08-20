@@ -89,6 +89,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "kinfocenter"
   echo "power-profiles-daemon"
   echo "plasma-nm"
+  echo "wmctrl"
   echo "kde-gtk-config"
   echo "arc-gtk-theme"
   echo "cantarell-fonts"
