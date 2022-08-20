@@ -164,6 +164,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "sd"
   echo "tokei"
   echo "grex"
+  echo "git-delta"
   echo "starship"
   echo "neovim-qt"
   echo "xclip"
