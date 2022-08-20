@@ -39,8 +39,8 @@ sudo systemctl enable laptop-mode.service
 # Generate nvidia config if needed
 pacman -Qq "nvidia-settings" &&
 ~/nvidia-install.sh &&
-rm ~/nvidia-install.sh
+rm -f ~/nvidia-install.sh
 
 # Remove script
-rm ~/post-install.sh
-rn ~/packages.txt
+rm -f ~/post-install.sh
+rm -f ~/packages.txt
