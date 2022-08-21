@@ -178,7 +178,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "git-delta"
   echo "hyperfine"
   echo "starship"
-  echo "neovim-qt"
+  echo "notepadqq"
   echo "xclip"
   echo "wl-clipboard"
   echo "ungoogled-chromium"
