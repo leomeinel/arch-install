@@ -77,7 +77,7 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#Cach
   echo ""
   echo "[options]"
   echo "Include = /etc/pacman.d/repo/aur.conf"
-  echo "Include = /etc/pacman.d/repo/home_ungoogled_chromium_Archconf"
+  echo "Include = /etc/pacman.d/repo/home_ungoogled_chromium_Arch.conf"
 } >> /etc/pacman.conf
 pacman-key --init
 
