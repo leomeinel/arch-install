@@ -68,6 +68,11 @@ mkdir -p /etc/pacman.d/repo
 mkdir -p /var/cache/aur/pkg
 mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
+curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | sudo pacman-key -a -
+echo '
+[OBS_ungoogled-chromium-arch]
+SigLevel = Required TrustAll
+Server = https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/$arch' | sudo tee --append /etc/pacman.conf
 
 # Install packages
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
