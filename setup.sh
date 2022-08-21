@@ -50,14 +50,10 @@ passwd "$GUESTUSER"
   echo "--latest 20"
   echo "--sort rate"
 } > /etc/xdg/reflector/reflector.conf
-sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#CacheDir/CacheDir/' /etc/pacman.conf
-{
-  echo ""
-  echo "[options]"
-  echo "Include = /etc/pacman.d/repo/aur.conf"
-  echo "Include = /etc/pacman.d/repo/OBS_ungoogled-chromium.conf"
-} >> /etc/pacman.conf
 mkdir -p /etc/pacman.d/repo
+mkdir -p /var/cache/aur/pkg
+mkdir -p /var/lib/repo/aur
+repo-add /var/lib/repo/aur/aur.db.tar.gz
 {
   echo "[options]"
   echo "CacheDir = /var/cache/aur/pkg"
@@ -66,9 +62,7 @@ mkdir -p /etc/pacman.d/repo
   echo "SigLevel = PackageOptional DatabaseOptional"
   echo "Server = file:///var/lib/repo/aur"
 } > /etc/pacman.d/repo/aur.conf
-mkdir -p /var/cache/aur/pkg
-mkdir -p /var/lib/repo/aur
-repo-add /var/lib/repo/aur/aur.db.tar.gz
+mkdir -p /var/cache/OBS_ungoogled-chromium/pkg
 curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | sudo pacman-key -a -
 {
   echo "[options]"
@@ -78,7 +72,13 @@ curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arc
   echo "SigLevel = Required TrustAll"
   echo 'Server = https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/$arch'
 } > /etc/pacman.d/repo/OBS_ungoogled-chromium.conf
-mkdir -p /var/cache/OBS_ungoogled-chromium/pkg
+sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#CacheDir/CacheDir/' /etc/pacman.conf
+{
+  echo ""
+  echo "[options]"
+  echo "Include = /etc/pacman.d/repo/aur.conf"
+  echo "Include = /etc/pacman.d/repo/OBS_ungoogled-chromium.conf"
+} >> /etc/pacman.conf
 
 # Install packages
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
