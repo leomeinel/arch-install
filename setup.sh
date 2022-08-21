@@ -62,22 +62,22 @@ repo-add /var/lib/repo/aur/aur.db.tar.gz
   echo "SigLevel = PackageOptional DatabaseOptional"
   echo "Server = file:///var/lib/repo/aur"
 } > /etc/pacman.d/repo/aur.conf
-mkdir -p /var/cache/OBS_ungoogled-chromium/pkg
+mkdir -p /var/cache/home_ungoogled_chromium_Arch/pkg
 curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | sudo pacman-key -a -
 {
   echo "[options]"
-  echo "CacheDir = /var/cache/OBS_ungoogled-chromium/pkg"
+  echo "CacheDir = /var/cache/home_ungoogled_chromium_Arch/pkg"
   echo ""
-  echo "[OBS_ungoogled-chromium]"
+  echo "[home_ungoogled_chromium_Arch]"
   echo "SigLevel = Required TrustAll"
   echo 'Server = https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/$arch'
-} > /etc/pacman.d/repo/OBS_ungoogled-chromium.conf
+} > /etc/pacman.d/repo/home_ungoogled_chromium_Arch.conf
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#CacheDir/CacheDir/' /etc/pacman.conf
 {
   echo ""
   echo "[options]"
   echo "Include = /etc/pacman.d/repo/aur.conf"
-  echo "Include = /etc/pacman.d/repo/OBS_ungoogled-chromium.conf"
+  echo "Include = /etc/pacman.d/repo/home_ungoogled_chromium_Archconf"
 } >> /etc/pacman.conf
 pacman-key --init
 
