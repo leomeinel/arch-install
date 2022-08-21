@@ -19,7 +19,6 @@ nvim --headless
 # Install packages
 {
   echo "librewolf-bin"
-  echo "ungoogled-chromium"
   echo "chromium-extension-web-store"
   echo "snap-pac-grub"
   echo "pacman-log-orphans-hook"
