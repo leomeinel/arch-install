@@ -79,6 +79,7 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#Cach
   echo "Include = /etc/pacman.d/repo/aur.conf"
   echo "Include = /etc/pacman.d/repo/OBS_ungoogled-chromium.conf"
 } >> /etc/pacman.conf
+pacman-key --init
 
 # Install packages
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
