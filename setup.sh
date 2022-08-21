@@ -55,6 +55,7 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#Cach
   echo ""
   echo "[options]"
   echo "Include = /etc/pacman.d/repo/aur.conf"
+  echo "Include = /etc/pacman.d/repo/OBS_ungoogled-chromium.conf"
 } >> /etc/pacman.conf
 mkdir -p /etc/pacman.d/repo
 {
@@ -69,10 +70,15 @@ mkdir -p /var/cache/aur/pkg
 mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
 curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | sudo pacman-key -a -
-echo '
-[OBS_ungoogled-chromium-arch]
-SigLevel = Required TrustAll
-Server = https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/$arch' | sudo tee --append /etc/pacman.conf
+{
+  echo "[options]"
+  echo "CacheDir = /var/cache/OBS_ungoogled-chromium/pkg"
+  echo ""
+  echo "[OBS_ungoogled-chromium]"
+  echo "SigLevel = Required TrustAll"
+  echo 'Server = https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/$arch'
+} > /etc/pacman.d/repo/OBS_ungoogled-chromium.conf
+mkdir -p /var/cache/OBS_ungoogled-chromium/pkg
 
 # Install packages
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
@@ -174,6 +180,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "neovim-qt"
   echo "xclip"
   echo "wl-clipboard"
+  echo "ungoogled-chromium"
 } > /git/packages.txt
 pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 
