@@ -13,6 +13,9 @@ sudo timedatectl set-ntp true
 sudo localectl set-keymap "$KEYMAP"
 sudo localectl set-x11-keymap "$KEYLAYOUT"
 
+# Initialize nvim
+nvim --headless
+
 # Install packages
 {
   echo "librewolf-bin"
