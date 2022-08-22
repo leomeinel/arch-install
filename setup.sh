@@ -183,6 +183,16 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "xclip"
   echo "wl-clipboard"
   echo "ungoogled-chromium"
+  echo "gdb"
+  echo "lldb"
+  echo "gimp"
+  echo "sshfs"
+  echo "patch"
+  echo "jpegoptim"
+  echo "oxipng"
+  echo "make"
+  echo "automake"
+  echo "gcc"
 } > /git/packages.txt
 pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 
