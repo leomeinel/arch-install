@@ -198,6 +198,9 @@ pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
 
+# Set up nftables
+# FIXME: todo!
+
 # Set default java
 archlinux-java set java-17-openjdk
 
