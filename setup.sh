@@ -356,7 +356,7 @@ mkdir -p /etc/pacman.d/hooks/scripts
   echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-pkglists.sh'"
 } > /etc/pacman.d/hooks/custom-pkglists.hook
 
-# Configure logging orphans PostTransaction from /etc/pacman.d/hooks/custom-log-orphans.hook
+# Configure logging orphans from /etc/pacman.d/hooks/custom-log-orphans.hook
 {
   echo '#!/bin/sh'
   echo 'pkgs="$(pacman -Qtdq)"'
