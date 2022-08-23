@@ -24,8 +24,10 @@ Log into sysuser account and run
 
 ```
 ~/post-install.sh
+reboot
 ```
 
+## After starting into Desktopenvironment
 If you have an NVIDIA GPU, log into all other accounts and run
 
 ```
