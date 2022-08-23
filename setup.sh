@@ -192,6 +192,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "make"
   echo "automake"
   echo "gcc"
+  echo "ktorrent"
 } > /git/packages.txt
 pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 
