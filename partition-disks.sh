@@ -58,18 +58,18 @@ then
   OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
   if cryptsetup isLuks "$OLD_RAID"
   then
-    cryptsetup erase "$OLD_RAID" || echo 'DEBUG: cryptsetup erase "$OLD_RAID" - 0' && exit
-    partprobe "$DISK1" || echo 'DEBUG: partprobe "$DISK1" - 0' && exit
-    partprobe "$DISK2" || echo 'DEBUG: partprobe "$DISK2" - 0' && exit
+    cryptsetup erase "$OLD_RAID" || {echo 'DEBUG: cryptsetup erase "$OLD_RAID" - 0' && exit}
+    partprobe "$DISK1" || {echo 'DEBUG: partprobe "$DISK1" - 0' && exit}
+    partprobe "$DISK2" || {echo 'DEBUG: partprobe "$DISK2" - 0' && exit}
   fi
-  sgdisk -Z "$OLD_RAID" || echo 'DEBUG: sgdisk -Z "$OLD_RAID" - 0' && exit
-  mdadm --stop --scan || echo 'DEBUG: mdadm --stop --scan - 0' && exit
-  partprobe "$DISK1" || echo 'DEBUG: partprobe "$DISK1" - 1' && exit
-  partprobe "$DISK2" || echo 'DEBUG: partprobe "$DISK2" - 1' && exit
-  mdadm --zero-superblock "$DISK1P2" || echo 'DEBUG: mdadm --zero-superblock "$DISK1P2" - 0' && exit
-  mdadm --zero-superblock "$DISK2P2" || echo 'DEBUG: mdadm --zero-superblock "$DISK2P2" - 0' && exit
-  partprobe "$DISK1" || echo 'DEBUG: partprobe "$DISK1" - 2' && exit
-  partprobe "$DISK2" || echo 'DEBUG: partprobe "$DISK2" - 2' && exit
+  sgdisk -Z "$OLD_RAID" || {echo 'DEBUG: sgdisk -Z "$OLD_RAID" - 0' && exit}
+  mdadm --stop --scan || {echo 'DEBUG: mdadm --stop --scan - 0' && exit}
+  partprobe "$DISK1" || {echo 'DEBUG: partprobe "$DISK1" - 1' && exit}
+  partprobe "$DISK2" || {echo 'DEBUG: partprobe "$DISK2" - 1' && exit}
+  mdadm --zero-superblock "$DISK1P2" || {echo 'DEBUG: mdadm --zero-superblock "$DISK1P2" - 0' && exit}
+  mdadm --zero-superblock "$DISK2P2" || {echo 'DEBUG: mdadm --zero-superblock "$DISK2P2" - 0' && exit}
+  partprobe "$DISK1" || {echo 'DEBUG: partprobe "$DISK1" - 2' && exit}
+  partprobe "$DISK2" || {echo 'DEBUG: partprobe "$DISK2" - 2' && exit}
 fi
 
 # Load $KEYMAP and set time
