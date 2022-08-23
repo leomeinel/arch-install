@@ -36,7 +36,7 @@ then
   DISK1="$(lsblk -rnpo NAME "${DISKS[0]}" | sed -n '1p' | tr -d "[:space:]")"
   DISK2="$(lsblk -rnpo NAME "${DISKS[1]}" | sed -n '1p' | tr -d "[:space:]")"
 else
-  echo "ERROR: There are not exactly 2 disks with the same size attached!"
+  echo "ERROR: The attached disks don't have the same size!"
   exit 19
 fi
 
