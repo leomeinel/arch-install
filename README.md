@@ -18,7 +18,7 @@ reboot
 
 => Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-## Post Installation
+## Post Installation (tty)
 
 Log into sysuser account and run
 
@@ -27,7 +27,7 @@ Log into sysuser account and run
 reboot
 ```
 
-## After starting into Desktopenvironment
+## Post Installation (DE)
 If you have an NVIDIA GPU, log into all other accounts and run
 
 ```
