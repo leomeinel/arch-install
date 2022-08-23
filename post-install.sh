@@ -24,7 +24,6 @@ sudo localectl set-x11-keymap "$KEYLAYOUT"
   echo "sddm-nordic-theme-git"
   echo "laptop-mode-tools"
   echo "macchina"
-  echo "konsave"
 } > ~/packages.txt
 paru -Sy --needed - < ~/packages.txt
 paru -Scc
