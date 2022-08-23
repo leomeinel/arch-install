@@ -59,17 +59,11 @@ then
   if cryptsetup isLuks "$OLD_RAID"
   then
     cryptsetup erase "$OLD_RAID"
-    partprobe "$DISK1"
-    partprobe "$DISK2"
   fi
   sgdisk -Z "$OLD_RAID"
   mdadm --stop --scan
-  partprobe "$DISK1"
-  partprobe "$DISK2"
   mdadm --zero-superblock "$DISK1P2"
   mdadm --zero-superblock "$DISK2P2"
-  partprobe "$DISK1"
-  partprobe "$DISK2"
 fi
 
 # Load $KEYMAP and set time
