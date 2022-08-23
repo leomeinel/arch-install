@@ -14,6 +14,9 @@ git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git ~/git/mdadm-enc
 mv ~/git/mdadm-encrypted-btrfs/post-install.sh ~/post-install.sh
 chmod +x ~/post-install.sh
 
+# Configure paru
+sudo sed -i 's/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/' /etc/paru.conf
+
 # Install packages
 {
   echo "arc-kde-git"
