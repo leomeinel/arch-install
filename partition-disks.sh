@@ -35,13 +35,15 @@ esac
 # Detect and erase old crypt volumes
 if lsblk -rno TYPE | grep -q "crypt"
 then
+  OLD_CRYPT="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | tr -d "[:space:]")"
   DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
   DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
-  cryptsetup luksClose "$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | tr -d "[:space:]")"
+  cryptsetup luksClose "$OLD_CRYPT"
   if lsblk -rno TYPE | grep -q "raid1"
   then
-    cryptsetup erase "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
-    sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
+    OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
+    cryptsetup erase "$OLD_RAID"
+    sgdisk -Z "$OLD_RAID"
     mdadm --stop --scan
     mdadm --zero-superblock "$DISK1P2"
     mdadm --zero-superblock "$DISK2P2"
@@ -50,17 +52,24 @@ fi
 
 # Detect and erase closed crypt and raid1 volumes
 if lsblk -rno TYPE | grep -q "raid1"
+then
+  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
+  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
+  OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
+  if cryptsetup isLuks "$OLD_RAID"
   then
-  if cryptsetup isLuks "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
-  then
-    cryptsetup erase "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
-    partprobe "$DISK1"
-    partprobe "$DISK2"
+    cryptsetup erase "$OLD_RAID" || echo 'DEBUG: cryptsetup erase "$OLD_RAID" - 0' && exit
+    partprobe "$DISK1" || echo 'DEBUG: partprobe "$DISK1" - 0' && exit
+    partprobe "$DISK2" || echo 'DEBUG: partprobe "$DISK2" - 0' && exit
   fi
-    sgdisk -Z "$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
-    mdadm --stop --scan
-    mdadm --zero-superblock "$DISK1P2"
-    mdadm --zero-superblock "$DISK2P2"
+  sgdisk -Z "$OLD_RAID" || echo 'DEBUG: sgdisk -Z "$OLD_RAID" - 0' && exit
+  mdadm --stop --scan || echo 'DEBUG: mdadm --stop --scan - 0' && exit
+  partprobe "$DISK1" || echo 'DEBUG: partprobe "$DISK1" - 1' && exit
+  partprobe "$DISK2" || echo 'DEBUG: partprobe "$DISK2" - 1' && exit
+  mdadm --zero-superblock "$DISK1P2" || echo 'DEBUG: mdadm --zero-superblock "$DISK1P2" - 0' && exit
+  mdadm --zero-superblock "$DISK2P2" || echo 'DEBUG: mdadm --zero-superblock "$DISK2P2" - 0' && exit
+  partprobe "$DISK1" || echo 'DEBUG: partprobe "$DISK1" - 2' && exit
+  partprobe "$DISK2" || echo 'DEBUG: partprobe "$DISK2" - 2' && exit
 fi
 
 # Load $KEYMAP and set time
