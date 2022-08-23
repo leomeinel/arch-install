@@ -198,8 +198,36 @@ pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
 
-# Set up nftables
+# Configure nftables
 # FIXME: todo!
+
+# Configure symlinks
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'exec nvim -e "$@"'
+} > /usr/bin/ex
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'exec nvim -R "$@"'
+} > /usr/bin/view
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'exec nvim -d "$@"'
+} > /usr/bin/vimdiff
+ln -s /usr/bin/nvim /usr/bin/edit
+ln -s /usr/bin/nvim /usr/bin/vedit
+ln -s /usr/bin/nvim /usr/bin/vi
+ln -s /usr/bin/nvim /usr/bin/vim
+chmod 755 /usr/bin/ex
+chmod 755 /usr/bin/view
+chmod 755 /usr/bin/vimdiff
+chmod 755 /usr/bin/edit
+chmod 755 /usr/bin/vedit
+chmod 755 /usr/bin/vi
+chmod 755 /usr/bin/vim
 
 # Set default java
 archlinux-java set java-17-openjdk
@@ -240,7 +268,7 @@ echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 sed -i 's/#LocalRepo/LocalRepo/;s/#Chroot/Chroot/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/;s/#\[bin\]/\[bin\]/;s/#FileManager = vifm/FileManager=nvim/' /etc/paru.conf
-echo "FileManagerFlags = \'-c,\"NvimTreeFocus\"\'" >> /etc/paru.conf
+echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" >> /etc/paru.conf
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
 # Configure /etc/sddm.conf.d/kde_settings.conf
@@ -277,18 +305,17 @@ echo "$HOSTNAME" > /etc/hostname
 mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure autobackup of /boot in /etc/pacman.d/hooks/custom-bootbackup.hook
-# FIXME: Find a way to detect both possible boot partitions after the system is installed 100% reliably!
 mkdir -p /etc/pacman.d/hooks/scripts
 {
-  echo "#!/bin/sh"
-  echo ""
-  echo "/usr/bin/rsync -a --delete /.boot.bak/* /.boot.bak.old/"
-  echo "/usr/bin/rsync -a --delete /boot/* /.boot.bak/"
-  echo "/usr/bin/umount /boot"
-  echo "/usr/bin/mount PARTUUID=\"\$DISK2P1_PARTUUID\" /boot/"
-  echo "/usr/bin/rsync -a --delete /.boot.bak/* /boot/"
-  echo "/usr/bin/umount /boot"
-  echo "/usr/bin/mount PARTUUID=\"\$DISK1P1_PARTUUID\" /boot"
+  echo '#!/bin/sh'
+  echo ''
+  echo '/usr/bin/rsync -a --delete /.boot.bak/* /.boot.bak.old/'
+  echo '/usr/bin/rsync -a --delete /boot/* /.boot.bak/'
+  echo '/usr/bin/umount /boot'
+  echo '/usr/bin/mount PARTUUID="$DISK2P1_PARTUUID" /boot/'
+  echo '/usr/bin/rsync -a --delete /.boot.bak/* /boot/'
+  echo '/usr/bin/umount /boot'
+  echo '/usr/bin/mount PARTUUID="$DISK1P1_PARTUUID" /boot'
 } > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
 {
   echo "[Trigger]"
@@ -305,16 +332,16 @@ mkdir -p /etc/pacman.d/hooks/scripts
   echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-bootbackup.sh'"
 } > /etc/pacman.d/hooks/custom-bootbackup.hook
 
-# Configure autogen of list of explicitly installed packages in /etc/pacman.d/hooks/custom-pkglists.hook
+# Configure logging installed packages from /etc/pacman.d/hooks/custom-pkglists.hook
 {
-  echo "#!/bin/sh"
-  echo ""
-  echo "/usr/bin/pacman -Qqen > /var/log/pkglist_explicit.pacman.log"
-  echo "/usr/bin/chmod 644 /var/log/pkglist_explicit.pacman.log"
-  echo "/usr/bin/pacman -Qqem > /var/log/pkglist_foreign.pacman.log"
-  echo "/usr/bin/chmod 644 /var/log/pkglist_foreign.pacman.log"
-  echo "/usr/bin/pacman -Qqd > /var/log/pkglist_deps.pacman.log"
-  echo "/usr/bin/chmod 644 /var/log/pkglist_deps.pacman.log"
+  echo '#!/bin/sh'
+  echo ''
+  echo '/usr/bin/pacman -Qqen > /var/log/pkglist_explicit.pacman.log'
+  echo '/usr/bin/chmod 644 /var/log/pkglist_explicit.pacman.log'
+  echo '/usr/bin/pacman -Qqem > /var/log/pkglist_foreign.pacman.log'
+  echo '/usr/bin/chmod 644 /var/log/pkglist_foreign.pacman.log'
+  echo '/usr/bin/pacman -Qqd > /var/log/pkglist_deps.pacman.log'
+  echo '/usr/bin/chmod 644 /var/log/pkglist_deps.pacman.log'
 } > /etc/pacman.d/hooks/scripts/custom-pkglists.sh
 {
   echo "[Trigger]"
@@ -328,6 +355,29 @@ mkdir -p /etc/pacman.d/hooks/scripts
   echo "When = PostTransaction"
   echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-pkglists.sh'"
 } > /etc/pacman.d/hooks/custom-pkglists.hook
+
+# Configure logging orphans PostTransaction from /etc/pacman.d/hooks/custom-log-orphans.hook
+{
+  echo '#!/bin/sh'
+  echo 'pkgs="$(pacman -Qtdq)"'
+  echo '[ -n "$pkgs" ] &&'
+  echo '/usr/bin/echo "The following packages are installed but not required (anymore):"'
+  echo '/usr/bin/echo "$pkgs"'
+  echo '/usr/bin/echo "You can remove them all using '"'"'pacman -Qtdq | pacman -Rns -'"'"'"'
+} > /etc/pacman.d/hooks/scripts/custom-log-orphans.sh
+{
+  echo "[Trigger]"
+  echo "Operation = Install"
+  echo "Operation = Upgrade"
+  echo "Operation = Remove"
+  echo "Type = Package"
+  echo "Target = *"
+  echo ""
+  echo "[Action]"
+  echo "Description = Logging orphans..."
+  echo "When = PostTransaction"
+  echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-log-orphans.sh'"
+} > /etc/pacman.d/hooks/custom-log-orphans.hook
 chmod -R 700 /etc/pacman.d/hooks/scripts
 
 # Configure dot-files
