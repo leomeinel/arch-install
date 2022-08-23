@@ -31,6 +31,7 @@ paru -Syu
 
 # Enable systemd services
 sudo systemctl enable laptop-mode.service
+systemctl enable sddm
 
 # Generate nvidia config if needed
 pacman -Qq "nvidia-settings" &&
