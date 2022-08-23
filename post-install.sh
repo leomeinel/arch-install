@@ -18,13 +18,11 @@ sudo localectl set-x11-keymap "$KEYLAYOUT"
   echo "librewolf-bin"
   echo "chromium-extension-web-store"
   echo "snap-pac-grub"
-  echo "pacman-log-orphans-hook"
   echo "snapper-gui-git"
   echo "arc-kde-git"
   echo "papirus-icon-theme-stripped"
   echo "sddm-nordic-theme-git"
   echo "laptop-mode-tools"
-  echo "neovim-symlinks"
   echo "macchina"
 } > ~/packages.txt
 paru -Sy --needed - < ~/packages.txt
