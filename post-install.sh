@@ -21,6 +21,9 @@ sudo localectl set-x11-keymap "$KEYLAYOUT"
   echo "snapper-gui-git"
   echo "laptop-mode-tools"
   echo "macchina"
+  echo "arc-kde-git"
+  echo "papirus-icon-theme-stripped"
+  echo "sddm-nordic-theme-git"
 } > ~/packages.txt
 paru -Sy --needed - < ~/packages.txt
 paru -Scc
