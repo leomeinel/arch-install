@@ -199,7 +199,8 @@ pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 chown -R "$SYSUSER": /var/lib/repo/aur
 
 # Configure nftables
-# FIXME: todo!
+mv /git/mdadm-encrypted-btrfs/nftables.conf /etc/nftables.conf
+chmod -R 700 /etc/nftables.conf
 
 # Configure symlinks
 {
