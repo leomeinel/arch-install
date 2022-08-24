@@ -28,16 +28,20 @@ reboot
 ```
 
 ## Post Installation (DE)
-If you have an NVIDIA GPU, log into all other accounts and run
+
+### Do for every user account
+
+* Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
+* Enable autostart services inside ~/.config/custom-autostart/ through Settings
+* Change Wallpaper
+
+**Only if you have an NVIDIA GPU**
 
 ```
 ~/nvidia-install.sh
 ```
 
-Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
-
-=> Reboot now
-
+=> Reboot
 ## Information
 
 This script will only work on a system with exactly 2 disks attached. The disks have to be exactly the same size!
