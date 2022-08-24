@@ -239,6 +239,10 @@ git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
 mv /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
 chmod -R 755 /usr/share/wallpapers/Custom
 
+# Add screenshot folder to /usr/share/screenshots/
+mkdir -p /usr/share/screenshots
+chmod -R 777 /usr/share/screenshots
+
 # Add gruvbox.yml to /usr/share/gruvbox/gruvbox.yml
 mkdir -p /usr/share/gruvbox
 mv /git/mdadm-encrypted-btrfs/gruvbox.yml /usr/share/gruvbox/
