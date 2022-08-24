@@ -32,7 +32,6 @@ reboot
 ### Do for every user account
 
 * Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
-* Enable autostart services inside ~/.config/custom-autostart/ through Settings
 * Change Wallpaper
 
 **Only if you have an NVIDIA GPU**
