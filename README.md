@@ -41,6 +41,7 @@ reboot
 ```
 
 => Reboot
+
 ## Information
 
 This script will only work on a system with exactly 2 disks attached. The disks have to be exactly the same size!
