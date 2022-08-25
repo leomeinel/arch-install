@@ -2,9 +2,15 @@
 
 Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
+## Info
+
+:information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
+
+:warning: | All data on both disks will be wiped!
+
 ## Pre-installation
 
-Follow the `Pre-installation` section of this [guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section if needed.
+:information_source: | Follow the `Pre-installation` section of this [guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section if needed.
 
 ## Installation
 
@@ -20,36 +26,31 @@ umount -AR /mnt
 reboot
 ```
 
-Use `<...>.sh |& tee <logfile>.log` to create a log file.
+:information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-Set variables using vim (GRUB_RESOLUTION should be low for VMs¹)
+:information_source: | Set variables using vim (GRUB_RESOLUTION should be low for VMs¹)
 
-¹ Otherwise there might be problems with the display resolution when running `post-install.sh`
+¹ *Otherwise there might be problems with the display resolution when running `post-install.sh`*
 
-## Post Installation (tty)
+## Post-installation (tty)
 
-Log into sysuser account and run (Exit nvim with `:q`)
+:information_source: | Log into sysuser account and run (Exit nvim with `:q`)
 
 ```
 ~/post-install.sh
 reboot
 ```
 
-## Post Installation (DE)
+## Post-installation (DE)
 
-### Do for every user account
+### Do this for every user account
 
-* Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
-* Change Wallpaper
+:information_source: |  Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
 
-**Only if you have an NVIDIA GPU**
+:information_source: |  Change Wallpaper by `right-clicking` your `Desktop`
+
+### Do this additionally if if you have an NVIDIA GPU
 
 ```
 ~/nvidia-install.sh
 ```
-
-## Information
-
-This script will only work on a system with exactly 2 disks attached. The disks have to be exactly the same size!
-
-All data on both disks will be wiped!
