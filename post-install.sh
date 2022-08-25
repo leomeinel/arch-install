@@ -26,7 +26,15 @@ sudo localectl set-x11-keymap "$KEYLAYOUT"
   echo "sddm-nordic-theme-git"
 } > ~/packages.txt
 paru -Sy --needed - < ~/packages.txt
+
+## Clear screen
+clear
+
 paru -Scc
+
+## Clear screen
+clear
+
 paru -Syu
 
 
