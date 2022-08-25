@@ -194,7 +194,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "automake"
   echo "gcc"
 } > /git/packages.txt
-pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
+pacman -Syu --noprogressbar --noconfirm --needed - < /git/packages.txt
 
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
