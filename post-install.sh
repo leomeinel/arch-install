@@ -25,18 +25,12 @@ sudo localectl set-x11-keymap "$KEYLAYOUT"
   echo "papirus-icon-theme-stripped"
   echo "sddm-nordic-theme-git"
 } > ~/packages.txt
-paru -Sy --needed - < ~/packages.txt
+paru --needed - < ~/packages.txt
 
 ## Clear screen
 clear
 
 paru -Scc
-
-## Clear screen
-clear
-
-paru -Syu
-
 
 # Configure iptables
 ## FIXME: Replace with nftables
