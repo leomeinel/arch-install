@@ -360,11 +360,13 @@ mkdir -p /etc/pacman.d/hooks/scripts
 # Configure logging orphans from /etc/pacman.d/hooks/custom-log-orphans.hook
 {
   echo '#!/bin/sh'
-  echo 'pkgs="$(pacman -Qtdq)"'
+  echo 'pkgs="$(/usr/bin/pacman -Qtdq)"'
   echo '[ -n "$pkgs" ] &&'
-  echo '/usr/bin/echo "The following packages are installed but not required (anymore): " &&'
-  echo '/usr/bin/echo "$pkgs" &&'
-  echo '/usr/bin/echo "You can remove them all using '"'"'pacman -Qtdq | pacman -Rns -'"'"'"'
+  echo '{'
+  echo '  /usr/bin/echo "The following packages are installed but not required (anymore): "'
+  echo '  /usr/bin/echo "$pkgs"'
+  echo '  /usr/bin/echo "You can remove them all using '"'"'pacman -Qtdq | pacman -Rns -'"'"'"'
+  echo '}'
 } > /etc/pacman.d/hooks/scripts/custom-log-orphans.sh
 {
   echo "[Trigger]"
