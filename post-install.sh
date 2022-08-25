@@ -109,14 +109,6 @@ sudo iptables -A OUTPUT -f -j DROP
 sudo iptables -A INPUT -p tcp -m state --state NEW -m tcpmss ! --mss 536:65535 -j DROP
 
 ### Block spoofed packets
-sudo iptables -A INPUT -s 224.0.0.0/3 -j DROP
-sudo iptables -A INPUT -s 169.254.0.0/16 -j DROP
-sudo iptables -A INPUT -s 172.16.0.0/12 -j DROP
-sudo iptables -A INPUT -s 192.0.2.0/24 -j DROP
-sudo iptables -A INPUT -s 192.168.0.0/16 -j DROP
-sudo iptables -A INPUT -s 10.0.0.0/8 -j DROP
-sudo iptables -A INPUT -s 0.0.0.0/8 -j DROP
-sudo iptables -A INPUT -s 240.0.0.0/5 -j DROP
 sudo iptables -A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
 
 ### Drop ICMP
@@ -196,7 +188,6 @@ sudo ip6tables -A OUTPUT -m frag -j DROP
 sudo ip6tables -A INPUT -p tcp -m state --state NEW -m tcpmss ! --mss 536:65535 -j DROP
 
 ### Block spoofed packets
-### FIXME: This needs to be expanded
 sudo ip6tables -A INPUT -s ::1/128 ! -i lo -j DROP
 
 ### Drop ICMP
