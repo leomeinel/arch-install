@@ -123,8 +123,9 @@ sudo iptables -A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
 sudo iptables -A INPUT -p icmp -j DROP
 
 ### Allow default ktorrent ports (They still need to be forwarded)
-### We might have to add 7881 and 8881. However archlinux-iso torrent works without them.
 sudo iptables -A INPUT -p tcp --dport 6881 -j ACCEPT
+sudo iptables -A INPUT -p udp --dport 7881 -j ACCEPT
+sudo iptables -A INPUT -p udp --dport 8881 -j ACCEPT
 
 ### ALLOW ESTABLISHED CONNECTIONS
 sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
@@ -203,6 +204,8 @@ sudo ip6tables -A INPUT -p icmp -j DROP
 
 ### Allow default ktorrent ports (They still need to be forwarded)
 sudo ip6tables -A INPUT -p tcp --dport 6881 -j ACCEPT
+sudo ip6tables -A INPUT -p tcp --dport 7881 -j ACCEPT
+sudo ip6tables -A INPUT -p tcp --dport 8881 -j ACCEPT
 
 ### ALLOW ESTABLISHED CONNECTIONS
 sudo ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
