@@ -204,8 +204,8 @@ sudo ip6tables -A INPUT -p icmp -j DROP
 
 ### Allow default ktorrent ports (They still need to be forwarded)
 sudo ip6tables -A INPUT -p tcp --dport 6881 -j ACCEPT
-sudo ip6tables -A INPUT -p tcp --dport 7881 -j ACCEPT
-sudo ip6tables -A INPUT -p tcp --dport 8881 -j ACCEPT
+sudo ip6tables -A INPUT -p udp --dport 7881 -j ACCEPT
+sudo ip6tables -A INPUT -p udp --dport 8881 -j ACCEPT
 
 ### ALLOW ESTABLISHED CONNECTIONS
 sudo ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
