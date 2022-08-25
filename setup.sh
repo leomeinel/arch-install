@@ -582,6 +582,7 @@ systemctl enable reflector.timer
 systemctl enable fstrim.timer
 systemctl enable libvirtd
 systemctl enable acpid
+systemctl enable nftables
 systemctl enable iptables
 pacman -Qq "nvidia-utils" &&
 systemctl enable nvidia-resume.service &&
