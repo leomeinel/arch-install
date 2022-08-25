@@ -122,7 +122,7 @@ sudo iptables -A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
 ### Drop ICMP
 sudo iptables -A INPUT -p icmp -j DROP
 
-### Allow default ktorrent ports (They still need to be forwarded)
+### Allow default ktorrent ports (Forard them if not using UPnP)
 sudo iptables -A INPUT -p tcp --dport 6881 -j ACCEPT
 sudo iptables -A INPUT -p udp --dport 7881 -j ACCEPT
 sudo iptables -A INPUT -p udp --dport 8881 -j ACCEPT
@@ -202,7 +202,7 @@ sudo ip6tables -A INPUT -s ::1/128 ! -i lo -j DROP
 ### Drop ICMP
 sudo ip6tables -A INPUT -p icmp -j DROP
 
-### Allow default ktorrent ports (They still need to be forwarded)
+### Allow default ktorrent ports (Forard them if not using UPnP)
 sudo ip6tables -A INPUT -p tcp --dport 6881 -j ACCEPT
 sudo ip6tables -A INPUT -p udp --dport 7881 -j ACCEPT
 sudo ip6tables -A INPUT -p udp --dport 8881 -j ACCEPT
