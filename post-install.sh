@@ -206,8 +206,8 @@ sudo ip6tables -P FORWARD ACCEPT
 sudo ip6tables -P OUTPUT ACCEPT
 
 ### Save rules to /etc/iptables
-sudo iptables-save > /etc/iptables/iptables.rules
-sudo ip6tables-save > /etc/iptables/ip6tables.rules
+sudo sh -c 'iptables-save > /etc/iptables/iptables.rules'
+sudo sh -c 'ip6tables-save > /etc/iptables/ip6tables.rules'
 sudo chmod -R 744 /etc/iptables
 
 # Enable systemd services
