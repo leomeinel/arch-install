@@ -25,7 +25,7 @@ sudo localectl set-x11-keymap "$KEYLAYOUT"
   echo "papirus-icon-theme-stripped"
   echo "sddm-nordic-theme-git"
 } > ~/packages.txt
-paru --needed - < ~/packages.txt
+paru -Syu --needed - < ~/packages.txt
 
 ## Clear screen
 clear
