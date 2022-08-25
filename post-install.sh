@@ -57,9 +57,9 @@ sudo iptables -X
 ### Set up new chains
 sudo iptables -L | grep -q "Chain INPUT" ||
 sudo iptables -N INPUT
-sudo iptables -L | grep -q "Chain INPUT" ||
+sudo iptables -L | grep -q "Chain FORWARD" ||
 sudo iptables -N FORWARD
-sudo iptables -L | grep -q "Chain INPUT" ||
+sudo iptables -L | grep -q "Chain OUTPUT" ||
 sudo iptables -N OUTPUT
 
 ### Allow all connections on all chains to start
