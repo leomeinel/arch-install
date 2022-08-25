@@ -362,8 +362,8 @@ mkdir -p /etc/pacman.d/hooks/scripts
   echo '#!/bin/sh'
   echo 'pkgs="$(pacman -Qtdq)"'
   echo '[ -n "$pkgs" ] &&'
-  echo '/usr/bin/echo "The following packages are installed but not required (anymore):"'
-  echo '/usr/bin/echo "$pkgs"'
+  echo '/usr/bin/echo "The following packages are installed but not required (anymore): " &&'
+  echo '/usr/bin/echo "$pkgs" &&'
   echo '/usr/bin/echo "You can remove them all using '"'"'pacman -Qtdq | pacman -Rns -'"'"'"'
 } > /etc/pacman.d/hooks/scripts/custom-log-orphans.sh
 {
