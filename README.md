@@ -16,7 +16,11 @@ umount -AR /mnt
 reboot
 ```
 
-=> Use `<...>.sh |& tee <logfile>.log` to create a log file.
+Use `<...>.sh |& tee <logfile>.log` to create a log file.
+
+Set variables using vim (GRUB_RESOLUTION should be low for VMs¹)
+
+¹ Otherwise there might be problems with the display resolution when running `post-install.sh`
 
 ## Post Installation (tty)
 
@@ -39,8 +43,6 @@ reboot
 ```
 ~/nvidia-install.sh
 ```
-
-=> Reboot
 
 ## Information
 
