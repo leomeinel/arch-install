@@ -198,11 +198,8 @@ pacman -Sy --noprogressbar --noconfirm --needed - < /git/packages.txt
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
 
-# Configure nftables
-mv /git/mdadm-encrypted-btrfs/nftables.conf /etc/nftables.conf
-chmod 744 /etc/nftables.conf
-
-# Configure iptables-nft
+# Configure iptables
+## FIXME: Replace with nftables
 
 ##
 ## References
@@ -582,7 +579,6 @@ systemctl enable reflector.timer
 systemctl enable fstrim.timer
 systemctl enable libvirtd
 systemctl enable acpid
-systemctl enable nftables
 systemctl enable iptables
 pacman -Qq "nvidia-utils" &&
 systemctl enable nvidia-resume.service &&
