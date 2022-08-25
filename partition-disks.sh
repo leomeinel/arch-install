@@ -148,7 +148,7 @@ mount "$DISK1P1" /mnt/boot
   echo "neovim"
   echo "btrfs-progs"
   echo "git"
-  echo "iptables-nft"
+  echo "iptables"
   echo "reflector"
   echo "mesa"
   echo "mdadm"
