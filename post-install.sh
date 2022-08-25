@@ -125,6 +125,9 @@ sudo iptables -A INPUT -p icmp -j DROP
 ### ALLOW ESTABLISHED CONNECTIONS
 sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
+### Allow default ktorrent ports (They still need to be forwarded)
+sudo iptables -A INPUT -p tcp --destination-port 6881 -j ACCEPT
+
 ### Set default policies for chains
 sudo iptables -P INPUT DROP
 sudo iptables -P FORWARD ACCEPT
