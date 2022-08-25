@@ -20,7 +20,7 @@ reboot
 
 ## Post Installation (tty)
 
-Log into sysuser account and run (Exit nvim with :q)
+Log into sysuser account and run (Exit nvim with `:q`)
 
 ```
 ~/post-install.sh
