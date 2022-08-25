@@ -101,6 +101,7 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
   echo "kinfocenter"
   echo "power-profiles-daemon"
   echo "plasma-nm"
+  echo "ktorrent"
   echo "wmctrl"
   echo "kde-gtk-config"
   echo "arc-gtk-theme"
