@@ -31,8 +31,10 @@ reboot
 :information_source: | Set variables before running `partition-disks.sh` using `vim <...>.sh`
 
 :information_source: | Set variables after running `partition-disks.sh` using `nvim <...>.sh` (Set GRUBRESOLUTION low for VM¹)
+   
+¹ *Otherwise there might be inconveniences during Post-installation.*
 
-¹ *For example "1280x720" on a "1920x1080" screen. Otherwise there might be inconveniences during Post-installation*
+¹ *For example "1280x720" on a "1920x1080" screen.*
 
 ## Post-installation (tty)
 
