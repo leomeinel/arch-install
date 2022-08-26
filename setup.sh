@@ -199,6 +199,34 @@ pacman -Syu --noprogressbar --noconfirm --needed - < /git/packages.txt
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
 
+# Configure symlinks
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'exec nvim -e "$@"'
+} > /usr/bin/ex
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'exec nvim -R "$@"'
+} > /usr/bin/view
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'exec nvim -d "$@"'
+} > /usr/bin/vimdiff
+ln -s /usr/bin/nvim /usr/bin/edit
+ln -s /usr/bin/nvim /usr/bin/vedit
+ln -s /usr/bin/nvim /usr/bin/vi
+ln -s /usr/bin/nvim /usr/bin/vim
+chmod 755 /usr/bin/ex
+chmod 755 /usr/bin/view
+chmod 755 /usr/bin/vimdiff
+chmod 755 /usr/bin/edit
+chmod 755 /usr/bin/vedit
+chmod 755 /usr/bin/vi
+chmod 755 /usr/bin/vim
+
 # Set default java
 archlinux-java set java-17-openjdk
 
