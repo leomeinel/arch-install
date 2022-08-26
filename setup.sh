@@ -142,7 +142,7 @@ chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
-sed -i 's/#Chroot/Chroot/;s/#\[bin\]/\[bin\]/;s/#FileManager = .*/FileManager = nvim/;s/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/' /etc/paru.conf
+sed -i 's/#Chroot/Chroot/;s/#\[bin\]/\[bin\]/;s/#FileManager = .*/FileManager = nvim/;s/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/;s/#Sudo = doas/Sudo = doas/' /etc/paru.conf
 echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" >> /etc/paru.conf
 mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
 chown -c root:root /etc/doas.conf
