@@ -13,6 +13,12 @@ doas timedatectl set-ntp true
 doas localectl set-keymap "$KEYMAP"
 doas localectl set-x11-keymap "$KEYLAYOUT"
 
+# Install paru
+git clone https://aur.archlinux.org/paru.git ~/git/paru
+cd ~/git/paru
+rustup default stable
+makepkg -sri --noprogressbar --noconfirm --needed
+
 # Install packages
 doas mv /packages_post-install.txt ~/packages_post-install.txt
 paru -S --needed - < ~/packages_post-install.txt
