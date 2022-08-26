@@ -306,86 +306,9 @@ echo "$HOSTNAME" > /etc/hostname
 # Configure /etc/mdadm.conf
 mdadm --detail --scan >> /etc/mdadm.conf
 
-# Configure autobackup of /boot in /etc/pacman.d/hooks/custom-bootbackup.hook
-mkdir -p /etc/pacman.d/hooks/scripts
-{
-  echo '#!/bin/sh'
-  echo ''
-  echo '/usr/bin/rsync -a --delete /.boot.bak/* /.boot.bak.old/'
-  echo '/usr/bin/rsync -a --delete /boot/* /.boot.bak/'
-  echo '/usr/bin/umount /boot'
-  echo '/usr/bin/mount PARTUUID="$DISK2P1_PARTUUID" /boot/'
-  echo '/usr/bin/rsync -a --delete /.boot.bak/* /boot/'
-  echo '/usr/bin/umount /boot'
-  echo '/usr/bin/mount PARTUUID="$DISK1P1_PARTUUID" /boot'
-} > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
-{
-  echo "[Trigger]"
-  echo "Operation = Upgrade"
-  echo "Operation = Install"
-  echo "Operation = Remove"
-  echo "Type = Path"
-  echo "Target = usr/lib/modules/*/vmlinuz"
-  echo ""
-  echo "[Action]"
-  echo "Depends = rsync"
-  echo "Description = Backing up /boot..."
-  echo "When = PostTransaction"
-  echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-bootbackup.sh'"
-} > /etc/pacman.d/hooks/custom-bootbackup.hook
-
-# Configure logging installed packages from /etc/pacman.d/hooks/custom-pkglists.hook
-{
-  echo '#!/bin/sh'
-  echo ''
-  echo '/usr/bin/pacman -Qqen > /var/log/pkglist_explicit.pacman.log'
-  echo '/usr/bin/chmod 644 /var/log/pkglist_explicit.pacman.log'
-  echo '/usr/bin/pacman -Qqem > /var/log/pkglist_foreign.pacman.log'
-  echo '/usr/bin/chmod 644 /var/log/pkglist_foreign.pacman.log'
-  echo '/usr/bin/pacman -Qqd > /var/log/pkglist_deps.pacman.log'
-  echo '/usr/bin/chmod 644 /var/log/pkglist_deps.pacman.log'
-} > /etc/pacman.d/hooks/scripts/custom-pkglists.sh
-{
-  echo "[Trigger]"
-  echo "Operation = Install"
-  echo "Operation = Remove"
-  echo "Type = Package"
-  echo "Target = *"
-  echo ""
-  echo "[Action]"
-  echo "Description = Generating pkglists..."
-  echo "When = PostTransaction"
-  echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-pkglists.sh'"
-} > /etc/pacman.d/hooks/custom-pkglists.hook
-
-# Configure logging orphans from /etc/pacman.d/hooks/custom-log-orphans.hook
-{
-  echo '#!/bin/sh'
-  echo ''
-  echo 'pkgs="$(/usr/bin/pacman -Qtdq)"'
-  echo 'if [ -n "$pkgs" ]'
-  echo 'then'
-  echo '  {'
-  echo '    /usr/bin/echo "The following packages are installed but not required (anymore): "'
-  echo '    /usr/bin/echo "$pkgs"'
-  echo '    /usr/bin/echo "You can remove them all using '"'"'pacman -Qtdq | pacman -Rns -'"'"'"'
-  echo '  }'
-  echo 'fi'
-} > /etc/pacman.d/hooks/scripts/custom-log-orphans.sh
-{
-  echo "[Trigger]"
-  echo "Operation = Install"
-  echo "Operation = Upgrade"
-  echo "Operation = Remove"
-  echo "Type = Package"
-  echo "Target = *"
-  echo ""
-  echo "[Action]"
-  echo "Description = Logging orphans..."
-  echo "When = PostTransaction"
-  echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-log-orphans.sh'"
-} > /etc/pacman.d/hooks/custom-log-orphans.hook
-chmod -R 700 /etc/pacman.d/hooks/scripts
+# Configure pacman hooks
+mv /git/mdadm-encrypted-btrfs/pacman/hooks /etc/pacman.d/hooks
+chmod -R 744 /etc/pacman.d/hooks
 
 # Configure dot-files
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
