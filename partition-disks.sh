@@ -179,9 +179,41 @@ lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
 } >> /root/packages.txt
 pacstrap /mnt - < /root/packages.txt
 
+# Configure symlinks
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'exec nvim -e "$@"'
+} > /mnt/usr/bin/ex
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'exec nvim -R "$@"'
+} > /mnt/usr/bin/view
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'exec nvim -d "$@"'
+} > /mnt/usr/bin/vimdiff
+ln -s /mnt/usr/bin/nvim /mnt/usr/bin/edit
+ln -s /mnt/usr/bin/nvim /mnt/usr/bin/vedit
+ln -s /mnt/usr/bin/nvim /mnt/usr/bin/vi
+ln -s /mnt/usr/bin/nvim /mnt/usr/bin/vim
+chmod 755 /mnt/usr/bin/ex
+chmod 755 /mnt/usr/bin/view
+chmod 755 /mnt/usr/bin/vimdiff
+chmod 755 /mnt/usr/bin/edit
+chmod 755 /mnt/usr/bin/vedit
+chmod 755 /mnt/usr/bin/vi
+chmod 755 /mnt/usr/bin/vim
+
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
+
+# Remove repo
+rm -rf /root/mdadm-encrypted-btrfs
+rm -f /root/packages.txt
