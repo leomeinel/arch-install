@@ -171,8 +171,8 @@ mdadm --detail --scan >> /etc/mdadm.conf
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 chmod -R 755 /etc/pacman.d/hooks
-chmod -R 744 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
+chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
 # Configure dot-files
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
