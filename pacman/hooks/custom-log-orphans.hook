@@ -1,1 +1,11 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
 
+[Action]
+Description = Logging orphans...
+When = PostTransaction
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-log-orphans.sh'
