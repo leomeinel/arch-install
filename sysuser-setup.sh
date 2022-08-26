@@ -4,7 +4,8 @@
 set -e
 
 # Install opendoas-sudo
-cd /opendoas-sudo
+git clone https://aur.archlinux.org/opendoas-sudo.git ~/git/opendoas-sudo
+cd ~/git/opendoas-sudo
 makepkg -sri --noprogressbar --noconfirm --needed
 
 # Install paru
