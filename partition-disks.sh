@@ -139,45 +139,31 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /de
 mount "$DISK1P1" /mnt/boot
 
 # Install packages
-{
-  echo "base"
-  echo "base-devel"
-  echo "linux"
-  echo "linux-firmware"
-  echo "linux-headers"
-  echo "neovim"
-  echo "btrfs-progs"
-  echo "git"
-  echo "iptables"
-  echo "reflector"
-  echo "mesa"
-  echo "mdadm"
-} > /root/packages.txt
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
-echo "intel-ucode" >> /root/packages.txt
+echo "intel-ucode" >> /root/mdadm-encrypted-btrfs/packages.txt
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
-echo "amd-ucode" >> /root/packages.txt
+echo "amd-ucode" >> /root/mdadm-encrypted-btrfs/packages.txt
 lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
 {
   echo "nvidia"
   echo "nvidia-settings"
-} >> /root/packages.txt
+} >> /root/mdadm-encrypted-btrfs/packages.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
 {
   echo "xf86-video-amdgpu"
   echo "vulkan-radeon"
   echo "libva-mesa-driver"
   echo "mesa-vdpau"
-} >> /root/packages.txt
+} >> /root/mdadm-encrypted-btrfs/packages.txt
 lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
 {
   echo "xf86-video-intel"
   echo "vulkan-intel"
-} >> /root/packages.txt
-pacstrap /mnt - < /root/packages.txt
+} >> /root/mdadm-encrypted-btrfs/packages.txt
+pacstrap /mnt - < /root/mdadm-encrypted-btrfs/packages.txt
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -188,4 +174,3 @@ chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
 
 # Remove repo
 rm -rf /root/mdadm-encrypted-btrfs
-rm -f /root/packages.txt
