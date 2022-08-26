@@ -307,7 +307,7 @@ echo "$HOSTNAME" > /etc/hostname
 mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure pacman hooks
-mv /git/mdadm-encrypted-btrfs/pacman/hooks /etc/pacman.d/hooks
+mv /git/mdadm-encrypted-btrfs/pacman/hooks /etc/pacman.d/
 chmod -R 744 /etc/pacman.d/hooks
 
 # Configure dot-files
