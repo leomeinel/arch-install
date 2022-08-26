@@ -80,22 +80,6 @@ chmod 644 /packages_post-install.txt
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
 
-# Configure symlinks
-mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
-ln -s /usr/bin/nvim /usr/bin/edit
-ln -s /usr/bin/nvim /usr/bin/vedit
-ln -s /usr/bin/nvim /usr/bin/vi
-ln -s /usr/bin/nvim /usr/bin/vim
-ln -s /usr/bin/doas /usr/bin/sudo
-chmod 755 /usr/bin/ex
-chmod 755 /usr/bin/view
-chmod 755 /usr/bin/vimdiff
-chmod 755 /usr/bin/edit
-chmod 755 /usr/bin/vedit
-chmod 755 /usr/bin/vi
-chmod 755 /usr/bin/vim
-chmod 755 /usr/bin/sudo
-
 # Set default java
 archlinux-java set java-17-openjdk
 
@@ -147,6 +131,22 @@ echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" >> /etc/paru.conf
 mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
+
+# Configure symlinks
+mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
+ln -s /usr/bin/nvim /usr/bin/edit
+ln -s /usr/bin/nvim /usr/bin/vedit
+ln -s /usr/bin/nvim /usr/bin/vi
+ln -s /usr/bin/nvim /usr/bin/vim
+ln -s /usr/bin/doas /usr/bin/sudo
+chmod 755 /usr/bin/ex
+chmod 755 /usr/bin/view
+chmod 755 /usr/bin/vimdiff
+chmod 755 /usr/bin/edit
+chmod 755 /usr/bin/vedit
+chmod 755 /usr/bin/vi
+chmod 755 /usr/bin/vim
+chmod 755 /usr/bin/sudo
 
 # Configure /etc/sddm.conf.d/kde_settings.conf
 mv /git/mdadm-encrypted-btrfs/etc/sddm.conf.d /etc/
