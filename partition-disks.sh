@@ -195,10 +195,10 @@ pacstrap /mnt - < /root/packages.txt
   echo ''
   echo 'exec nvim -d "$@"'
 } > /mnt/usr/bin/vimdiff
-ln -s /mnt/usr/bin/nvim /mnt/usr/bin/edit
-ln -s /mnt/usr/bin/nvim /mnt/usr/bin/vedit
-ln -s /mnt/usr/bin/nvim /mnt/usr/bin/vi
-ln -s /mnt/usr/bin/nvim /mnt/usr/bin/vim
+ln -s /mnt/usr/bin/nvim /usr/bin/edit
+ln -s /mnt/usr/bin/nvim /usr/bin/vedit
+ln -s /mnt/usr/bin/nvim /usr/bin/vi
+ln -s /mnt/usr/bin/nvim /usr/bin/vim
 chmod 755 /mnt/usr/bin/ex
 chmod 755 /mnt/usr/bin/view
 chmod 755 /mnt/usr/bin/vimdiff
