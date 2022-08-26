@@ -14,6 +14,7 @@ sudo localectl set-keymap "$KEYMAP"
 sudo localectl set-x11-keymap "$KEYLAYOUT"
 
 # Install packages
+sudo chown $USER ~/packages_post-install.txt
 paru --needed - < ~/packages_post-install.txt
 paru -Scc
 
