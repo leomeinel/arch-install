@@ -25,6 +25,7 @@ set -e
 } >> /etc/environment
 
 # Add groups and users
+sed -i 's/SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r sudo
 groupadd -r libvirt
 useradd -ms /bin/bash -G sudo,wheel "$SYSUSER"
