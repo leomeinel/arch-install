@@ -55,7 +55,6 @@ chmod 644 /etc/xdg/reflector/reflector.conf
 curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | sudo pacman-key -a -
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/repo /etc/pacman.d/
 chmod -R 744 /etc/pacman.d/repo
-chmod 644 /etc/pacman.d/repo/*.conf
 mkdir -p /var/cache/aur/pkg
 mkdir -p /var/cache/home_ungoogled_chromium_Arch/pkg
 mkdir -p /var/lib/repo/aur
