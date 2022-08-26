@@ -11,7 +11,7 @@ mountpoint -q /mnt &&
 umount -AR /mnt
 
 # Detect disks
-readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8 | tr -d "[:blank:]")
+readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
 DISKS_LENGTH="${#DISKS[@]}"
 for (( i = 0; i < DISKS_LENGTH; i++ ))
 do
