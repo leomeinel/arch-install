@@ -1,1 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Remove
+Type = Package
+Target = *
 
+[Action]
+Description = Generating pkglists...
+When = PostTransaction
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-pkglists.sh'
