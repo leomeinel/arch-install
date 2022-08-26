@@ -28,11 +28,11 @@ reboot
 
 :information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-:information_source: | Set variables before `partition-disks.sh` using `vim <...>.sh`
+:information_source: | Set variables before running `partition-disks.sh` using `vim <...>.sh`
 
-:information_source: | Set variables after `partition-disks.sh` using `nvim <...>.sh` (Set GRUBRESOLUTION low for VM¹)
+:information_source: | Set variables after running `partition-disks.sh` using `nvim <...>.sh` (Set GRUBRESOLUTION low for VM¹)
 
-¹ *Otherwise there might be problems with the display resolution when running `post-install.sh`*
+¹ *For example "1280x720" on a "1920x1080" screen. Otherwise there might be inconveniences while running `post-install.sh`*
 
 ## Post-installation (tty)
 
