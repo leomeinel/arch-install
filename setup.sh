@@ -162,11 +162,8 @@ echo "$HOSTNAME" > /etc/hostname
 } > /etc/hosts
 
 # Configure /etc/systemd/zram-generator.conf
-{
-  echo "[zram0]"
-  echo "zram-size = ram / 2"
-  echo "compression-algorithm = zstd"
-} > /etc/systemd/zram-generator.conf
+mv /git/mdadm-encrypted-btrfs/etc/systemd/zram-generator.conf /etc/systemd/
+chmod 644 /etc/systemd/zram-generator.conf
 
 # Configure /etc/mdadm.conf
 mdadm --detail --scan >> /etc/mdadm.conf
