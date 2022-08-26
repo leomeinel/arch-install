@@ -26,10 +26,6 @@ sudo localectl set-x11-keymap "$KEYLAYOUT"
   echo "sddm-nordic-theme-git"
 } > ~/packages.txt
 paru -Syu --needed - < ~/packages.txt
-
-## Clear screen
-clear
-
 paru -Scc
 
 # Configure iptables
