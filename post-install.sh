@@ -207,7 +207,7 @@ sudo ip6tables -P OUTPUT ACCEPT
 ### Save rules to /etc/iptables
 sudo sh -c 'iptables-save > /etc/iptables/iptables.rules'
 sudo sh -c 'ip6tables-save > /etc/iptables/ip6tables.rules'
-sudo chmod -R 744 /etc/iptables
+sudo chmod 644 /etc/iptables/*.rules
 
 # Enable systemd services
 sudo systemctl enable laptop-mode.service
