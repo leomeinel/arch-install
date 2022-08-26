@@ -34,11 +34,11 @@ reboot
 
 ### *Low GRUBRESOLUTION for VM*
 
-:information_source: | *You should set a low GRUBRESOLUTION¹ for Virtual Machines.*
+:bulb: | *You should set a low GRUBRESOLUTION¹ for Virtual Machines.*
 
-:information_source: | *Otherwise there might be inconveniences during Post-installation.*
+:bulb: | *Otherwise there might be inconveniences during Post-installation.*
 
-:information_source: | *¹ For example "1280x720" on a "1920x1080" screen.*
+:bulb: | *¹ For example "1280x720" on a "1920x1080" screen.*
 
 ## Post-installation (tty)
 
