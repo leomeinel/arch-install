@@ -220,3 +220,6 @@ rm -f ~/nvidia-install.sh
 # Remove script
 rm -f ~/post-install.sh
 doas rm -f ~/packages_post-install.txt
+
+# Remove repo
+rm -rf ~/git
