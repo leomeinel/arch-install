@@ -50,11 +50,12 @@ passwd "$GUESTUSER"
   echo "--latest 20"
   echo "--sort rate"
 } > /etc/xdg/reflector/reflector.conf
-chmod -R 744 /etc/xdg
+chmod -R 755 /etc/xdg
 chmod 644 /etc/xdg/reflector/reflector.conf
 curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | sudo pacman-key -a -
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/repo /etc/pacman.d/
-chmod -R 744 /etc/pacman.d/repo
+chmod -R 755 /etc/pacman.d/repo
+chmod 644 /etc/pacman.d/repo/*.conf
 mkdir -p /var/cache/aur/pkg
 mkdir -p /var/cache/home_ungoogled_chromium_Arch/pkg
 mkdir -p /var/lib/repo/aur
@@ -141,7 +142,7 @@ echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
 # Configure /etc/sddm.conf.d/kde_settings.conf
 mv /git/mdadm-encrypted-btrfs/etc/sddm.conf.d /etc/
-chmod -R 744 /etc/sddm.conf.d
+chmod -R 755 /etc/sddm.conf.d
 chmod 644 /etc/sddm.conf.d/kde_settings.conf
 
 # Configure /etc/localtime, /etc/locale.conf, /etc/vconsole.conf, /etc/hostname and /etc/hosts
@@ -169,7 +170,8 @@ mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
-chmod -R 744 /etc/pacman.d/hooks
+chmod -R 755 /etc/pacman.d/hooks
+chmod -R 744 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
 
 # Configure dot-files
