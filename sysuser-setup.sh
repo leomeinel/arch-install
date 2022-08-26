@@ -3,6 +3,10 @@
 # Fail on error
 set -e
 
+# Install opendoas-sudo
+cd /opendoas-sudo
+makepkg -sri --noprogressbar --noconfirm --needed
+
 # Install paru
 git clone https://aur.archlinux.org/paru.git ~/git/paru
 cd ~/git/paru
