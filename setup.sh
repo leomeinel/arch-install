@@ -50,28 +50,16 @@ passwd "$GUESTUSER"
   echo "--latest 20"
   echo "--sort rate"
 } > /etc/xdg/reflector/reflector.conf
-mkdir -p /etc/pacman.d/repo
+chmod -R 744 /etc/xdg
+chmod 644 /etc/xdg/reflector/reflector.conf
+curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | sudo pacman-key -a -
+mv /git/mdadm-encrypted-btrfs/etc/pacman.d/repo /etc/pacman.d/
+chmod -R 744 /etc/pacman.d/repo
+chmod 644 /etc/pacman.d/repo/*.conf
 mkdir -p /var/cache/aur/pkg
+mkdir -p /var/cache/home_ungoogled_chromium_Arch/pkg
 mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
-{
-  echo "[options]"
-  echo "CacheDir = /var/cache/aur/pkg"
-  echo ""
-  echo "[aur]"
-  echo "SigLevel = PackageOptional DatabaseOptional"
-  echo "Server = file:///var/lib/repo/aur"
-} > /etc/pacman.d/repo/aur.conf
-mkdir -p /var/cache/home_ungoogled_chromium_Arch/pkg
-curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | sudo pacman-key -a -
-{
-  echo "[options]"
-  echo "CacheDir = /var/cache/home_ungoogled_chromium_Arch/pkg"
-  echo ""
-  echo "[home_ungoogled_chromium_Arch]"
-  echo "SigLevel = Required TrustAll"
-  echo 'Server = https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/$arch'
-} > /etc/pacman.d/repo/home_ungoogled_chromium_Arch.conf
 sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#CacheDir/CacheDir/' /etc/pacman.conf
 {
   echo ""
@@ -91,21 +79,7 @@ chmod 644 /packages_post-install.txt
 chown -R "$SYSUSER": /var/lib/repo/aur
 
 # Configure symlinks
-{
-  echo '#!/bin/sh'
-  echo ''
-  echo 'exec nvim -e "$@"'
-} > /usr/bin/ex
-{
-  echo '#!/bin/sh'
-  echo ''
-  echo 'exec nvim -R "$@"'
-} > /usr/bin/view
-{
-  echo '#!/bin/sh'
-  echo ''
-  echo 'exec nvim -d "$@"'
-} > /usr/bin/vimdiff
+mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
 ln -s /usr/bin/nvim /usr/bin/edit
 ln -s /usr/bin/nvim /usr/bin/vedit
 ln -s /usr/bin/nvim /usr/bin/vi
@@ -167,11 +141,9 @@ echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" >> /etc/paru.conf
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
 # Configure /etc/sddm.conf.d/kde_settings.conf
-mkdir /etc/sddm.conf.d
-{
-  echo "[Theme]"
-  echo "Current=Nordic-darker"
-} > /etc/sddm.conf.d/kde_settings.conf
+mv /git/mdadm-encrypted-btrfs/etc/sddm.conf.d /etc/
+chmod -R 744 /etc/sddm.conf.d
+chmod 644 /etc/sddm.conf.d/kde_settings.conf
 
 # Configure /etc/localtime, /etc/locale.conf, /etc/vconsole.conf, /etc/hostname and /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
@@ -200,7 +172,7 @@ echo "$HOSTNAME" > /etc/hostname
 mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure pacman hooks in /etc/pacman.d/hooks
-mv /git/mdadm-encrypted-btrfs/pacman/hooks /etc/pacman.d/
+mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 chmod -R 744 /etc/pacman.d/hooks
 chmod -R 644 /etc/pacman.d/hooks/*.hook
 
