@@ -127,8 +127,6 @@ chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
 sed -i 's/#PACMAN_AUTH=.*/PACMAN_AUTH=(doas)/' /etc/makepkg.conf
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
-sed -i 's/#Chroot/Chroot/;s/#\[bin\]/\[bin\]/;s/#FileManager =.*/FileManager = nvim/;s/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/;s/#Sudo =.*/Sudo = doas/' /etc/paru.conf
-echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" >> /etc/paru.conf
 
 # Configure symlinks
 mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
