@@ -211,4 +211,4 @@ rm -f ~/nvidia-install.sh
 
 # Remove script
 rm -f ~/post-install.sh
-rm -f ~/packages_post-install.txt
+sudo rm -f ~/packages_post-install.txt
