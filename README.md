@@ -28,9 +28,9 @@ reboot
 
 :information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-:information_source: | Set variables before running `partition-disks.sh` using `vim /root/<...>/partition-disks.sh`
+:information_source: | Set variables before `partition-disks.sh` using `vim /root/<...>/partition-disks.sh`
 
-:information_source: | Set variables after running `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`
+:information_source: | Set variables after `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`
 
 ### *Low GRUBRESOLUTION for VM*
 
