@@ -1,0 +1,9 @@
+librewolf-bin
+chromium-extension-web-store
+snap-pac-grub
+snapper-gui-git
+laptop-mode-tools
+macchina
+arc-kde-git
+papirus-icon-theme-stripped
+sddm-nordic-theme-git
