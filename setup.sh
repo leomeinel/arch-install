@@ -84,6 +84,8 @@ pacman-key --init
 # Install packages
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/packages_setup.txt
+mv /git/mdadm-encrypted-btrfs/packages_post-install.txt /packages_post-install.txt
+chmod 666 /packages_post-install.txt
 
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
