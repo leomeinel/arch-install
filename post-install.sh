@@ -15,6 +15,7 @@ sudo localectl set-x11-keymap "$KEYLAYOUT"
 
 # Install packages
 paru -S --needed - < ~/packages_post-install.txt
+paru
 paru -Scc
 
 # Configure iptables
