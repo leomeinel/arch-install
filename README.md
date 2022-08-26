@@ -28,7 +28,9 @@ reboot
 
 :information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-:information_source: | Set variables using `vim <...>.sh` (GRUBRESOLUTION should be low for VMs¹)
+:information_source: | Set variables before `partition-disks.sh` using `vim <...>.sh`
+
+:information_source: | Set variables after `partition-disks.sh` using `vim <...>.sh` (Set GRUBRESOLUTION low for VM¹)
 
 ¹ *Otherwise there might be problems with the display resolution when running `post-install.sh`*
 
