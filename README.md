@@ -26,8 +26,6 @@ umount -AR /mnt
 reboot
 ```
 
-:information_source: | When asked for a password, enter `root` password first. After that enter `$SYSUSER` password
-
 :information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
 :information_source: | Set variables before `partition-disks.sh` using `vim /root/<...>/partition-disks.sh`
