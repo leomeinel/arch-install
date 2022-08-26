@@ -186,9 +186,6 @@ su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$GUESTUSER"
 
-# Move opendoas-sudo
-mv /git/mdadm-encrypted-btrfs/opendoas-sudo /
-
 # Enable systemd services
 systemctl enable NetworkManager
 systemctl enable bluetooth
