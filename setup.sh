@@ -27,10 +27,10 @@ set -e
 # Add groups and users
 groupadd -r sudo
 groupadd -r libvirt
-useradd -m -G sudo,wheel "$SYSUSER"
-useradd -m -G libvirt "$VIRTUSER"
-useradd -m "$HOMEUSER"
-useradd -m "$GUESTUSER"
+useradd -ms /bin/bash -G sudo,wheel "$SYSUSER"
+useradd -ms /bin/bash -G libvirt "$VIRTUSER"
+useradd -ms /bin/bash "$HOMEUSER"
+useradd -ms /bin/bash "$GUESTUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
