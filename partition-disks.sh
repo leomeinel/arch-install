@@ -143,27 +143,27 @@ sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoPr
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
-echo "intel-ucode" >> /root/mdadm-encrypted-btrfs/packages.txt
+echo "intel-ucode" >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
-echo "amd-ucode" >> /root/mdadm-encrypted-btrfs/packages.txt
+echo "amd-ucode" >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
 {
   echo "nvidia"
   echo "nvidia-settings"
-} >> /root/mdadm-encrypted-btrfs/packages.txt
+} >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
 {
   echo "xf86-video-amdgpu"
   echo "vulkan-radeon"
   echo "libva-mesa-driver"
   echo "mesa-vdpau"
-} >> /root/mdadm-encrypted-btrfs/packages.txt
+} >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
 {
   echo "xf86-video-intel"
   echo "vulkan-intel"
-} >> /root/mdadm-encrypted-btrfs/packages.txt
-pacstrap /mnt - < /root/mdadm-encrypted-btrfs/packages.txt
+} >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+pacstrap /mnt - < /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >> /mnt/etc/fstab
