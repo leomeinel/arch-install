@@ -28,7 +28,7 @@ reboot
 
 :information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-:information_source: | Set variables using vim (GRUB_RESOLUTION should be low for VMs¹)
+:information_source: | Set variables using `vim/nvim <...>.sh` (GRUBRESOLUTION should be low for VMs¹)
 
 ¹ *Otherwise there might be problems with the display resolution when running `post-install.sh`*
 
