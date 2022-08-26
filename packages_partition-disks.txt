@@ -10,3 +10,4 @@ iptables
 reflector
 mesa
 mdadm
+opendoas
