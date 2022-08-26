@@ -235,6 +235,7 @@ mkdir -p /usr/share/wallpapers/Custom/content
 git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
 mv /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
 chmod -R 755 /usr/share/wallpapers/Custom
+chmod 644 /usr/share/wallpapers/Custom/content/*
 
 # Add screenshot folder to /usr/share/screenshots/
 mkdir /usr/share/screenshots
@@ -244,6 +245,7 @@ chmod -R 777 /usr/share/screenshots
 mkdir /usr/share/gruvbox
 mv /git/mdadm-encrypted-btrfs/gruvbox.yml /usr/share/gruvbox/
 chmod -R 755 /usr/share/gruvbox
+chmod -R 644 /usr/share/gruvbox/gruvbox.yml
 
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
@@ -309,6 +311,7 @@ mdadm --detail --scan >> /etc/mdadm.conf
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/pacman/hooks /etc/pacman.d/
 chmod -R 744 /etc/pacman.d/hooks
+chmod -R 644 /etc/pacman.d/hooks/*.hook
 
 # Configure dot-files
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
