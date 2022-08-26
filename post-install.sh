@@ -14,6 +14,7 @@ doas localectl set-keymap "$KEYMAP"
 doas localectl set-x11-keymap "$KEYLAYOUT"
 
 # Install packages
+doas mv /packages_post-install.txt ~/packages_post-install.txt
 paru -S --needed - < ~/packages_post-install.txt
 paru -Syu
 paru -Scc
