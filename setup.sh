@@ -122,6 +122,7 @@ chown :sudo /home/.snapshots
 
 # Configure $SYSUSER
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
+chmod -R 777 /git/mdadm-encrypted-btrfs/opendoas-sudo
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 sed -i 's/#Chroot/Chroot/;s/#\[bin\]/\[bin\]/;s/#FileManager =.*/FileManager = nvim/;s/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/;s/#Sudo =.*/Sudo = doas/' /etc/paru.conf
 echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" >> /etc/paru.conf
