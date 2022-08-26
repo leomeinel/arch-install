@@ -109,7 +109,7 @@ chmod -R 777 /usr/share/screenshots
 mkdir /usr/share/gruvbox
 mv /git/mdadm-encrypted-btrfs/gruvbox.yml /usr/share/gruvbox/
 chmod -R 755 /usr/share/gruvbox
-chmod -R 644 /usr/share/gruvbox/gruvbox.yml
+chmod 644 /usr/share/gruvbox/gruvbox.yml
 
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
