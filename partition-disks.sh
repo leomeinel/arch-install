@@ -11,7 +11,7 @@ mountpoint -q /mnt &&
 umount -AR /mnt
 
 # Detect disks
-readarray -t DISKS < <(lsblk -rnpo TYPE,NAME | grep "disk" | sed "s/disk//" | tr -d "[:blank:]")
+readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8 | tr -d "[:blank:]")
 DISKS_LENGTH="${#DISKS[@]}"
 for (( i = 0; i < DISKS_LENGTH; i++ ))
 do
@@ -29,12 +29,12 @@ done
   exit 19
 }
 
-SIZE1="$(lsblk -rno SIZE "${DISKS[0]}" | sed -n '1p' | tr -d "[:space:]")"
-SIZE2="$(lsblk -rno SIZE "${DISKS[1]}" | sed -n '1p' | tr -d "[:space:]")"
+SIZE1="$(lsblk -drno SIZE "${DISKS[0]}" | tr -d "[:space:]")"
+SIZE2="$(lsblk -drno SIZE "${DISKS[1]}" | tr -d "[:space:]")"
 if [ "$SIZE1" = "$SIZE2" ]
 then
-  DISK1="$(lsblk -rnpo NAME "${DISKS[0]}" | sed -n '1p' | tr -d "[:space:]")"
-  DISK2="$(lsblk -rnpo NAME "${DISKS[1]}" | sed -n '1p' | tr -d "[:space:]")"
+  DISK1="${DISKS[0]}"
+  DISK2="${DISKS[1]}"
 else
   echo "ERROR: The attached disks don't have the same size!"
   exit 19
