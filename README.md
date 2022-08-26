@@ -30,7 +30,7 @@ reboot
 
 :information_source: | Set variables before running `partition-disks.sh` using `vim /root/.../partition-disks.sh`
 
-:information_source: | Set variables after running `partition-disks.sh` using `nvim /git/.../setup.sh` and `nvim /git/.../post-install.sh`
+:information_source: | Set variables after running `partition-disks.sh` using `nvim /git/.../setup.sh` and `nvim ~/post-install.sh`
 
 ### *Low GRUBRESOLUTION for VM*
 
