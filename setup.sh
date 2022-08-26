@@ -53,7 +53,7 @@ passwd "$GUESTUSER"
 } > /etc/xdg/reflector/reflector.conf
 chmod -R 755 /etc/xdg
 chmod 644 /etc/xdg/reflector/reflector.conf
-curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | sudo pacman-key -a -
+curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | pacman-key -a -
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/repo /etc/pacman.d/
 chmod -R 755 /etc/pacman.d/repo
 chmod 644 /etc/pacman.d/repo/*.conf
@@ -137,12 +137,16 @@ chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 
 # Configure $SYSUSER
-echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
+echo "permit nopass :sudo" > /etc/doas.conf
+chown -c root:root /etc/doas.conf
+chmod -c 0400 /etc/doas.conf
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 sed -i 's/#Chroot/Chroot/;s/#\[bin\]/\[bin\]/;s/#FileManager = .*/FileManager = nvim/;s/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/' /etc/paru.conf
 echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" >> /etc/paru.conf
-echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
+mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
+chown -c root:root /etc/doas.conf
+chmod -c 0400 /etc/doas.conf
 
 # Configure /etc/sddm.conf.d/kde_settings.conf
 mv /git/mdadm-encrypted-btrfs/etc/sddm.conf.d /etc/
