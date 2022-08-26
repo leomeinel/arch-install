@@ -306,7 +306,7 @@ echo "$HOSTNAME" > /etc/hostname
 # Configure /etc/mdadm.conf
 mdadm --detail --scan >> /etc/mdadm.conf
 
-# Configure pacman hooks
+# Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/pacman/hooks /etc/pacman.d/
 chmod -R 744 /etc/pacman.d/hooks
 
