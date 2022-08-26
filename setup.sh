@@ -137,7 +137,7 @@ chown :sudo /home/.snapshots
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
-sed -i 's/#Chroot/Chroot/;s/#\[bin\]/\[bin\]/;s/#FileManager = vifm/FileManager=nvim/;s/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/' /etc/paru.conf
+sed -i 's/#Chroot/Chroot/;s/#\[bin\]/\[bin\]/;s/#FileManager = .*/FileManager = nvim/;s/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/' /etc/paru.conf
 echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" >> /etc/paru.conf
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
