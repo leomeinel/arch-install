@@ -124,7 +124,7 @@ chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 
 ## sudo
 echo "%sudo ALL=(ALL:ALL) /usr/bin/mkarchroot" > /etc/sudoers.d/sudo
-echo "%sudo ALL=(ALL:ALL) /usr/bin/makechrootpkg" > /etc/sudoers.d/sudo
+echo "%sudo ALL=(ALL:ALL) /usr/bin/makechrootpkg" >> /etc/sudoers.d/sudo
 
 ## opendoas
 mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
