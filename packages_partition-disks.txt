@@ -1,8 +1,15 @@
 base
 base-devel
 linux
-linux-firmware
 linux-headers
+linux-lts
+linux-lts-headers
+linux-hardened
+linux-hardened-headers
+linux-zen
+linux-zen-headers
+linux-firmware
+wireless-regdb
 neovim
 btrfs-progs
 git
