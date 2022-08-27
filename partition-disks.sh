@@ -139,7 +139,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /de
 mount "$DISK1P1" /mnt/boot
 
 # Install packages
-sed -i 's/#Color/Color/;s/#ParallelDownloads = 5/ParallelDownloads = 10/;s/#NoProgressBar/NoProgressBar/' /etc/pacman.conf
+sed -i 's/^#Color/Color/;s/^#ParallelDownloads = 5/ParallelDownloads = 10/;s/^#NoProgressBar/NoProgressBar/' /etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
