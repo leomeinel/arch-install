@@ -21,7 +21,7 @@ makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
 doas sed -i 's/#Chroot/Chroot/;s/#\[bin\]/\[bin\]/;s/#FileManager =.*/FileManager = nvim/;s/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/;s/#CleanAfter/CleanAfter/;s/#Sudo =.*/Sudo = doas/' /etc/paru.conf
-doas sh -c "echo \'FileManagerFlags = \'-c,\"NvimTreeFocus\"\'\' >> /etc/paru.conf"
+doas echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" | doas tee -a /etc/paru.conf
 
 # Install packages
 doas mv /packages_post-install.txt ~/packages_post-install.txt
