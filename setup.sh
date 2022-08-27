@@ -24,12 +24,6 @@ then
   DISK2P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")"
 fi
 
-# Detect partitions and set environment variables accordingly
-{
-  echo "EDITOR=\"/usr/bin/nvim\""
-  echo "BROWSER=\"/usr/bin/chromium\""
-} >> /etc/environment
-
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r sudo
