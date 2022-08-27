@@ -23,7 +23,6 @@ doas sed -i 's/#Chroot/Chroot/;s/#LocalRepo/LocalRepo/;s/#RemoveMake/RemoveMake/
 doas echo "FileManagerFlags = '-c,\"NvimTreeFocus\"'" | doas tee -a /etc/paru.conf
 
 # Install packages
-doas mv /packages_post-install.txt ~/packages_post-install.txt
 paru -S --needed - < ~/packages_post-install.txt
 paru -Syu
 paru -Scc
@@ -222,7 +221,7 @@ rm -f ~/nvidia-install.sh
 
 # Remove script
 rm -f ~/post-install.sh
-doas rm -f ~/packages_post-install.txt
+rm -f ~/packages_post-install.txt
 
 # Remove repo
 rm -rf ~/git
