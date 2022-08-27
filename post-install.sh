@@ -25,7 +25,7 @@ doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/par
 # Install packages
 paru -S --noprogressbar --noconfirm --needed - < ~/packages_post-install.txt
 paru --noprogressbar --noconfirm -Syu
-paru --noprogressbar --noconfirm -Scc
+paru -Scc
 
 # Configure iptables
 ## FIXME: Replace with nftables
