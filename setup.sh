@@ -14,11 +14,16 @@ GRUBRESOLUTION="2560x1440"
 # Fail on error
 set -e
 
+# Set PARTUUID variables
+# FIXME: Check if $DISK2P1_PARTUUID is mounted under /boot. If it is, switch
+DISK1P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")"
+DISK2P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")"
+
 # Detect partitions and set environment variables accordingly
 {
-  echo "DISK1P1_PARTUUID=\"$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")\""
+  echo "DISK1P1_PARTUUID=\"$DISK1P1_PARTUUID\""
   echo "DISK1P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")\""
-  echo "DISK2P1_PARTUUID=\"$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
+  echo "DISK2P1_PARTUUID=\"$DISK2P1_PARTUUID\""
   echo "DISK2P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
   echo "EDITOR=\"/usr/bin/nvim\""
   echo "BROWSER=\"/usr/bin/chromium\""
@@ -180,6 +185,17 @@ chmod 644 /etc/systemd/zram-generator.conf
 mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure pacman hooks in /etc/pacman.d/hooks
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo '/usr/bin/rsync -a --delete /.boot.bak/* /.boot.bak.old/'
+  echo '/usr/bin/rsync -a --delete /boot/* /.boot.bak/'
+  echo '/usr/bin/umount /boot'
+  echo "/usr/bin/mount PARTUUID=$DISK2P1_PARTUUID /boot/"
+  echo '/usr/bin/rsync -a --delete /.boot.bak/* /boot/'
+  echo '/usr/bin/umount /boot'
+  echo "/usr/bin/mount PARTUUID=$DISK1P1_PARTUUID /boot"
+} > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
