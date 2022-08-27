@@ -16,7 +16,6 @@ doas localectl set-x11-keymap "$KEYLAYOUT"
 # Install paru
 git clone https://aur.archlinux.org/paru.git ~/git/paru
 cd ~/git/paru
-rustup default stable
 makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
