@@ -1,13 +1,9 @@
 base
 base-devel
-linux
-linux-headers
-linux-lts
-linux-lts-headers
-linux-hardened
-linux-hardened-headers
 linux-zen
 linux-zen-headers
+linux-lts
+linux-lts-headers
 linux-firmware
 wireless-regdb
 neovim
