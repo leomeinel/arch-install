@@ -119,9 +119,12 @@ chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 
+
 # Configure $SYSUSER
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
+echo "%sudo ALL=(ALL:ALL) /usr/bin/mkarchroot" > /etc/sudoers.d/sudo
+echo "%sudo ALL=(ALL:ALL) /usr/bin/makechrootpkg" > /etc/sudoers.d/sudo
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
 sed -i 's/#PACMAN_AUTH=.*/PACMAN_AUTH=(doas)/' /etc/makepkg.conf
