@@ -61,7 +61,7 @@ mkdir -p /var/cache/aur/pkg
 mkdir -p /var/cache/home_ungoogled_chromium_Arch/pkg
 mkdir -p /var/lib/repo/aur
 repo-add /var/lib/repo/aur/aur.db.tar.gz
-sed -i 's/^#Color/Color/;s/^#ParallelDownloads = 5/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
+sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
 {
   echo ""
   echo "[options]"
@@ -100,7 +100,7 @@ chmod 644 /usr/share/gruvbox/gruvbox.yml
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
 rm -rf /.snapshots
-sed -i 's/^ALLOW_GROUPS=""/ALLOW_GROUPS="sudo"/;s/^TIMELINE_LIMIT_HOURLY="10"/TIMELINE_LIMIT_HOURLY="5"/;s/^TIMELINE_LIMIT_DAILY="10"/TIMELINE_LIMIT_DAILY="7"/;s/^TIMELINE_LIMIT_MONTHLY="10"/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY="10"/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
+sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="sudo"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="5"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="7"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
 snapper --no-dbus -c root create-config /
 snapper --no-dbus -c var create-config /var
 snapper --no-dbus -c home create-config /home
@@ -208,7 +208,7 @@ systemctl enable nvidia-resume.service &&
 nvidia-xconfig
 
 # Configure /etc/mkinitcpio.conf
-sed -i 's/^MODULES=()/MODULES=(btrfs)/;s/^HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+sed -i 's/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 
 # Configure /etc/default/grub and /boot/grub/grub.cfg
