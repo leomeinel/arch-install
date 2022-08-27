@@ -181,6 +181,8 @@ mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
+mkdir /.boot.bak
+mkdir /.boot.bak.old
 {
   echo '#!/bin/sh'
   echo ''
