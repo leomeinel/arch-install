@@ -26,10 +26,6 @@ fi
 
 # Detect partitions and set environment variables accordingly
 {
-  echo "DISK1P1_PARTUUID=\"$DISK1P1_PARTUUID\""
-  echo "DISK1P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")\""
-  echo "DISK2P1_PARTUUID=\"$DISK2P1_PARTUUID\""
-  echo "DISK2P2_PARTUUID=\"$(blkid -t LABEL="any:md0" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")\""
   echo "EDITOR=\"/usr/bin/nvim\""
   echo "BROWSER=\"/usr/bin/chromium\""
 } >> /etc/environment
