@@ -23,9 +23,9 @@ doas sed -i 's/^#Chroot/Chroot/;s/^#LocalRepo/LocalRepo/;s/^#RemoveMake/RemoveMa
 doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/paru.conf'
 
 # Install packages
-paru -S --needed - < ~/packages_post-install.txt
-paru -Syu
-paru -Scc
+paru -S --noprogressbar --noconfirm --needed - < ~/packages_post-install.txt
+paru --noprogressbar --noconfirm -Syu
+paru --noprogressbar --noconfirm -Scc
 
 # Configure iptables
 ## FIXME: Replace with nftables
