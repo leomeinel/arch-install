@@ -180,6 +180,7 @@ chmod 644 /etc/systemd/zram-generator.conf
 mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure pacman hooks in /etc/pacman.d/hooks
+mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 {
   echo '#!/bin/sh'
   echo ''
@@ -191,7 +192,6 @@ mdadm --detail --scan >> /etc/mdadm.conf
   echo '/usr/bin/umount /boot'
   echo "/usr/bin/mount PARTUUID=$DISK1P1_PARTUUID /boot"
 } > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
-mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
