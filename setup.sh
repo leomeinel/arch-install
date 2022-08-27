@@ -73,7 +73,6 @@ pacman-key --init
 # Install packages
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/packages_setup.txt
-pacman -Rnsc --noprogressbar --noconfirm sudo
 mv /git/mdadm-encrypted-btrfs/packages_post-install.txt /packages_post-install.txt
 chmod 644 /packages_post-install.txt
 
