@@ -42,6 +42,8 @@ reboot
 
 ## Post-installation (tty)
 
+:information_source: | Select your preferred kernel in GRUB
+
 :information_source: | Log into sysuser account and run
 
 ```
