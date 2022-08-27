@@ -136,7 +136,6 @@ echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
-sed -i 's/#PACMAN_AUTH=.*/PACMAN_AUTH=(doas)/' /etc/makepkg.conf
 
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 
