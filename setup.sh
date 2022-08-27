@@ -142,10 +142,10 @@ su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 
 # Configure symlinks
 mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
-ln -s /usr/bin/nvim /usr/bin/edit
-ln -s /usr/bin/nvim /usr/bin/vedit
-ln -s /usr/bin/nvim /usr/bin/vi
-ln -s /usr/bin/nvim /usr/bin/vim
+ln -s "$(which nvim)" /usr/bin/edit
+ln -s "$(which nvim)" /usr/bin/vedit
+ln -s "$(which nvim)" /usr/bin/vi
+ln -s "$(which nvim)" /usr/bin/vim
 chmod 755 /usr/bin/ex
 chmod 755 /usr/bin/view
 chmod 755 /usr/bin/vimdiff
