@@ -15,9 +15,14 @@ GRUBRESOLUTION="2560x1440"
 set -e
 
 # Set PARTUUID variables
-# FIXME: Check if $DISK2P1_PARTUUID is mounted under /boot. If it is, switch
 DISK1P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")"
 DISK2P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")"
+
+if lsblk -o PARTUUID,MOUNTPOINT | grep "$DISK2P1_PARTUUID" | grep -q "/boot"
+then
+  DISK1P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")"
+  DISK2P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")"
+fi
 
 # Detect partitions and set environment variables accordingly
 {
