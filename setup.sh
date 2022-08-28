@@ -181,16 +181,14 @@ mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
-mkdir /.boot.bak
-mkdir /.boot.bak.old
 {
   echo '#!/bin/sh'
   echo ''
-  echo '/usr/bin/rsync -a --delete /.boot.bak/* /.boot.bak.old/'
-  echo '/usr/bin/rsync -a --delete /boot/* /.boot.bak/'
+  echo '/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old'
+  echo '/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak'
   echo '/usr/bin/umount /boot'
-  echo "/usr/bin/mount UUID=$DISK2P1_UUID /boot/"
-  echo '/usr/bin/rsync -a --delete /.boot.bak/* /boot/'
+  echo "/usr/bin/mount UUID=$DISK2P1_UUID /boot"
+  echo '/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /boot'
   echo '/usr/bin/umount /boot'
   echo "/usr/bin/mount UUID=$DISK1P1_UUID /boot"
 } > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
