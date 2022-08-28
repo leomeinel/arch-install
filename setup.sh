@@ -15,13 +15,13 @@ GRUBRESOLUTION="2560x1440"
 set -e
 
 # Set PARTUUID variables
-DISK1P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")"
-DISK2P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")"
+DISK1P1_UUID="$(blkid -t LABEL="BOOT" -s UUID -o value | sed -n '1p' | tr -d "[:space:]")"
+DISK2P1_UUID="$(blkid -t LABEL="BOOT" -s UUID -o value | sed -n '2p' | tr -d "[:space:]")"
 
 if lsblk -rno PARTUUID,MOUNTPOINT | grep "$DISK2P1_PARTUUID" | grep -q "/boot"
 then
-  DISK1P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '2p' | tr -d "[:space:]")"
-  DISK2P1_PARTUUID="$(blkid -t LABEL="BOOT" -s PARTUUID -o value | sed -n '1p' | tr -d "[:space:]")"
+  DISK1P1_UUID="$(blkid -t LABEL="BOOT" -s UUID -o value | sed -n '2p' | tr -d "[:space:]")"
+  DISK2P1_UUID="$(blkid -t LABEL="BOOT" -s UUID -o value | sed -n '1p' | tr -d "[:space:]")"
 fi
 
 # Add groups and users
@@ -189,10 +189,10 @@ mkdir /.boot.bak.old
   echo '/usr/bin/rsync -a --delete /.boot.bak/* /.boot.bak.old/'
   echo '/usr/bin/rsync -a --delete /boot/* /.boot.bak/'
   echo '/usr/bin/umount /boot'
-  echo "/usr/bin/mount PARTUUID=$DISK2P1_PARTUUID /boot/"
+  echo "/usr/bin/mount UUID=$DISK2P1_UUID /boot/"
   echo '/usr/bin/rsync -a --delete /.boot.bak/* /boot/'
   echo '/usr/bin/umount /boot'
-  echo "/usr/bin/mount PARTUUID=$DISK1P1_PARTUUID /boot"
+  echo "/usr/bin/mount UUID=$DISK1P1_UUID /boot"
 } > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
