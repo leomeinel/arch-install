@@ -14,11 +14,11 @@ GRUBRESOLUTION="2560x1440"
 # Fail on error
 set -e
 
-# Set PARTUUID variables
+# Set UUID variables
 DISK1P1_UUID="$(blkid -t LABEL="BOOT" -s UUID -o value | sed -n '1p' | tr -d "[:space:]")"
 DISK2P1_UUID="$(blkid -t LABEL="BOOT" -s UUID -o value | sed -n '2p' | tr -d "[:space:]")"
 
-if lsblk -rno PARTUUID,MOUNTPOINT | grep "$DISK2P1_PARTUUID" | grep -q "/boot"
+if lsblk -rno UUID,MOUNTPOINT | grep "$DISK2P1_UUID" | grep -q "/boot"
 then
   DISK1P1_UUID="$(blkid -t LABEL="BOOT" -s UUID -o value | sed -n '2p' | tr -d "[:space:]")"
   DISK2P1_UUID="$(blkid -t LABEL="BOOT" -s UUID -o value | sed -n '1p' | tr -d "[:space:]")"
