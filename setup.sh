@@ -209,7 +209,9 @@ grub-mkconfig -o /boot/grub/grub.cfg
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
   # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md0_crypt> does not exist.
-systemctl enable snapper-timeline.timer
+# FIXME: timeline snapshots should be enabled
+  # TODO: Find out why they are so big and how to decrease it
+  # systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 
 # Remove repo
