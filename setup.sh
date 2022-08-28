@@ -14,10 +14,6 @@ GRUBRESOLUTION="2560x1440"
 # Fail on error
 set -e
 
-# Set UUID variables
-DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT /boot" | sed 's/BOOT \/boot//' | tr -d "[:space:]")"
-DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT  " | sed 's/BOOT  //' | tr -d "[:space:]")"
-
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r sudo
@@ -175,12 +171,17 @@ mdadm --detail --scan >> /etc/mdadm.conf
 
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
+DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT /boot" | sed 's/BOOT \/boot//' | tr -d "[:space:]")"
+DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT  " | sed 's/BOOT  //' | tr -d "[:space:]")"
 {
   echo '#!/bin/sh'
   echo ''
   echo '/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old'
   echo '/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak'
-  echo '/usr/bin/umount /boot'
+  echo 'if /usr/bin/mountpoint -q /boot'
+  echo 'then'
+  echo '  /usr/bin/umount -AR /boot'
+  echo 'fi'
   echo "/usr/bin/mount UUID=$DISK2P1_UUID /boot"
   echo '/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /boot'
   echo '/usr/bin/umount /boot'
