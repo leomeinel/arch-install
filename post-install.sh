@@ -7,9 +7,9 @@ KEYLAYOUT="de"
 set -e
 
 # Configure custom-bootbackup.sh
-DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT /boot" | sed 's/BOOT \/boot//' | tr -d "[:space:]")"
-DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT  " | sed 's/BOOT  //' | tr -d "[:space:]")"
 doas sh -c '{
+  DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT /boot" | sed "s/BOOT \/boot//" | tr -d "[:space:]")"
+  DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT  " | sed "s/BOOT  //" | tr -d "[:space:]")"
   echo "#!/bin/sh"
   echo ""
   echo "/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old"
