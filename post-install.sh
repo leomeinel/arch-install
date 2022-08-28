@@ -236,7 +236,8 @@ doas systemctl enable ip6tables
 # Generate nvidia config if needed
 pacman -Qq "nvidia-settings" &&
 ~/nvidia-install.sh &&
-rm -f ~/nvidia-install.sh
+rm -f ~/nvidia-install.sh &&
+paru -S --noprogressbar --noconfirm --needed nvidia-force-comp-pipeline
 
 # Remove script
 rm -f ~/post-install.sh
