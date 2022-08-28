@@ -107,3 +107,4 @@ quilt
 make
 automake
 gcc
+pacman-contrib
