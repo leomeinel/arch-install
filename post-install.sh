@@ -6,6 +6,25 @@ KEYLAYOUT="de"
 # Fail on error
 set -e
 
+# Configure custom-bootbackup.sh
+DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT /boot" | sed 's/BOOT \/boot//' | tr -d "[:space:]")"
+DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT  " | sed 's/BOOT  //' | tr -d "[:space:]")"
+doas sh -c '{
+  echo "#!/bin/sh"
+  echo ""
+  echo "/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old"
+  echo "/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak"
+  echo "if /usr/bin/mountpoint -q /boot"
+  echo "then"
+  echo "  /usr/bin/umount -AR /boot"
+  echo "fi"
+  echo "/usr/bin/mount UUID=$DISK2P1_UUID /boot"
+  echo "/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /boot"
+  echo "/usr/bin/umount /boot"
+  echo "/usr/bin/mount UUID=$DISK1P1_UUID /boot"
+} > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh'
+doas chmod 744 /etc/pacman.d/hooks/scripts/*.sh
+
 # Configure clock
 doas timedatectl set-ntp true
 
