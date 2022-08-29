@@ -189,6 +189,36 @@ systemctl enable libvirtd
 systemctl enable acpid
 
 # Configure pacman hooks in /etc/pacman.d/hooks
+{
+  echo '[Trigger]'
+  echo 'Operation=Install'
+  echo 'Operation=Upgrade'
+  echo 'Operation=Remove'
+  echo 'Type=Package'
+  echo 'Target=nvidia-dkms'
+  echo 'Target=linux'
+  echo 'Target=linux-lts'
+  echo 'Target=linux-hardened'
+  echo 'Target=linux-zen'
+  echo ''
+  echo '[Action]'
+  echo 'Description=Updating NVIDIA mkinitcpio...'
+  echo 'Depends=mkinitcpio'
+  echo 'When=PostTransaction'
+  echo 'NeedsTargets'
+  echo "Exec=/bin/sh -c '/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh'"
+} > /etc/pacman.d/hooks/custom-nvidia-gen-mkinitcpio.hook
+{
+  echo '#!/bin/sh'
+  echo ''
+  echo 'while read -r target'
+  echo 'do'
+  echo '    case $target in'
+  echo '        linux) exit 0'
+  echo '    esac'
+  echo 'done'
+  echo '/usr/bin/mkinitcpio -P'
+} > /etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
