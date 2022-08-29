@@ -189,6 +189,7 @@ systemctl enable libvirtd
 systemctl enable acpid
 
 # Configure pacman hooks in /etc/pacman.d/hooks
+mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 ## If on nvidia add hooks
 pacman -Qq "nvidia-dkms" &&
 {
@@ -223,7 +224,6 @@ pacman -Qq "nvidia-dkms" &&
     echo '/usr/bin/mkinitcpio -P'
   } > /etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh
 }
-mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
 
