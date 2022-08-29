@@ -4,6 +4,8 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 ## Info
 
+:information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
+
 :information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
 
 :warning: | All data on both disks will be wiped!
