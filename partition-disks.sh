@@ -148,10 +148,9 @@ lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
 echo "amd-ucode" >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
 {
-  echo "nvidia"
+  echo "nvidia-dkms"
   echo "nvidia-lts"
   echo "nvidia-settings"
-  echo "nvidia-dkms"
   echo "egl-wayland"
 } >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
