@@ -150,7 +150,6 @@ lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
 {
   echo "nvidia-dkms"
   echo "nvidia-lts"
-  echo "nvidia-settings"
   echo "egl-wayland"
 } >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
