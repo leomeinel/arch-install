@@ -200,6 +200,9 @@ mkinitcpio -P
 # Configure /etc/default/grub and /boot/grub/grub.cfg
 UUID="$(blkid -s UUID -o value /dev/md/md0)"
 sed -i "s/^GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^/GRUB_GFXMODE=.*/GRUB_GFXMODE=$GRUBRESOLUTION\x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$UUID:md0_crypt root=\/dev\/mapper\/md0_crypt video=$GRUBRESOLUTION\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=true/" /etc/default/grub
+## If on nvidia add nvidia_drm.modeset=1
+pacman -Qq "nvidia-dkms" &&
+sed -i '/GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
