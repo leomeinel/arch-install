@@ -1,7 +1,7 @@
 #!/bin/bash
 
 KEYMAP="de-latin1"
-HOSTNAME="tux-stellaris-15"
+HOSTNAME="stellaris-15"
 SYSUSER="systux"
 VIRTUSER="virt"
 HOMEUSER="leo"
