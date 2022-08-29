@@ -233,10 +233,6 @@ doas systemctl enable sddm
 doas systemctl enable iptables
 doas systemctl enable ip6tables
 
-# Generate nvidia config if needed
-pacman -Qq "nvidia-settings" &&
-~/nvidia-install.sh
-
 # Remove script
 rm -f ~/post-install.sh
 rm -f ~/packages_post-install.txt
