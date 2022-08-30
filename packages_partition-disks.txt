@@ -10,6 +10,7 @@ linux-zen
 linux-zen-headers
 linux-firmware
 wireless-regdb
+usbctl
 neovim
 btrfs-progs
 git
