@@ -16,7 +16,6 @@ kinfocenter
 power-profiles-daemon
 plasma-nm
 ktorrent
-wmctrl
 kde-gtk-config
 arc-gtk-theme
 cantarell-fonts
