@@ -90,7 +90,7 @@ chmod 644 /usr/share/gruvbox/gruvbox.yml
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
 rm -rf /.snapshots
-sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="sudo"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.1"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="10"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="10"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="no"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="no"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="4"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="2"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
+sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="sudo"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.1"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="10"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="10"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="4"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="2"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
 snapper --no-dbus -c root create-config /
 snapper --no-dbus -c var create-config /var
 snapper --no-dbus -c home create-config /home
@@ -249,9 +249,8 @@ grub-mkconfig -o /boot/grub/grub.cfg
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
   # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md0_crypt> does not exist.
-# FIXME: timeline snapshots should be enabled
-  # TODO: Find out why they are so big and how to decrease it
-  # systemctl enable snapper-timeline.timer
+# TODO: Find out why they are so big and how to decrease it
+systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 
 # Remove repo
