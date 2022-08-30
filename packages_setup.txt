@@ -109,3 +109,4 @@ automake
 gcc
 pacman-contrib
 hwinfo
+nss-mdns
