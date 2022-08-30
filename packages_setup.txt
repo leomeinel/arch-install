@@ -94,7 +94,6 @@ hyperfine
 starship
 notepadqq
 mathjax2
-xclip
 wl-clipboard
 ungoogled-chromium
 gimp
