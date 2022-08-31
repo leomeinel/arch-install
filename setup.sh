@@ -191,6 +191,13 @@ systemctl enable acpid
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 
+# Configure mDNS for Avahi
+## Configure mDNS in /etc/resolved.conf
+sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/resolved.conf
+
+## Configure mDNS in /etc/nsswitch.conf
+sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
+
 ## If on nvidia add hooks
 pacman -Qq "nvidia-dkms" &&
 {
