@@ -192,8 +192,8 @@ systemctl enable acpid
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 
 # Configure mDNS for Avahi
-## Configure mDNS in /etc/resolv.conf
-sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/resolv.conf
+## Configure mDNS in /etc/systemd/resolved.conf
+sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/systemd/resolved.conf
 
 ## Configure mDNS in /etc/nsswitch.conf
 sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
