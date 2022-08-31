@@ -95,6 +95,8 @@ starship
 notepadqq
 mathjax2
 wl-clipboard
+mailcap
+xdg-utils
 ungoogled-chromium
 gimp
 sshfs
