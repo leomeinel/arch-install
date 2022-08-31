@@ -97,6 +97,7 @@ mathjax2
 wl-clipboard
 mailcap
 xdg-utils
+kde-cli-tools
 ungoogled-chromium
 gimp
 sshfs
