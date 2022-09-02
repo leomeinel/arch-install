@@ -62,9 +62,9 @@ then
   OLD_BOOTCRYPT_0="$(lsblk -rnpo NAME | grep -B1 '/dev/mapper/boot_crypt$' | sed -n '1p' | tr -d '[:space:]')"
   OLD_BOOTCRYPT_1="$(lsblk -rnpo NAME | grep -B1 '/dev/mapper/boot_crypt_backup$' | sed -n '1p' | tr -d '[:space:]')"
   OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep 'raid1' | sed 's/raid1//' | tr -d "[:space:]")"
-  cryptsetup erase "$OLD_BOOTCRYPT_0"
-  cryptsetup erase "$OLD_BOOTCRYPT_1"
-  cryptsetup erase "$OLD_RAID"
+  cryptsetup erase "$OLD_BOOTCRYPT_0" || echo "OLD_BOOTCRYPT_0"
+  cryptsetup erase "$OLD_BOOTCRYPT_1" || echo "OLD_BOOTCRYPT_1"
+  cryptsetup erase "$OLD_RAID" || echo "OLD_RAID"
   if lsblk -rno TYPE | grep -q "raid1"
   then
     DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d '[:space:]')"
