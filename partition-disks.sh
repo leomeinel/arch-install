@@ -169,7 +169,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /de
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
-mount "$DISK1P1" /mnt/boot
+mount /dev/mapper/boot_crypt /mnt/boot
 mount "$DISK1P2" /mnt/efi
 
 # Install packages
