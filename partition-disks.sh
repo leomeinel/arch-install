@@ -111,9 +111,9 @@ cryptsetup close to_be_wiped
 cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
 cryptsetup luksOpen /dev/md/md0 md0_crypt
 
-# Format boot
-mkfs.fat -n BOOT -F32 "$DISK1P1"
-mkfs.fat -n BOOT -F32 "$DISK2P1"
+# Format /efi
+mkfs.fat -n EFI -F32 "$DISK1P1"
+mkfs.fat -n EFI -F32 "$DISK2P1"
 
 # Configure btrfs
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
@@ -132,11 +132,12 @@ mkdir /mnt/home
 mkdir /mnt/tmp
 mkdir /mnt/.snapshots
 mkdir /mnt/boot
+mkdir /mnt/efi
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
-mount "$DISK1P1" /mnt/boot
+mount "$DISK1P1" /mnt/efi
 
 # Install packages
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#NoProgressBar/NoProgressBar/' /etc/pacman.conf
