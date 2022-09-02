@@ -51,6 +51,7 @@ case "$choice" in
 esac
 
 # Detect and erase old crypt volumes
+## TODO: Encrypted /boot
 if lsblk -rno TYPE | grep -q "crypt"
 then
   OLD_CRYPT="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | tr -d "[:space:]")"
@@ -69,6 +70,7 @@ then
 fi
 
 # Detect and erase closed crypt and raid1 volumes
+## TODO: Encrypted /boot
 if lsblk -rno TYPE | grep -q "raid1"
 then
   DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
@@ -91,29 +93,60 @@ timedatectl set-ntp true
 # Erase and partition disks
 sgdisk -Z "$DISK1"
 sgdisk -Z "$DISK2"
+sgdisk -n 0:0:+1G -t 1:ef02 "$DISK1"
+sgdisk -n 0:0:+1G -t 1:ef02 "$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
 sgdisk -n 0:0:0 -t 1:fd00 "$DISK1"
 sgdisk -n 0:0:0 -t 1:fd00 "$DISK2"
 
 # Detect partitions and set variables accordingly
+
+## /boot
 DISK1P1="$(lsblk -rnpo NAME "$DISK1" | sed -n '2p' | tr -d "[:space:]")"
-DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
 DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '2p' | tr -d "[:space:]")"
+
+## /efi
+DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
 DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
 
+## /
+DISK1P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d "[:space:]")"
+DISK2P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d "[:space:]")"
+
 # Configure raid1
-mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1P2" "$DISK2P2"
+mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1P3" "$DISK2P3"
 
 # Configure encryption
+
+## /boot
+
+### DISK1
+cryptsetup open --type plain -d /dev/urandom "$DISK1P1" to_be_wiped
+cryptsetup close to_be_wiped
+cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks1 "$DISK1P1"
+cryptsetup luksOpen --type luks1 "$DISK1P1" boot_crypt
+
+### DISK2
+cryptsetup open --type plain -d /dev/urandom "$DISK2P1" to_be_wiped
+cryptsetup close to_be_wiped
+cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks1 "$DISK2P1"
+
+## /
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
 cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
 cryptsetup luksOpen /dev/md/md0 md0_crypt
 
 # Format boot
+
+## /boot
 mkfs.fat -n BOOT -F32 "$DISK1P1"
 mkfs.fat -n BOOT -F32 "$DISK2P1"
+
+## /efi
+mkfs.fat -n EFI -F32 "$DISK1P2"
+mkfs.fat -n EFI -F32 "$DISK2P2"
 
 # Configure btrfs
 mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
@@ -137,6 +170,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /de
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
 mount "$DISK1P1" /mnt/boot
+mount "$DISK1P2" /mnt/efi
 
 # Install packages
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#NoProgressBar/NoProgressBar/' /etc/pacman.conf
