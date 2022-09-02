@@ -252,7 +252,13 @@ sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINA
 ## If on nvidia add nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
 sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
-grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
+
+## Get $DISK1 from partition-disks.sh
+DISK1=<AUTOMATIC_VARIABLE_SET_BY_partition-disks.sh>
+
+## Install grub
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB --recheck
+grub-install --target=i386-pc --recheck "$DISK1"
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
