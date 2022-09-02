@@ -131,6 +131,7 @@ cryptsetup luksOpen --type luks1 "$DISK1P1" boot_crypt
 cryptsetup open --type plain -d /dev/urandom "$DISK2P1" to_be_wiped
 cryptsetup close to_be_wiped
 cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks1 "$DISK2P1"
+cryptsetup luksOpen --type luks1 "$DISK2P1" boot_crypt_backup
 
 ## /
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
@@ -141,8 +142,8 @@ cryptsetup luksOpen /dev/md/md0 md0_crypt
 # Format boot
 
 ## /boot
-mkfs.fat -n BOOT -F32 /dev/mapper/boot_crypt
-mkfs.fat -n BOOT -F32 /dev/mapper/boot_crypt
+mkfs.fat -n BOOTCRYPT -F32 /dev/mapper/boot_crypt
+mkfs.fat -n BOOTCRYPT -F32 /dev/mapper/boot_crypt_backup
 
 ## /efi
 mkfs.fat -n EFI -F32 "$DISK1P2"
