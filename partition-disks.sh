@@ -222,6 +222,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
 git clone --branch 35-todo-encrypted-boot https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
+sed -i "s/DISK1=<AUTOMATIC_VARIABLE_SET_BY_partition-disks.sh>/DISK1=\"$DISK1\"/" /mnt/git/mdadm-encrypted-btrfs/setup.sh
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
 
 # Remove repo
