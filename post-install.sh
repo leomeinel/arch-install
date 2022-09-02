@@ -7,7 +7,6 @@ KEYLAYOUT="de"
 set -e
 
 # Configure custom-bootbackup.sh
-# TODO: Fix /boot
 doas sh -c '{
   DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT /boot" | sed "s/BOOT \/boot//" | tr -d "[:space:]")"
   DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT  " | sed "s/BOOT  //" | tr -d "[:space:]")"
