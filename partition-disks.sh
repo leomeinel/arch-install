@@ -56,23 +56,23 @@ then
   OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep 'crypt' | sed 's/crypt//' | sed -n '1p' | tr -d '[:space:]')"
   OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME | grep 'crypt' | sed 's/crypt//' | sed -n '2p' | tr -d '[:space:]')"
   OLD_CRYPT_2="$(lsblk -Mrno TYPE,NAME | grep 'crypt' | sed 's/crypt//' | sed -n '3p' | tr -d '[:space:]')"
-  OLD_BOOTCRYPT_0="$(lsblk -rnpo NAME | grep -B1 '/dev/mapper/boot_crypt$' | sed -n '1p' | tr -d '[:space:]')"
-  OLD_BOOTCRYPT_1="$(lsblk -rnpo NAME | grep -B1 '/dev/mapper/boot_crypt_backup$' | sed -n '1p' | tr -d '[:space:]')"
-  OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep 'raid1' | sed 's/raid1//' | tr -d "[:space:]")"
   cryptsetup luksClose "$OLD_CRYPT_0"
   cryptsetup luksClose "$OLD_CRYPT_1"
   cryptsetup luksClose "$OLD_CRYPT_2"
-  cryptsetup erase "$OLD_BOOTCRYPT_0"
-  cryptsetup erase "$OLD_BOOTCRYPT_1"
+  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d '[:space:]')"
+  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d '[:space:]')"
+  OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep 'raid1' | sed 's/raid1//' | tr -d "[:space:]")"
+  cryptsetup erase "$DISK1P2"
+  cryptsetup erase "$DISK2P2"
   cryptsetup erase "$OLD_RAID"
   if lsblk -rno TYPE | grep -q "raid1"
   then
-    DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d '[:space:]')"
-    DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d '[:space:]')"
+    DISK1P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d '[:space:]')"
+    DISK2P3="$(lsblk -rnpo NAME "$DISK2" | sed -n '4p' | tr -d '[:space:]')"
     sgdisk -Z "$OLD_RAID"
     mdadm --stop --scan
-    mdadm --zero-superblock "$DISK1P2"
-    mdadm --zero-superblock "$DISK2P2"
+    mdadm --zero-superblock "$DISK1P3"
+    mdadm --zero-superblock "$DISK2P3"
   fi
 fi
 
@@ -81,18 +81,16 @@ if lsblk -rno TYPE | grep -q "raid1"
 then
   DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d '[:space:]')"
   DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d '[:space:]')"
-  ## TODO: /dev/mapper/boot_crypt and /dev/mapper/boot_crypt_backup won't exist if the volume is closed!
-  OLD_BOOTCRYPT_0="$(lsblk -rnpo NAME | grep -B1 '/dev/mapper/boot_crypt$' | sed -n '1p' | tr -d '[:space:]')"
-  OLD_BOOTCRYPT_1="$(lsblk -rnpo NAME | grep -B1 '/dev/mapper/boot_crypt_backup$' | sed -n '1p' | tr -d '[:space:]')"
-  ## END
   OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep 'raid1' | sed 's/raid1//' | tr -d '[:space:]')"
-  if cryptsetup isLuks "$OLD_BOOTCRYPT_0"
+  DISK1P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d '[:space:]')"
+  DISK2P3="$(lsblk -rnpo NAME "$DISK2" | sed -n '4p' | tr -d '[:space:]')"
+  if cryptsetup isLuks "$DISK1P2"
   then
-    cryptsetup erase "$OLD_BOOTCRYPT_0"
+    cryptsetup erase "$DISK1P2"
   fi
-  if cryptsetup isLuks "$OLD_BOOTCRYPT_1"
+  if cryptsetup isLuks "$DISK2P2"
   then
-    cryptsetup erase "$OLD_BOOTCRYPT_1"
+    cryptsetup erase "$DISK2P2"
   fi
   if cryptsetup isLuks "$OLD_RAID"
   then
@@ -100,8 +98,8 @@ then
   fi
   sgdisk -Z "$OLD_RAID"
   mdadm --stop --scan
-  mdadm --zero-superblock "$DISK1P2"
-  mdadm --zero-superblock "$DISK2P2"
+  mdadm --zero-superblock "$DISK1P3"
+  mdadm --zero-superblock "$DISK2P3"
 fi
 
 # Load $KEYMAP and set time
