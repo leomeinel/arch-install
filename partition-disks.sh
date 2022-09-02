@@ -112,8 +112,8 @@ DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
 
 ## /
 DISK1P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d "[:space:]")"
-DISK2P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d "[:space:]")"
-
+DISK2P3="$(lsblk -rnpo NAME "$DISK2" | sed -n '4p' | tr -d "[:space:]")"
+1
 # Configure raid1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1P3" "$DISK2P3"
 
