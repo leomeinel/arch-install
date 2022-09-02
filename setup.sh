@@ -244,8 +244,7 @@ sed -i '/^MODULES=.*/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/m
 mkinitcpio -P
 
 # Configure /etc/default/grub and /boot/grub/grub.cfg
-# TODO: $DISK1P1 is not mounted under /boot. /dev/mapper/boot_crypt is.
-DISK1P1="$(lsblk -rno LABEL,MOUNTPOINT,NAME | grep "BOOTCRYPT /boot" | sed "s/BOOTCRYPT \/boot//" | tr -d "[:space:]")"
+DISK1P1="$(dmsetup deps -o devname /dev/mapper/boot_crypt)"
 BOOTUUID="$(blkid -s UUID -o value $DISK1P1)"
 ROOTUUID="$(blkid -s UUID -o value /dev/md/md0)"
 sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$ROOTUUID:md0_crypt cryptdevice=UUID=$BOOTUUID:boot_crypt root=\/dev\/mapper\/md0_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=true/" /etc/default/grub
