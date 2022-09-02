@@ -48,7 +48,6 @@ inetutils
 bluez
 bluez-utils
 ethtool
-iw
 cups
 hplip
 alsa-utils
@@ -105,8 +104,5 @@ jpegoptim
 oxipng
 lldb
 quilt
-make
-automake
-gcc
 pacman-contrib
 hwinfo
