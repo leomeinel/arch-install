@@ -141,8 +141,8 @@ cryptsetup luksOpen /dev/md/md0 md0_crypt
 # Format boot
 
 ## /boot
-mkfs.fat -n BOOT -F32 "$DISK1P1"
-mkfs.fat -n BOOT -F32 "$DISK2P1"
+mkfs.fat -n BOOT -F32 /dev/mapper/boot_crypt
+mkfs.fat -n BOOT -F32 /dev/mapper/boot_crypt
 
 ## /efi
 mkfs.fat -n EFI -F32 "$DISK1P2"
