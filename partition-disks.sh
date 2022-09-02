@@ -59,11 +59,11 @@ then
   cryptsetup luksClose "$OLD_CRYPT_0"
   cryptsetup luksClose "$OLD_CRYPT_1"
   cryptsetup luksClose "$OLD_CRYPT_2"
-  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d '[:space:]')"
-  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d '[:space:]')"
+  DISK1P1="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d '[:space:]')"
+  DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d '[:space:]')"
   OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep 'raid1' | sed 's/raid1//' | tr -d "[:space:]")"
-  cryptsetup erase "$DISK1P2"
-  cryptsetup erase "$DISK2P2"
+  cryptsetup erase "$DISK1P1"
+  cryptsetup erase "$DISK2P1"
   cryptsetup erase "$OLD_RAID"
   if lsblk -rno TYPE | grep -q "raid1"
   then
@@ -79,18 +79,18 @@ fi
 # Detect and erase closed crypt and raid1 volumes
 if lsblk -rno TYPE | grep -q "raid1"
 then
-  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d '[:space:]')"
-  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d '[:space:]')"
+  DISK1P1="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d '[:space:]')"
+  DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d '[:space:]')"
   OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep 'raid1' | sed 's/raid1//' | tr -d '[:space:]')"
   DISK1P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d '[:space:]')"
   DISK2P3="$(lsblk -rnpo NAME "$DISK2" | sed -n '4p' | tr -d '[:space:]')"
-  if cryptsetup isLuks "$DISK1P2"
+  if cryptsetup isLuks "$DISK1P1"
   then
-    cryptsetup erase "$DISK1P2"
+    cryptsetup erase "$DISK1P1"
   fi
-  if cryptsetup isLuks "$DISK2P2"
+  if cryptsetup isLuks "$DISK2P1"
   then
-    cryptsetup erase "$DISK2P2"
+    cryptsetup erase "$DISK2P1"
   fi
   if cryptsetup isLuks "$OLD_RAID"
   then
