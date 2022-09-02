@@ -6,14 +6,12 @@ KEYLAYOUT="de"
 # Fail on error
 set -e
 
-# Configure custom-bootbackup.sh
+# Configure custom-efibackup.sh
 doas sh -c '{
   DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "EFI /efi" | sed "s/EFI \/efi//" | tr -d "[:space:]")"
   DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "EFI  " | sed "s/EFI  //" | tr -d "[:space:]")"
   echo "#!/bin/sh"
   echo ""
-  echo "/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old"
-  echo "/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak"
   echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old"
   echo "/usr/bin/rsync -aq --delete --mkpath /efi/ /.efi.bak"
   echo "if /usr/bin/mountpoint -q /efi"
@@ -24,7 +22,7 @@ doas sh -c '{
   echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /efi"
   echo "/usr/bin/umount /efi"
   echo "/usr/bin/mount UUID=$DISK1P1_UUID /efi"
-} > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh'
+} > /etc/pacman.d/hooks/scripts/custom-efibackup.sh'
 doas chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
 # Configure clock
