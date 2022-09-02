@@ -26,13 +26,15 @@ doas sh -c '{
   echo "then"
   echo "  /usr/bin/umount -AR /efi"
   echo "fi"
-  echo "/usr/bin/mount UUID=$DISK2P1_UUID /boot"
+  echo "cryptsetup luksOpen --type luks1 "$DISK2P1" boot_crypt_backup"
+  echo "/usr/bin/mount /dev/mapper/boot_crypt_backup /boot"
   echo "/usr/bin/mount UUID=$DISK2P2_UUID /efi"
   echo "/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /boot"
   echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /efi"
   echo "/usr/bin/umount -AR /boot"
   echo "/usr/bin/umount -AR /efi"
-  echo "/usr/bin/mount UUID=$DISK1P1_UUID /boot"
+  echo "cryptsetup luksOpen --type luks1 "$DISK2P1" boot_crypt"
+  echo "/usr/bin/mount /dev/mapper/boot_crypt /boot"
   echo "/usr/bin/mount UUID=$DISK1P2_UUID /efi"
 } > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh'
 doas chmod 744 /etc/pacman.d/hooks/scripts/*.sh
