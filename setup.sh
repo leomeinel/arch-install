@@ -254,9 +254,6 @@ sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y;s/^#GRUB_TERMINAL
 pacman -Qq "nvidia-dkms" &&
 sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
-## TODO: I am not sure if this is actually needed. If it is, don't mount $DISK1P1
-##       I am also not sure if $DISK1P1 is actually correct. If I'd choose $DISK1 I'm pretty sure that this will cause problems.
-grub-install --target=i386-pc --recheck "$DISK1P1"
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
