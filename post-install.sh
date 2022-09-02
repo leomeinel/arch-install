@@ -8,20 +8,22 @@ set -e
 
 # Configure custom-bootbackup.sh
 doas sh -c '{
-  DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT /boot" | sed "s/BOOT \/boot//" | tr -d "[:space:]")"
-  DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT  " | sed "s/BOOT  //" | tr -d "[:space:]")"
+  DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "EFI /efi" | sed "s/EFI \/efi//" | tr -d "[:space:]")"
+  DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "EFI  " | sed "s/EFI  //" | tr -d "[:space:]")"
   echo "#!/bin/sh"
   echo ""
   echo "/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old"
   echo "/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak"
-  echo "if /usr/bin/mountpoint -q /boot"
+  echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old"
+  echo "/usr/bin/rsync -aq --delete --mkpath /efi/ /.efi.bak"
+  echo "if /usr/bin/mountpoint -q /efi"
   echo "then"
-  echo "  /usr/bin/umount -AR /boot"
+  echo "  /usr/bin/umount -AR /efi"
   echo "fi"
-  echo "/usr/bin/mount UUID=$DISK2P1_UUID /boot"
-  echo "/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /boot"
-  echo "/usr/bin/umount /boot"
-  echo "/usr/bin/mount UUID=$DISK1P1_UUID /boot"
+  echo "/usr/bin/mount UUID=$DISK2P1_UUID /efi"
+  echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /efi"
+  echo "/usr/bin/umount /efi"
+  echo "/usr/bin/mount UUID=$DISK1P1_UUID /efi"
 } > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh'
 doas chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
