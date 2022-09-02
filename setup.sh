@@ -244,13 +244,19 @@ sed -i '/^MODULES=.*/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/m
 mkinitcpio -P
 
 # Configure /etc/default/grub and /boot/grub/grub.cfg
-UUID="$(blkid -s UUID -o value /dev/md/md0)"
-sed -i "s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$UUID:md0_crypt root=\/dev\/mapper\/md0_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=true/" /etc/default/grub
+# TODO: $DISK1P1 is not mounted under /boot. /dev/mapper/boot_crypt is.
+DISK1P1="$(lsblk -rno LABEL,MOUNTPOINT,NAME | grep "BOOTCRYPT /boot" | sed "s/BOOTCRYPT \/boot//" | tr -d "[:space:]")"
+BOOTUUID="$(blkid -s UUID -o value $DISK1P1)"
+ROOTUUID="$(blkid -s UUID -o value /dev/md/md0)"
+sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$ROOTUUID:md0_crypt cryptdevice=UUID=$BOOTUUID:boot_crypt root=\/dev\/mapper\/md0_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=true/" /etc/default/grub
 
 ## If on nvidia add nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
 sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
+## TODO: I am not sure if this is actually needed. If it is, don't mount $DISK1P1
+##       I am also not sure if $DISK1P1 is actually correct. If I'd choose $DISK1 I'm pretty sure that this will cause problems.
+grub-install --target=i386-pc --recheck "$DISK1P1"
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
