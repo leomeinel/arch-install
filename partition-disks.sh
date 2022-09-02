@@ -203,7 +203,7 @@ pacstrap /mnt - < /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
-git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
+git clone --branch 35-todo-encrypted-boot https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
 
 # Remove repo
