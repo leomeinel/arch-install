@@ -40,7 +40,6 @@ pipewire-pulse
 pipewire-jack
 wireplumber
 rustup
-grub
 grub-btrfs
 efibootmgr
 mtools
