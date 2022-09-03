@@ -20,7 +20,7 @@ sudo pacman -Syu --noprogressbar --noconfirm --needed grub-btrfs
 sudo pacman --noprogressbar --noconfirm -Rsnc bdf-unifont
 
 # Set up post-install.sh
-git clone --branch encrypted-boot https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git ~/git/mdadm-encrypted-btrfs
+git clone --branch encrypted-boot-partition https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git ~/git/mdadm-encrypted-btrfs
 mv ~/git/mdadm-encrypted-btrfs/post-install.sh ~/
 mv ~/git/mdadm-encrypted-btrfs/packages_post-install.txt ~/
 chmod +x ~/post-install.sh
