@@ -60,6 +60,22 @@ sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#C
 } >> /etc/pacman.conf
 pacman-key --init
 
+# Configure $SYSUSER
+## sudo
+## FIXME: Sudo is mainly used for:
+  ## - /usr/bin/mkarchroot
+  ## - SETENV: /usr/bin/makechrootpkg
+  ## - /usr/bin/arch-nspawn
+  ## It shouldn't be enabled for ALL.
+  ## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
+    ## FUTURE GOAL: REPLACE sudo WITH doas
+echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
+
+chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
+su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
+
+echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
+
 # Install packages
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/packages_setup.txt
@@ -108,24 +124,10 @@ chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 
 # Configure $SYSUSER
-chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
-
-## sudo
-## FIXME: Sudo is mainly used for:
-  ## - /usr/bin/mkarchroot
-  ## - SETENV: /usr/bin/makechrootpkg
-  ## - /usr/bin/arch-nspawn
-  ## It shouldn't be enabled for ALL.
-  ## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
-    ## FUTURE GOAL: REPLACE sudo WITH doas
-echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
-
 ## opendoas
 mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
-
-su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 
 # Configure symlinks
 mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
