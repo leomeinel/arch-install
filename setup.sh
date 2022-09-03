@@ -240,14 +240,18 @@ pacman -Qq "nvidia-dkms" &&
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
 
-# Add key for /dev/mapper/md0_crypt
+# Add key for /dev/mapper/md0_crypt and /dev/mapper/md1_crypt
 dd bs=1024 count=4 if=/dev/urandom of=/root/md0_crypt.keyfile iflag=fullblock
+dd bs=1024 count=4 if=/dev/urandom of=/root/md1_crypt.keyfile iflag=fullblock
 chmod 000 /root/md0_crypt.keyfile
-MDUUID="$(blkid -s UUID -o value /dev/md/md0)"
-cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MDUUID" /root/md0_crypt.keyfile
+chmod 000 /root/md1_crypt.keyfile
+MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
+MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
+cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /root/md0_crypt.keyfile
+cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD1UUID" /root/md1_crypt.keyfile
 
 # Configure /etc/mkinitcpio.conf
-sed -i 's/^FILES=.*/FILES=(\/root\/md0_crypt.keyfile)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+sed -i 's/^FILES=.*/FILES=(\/root\/md0_crypt.keyfile \/root\/md1_crypt.keyfile)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 
 ## If on nvidia add nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
@@ -256,8 +260,9 @@ mkinitcpio -P
 chmod 600 /boot/initramfs-linux*
 
 # Configure /etc/default/grub
-CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md0_crypt)"
-sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$MDUUID:md0_crypt root=UUID=$CRYPTUUID cryptkey=rootfs:\/root\/md0_crypt.keyfile\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"loglevel=3 quiet cryptdevice=UUID=$MDUUID:md0_crypt root=UUID=$CRYPTUUID cryptkey=rootfs:\/root\/md0_crypt.keyfile\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
+MD0CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md0_crypt)"
+MD1CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md1_crypt)"
+sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$MD0UUID:md0_crypt cryptdevice=UUID=$MD1UUID:md1_crypt root=UUID=$MD1CRYPTUUID cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptkey=rootfs:\/root\/md1_crypt.keyfile\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"loglevel=3 quiet cryptdevice=UUID=$MD0UUID:md0_crypt cryptdevice=UUID=$MD1UUID:md0_crypt root=UUID=$MD1CRYPTUUID cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptkey=rootfs:\/root\/md1_crypt.keyfile\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=true/" /etc/default/grub
 
 ## If on nvidia add nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
@@ -267,7 +272,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
-  # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md0_crypt> does not exist.
+  # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md1_crypt> does not exist.
 systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 
