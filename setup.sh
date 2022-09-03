@@ -60,6 +60,9 @@ sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#C
 } >> /etc/pacman.conf
 pacman-key --init
 
+# Update mirrors
+reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
+
 # Configure $SYSUSER
 ## sudo
 ## FIXME: Sudo is mainly used for:
@@ -76,13 +79,14 @@ mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
 
+## Install required aur packages
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 
+## sudo
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
 # Install packages
-reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/packages_setup.txt
 
 # Change ownership of /var/lib/repo/aur to $SYSUSER
