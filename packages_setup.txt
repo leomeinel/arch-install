@@ -19,7 +19,7 @@ ktorrent
 kde-gtk-config
 arc-gtk-theme
 cantarell-fonts
-ttf-nerd-fonts-symbols-2048-em-mono
+ttf-iosevka-nerd
 sddm
 sddm-kcm
 ksystemlog
