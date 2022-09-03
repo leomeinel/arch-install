@@ -247,7 +247,9 @@ chmod 000 /root/md0_crypt.keyfile
 chmod 000 /root/md1_crypt.keyfile
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
+echo "Enter password for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /root/md0_crypt.keyfile
+echo "Enter password for /dev/md/md1"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD1UUID" /root/md1_crypt.keyfile
 
 # Configure /etc/mkinitcpio.conf
