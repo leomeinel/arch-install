@@ -247,7 +247,7 @@ MDUUID="$(blkid -s UUID -o value /dev/md/md0)"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MDUUID" /root/md0_crypt.keyfile
 
 # Configure /etc/mkinitcpio.conf
-sed -i 's/^FILES=.*/FILES=(/root/md0_crypt.keyfile)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+sed -i 's/^FILES=.*/FILES=(\/root\/md0_crypt.keyfile)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 
 ## If on nvidia add nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
