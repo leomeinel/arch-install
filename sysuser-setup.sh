@@ -6,6 +6,7 @@ set -e
 # Install bdf-unifont (make dependency for grub-improved-luks2-git) beforehand
 git clone https://aur.archlinux.org/bdf-unifont.git ~/git/bdf-unifont
 cd ~/git/bdf-unifont
+sudo gpg --recv-keys 1A09227B1F435A33
 makepkg -sri --noprogressbar --noconfirm --needed
 
 # Install grub-improved-luks2-git
