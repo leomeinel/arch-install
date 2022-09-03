@@ -4,7 +4,7 @@
 set -e
 
 # Install bdf-unifont (make dependency for grub-improved-luks2-git) beforehand
-sudo pacman -Sy
+sudo pacman -Sy --noprogressbar --noconfirm
 git clone https://aur.archlinux.org/bdf-unifont.git ~/git/bdf-unifont
 cd ~/git/bdf-unifont
 gpg --recv-keys 1A09227B1F435A33
@@ -14,10 +14,10 @@ makepkg -sri --noprogressbar --noconfirm --needed
 git clone https://aur.archlinux.org/grub-improved-luks2-git.git ~/git/grub-improved-luks2-git
 cd ~/git/grub-improved-luks2-git
 makepkg -sri --noprogressbar --noconfirm --needed
-sudo pacman -Syu grub-btrfs
+sudo pacman -Syu --noprogressbar --noconfirm --needed grub-btrfs
 
 # Remove bdf-unifont (make dependency for grub-improved-luks2-git)
-sudo pacman -Rsnc bdf-unifont
+sudo pacman --noprogressbar --noconfirm -Rsnc bdf-unifont
 
 # Set up post-install.sh
 git clone --branch encrypted-boot https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git ~/git/mdadm-encrypted-btrfs
