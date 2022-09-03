@@ -71,6 +71,11 @@ pacman-key --init
     ## FUTURE GOAL: REPLACE sudo WITH doas
 echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
 
+## opendoas
+mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
+chown -c root:root /etc/doas.conf
+chmod -c 0400 /etc/doas.conf
+
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 
@@ -122,12 +127,6 @@ chown :sudo /var/.snapshots
 chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
-
-# Configure $SYSUSER
-## opendoas
-mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
-chown -c root:root /etc/doas.conf
-chmod -c 0400 /etc/doas.conf
 
 # Configure symlinks
 mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
