@@ -8,8 +8,8 @@ set -e
 
 # Configure custom-efibackup.sh
 doas sh -c '{
-  DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "EFI /efi" | sed "s/EFI \/efi//" | tr -d "[:space:]")"
-  DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "EFI  " | sed "s/EFI  //" | tr -d "[:space:]")"
+  DISK1P1_UUID="$(lsblk -rno TYPE,LABEL,MOUNTPOINT,UUID | grep "part" | sed "s/part//" | grep "EFI /efi" | sed "s/EFI \/efi//" | tr -d "[:space:]")"
+  DISK2P1_UUID="$(lsblk -rno TYPE,LABEL,MOUNTPOINT,UUID | grep "part" | sed "s/part//" | grep "EFI  " | sed "s/EFI  //" | tr -d "[:space:]")"
   echo "#!/bin/sh"
   echo ""
   echo "if [ -d /.efi.bak ]"
