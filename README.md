@@ -32,9 +32,9 @@ reboot
 
 :information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-:information_source: | Set variables before `partition-disks.sh` using `vim /root/<...>/partition-disks.sh`
+:information_source: | Set variables before `partition-disks.sh` using `vim /root/<...>/partition-disks.sh`.
 
-:information_source: | Set variables after `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`
+:information_source: | Set variables after `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`.
 
 ### *Low GRUBRESOLUTION for VM*
 
@@ -48,13 +48,13 @@ reboot
 
 :exclamation: | **This is mandatory**
 
-:information_source: | Boot into UEFI firmware setup utility, enable Secure Boot and clear all preloaded Secure Boot keys.
+:information_source: | Select `UEFI Firmware Settings` in GRUB, enable Secure Boot and clear all preloaded Secure Boot keys.
 
-:information_source: | Set your UEFI firmware supervisor password.
+:information_source: | Set your UEFI firmware supervisor password and reboot.
 
-:information_source: | Select your preferred kernel in GRUB
+:information_source: | Select your preferred kernel in GRUB.
 
-:information_source: | Log into sysuser account and run
+:information_source: | Log into sysuser account and run.
 
 ```
 ~/post-install.sh
@@ -65,9 +65,9 @@ reboot
 
 ### Do this for every user account
 
-:information_source: |  Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
+:information_source: |  Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`.
 
-:information_source: |  Change Wallpaper by `right-clicking` your `Desktop`
+:information_source: |  Change Wallpaper by `right-clicking` your `Desktop`.
 
 ### Do this additionally if if you have an NVIDIA GPU
 
