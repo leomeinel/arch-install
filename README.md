@@ -44,13 +44,15 @@ reboot
 
 ## Post-installation (tty)
 
-1. :information_source: | Boot into UEFI firmware setup utility, enable Secure Boot and clear all preloaded Secure Boot keys.
+:warning: | This is mandatory!
 
-2. :information_source: | Set your UEFI firmware supervisor password.
+:information_source: | Boot into UEFI firmware setup utility, enable Secure Boot and clear all preloaded Secure Boot keys.
 
-3. :information_source: | Select your preferred kernel in GRUB
+:information_source: | Set your UEFI firmware supervisor password.
 
-4. :information_source: | Log into sysuser account and run
+:information_source: | Select your preferred kernel in GRUB
+
+:information_source: | Log into sysuser account and run
 
 ```
 ~/post-install.sh
