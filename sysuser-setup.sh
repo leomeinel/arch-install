@@ -15,11 +15,6 @@ git clone https://aur.archlinux.org/grub-improved-luks2-git.git ~/git/grub-impro
 cd ~/git/grub-improved-luks2-git
 makepkg -sri --noprogressbar --noconfirm --needed
 
-# Install mkinitcpio-chkcryptoboot
-git clone https://aur.archlinux.org/mkinitcpio-chkcryptoboot.git ~/git/mkinitcpio-chkcryptoboot
-cd ~/git/mkinitcpio-chkcryptoboot
-makepkg -sri --noprogressbar --noconfirm --needed
-
 # Install cryptboot
 git clone https://aur.archlinux.org/cryptboot.git ~/git/cryptboot
 cd ~/git/cryptboot
