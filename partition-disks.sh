@@ -79,9 +79,10 @@ then
     mdadm --stop "$OLD_RAID_1"
     mdadm --zero-superblock "$DISK1P2"
     mdadm --zero-superblock "$DISK2P2"
-    sleep 5
-    mdadm --zero-superblock "$DISK1P3"
-    mdadm --zero-superblock "$DISK2P3"
+    echo "$OLD_RAID_0 ; $OLD_CRYPT_0 ; $OLD_RAID_1 ; $OLD_CRYPT_1"
+    echo "$DISK1P2 ; $DISK1P3 ; $DISK2P2 ; $DISK2P3"
+    mdadm --zero-superblock "$DISK1P3" || echo "mdadm --zero-superblock $DISK1P3"
+    mdadm --zero-superblock "$DISK2P3" || echo "mdadm --zero-superblock $DISK2P3"
   fi
 fi
 
@@ -108,9 +109,10 @@ then
   mdadm --stop "$OLD_RAID_1"
   mdadm --zero-superblock "$DISK1P2"
   mdadm --zero-superblock "$DISK2P2"
-  sleep 5
-  mdadm --zero-superblock "$DISK1P3"
-  mdadm --zero-superblock "$DISK2P3"
+  echo "$OLD_RAID_0 ; $OLD_CRYPT_0 ; $OLD_RAID_1 ; $OLD_CRYPT_1"
+  echo "$DISK1P2 ; $DISK1P3 ; $DISK2P2 ; $DISK2P3"
+  mdadm --zero-superblock "$DISK1P3" || echo "mdadm --zero-superblock $DISK1P3"
+  mdadm --zero-superblock "$DISK2P3" || echo "mdadm --zero-superblock $DISK2P3"
 fi
 
 # Load $KEYMAP and set time
