@@ -291,9 +291,9 @@ cryptboot update-grub
 cryptboot umount
 chmod -R 700 /boot/*
 chmod -R 700 /efi/*
-chmod 700 /etc/default/grub
-chmod 700 /etc/default/chkcryptoboot.conf
-chmod 700 /etc/cryptboot.conf
+chmod 600 /etc/default/grub
+chmod 600 /etc/default/chkcryptoboot.conf
+chmod 600 /etc/cryptboot.conf
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
