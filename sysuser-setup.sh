@@ -14,6 +14,13 @@ makepkg -sri --noprogressbar --noconfirm --needed
 git clone https://aur.archlinux.org/grub-improved-luks2-git.git ~/git/grub-improved-luks2-git
 cd ~/git/grub-improved-luks2-git
 makepkg -sri --noprogressbar --noconfirm --needed
+
+# Install mkinitcpio-chkcryptoboot
+git clone https://aur.archlinux.org/mkinitcpio-chkcryptoboot.git ~/git/mkinitcpio-chkcryptoboot
+cd ~/git/mkinitcpio-chkcryptoboot
+makepkg -sri --noprogressbar --noconfirm --needed
+
+# Install grub-btrfs
 sudo pacman -Syu --noprogressbar --noconfirm --needed grub-btrfs
 
 # Remove bdf-unifont (make dependency for grub-improved-luks2-git)
