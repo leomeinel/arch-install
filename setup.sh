@@ -293,6 +293,10 @@ chmod 600 /etc/default/grub
 chmod 600 /etc/default/chkcryptoboot.conf
 chmod 600 /etc/cryptboot.conf
 
+# Configure /etc/fstab
+sed -i '/\/boot.*vfat/s/rw/noauto,rw/' /etc/fstab
+sed -i '/\/efi.*vfat/s/rw/noauto,rw/' /etc/fstab
+
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
   # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md1_crypt> does not exist.
