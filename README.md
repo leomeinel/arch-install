@@ -44,7 +44,7 @@ reboot
 
 ## Post-installation (tty)
 
-:warning: | This is mandatory!
+:warning: | This is mandatory! Follow [this guide](https://wiki.debian.org/SecureBoot/VirtualMachine#Alternatively:_using_virt-manager) for virt-manager Secure Boot
 
 :information_source: | Boot into UEFI firmware setup utility, enable Secure Boot and clear all preloaded Secure Boot keys.
 
