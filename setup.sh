@@ -288,12 +288,12 @@ cryptboot mount
 cryptboot-efikeys create
 cryptboot-efikeys enroll
 cryptboot update-grub
-cryptboot umount
 chmod -R 700 /boot/*
 chmod -R 700 /efi/*
 chmod 600 /etc/default/grub
 chmod 600 /etc/default/chkcryptoboot.conf
 chmod 600 /etc/cryptboot.conf
+cryptboot umount
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
