@@ -240,7 +240,7 @@ pacman -Qq "nvidia-dkms" &&
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
 
-# Add key for /dev/mapper/md0_crypt and /dev/mapper/md1_crypt
+# Add key for /dev/mapper/md0_crypt
 dd bs=1024 count=4 if=/dev/urandom of=/root/md0_crypt.keyfile iflag=fullblock
 chmod 000 /root/md0_crypt.keyfile
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
