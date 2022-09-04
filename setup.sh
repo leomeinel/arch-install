@@ -276,17 +276,6 @@ sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/defau
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# Enroll EFI-Keys
-umount -AR /boot
-umount -AR /efi
-cryptboot mount
-cryptboot-efikeys create
-cryptboot-efikeys enroll
-cryptboot update-grub
-cryptboot umount
-chmod 600 /etc/default/grub
-chmod 600 /etc/cryptboot.conf
-
 # Configure /etc/fstab
 sed -i '/\/boot.*vfat/s/rw/noauto,rw/' /etc/fstab
 sed -i '/\/efi.*vfat/s/rw/noauto,rw/' /etc/fstab
