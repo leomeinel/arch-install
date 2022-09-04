@@ -77,6 +77,7 @@ then
     sgdisk -Z "$OLD_RAID_1"
     mdadm --stop "$OLD_RAID_0"
     mdadm --stop "$OLD_RAID_1"
+    sleep 10
     mdadm --zero-superblock "$DISK1P2"
     mdadm --zero-superblock "$DISK2P2"
     mdadm --zero-superblock "$DISK1P3"
@@ -105,6 +106,7 @@ then
   sgdisk -Z "$OLD_RAID_1"
   mdadm --stop "$OLD_RAID_0"
   mdadm --stop "$OLD_RAID_1"
+  sleep 10
   mdadm --zero-superblock "$DISK1P2"
   mdadm --zero-superblock "$DISK2P2"
   mdadm --zero-superblock "$DISK1P3"
