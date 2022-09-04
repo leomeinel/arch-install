@@ -86,6 +86,16 @@ su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 ## sudo
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
+# Configure /etc/default/chkcryptoboot.conf
+SHA256SUM0="$(dd bs=1024 count=4 if=/dev/urandom iflag=fullblock status=none | sha256sum | tr -d '[:space:],-')"
+SHA256SUM1="$(dd bs=1024 count=4 if=/dev/urandom iflag=fullblock status=none | sha256sum | tr -d '[:space:],-')"
+sed -i 's/^BOOTMODE=.*/BOOTMODE=efi/;s/^ESP=.*/ESP=\/efi/;s/^EFISTUB=.*/EFISTUB=\/efi\/EFI\/grub\/grubx64.efi/;s/^CMDLINE_NAME=.*/CMDLINE_NAME='"$SHA256SUM0"'/;s/^CMDLINE_VALUE=.*/CMDLINE_VALUE='"$SHA256SUM1"'/;'
+
+# Configure /etc/cryptboot.conf
+chmod -R 755 /boot/efikeys
+chmod 700 /boot/efikeys/*
+sed -i 's/^BOOT_CRYPT_NAME=.*/BOOT_CRYPT_NAME="md0_crypt"/;s/^BOOT_DIR=.*/BOOT_DIR="\/boot"/;s/^EFI_DIR=.*/EFI_DIR="\/efi"/;s/^BOOT_LOADER=.*/BOOT_LOADER="GRUB"/;s/^EFI_ID_GRUB=.*/EFI_ID_GRUB="GRUB"/;s/^EFI_PATH_GRUB=.*/EFI_PATH_GRUB="EFI\/grub\/grubx64.efi"/;s/^EFI_KEYS_DIR=.*/EFI_KEYS_DIR="\/boot\/efikeys"/'
+
 # Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/packages_setup.txt
 
@@ -248,7 +258,7 @@ echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /root/md0_crypt.keyfile
 
 # Configure /etc/mkinitcpio.conf
-sed -i 's/^FILES=.*/FILES=(\/root\/md0_crypt.keyfile)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+sed -i 's/^FILES=.*/FILES=(\/root\/md0_crypt.keyfile)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev chkcryptoboot encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 
 ## If on nvidia add nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
@@ -259,13 +269,22 @@ chmod 600 /boot/initramfs-linux*
 # Configure /etc/default/grub
 MD0CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md0_crypt)"
 MD1CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md1_crypt)"
-sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=UUID=$MD1CRYPTUUID\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"loglevel=3 quiet cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=UUID=$MD1CRYPTUUID\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
+sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=UUID=$MD1CRYPTUUID $SHA256SUM0=$SHA256SUM1\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"loglevel=3 quiet cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=UUID=$MD1CRYPTUUID $SHA256SUM0=$SHA256SUM1\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
 
 ## If on nvidia add nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
 sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
+
+# Enroll EFI-Keys
+umount -AR /boot
+umount -AR /efi
+cryptboot mount
+cryptboot-efikeys create
+cryptboot-efikeys enroll
+cryptboot update-grub
+cryptboot umount
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
