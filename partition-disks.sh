@@ -148,7 +148,7 @@ mkdir /mnt/home
 mkdir /mnt/tmp
 mkdir /mnt/.snapshots
 mkdir /mnt/efi
-mkdir /mnt/boot
+mkdir -p /mnt/boot/efikeys
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/tmp
