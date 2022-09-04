@@ -50,41 +50,16 @@ case "$choice" in
   ;;
 esac
 
-# Detect and erase old crypt volumes
+# Detect and close old crypt volumes
 if lsblk -rno TYPE | grep -q "crypt"
 then
   OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
   OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
-  DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
-  DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
-  DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '4p' | tr -d "[:space:]")"
-  DISK2P3="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '4p' | tr -d "[:space:]")"
   cryptsetup luksClose "$OLD_CRYPT_0"
   cryptsetup luksClose "$OLD_CRYPT_1"
-  if lsblk -rno TYPE | grep -q "raid1"
-  then
-    OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
-    OLD_RAID_1="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '2p' | tr -d "[:space:]")"
-    if cryptsetup isLuks "$OLD_RAID_0"
-    then
-      cryptsetup erase "$OLD_RAID_0"
-    fi
-    if cryptsetup isLuks "$OLD_RAID_1"
-    then
-      cryptsetup erase "$OLD_RAID_1"
-    fi
-    sgdisk -Z "$OLD_RAID_0"
-    sgdisk -Z "$OLD_RAID_1"
-    mdadm --stop "$OLD_RAID_0"
-    mdadm --stop "$OLD_RAID_1"
-    mdadm --zero-superblock "$DISK1P2"
-    mdadm --zero-superblock "$DISK2P2"
-    mdadm --zero-superblock "$DISK1P3"
-    mdadm --zero-superblock "$DISK2P3"
-  fi
 fi
 
-# Detect and erase closed crypt and raid1 volumes
+# Detect and erase crypt and raid1 volumes
 if lsblk -rno TYPE | grep -q "raid1"
 then
   DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
