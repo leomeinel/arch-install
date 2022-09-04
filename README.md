@@ -10,7 +10,7 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 :warning: | All data on both disks will be wiped!
 
-:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/mdadm-encrypted-btrfs/blob/encrypted-boot-partition/secure_boot_virt-manager.md) for virt-manager
+:exclamation: | **Follow [these instructions](https://github.com/LeoMeinel/mdadm-encrypted-btrfs/blob/encrypted-boot-partition/secure_boot_virt-manager.md) for virt-manager**
 
 ## Pre-installation
 
@@ -46,7 +46,7 @@ reboot
 
 ## Post-installation (tty)
 
-:exclamation: | This is mandatory!
+:exclamation: | **This is mandatory**
 
 :information_source: | Boot into UEFI firmware setup utility, enable Secure Boot and clear all preloaded Secure Boot keys.
 
