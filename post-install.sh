@@ -6,6 +6,21 @@ KEYLAYOUT="de"
 # Fail on error
 set -e
 
+# Enroll EFI-Keys
+if mountpoint -q /boot
+then
+  doas umount -AR /boot
+fi
+if mountpoint -q /boot
+then
+  doas umount -AR /efi
+fi
+doas cryptboot mount
+doas cryptboot-efikeys create
+doas cryptboot-efikeys enroll
+doas cryptboot update-grub
+doas cryptboot umount
+
 # Configure custom-efibackup.sh
 doas sh -c '{
   DISK2P1_UUID="$(lsblk -rno TYPE,LABEL,MOUNTPOINT,UUID | grep "part" | sed "s/part//" | grep "EFI  " | sed "s/EFI  //" | tr -d "[:space:]")"
