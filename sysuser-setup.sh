@@ -20,6 +20,11 @@ git clone https://aur.archlinux.org/mkinitcpio-chkcryptoboot.git ~/git/mkinitcpi
 cd ~/git/mkinitcpio-chkcryptoboot
 makepkg -sri --noprogressbar --noconfirm --needed
 
+# Install cryptboot
+git clone https://aur.archlinux.org/cryptboot.git ~/git/cryptboot
+cd ~/git/cryptboot
+makepkg -sri --noprogressbar --noconfirm --needed
+
 # Install grub-btrfs
 sudo pacman -Syu --noprogressbar --noconfirm --needed grub-btrfs
 
