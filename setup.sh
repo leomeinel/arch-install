@@ -89,12 +89,12 @@ echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 # Configure /etc/default/chkcryptoboot.conf
 SHA256SUM0="$(dd bs=1024 count=4 if=/dev/urandom iflag=fullblock status=none | sha256sum | tr -d '[:space:],-')"
 SHA256SUM1="$(dd bs=1024 count=4 if=/dev/urandom iflag=fullblock status=none | sha256sum | tr -d '[:space:],-')"
-sed -i 's/^BOOTMODE=.*/BOOTMODE=efi/;s/^ESP=.*/ESP=\/efi/;s/^EFISTUB=.*/EFISTUB=\/efi\/EFI\/grub\/grubx64.efi/;s/^CMDLINE_NAME=.*/CMDLINE_NAME='"$SHA256SUM0"'/;s/^CMDLINE_VALUE=.*/CMDLINE_VALUE='"$SHA256SUM1"'/;'
+sed -i 's/^BOOTMODE=.*/BOOTMODE=efi/;s/^ESP=.*/ESP=\/efi/;s/^EFISTUB=.*/EFISTUB=\/efi\/EFI\/grub\/grubx64.efi/;s/^CMDLINE_NAME=.*/CMDLINE_NAME='"$SHA256SUM0"'/;s/^CMDLINE_VALUE=.*/CMDLINE_VALUE='"$SHA256SUM1"'/;' /etc/default/chkcryptoboot.conf
 
 # Configure /etc/cryptboot.conf
 chmod -R 755 /boot/efikeys
 chmod 700 /boot/efikeys/*
-sed -i 's/^BOOT_CRYPT_NAME=.*/BOOT_CRYPT_NAME="md0_crypt"/;s/^BOOT_DIR=.*/BOOT_DIR="\/boot"/;s/^EFI_DIR=.*/EFI_DIR="\/efi"/;s/^BOOT_LOADER=.*/BOOT_LOADER="GRUB"/;s/^EFI_ID_GRUB=.*/EFI_ID_GRUB="GRUB"/;s/^EFI_PATH_GRUB=.*/EFI_PATH_GRUB="EFI\/grub\/grubx64.efi"/;s/^EFI_KEYS_DIR=.*/EFI_KEYS_DIR="\/boot\/efikeys"/'
+sed -i 's/^BOOT_CRYPT_NAME=.*/BOOT_CRYPT_NAME="md0_crypt"/;s/^BOOT_DIR=.*/BOOT_DIR="\/boot"/;s/^EFI_DIR=.*/EFI_DIR="\/efi"/;s/^BOOT_LOADER=.*/BOOT_LOADER="GRUB"/;s/^EFI_ID_GRUB=.*/EFI_ID_GRUB="GRUB"/;s/^EFI_PATH_GRUB=.*/EFI_PATH_GRUB="EFI\/grub\/grubx64.efi"/;s/^EFI_KEYS_DIR=.*/EFI_KEYS_DIR="\/boot\/efikeys"/' /etc/cryptboot.conf
 
 # Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/packages_setup.txt
