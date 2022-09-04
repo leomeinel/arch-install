@@ -59,7 +59,7 @@ then
   cryptsetup luksClose "$OLD_CRYPT_1"
 fi
 
-# Detect and erase crypt and raid1 volumes
+# Detect and erase old crypt/raid1 volumes
 if lsblk -rno TYPE | grep -q "raid1"
 then
   DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
