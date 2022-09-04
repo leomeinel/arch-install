@@ -86,6 +86,12 @@ su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 ## sudo
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
+# Configure /etc/crypttab
+{
+  echo "md0_crypt    /dev/mapper/md0_crypt    /root/md0_crypt.keyfile"
+  echo "md1_crypt    /dev/mapper/md1_crypt"
+} > /etc/crypttab
+
 # Configure /etc/default/chkcryptoboot.conf
 SHA256SUM0="$(dd bs=1024 count=4 if=/dev/urandom iflag=fullblock status=none | sha256sum | tr -d '[:space:],-')"
 SHA256SUM1="$(dd bs=1024 count=4 if=/dev/urandom iflag=fullblock status=none | sha256sum | tr -d '[:space:],-')"
