@@ -55,10 +55,10 @@ if lsblk -rno TYPE | grep -q "crypt"
 then
   OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
   OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
-  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
-  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
-  DISK1P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d "[:space:]")"
-  DISK2P3="$(lsblk -rnpo NAME "$DISK2" | sed -n '4p' | tr -d "[:space:]")"
+  DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+  DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+  DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '4p' | tr -d "[:space:]")"
+  DISK2P3="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '4p' | tr -d "[:space:]")"
   cryptsetup luksClose "$OLD_CRYPT_0"
   cryptsetup luksClose "$OLD_CRYPT_1"
   if lsblk -rno TYPE | grep -q "raid1"
@@ -79,20 +79,18 @@ then
     mdadm --stop "$OLD_RAID_1"
     mdadm --zero-superblock "$DISK1P2"
     mdadm --zero-superblock "$DISK2P2"
-    echo "$OLD_RAID_0 ; $OLD_CRYPT_0 ; $OLD_RAID_1 ; $OLD_CRYPT_1"
-    echo "$DISK1P2 ; $DISK1P3 ; $DISK2P2 ; $DISK2P3"
-    mdadm --zero-superblock "$DISK1P3" || echo "mdadm --zero-superblock $DISK1P3"
-    mdadm --zero-superblock "$DISK2P3" || echo "mdadm --zero-superblock $DISK2P3"
+    mdadm --zero-superblock "$DISK1P3"
+    mdadm --zero-superblock "$DISK2P3"
   fi
 fi
 
 # Detect and erase closed crypt and raid1 volumes
 if lsblk -rno TYPE | grep -q "raid1"
 then
-  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
-  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
-  DISK1P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d "[:space:]")"
-  DISK2P3="$(lsblk -rnpo NAME "$DISK2" | sed -n '4p' | tr -d "[:space:]")"
+  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+  DISK1P3="$(lsblk -rnpo NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '4p' | tr -d "[:space:]")"
+  DISK2P3="$(lsblk -rnpo NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '4p' | tr -d "[:space:]")"
   OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
   OLD_RAID_1="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '2p' | tr -d "[:space:]")"
   if cryptsetup isLuks "$OLD_RAID_0"
@@ -109,10 +107,8 @@ then
   mdadm --stop "$OLD_RAID_1"
   mdadm --zero-superblock "$DISK1P2"
   mdadm --zero-superblock "$DISK2P2"
-  echo "$OLD_RAID_0 ; $OLD_CRYPT_0 ; $OLD_RAID_1 ; $OLD_CRYPT_1"
-  echo "$DISK1P2 ; $DISK1P3 ; $DISK2P2 ; $DISK2P3"
-  mdadm --zero-superblock "$DISK1P3" || echo "mdadm --zero-superblock $DISK1P3"
-  mdadm --zero-superblock "$DISK2P3" || echo "mdadm --zero-superblock $DISK2P3"
+  mdadm --zero-superblock "$DISK1P3"
+  mdadm --zero-superblock "$DISK2P3"
 fi
 
 # Load $KEYMAP and set time
@@ -130,12 +126,12 @@ sgdisk -n 0:0:0 -t 1:fd00 "$DISK1"
 sgdisk -n 0:0:0 -t 1:fd00 "$DISK2"
 
 # Detect partitions and set variables accordingly
-DISK1P1="$(lsblk -rnpo NAME "$DISK1" | sed -n '2p' | tr -d "[:space:]")"
-DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
-DISK1P3="$(lsblk -rnpo NAME "$DISK1" | sed -n '4p' | tr -d "[:space:]")"
-DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '2p' | tr -d "[:space:]")"
-DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
-DISK2P3="$(lsblk -rnpo NAME "$DISK2" | sed -n '4p' | tr -d "[:space:]")"
+DISK1P1="$(lsblk -rnpo NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+DISK1P3="$(lsblk -rnpo NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '4p' | tr -d "[:space:]")"
+DISK2P1="$(lsblk -rnpo NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK2P2="$(lsblk -rnpo NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+DISK2P3="$(lsblk -rnpo NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '4p' | tr -d "[:space:]")"
 
 # Configure raid1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1P2" "$DISK2P2"
