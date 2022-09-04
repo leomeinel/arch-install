@@ -22,15 +22,15 @@ useradd -ms /bin/bash -G sudo,wheel "$SYSUSER"
 useradd -ms /bin/bash -G libvirt "$VIRTUSER"
 useradd -ms /bin/bash "$HOMEUSER"
 useradd -ms /bin/bash "$GUESTUSER"
-echo "Enter password for root"
+echo "Enter passphrase for root"
 passwd root
-echo "Enter password for $SYSUSER"
+echo "Enter passphrase for $SYSUSER"
 passwd "$SYSUSER"
-echo "Enter password for $VIRTUSER"
+echo "Enter passphrase for $VIRTUSER"
 passwd "$VIRTUSER"
-echo "Enter password for $HOMEUSER"
+echo "Enter passphrase for $HOMEUSER"
 passwd "$HOMEUSER"
-echo "Enter password for $GUESTUSER"
+echo "Enter passphrase for $GUESTUSER"
 passwd "$GUESTUSER"
 
 # Configure /etc/pacman.conf, /etc/xdg/reflector/reflector.conf, /etc/pacman.d/repo/aur.conf and add local repo /var/lib/repo/aur/aur.db.tar.gz
@@ -244,7 +244,7 @@ chmod 644 /etc/pacman.d/hooks/*.hook
 dd bs=1024 count=4 if=/dev/urandom of=/root/md0_crypt.keyfile iflag=fullblock
 chmod 000 /root/md0_crypt.keyfile
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
-echo "Enter password for /dev/md/md0"
+echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /root/md0_crypt.keyfile
 
 # Configure /etc/mkinitcpio.conf
