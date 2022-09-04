@@ -92,8 +92,6 @@ SHA256SUM1="$(dd bs=1024 count=4 if=/dev/urandom iflag=fullblock status=none | s
 sed -i 's/^BOOTMODE=.*/BOOTMODE=efi/;s/^ESP=.*/ESP=\/efi/;s/^EFISTUB=.*/EFISTUB=\/efi\/EFI\/grub\/grubx64.efi/;s/^CMDLINE_NAME=.*/CMDLINE_NAME='"$SHA256SUM0"'/;s/^CMDLINE_VALUE=.*/CMDLINE_VALUE='"$SHA256SUM1"'/;' /etc/default/chkcryptoboot.conf
 
 # Configure /etc/cryptboot.conf
-chmod -R 755 /boot/efikeys
-chmod 700 /boot/efikeys/*
 sed -i 's/^BOOT_CRYPT_NAME=.*/BOOT_CRYPT_NAME="md0_crypt"/;s/^BOOT_DIR=.*/BOOT_DIR="\/boot"/;s/^EFI_DIR=.*/EFI_DIR="\/efi"/;s/^BOOT_LOADER=.*/BOOT_LOADER="GRUB"/;s/^EFI_ID_GRUB=.*/EFI_ID_GRUB="GRUB"/;s/^EFI_PATH_GRUB=.*/EFI_PATH_GRUB="EFI\/grub\/grubx64.efi"/;s/^EFI_KEYS_DIR=.*/EFI_KEYS_DIR="\/boot\/efikeys"/' /etc/cryptboot.conf
 
 # Install packages
@@ -285,6 +283,11 @@ cryptboot-efikeys create
 cryptboot-efikeys enroll
 cryptboot update-grub
 cryptboot umount
+chmod -R 700 /boot/*
+chmod -R 700 /efi/*
+chmod 700 /etc/default/grub
+chmod 700 /etc/default/chkcryptoboot.conf
+chmod 700 /etc/cryptboot.conf
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
