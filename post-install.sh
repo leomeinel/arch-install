@@ -30,15 +30,15 @@ doas sh -c '{
   echo "set -e"
   echo "if /usr/bin/mountpoint -q /efi"
   echo "then"
-  echo "  /usr/bin/umount -AR /efi
+  echo "  /usr/bin/umount -AR /efi"
   echo "fi"
   echo "if /usr/bin/mountpoint -q /.efi.bak"
   echo "then"
-  echo "  /usr/bin/umount -AR /.efi.bak
+  echo "  /usr/bin/umount -AR /.efi.bak"
   echo "fi"
   echo "if /usr/bin/mountpoint -q /boot"
   echo "then"
-  echo "  /usr/bin/umount -AR /boot
+  echo "  /usr/bin/umount -AR /boot"
   echo "fi"
   echo "/usr/bin/cryptboot mount"
   echo "/usr/bin/mount /.efi.bak"
