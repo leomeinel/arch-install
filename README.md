@@ -36,6 +36,13 @@ reboot
 
 :information_source: | Set variables after `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`.
 
+:warning: | If you're upgrading from versions prior to 2.x.x run this before running `partition-disks.sh`
+
+```
+chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
+/root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
+```
+
 ### *Low GRUBRESOLUTION for VM*
 
 :bulb: | *You should set a low GRUBRESOLUTION for Virtual Machines.*
