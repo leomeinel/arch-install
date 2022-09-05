@@ -148,12 +148,14 @@ mkdir /mnt/home
 mkdir /mnt/tmp
 mkdir /mnt/.snapshots
 mkdir /mnt/efi
+mkdir /mnt/.efi.bak
 mkdir -p /mnt/boot/efikeys
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/tmp
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/.snapshots
 mount "$DISK1P1" /mnt/efi
+mount "$DISK2P1" /mnt/.efi.bak
 mount /dev/mapper/md0_crypt /mnt/boot
 
 # Install packages
