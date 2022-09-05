@@ -46,14 +46,8 @@ doas sh -c '{
   echo "if [ -d /.boot.bak ]"
   echo "then"
   echo "  /usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old"
-  echo "  /usr/bin/chmod 500 /.boot.bak.old/efikeys"
-  echo "  /usr/bin/chmod 400 /.boot.bak.old/efikeys/*"
   echo "fi"
   echo "/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak"
-  echo "/usr/bin/chmod 500 /.boot.bak/efikeys"
-  echo "/usr/bin/chmod 400 /.boot.bak/efikeys/*"
-  echo "/usr/bin/chmod 500 /boot/efikeys"
-  echo "/usr/bin/chmod 400 /boot/efikeys/*"
   echo "/usr/bin/umount /.efi.bak"
 } > /etc/pacman.d/hooks/scripts/custom-efibackup.sh'
 doas chmod 744 /etc/pacman.d/hooks/scripts/*.sh
