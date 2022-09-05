@@ -23,13 +23,10 @@ doas cryptboot umount
 
 # Configure custom-efibackup.sh
 doas sh -c '{
-  DISK2P1_UUID="$(lsblk -rno TYPE,LABEL,MOUNTPOINT,UUID | grep "part" | sed "s/part//" | grep "EFI  " | sed "s/EFI  //" | tr -d "[:space:]")"
   echo "#!/bin/sh"
   echo "/usr/bin/cryptboot mount"
-  echo "if [ -d /.efi.bak ]"
-  echo "then"
-  echo "  /usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old"
-  echo "fi"
+  echo "/usr/bin/mount /.efi.bak"
+  echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old"
   echo "/usr/bin/rsync -aq --delete --mkpath /efi/ /.efi.bak"
   echo "if [ -d /.boot.bak ]"
   echo "then"
@@ -37,9 +34,7 @@ doas sh -c '{
   echo "fi"
   echo "/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak"
   echo "/usr/bin/cryptboot umount"
-  echo "/usr/bin/mount UUID=$DISK2P1_UUID /efi"
-  echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /efi"
-  echo "/usr/bin/umount /efi"
+  echo "/usr/bin/umount /.efi.bak"
 } > /etc/pacman.d/hooks/scripts/custom-efibackup.sh'
 doas chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
