@@ -19,8 +19,6 @@ doas cryptboot mount
 doas cryptboot-efikeys create
 doas cryptboot-efikeys enroll
 doas cryptboot update-grub
-doas chmod 500 /boot/efikeys
-doas chmod 500 /boot/efikeys/*
 
 # Configure custom-efibackup.sh
 doas sh -c '{
@@ -42,7 +40,6 @@ doas sh -c '{
   echo "/usr/bin/mount /boot"
   echo "/usr/bin/mount /efi"
   echo "/usr/bin/mount /.efi.bak"
-  echo "chmod -R 500 /boot/efikeys"
   echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old"
   echo "/usr/bin/rsync -aq --delete --mkpath /efi/ /.efi.bak"
   echo "if [ -d /.boot.bak ]"
