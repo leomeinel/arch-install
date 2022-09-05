@@ -50,38 +50,40 @@ case "$choice" in
   ;;
 esac
 
-# Detect and erase old crypt volumes
+# Detect and close old crypt volumes
 if lsblk -rno TYPE | grep -q "crypt"
 then
-  OLD_CRYPT="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | tr -d "[:space:]")"
-  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
-  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
-  cryptsetup luksClose "$OLD_CRYPT"
-  if lsblk -rno TYPE | grep -q "raid1"
-  then
-    OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
-    cryptsetup erase "$OLD_RAID"
-    sgdisk -Z "$OLD_RAID"
-    mdadm --stop --scan
-    mdadm --zero-superblock "$DISK1P2"
-    mdadm --zero-superblock "$DISK2P2"
-  fi
+  OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
+  OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
+  cryptsetup luksClose "$OLD_CRYPT_0"
+  cryptsetup luksClose "$OLD_CRYPT_1"
 fi
 
-# Detect and erase closed crypt and raid1 volumes
+# Detect and erase old crypt/raid1 volumes
 if lsblk -rno TYPE | grep -q "raid1"
 then
-  DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
-  DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
-  OLD_RAID="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | tr -d "[:space:]")"
-  if cryptsetup isLuks "$OLD_RAID"
+  DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+  DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+  DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+  DISK2P3="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+  OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
+  OLD_RAID_1="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '2p' | tr -d "[:space:]")"
+  if cryptsetup isLuks "$OLD_RAID_0"
   then
-    cryptsetup erase "$OLD_RAID"
+    cryptsetup erase "$OLD_RAID_0"
   fi
-  sgdisk -Z "$OLD_RAID"
-  mdadm --stop --scan
+  if cryptsetup isLuks "$OLD_RAID_1"
+  then
+    cryptsetup erase "$OLD_RAID_1"
+  fi
+  sgdisk -Z "$OLD_RAID_0"
+  sgdisk -Z "$OLD_RAID_1"
+  mdadm --stop "$OLD_RAID_0"
+  mdadm --stop "$OLD_RAID_1"
   mdadm --zero-superblock "$DISK1P2"
   mdadm --zero-superblock "$DISK2P2"
+  mdadm --zero-superblock "$DISK1P3"
+  mdadm --zero-superblock "$DISK2P3"
 fi
 
 # Load $KEYMAP and set time
@@ -93,31 +95,45 @@ sgdisk -Z "$DISK1"
 sgdisk -Z "$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
+sgdisk -n 0:0:+1G -t 1:ef02 "$DISK1"
+sgdisk -n 0:0:+1G -t 1:ef02 "$DISK2"
 sgdisk -n 0:0:0 -t 1:fd00 "$DISK1"
 sgdisk -n 0:0:0 -t 1:fd00 "$DISK2"
 
 # Detect partitions and set variables accordingly
-DISK1P1="$(lsblk -rnpo NAME "$DISK1" | sed -n '2p' | tr -d "[:space:]")"
-DISK1P2="$(lsblk -rnpo NAME "$DISK1" | sed -n '3p' | tr -d "[:space:]")"
-DISK2P1="$(lsblk -rnpo NAME "$DISK2" | sed -n '2p' | tr -d "[:space:]")"
-DISK2P2="$(lsblk -rnpo NAME "$DISK2" | sed -n '3p' | tr -d "[:space:]")"
+DISK1P1="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+DISK2P1="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
+DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK2P3="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
 
 # Configure raid1
 mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1P2" "$DISK2P2"
+mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md1 "$DISK1P3" "$DISK2P3"
 
 # Configure encryption
+## boot
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
 cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
 cryptsetup luksOpen /dev/md/md0 md0_crypt
+## root
+cryptsetup open --type plain -d /dev/urandom /dev/md/md1 to_be_wiped
+cryptsetup close to_be_wiped
+cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md1
+cryptsetup luksOpen /dev/md/md1 md1_crypt
+
+# Format efi
+mkfs.fat -n EFI -F32 "$DISK1P1"
+mkfs.fat -n EFI -F32 "$DISK2P1"
 
 # Format boot
-mkfs.fat -n BOOT -F32 "$DISK1P1"
-mkfs.fat -n BOOT -F32 "$DISK2P1"
+mkfs.fat -n BOOT -F32 /dev/mapper/md0_crypt
 
 # Configure btrfs
-mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
-mount /dev/mapper/md0_crypt /mnt
+mkfs.btrfs -L MDCRYPT /dev/mapper/md1_crypt
+mount /dev/mapper/md1_crypt /mnt
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@var
 btrfs subvolume create /mnt/@home
@@ -126,17 +142,21 @@ btrfs subvolume create /mnt/@snapshots
 
 # Mount volumes
 umount /mnt
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md1_crypt /mnt
 mkdir /mnt/var
 mkdir /mnt/home
 mkdir /mnt/tmp
 mkdir /mnt/.snapshots
-mkdir /mnt/boot
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/home
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/tmp
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/.snapshots
-mount "$DISK1P1" /mnt/boot
+mkdir /mnt/efi
+mkdir /mnt/.efi.bak
+mkdir -p /mnt/boot/efikeys
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/home
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/tmp
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/.snapshots
+mount "$DISK1P1" /mnt/efi
+mount "$DISK2P1" /mnt/.efi.bak
+mount /dev/mapper/md0_crypt /mnt/boot
 
 # Install packages
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#NoProgressBar/NoProgressBar/' /etc/pacman.conf

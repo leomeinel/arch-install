@@ -6,23 +6,36 @@ KEYLAYOUT="de"
 # Fail on error
 set -e
 
-# Configure custom-bootbackup.sh
+# Enroll EFI-Keys
+if mountpoint -q /boot
+then
+  doas umount -AR /boot
+fi
+if mountpoint -q /boot
+then
+  doas umount -AR /efi
+fi
+doas cryptboot mount
+doas cryptboot-efikeys create
+doas cryptboot-efikeys enroll
+doas cryptboot update-grub
+doas cryptboot umount
+
+# Configure custom-efibackup.sh
 doas sh -c '{
-  DISK1P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT /boot" | sed "s/BOOT \/boot//" | tr -d "[:space:]")"
-  DISK2P1_UUID="$(lsblk -rno LABEL,MOUNTPOINT,UUID | grep "BOOT  " | sed "s/BOOT  //" | tr -d "[:space:]")"
   echo "#!/bin/sh"
-  echo ""
-  echo "/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old"
-  echo "/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak"
-  echo "if /usr/bin/mountpoint -q /boot"
+  echo "/usr/bin/cryptboot mount"
+  echo "/usr/bin/mount /.efi.bak"
+  echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old"
+  echo "/usr/bin/rsync -aq --delete --mkpath /efi/ /.efi.bak"
+  echo "if [ -d /.boot.bak ]"
   echo "then"
-  echo "  /usr/bin/umount -AR /boot"
+  echo "  /usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old"
   echo "fi"
-  echo "/usr/bin/mount UUID=$DISK2P1_UUID /boot"
-  echo "/usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /boot"
-  echo "/usr/bin/umount /boot"
-  echo "/usr/bin/mount UUID=$DISK1P1_UUID /boot"
-} > /etc/pacman.d/hooks/scripts/custom-bootbackup.sh'
+  echo "/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak"
+  echo "/usr/bin/cryptboot umount"
+  echo "/usr/bin/umount /.efi.bak"
+} > /etc/pacman.d/hooks/scripts/custom-efibackup.sh'
 doas chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
 # Configure clock

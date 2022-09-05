@@ -22,15 +22,15 @@ useradd -ms /bin/bash -G sudo,wheel "$SYSUSER"
 useradd -ms /bin/bash -G libvirt "$VIRTUSER"
 useradd -ms /bin/bash "$HOMEUSER"
 useradd -ms /bin/bash "$GUESTUSER"
-echo "Enter password for root"
+echo "Enter passphrase for root"
 passwd root
-echo "Enter password for $SYSUSER"
+echo "Enter passphrase for $SYSUSER"
 passwd "$SYSUSER"
-echo "Enter password for $VIRTUSER"
+echo "Enter passphrase for $VIRTUSER"
 passwd "$VIRTUSER"
-echo "Enter password for $HOMEUSER"
+echo "Enter passphrase for $HOMEUSER"
 passwd "$HOMEUSER"
-echo "Enter password for $GUESTUSER"
+echo "Enter passphrase for $GUESTUSER"
 passwd "$GUESTUSER"
 
 # Configure /etc/pacman.conf, /etc/xdg/reflector/reflector.conf, /etc/pacman.d/repo/aur.conf and add local repo /var/lib/repo/aur/aur.db.tar.gz
@@ -60,8 +60,44 @@ sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#C
 } >> /etc/pacman.conf
 pacman-key --init
 
-# Install packages
+# Update mirrors
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
+
+# Configure $SYSUSER
+## sudo
+## FIXME: Sudo is mainly used for:
+  ## - /usr/bin/mkarchroot
+  ## - SETENV: /usr/bin/makechrootpkg
+  ## - /usr/bin/arch-nspawn
+  ## It shouldn't be enabled for ALL.
+  ## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
+    ## FUTURE GOAL: REPLACE sudo WITH doas
+echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
+
+## opendoas
+mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
+chown -c root:root /etc/doas.conf
+chmod -c 0400 /etc/doas.conf
+
+## Install required aur packages
+chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
+su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
+
+## sudo
+echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
+
+# Configure /etc/crypttab
+MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
+MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
+{
+  echo "md0_crypt    UUID=$MD0UUID    /root/md0_crypt.keyfile    noauto,luks,key-slot=1"
+  echo "md1_crypt    UUID=$MD1UUID    none    luks,key-slot=0"
+} > /etc/crypttab
+
+# Configure /etc/cryptboot.conf
+sed -i 's/^BOOT_CRYPT_NAME=.*/BOOT_CRYPT_NAME="md0_crypt"/;s/^BOOT_DIR=.*/BOOT_DIR="\/boot"/;s/^EFI_DIR=.*/EFI_DIR="\/efi"/;s/^BOOT_LOADER=.*/BOOT_LOADER="GRUB"/;s/^EFI_ID_GRUB=.*/EFI_ID_GRUB="GRUB"/;s/^EFI_PATH_GRUB=.*/EFI_PATH_GRUB="EFI\/GRUB\/grubx64.efi"/;s/^EFI_KEYS_DIR=.*/EFI_KEYS_DIR="\/boot\/efikeys"/' /etc/cryptboot.conf
+
+# Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/packages_setup.txt
 
 # Change ownership of /var/lib/repo/aur to $SYSUSER
@@ -106,26 +142,6 @@ chown :sudo /var/.snapshots
 chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
-
-# Configure $SYSUSER
-chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
-
-## sudo
-## FIXME: Sudo is mainly used for:
-  ## - /usr/bin/mkarchroot
-  ## - SETENV: /usr/bin/makechrootpkg
-  ## - /usr/bin/arch-nspawn
-  ## It shouldn't be enabled for ALL.
-  ## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
-    ## FUTURE GOAL: REPLACE sudo WITH doas
-echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
-
-## opendoas
-mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
-chown -c root:root /etc/doas.conf
-chmod -c 0400 /etc/doas.conf
-
-su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 
 # Configure symlinks
 mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
@@ -235,27 +251,38 @@ pacman -Qq "nvidia-dkms" &&
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
 
+# Add key for /dev/mapper/md0_crypt
+dd bs=1024 count=4 if=/dev/urandom of=/root/md0_crypt.keyfile iflag=fullblock
+chmod 000 /root/md0_crypt.keyfile
+echo "Enter passphrase for /dev/md/md0"
+cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /root/md0_crypt.keyfile
+
 # Configure /etc/mkinitcpio.conf
-sed -i 's/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+sed -i 's/^FILES=.*/FILES=(\/root\/md0_crypt.keyfile)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 
 ## If on nvidia add nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
 sed -i '/^MODULES=.*/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 mkinitcpio -P
+chmod 600 /boot/initramfs-linux*
 
-# Configure /etc/default/grub and /boot/grub/grub.cfg
-UUID="$(blkid -s UUID -o value /dev/md/md0)"
-sed -i "s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet cryptdevice=UUID=$UUID:md0_crypt root=\/dev\/mapper\/md0_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=true/" /etc/default/grub
+# Configure /etc/default/grub
+sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet loglevel=3 cryptdevice=UUID=$MD0UUID:md0_crypt cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"quiet loglevel=3 cryptdevice=UUID=$MD0UUID:md0_crypt cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
 
 ## If on nvidia add nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
 sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
+
+# Configure /etc/fstab
+sed -i '/\/boot.*vfat/s/rw/noauto,rw/' /etc/fstab
+sed -i '/\/efi.*vfat/s/rw/noauto,rw/' /etc/fstab
+sed -i '/\/.efi.bak.*vfat/s/rw/noauto,rw/' /etc/fstab
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
-  # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md0_crypt> does not exist.
+  # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md1_crypt> does not exist.
 systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 

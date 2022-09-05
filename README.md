@@ -8,7 +8,7 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 :information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
 
-:information_source: | The disks should not contain RAID or encrypted volumes except those created by the script!
+:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/mdadm-encrypted-btrfs/blob/encrypted-boot-partition/secure_boot_virt-manager.md) for virt-manager.
 
 :warning: | All data on both disks will be wiped!
 
@@ -32,9 +32,9 @@ reboot
 
 :information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-:information_source: | Set variables before `partition-disks.sh` using `vim /root/<...>/partition-disks.sh`
+:information_source: | Set variables before `partition-disks.sh` using `vim /root/<...>/partition-disks.sh`.
 
-:information_source: | Set variables after `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`
+:information_source: | Set variables after `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`.
 
 ### *Low GRUBRESOLUTION for VM*
 
@@ -46,9 +46,15 @@ reboot
 
 ## Post-installation (tty)
 
-:information_source: | Select your preferred kernel in GRUB
+:exclamation: | This is mandatory!
 
-:information_source: | Log into sysuser account and run
+:information_source: | Select `UEFI Firmware Settings` in GRUB, enable Secure Boot and clear all preloaded Secure Boot keys.
+
+:information_source: | Set your UEFI firmware supervisor password and reboot.
+
+:information_source: | Select your preferred kernel in GRUB.
+
+:information_source: | Log into sysuser account and run.
 
 ```
 ~/post-install.sh
@@ -59,9 +65,9 @@ reboot
 
 ### Do this for every user account
 
-:information_source: |  Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`
+:information_source: |  Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`.
 
-:information_source: |  Change Wallpaper by `right-clicking` your `Desktop`
+:information_source: |  Change Wallpaper by `right-clicking` your `Desktop`.
 
 ### Do this additionally if if you have an NVIDIA GPU
 
