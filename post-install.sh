@@ -11,7 +11,7 @@ if mountpoint -q /boot
 then
   doas umount -AR /boot
 fi
-if mountpoint -q /boot
+if mountpoint -q /efi
 then
   doas umount -AR /efi
 fi
