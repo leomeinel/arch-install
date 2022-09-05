@@ -46,11 +46,11 @@ reboot
 
 ## Post-installation (tty)
 
-:exclamation: | This is mandatory!
+:warning: | If on virt-manager VM skip ¹&². In other cases, ¹&² are mandatory
 
-:information_source: | Select `UEFI Firmware Settings` in GRUB, enable Secure Boot and clear all preloaded Secure Boot keys.
+:information_source: | ¹Select `UEFI Firmware Settings` in GRUB, enable Secure Boot and clear all preloaded Secure Boot keys.
 
-:information_source: | Set your UEFI firmware supervisor password and reboot.
+:information_source: | ²Set your UEFI firmware supervisor password and reboot.
 
 :information_source: | Select your preferred kernel in GRUB.
 
