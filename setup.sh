@@ -278,6 +278,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 # Configure /etc/fstab
 sed -i '/\/boot.*vfat/s/rw/noauto,rw/' /etc/fstab
 sed -i '/\/efi.*vfat/s/rw/noauto,rw/' /etc/fstab
+sed -i '/\/.efi.bak.*vfat/s/rw/noauto,rw/' /etc/fstab
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
   # Detecting snapshots ...
