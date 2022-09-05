@@ -286,5 +286,8 @@ sed -i '/\/.efi.bak.*vfat/s/rw/noauto,rw/' /etc/fstab
 systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 
+# Run snapshot cleanup every hour
+sed -i 's/^OnUnitActiveSec=.*/OnUnitActiveSec=1h/' /usr/lib/systemd/system/snapper-cleanup.timer
+
 # Remove repo
 rm -rf /git
