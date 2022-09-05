@@ -19,6 +19,8 @@ doas cryptboot mount
 doas cryptboot-efikeys create
 doas cryptboot-efikeys enroll
 doas cryptboot update-grub
+doas chmod 500 /boot/efikeys
+doas chmod 000 /boot/efikeys/*
 doas cryptboot umount
 
 # Configure custom-efibackup.sh
