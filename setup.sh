@@ -87,9 +87,11 @@ su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
 # Configure /etc/crypttab
+MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
+MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
 {
-  echo "md0_crypt    /dev/mapper/md0_crypt    /root/md0_crypt.keyfile"
-  echo "md1_crypt    /dev/mapper/md1_crypt"
+  echo "md0_crypt    UUID=$MD0UUID    /root/md0_crypt.keyfile    noauto,luks,key-slot=1"
+  echo "md1_crypt    UUID=$MD1UUID    none    luks,key-slot=0"
 } > /etc/crypttab
 
 # Configure /etc/cryptboot.conf
@@ -252,7 +254,6 @@ chmod 644 /etc/pacman.d/hooks/*.hook
 # Add key for /dev/mapper/md0_crypt
 dd bs=1024 count=4 if=/dev/urandom of=/root/md0_crypt.keyfile iflag=fullblock
 chmod 000 /root/md0_crypt.keyfile
-MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /root/md0_crypt.keyfile
 
