@@ -42,7 +42,7 @@ doas sh -c '{
   echo "/usr/bin/mount /boot"
   echo "/usr/bin/mount /efi"
   echo "/usr/bin/mount /.efi.bak"
-  echo "chmod -R 500 /boot/efikeys/*"
+  echo "chmod -R 500 /boot/efikeys"
   echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old"
   echo "/usr/bin/rsync -aq --delete --mkpath /efi/ /.efi.bak"
   echo "if [ -d /.boot.bak ]"
