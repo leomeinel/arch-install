@@ -90,7 +90,7 @@ echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
 {
-  echo "md0_crypt    UUID=$MD0UUID    /root/md0_crypt.keyfile    noauto,luks,key-slot=1"
+  echo "md0_crypt    UUID=$MD0UUID    /root/md0_crypt.keyfile    luks,key-slot=1"
   echo "md1_crypt    UUID=$MD1UUID    none    luks,key-slot=0"
 } > /etc/crypttab
 
@@ -267,7 +267,7 @@ mkinitcpio -P
 chmod 600 /boot/initramfs-linux*
 
 # Configure /etc/default/grub
-sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet loglevel=3 cryptdevice=UUID=$MD0UUID:md0_crypt cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"quiet loglevel=3 cryptdevice=UUID=$MD0UUID:md0_crypt cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
+sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet loglevel=3 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"quiet loglevel=3 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
 
 ## If on nvidia add nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
@@ -276,8 +276,6 @@ grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # Configure /etc/fstab
-sed -i '/\/boot.*vfat/s/rw/noauto,rw/' /etc/fstab
-sed -i '/\/efi.*vfat/s/rw/noauto,rw/' /etc/fstab
 sed -i '/\/.efi.bak.*vfat/s/rw/noauto,rw/' /etc/fstab
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
