@@ -40,7 +40,11 @@ pipewire-pulse
 pipewire-jack
 wireplumber
 rustup
+grub
+grub-btrfs
 efibootmgr
+efitools
+sbsigntools
 mtools
 inetutils
 bluez
@@ -77,7 +81,6 @@ devtools
 pam-u2f
 lshw
 man-db
-sbsigntools
 bat
 exa
 ripgrep
@@ -104,5 +107,3 @@ lldb
 quilt
 pacman-contrib
 hwinfo
-grub
-grub-btrfs
