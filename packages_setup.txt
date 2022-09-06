@@ -104,3 +104,5 @@ lldb
 quilt
 pacman-contrib
 hwinfo
+grub
+grub-btrfs

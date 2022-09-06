@@ -55,8 +55,8 @@ if lsblk -rno TYPE | grep -q "crypt"
 then
   OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
   OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
-  cryptsetup luksClose "$OLD_CRYPT_0"
-  cryptsetup luksClose "$OLD_CRYPT_1"
+  cryptsetup close "$OLD_CRYPT_0"
+  cryptsetup close "$OLD_CRYPT_1"
 fi
 
 # Detect and erase old crypt/raid1 volumes
@@ -116,13 +116,13 @@ mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=an
 ## boot
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
-cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md0
-cryptsetup luksOpen /dev/md/md0 md0_crypt
+cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks1 /dev/md/md0
+cryptsetup open --type luks1 /dev/md/md0 md0_crypt
 ## root
 cryptsetup open --type plain -d /dev/urandom /dev/md/md1 to_be_wiped
 cryptsetup close to_be_wiped
-cryptsetup -y -v -h sha512 -s 512 luksFormat /dev/md/md1
-cryptsetup luksOpen /dev/md/md1 md1_crypt
+cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks2 /dev/md/md1
+cryptsetup open --type luks2 /dev/md/md1 md1_crypt
 
 # Format efi
 mkfs.fat -n EFI -F32 "$DISK1P1"
