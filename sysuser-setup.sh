@@ -14,10 +14,5 @@ mv ~/git/mdadm-encrypted-btrfs/post-install.sh ~/
 mv ~/git/mdadm-encrypted-btrfs/packages_post-install.txt ~/
 chmod +x ~/post-install.sh
 
-# Download the Microsoft Corporation UEFI CA 2011 certificate to support option ROMs
-mkdir ~/efikeys
-cd ~/efikeys
-wget -U 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' https://www.microsoft.com/pkiops/certs/MicCorUEFCA2011_2011-06-27.crt
-
 # Remove repo
 rm -rf ~/git
