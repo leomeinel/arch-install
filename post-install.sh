@@ -164,6 +164,10 @@ doas iptables -A INPUT -p udp --dport 8881 -j ACCEPT
 ### Allow mDNS
 doas iptables -A INPUT -p udp --dport 5353 -j ACCEPT 
 
+### Allow http and https (for wget)
+doas iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+doas iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
 ### ALLOW ESTABLISHED CONNECTIONS
 doas iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
@@ -245,6 +249,10 @@ doas ip6tables -A INPUT -p udp --dport 8881 -j ACCEPT
 
 ### Allow mDNS
 doas ip6tables -A INPUT -p udp --dport 5353 -j ACCEPT 
+
+### Allow http and https (for wget)
+doas ip6tables -A INPUT -p tcp --dport 80 -j ACCEPT
+doas ip6tables -A INPUT -p tcp --dport 443 -j ACCEPT
 
 ### ALLOW ESTABLISHED CONNECTIONS
 doas ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
