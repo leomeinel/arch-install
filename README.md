@@ -8,7 +8,7 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 :information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
 
-:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/mdadm-encrypted-btrfs/blob/encrypted-boot-partition/secure_boot_virt-manager.md) for virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/mdadm-encrypted-btrfs/blob/main/secure_boot_virt-manager.md) for virt-manager.
 
 :warning: | All data on both disks will be wiped!
 
