@@ -107,3 +107,4 @@ lldb
 quilt
 pacman-contrib
 hwinfo
+wget
