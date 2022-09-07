@@ -6,7 +6,8 @@ KEYLAYOUT="de"
 # Fail on error
 set -e
 
-# Enroll EFI-Keys
+# Configure secureboot
+## Create EFI-Keys
 if mountpoint -q /boot
 then
   doas umount -AR /boot
@@ -17,8 +18,20 @@ then
 fi
 doas cryptboot mount
 doas cryptboot-efikeys create
+
+## Add Microsoft Corporation UEFI CA 2011 certificate to support option ROMs
+mkdir ~/efikeys
+cd ~/efikeys
+wget -U 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' https://www.microsoft.com/pkiops/certs/MicCorUEFCA2011_2011-06-27.crt
+sbsiglist --owner 77fa9abd-0359-4d32-bd60-28f4e78f784b --type x509 --output db.esl MicCorUEFCA2011_2011-06-27.crt
+doas sign-efi-sig-list -a -g 77fa9abd-0359-4d32-bd60-28f4e78f784b -k /boot/efikeys/KEK.key -c /boot/efikeys/KEK.crt db ~/efikeys/db.esl /boot/efikeys/db.auth
+
+## Enroll EFI-Keys and sign bootloader
 doas cryptboot-efikeys enroll
 doas cryptboot update-grub
+
+## Remove ~/efikeys
+rm -rf ~/efikeys
 
 # Configure custom-efibackup.sh
 doas sh -c '{
