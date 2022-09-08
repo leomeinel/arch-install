@@ -75,19 +75,16 @@ pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/
   ## It shouldn't be enabled for ALL.
   ## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
     ## FUTURE GOAL: REPLACE sudo WITH doas
-echo "%sudo ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo
+echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
 ## opendoas
 mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
 
-## Install required aur packages
+## Set up post-install.sh
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
-
-## sudo
-echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
 # Configure /etc/crypttab
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
@@ -143,12 +140,18 @@ chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 
+# Configure /etc/cryptboot.conf
+chmod 644 /etc/cryptboot.conf
+
 # Configure symlinks
 mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
 ln -s "$(which nvim)" /usr/bin/edit
 ln -s "$(which nvim)" /usr/bin/vedit
 ln -s "$(which nvim)" /usr/bin/vi
 ln -s "$(which nvim)" /usr/bin/vim
+chmod 755 /usr/bin/cryptboot
+chmod 755 /usr/bin/cryptboot-efikeys
+chmod 755 /usr/bin/grub-install
 chmod 755 /usr/bin/ex
 chmod 755 /usr/bin/view
 chmod 755 /usr/bin/vimdiff
