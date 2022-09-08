@@ -20,9 +20,6 @@ doas cryptboot-efikeys create
 doas cryptboot-efikeys enroll
 doas cryptboot update-grub
 
-## Remove ~/efikeys
-rm -rf ~/efikeys
-
 # Configure custom-efibackup.sh
 doas sh -c '{
   echo "#!/bin/sh"
