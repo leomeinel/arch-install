@@ -94,9 +94,6 @@ MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
   echo "md1_crypt    UUID=$MD1UUID    none    luks,key-slot=0"
 } > /etc/crypttab
 
-# Configure /etc/cryptboot.conf
-sed -i 's/^BOOT_CRYPT_NAME=.*/BOOT_CRYPT_NAME="md0_crypt"/;s/^BOOT_DIR=.*/BOOT_DIR="\/boot"/;s/^EFI_DIR=.*/EFI_DIR="\/efi"/;s/^BOOT_LOADER=.*/BOOT_LOADER="GRUB"/;s/^EFI_ID_GRUB=.*/EFI_ID_GRUB="GRUB"/;s/^EFI_PATH_GRUB=.*/EFI_PATH_GRUB="EFI\/GRUB\/grubx64.efi"/;s/^EFI_KEYS_DIR=.*/EFI_KEYS_DIR="\/boot\/efikeys"/' /etc/cryptboot.conf
-
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
 
@@ -141,6 +138,7 @@ chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 
 # Configure /etc/cryptboot.conf
+mv mv /git/mdadm-encrypted-btrfs/etc/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 
 # Configure symlinks

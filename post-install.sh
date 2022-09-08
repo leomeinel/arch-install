@@ -7,7 +7,6 @@ KEYLAYOUT="de"
 set -e
 
 # Configure secureboot
-## Create EFI-Keys
 if mountpoint -q /boot
 then
   doas umount -AR /boot

@@ -7,14 +7,14 @@ if [[ $UID -ne 0 ]]; then
 fi
 
 # Default config
-SRCDIR="$(dirname "$(readlink -f "$0")")"
-EFI_KEYS_DIR="/boot/efikeys"
+EFI_KEYS_DIR="/etc/secureboot/keys"
 
 # Load config file
 if [[ -f "/etc/cryptboot.conf" ]]; then
   source "/etc/cryptboot.conf"
-elif [[ -f "$SRCDIR/cryptboot.conf" ]]; then
-  source "$SRCDIR/cryptboot.conf"
+else
+  echo "/etc/cryptboot.conf doesn't exist!"
+  exit
 fi
 
 # Create UEFI Secure Boot keys directory (if it doesn't already exists)

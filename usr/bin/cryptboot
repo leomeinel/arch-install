@@ -7,25 +7,24 @@ if [[ $UID -ne 0 ]]; then
 fi
 
 # Default config
-SRCDIR="$(dirname "$(readlink -f "$0")")"
-
-BOOT_CRYPT_NAME="cryptboot"
+BOOT_CRYPT_NAME="md0_crypt"
 BOOT_DIR="/boot"
-EFI_DIR="/boot/efi"
+EFI_DIR="/efi"
 BOOT_LOADER="GRUB"
 EFI_ID_GRUB="GRUB"
-EFI_PATH_GRUB="EFI/grub/grubx64.efi"
+EFI_PATH_GRUB="EFI/GRUB/grubx64.efi"
 PKG_UPGRADE_CMD="pacman -Syu"
 
 # Load config file
 if [[ -f "/etc/cryptboot.conf" ]]; then
   source "/etc/cryptboot.conf"
-elif [[ -f "$SRCDIR/cryptboot.conf" ]]; then
-  source "$SRCDIR/cryptboot.conf"
+else
+  echo "/etc/cryptboot.conf doesn't exist!"
+  exit
 fi
 
 # Get path to cryptboot-efikeys executable
-EFIKEYS_BIN="$(which cryptboot-efikeys 2>/dev/null)" || EFIKEYS_BIN="$SRCDIR/cryptboot-efikeys"
+EFIKEYS_BIN="$(which cryptboot-efikeys 2>/dev/null)"
 
 find_crypt_dev() {
   crypt_name="$1"
