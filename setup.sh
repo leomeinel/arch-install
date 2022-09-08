@@ -143,13 +143,14 @@ chmod 644 /etc/cryptboot.conf
 
 # Configure symlinks
 mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
+mv /git/mdadm-encrypted-btrfs/usr/local/bin/* /usr/local/bin/
 ln -s "$(which nvim)" /usr/bin/edit
 ln -s "$(which nvim)" /usr/bin/vedit
 ln -s "$(which nvim)" /usr/bin/vi
 ln -s "$(which nvim)" /usr/bin/vim
 chmod 755 /usr/bin/cryptboot
 chmod 755 /usr/bin/cryptboot-efikeys
-chmod 755 /usr/bin/grub-install
+chmod 755 /usr/local/bin/grub-install
 chmod 755 /usr/bin/ex
 chmod 755 /usr/bin/view
 chmod 755 /usr/bin/vimdiff
