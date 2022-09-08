@@ -138,7 +138,7 @@ chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 
 # Configure /etc/cryptboot.conf
-mv mv /git/mdadm-encrypted-btrfs/etc/cryptboot.conf /etc/
+mv /git/mdadm-encrypted-btrfs/etc/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 
 # Configure symlinks
