@@ -66,7 +66,7 @@ case "$1" in
     sign-efi-sig-list -g "$GUID" -k PK.key -c PK.crt PK PK_null.esl PK_null.auth
     sign-efi-sig-list -g "$GUID" -k PK.key -c PK.crt KEK KEK.esl KEK.auth
     sign-efi-sig-list -g "$GUID" -k KEK.key -c KEK.crt db db.esl db.auth
-    sign-efi-sig-list -g "$MS_GUID" -k PK.key -c PK.crt db MS_OpROM_db.esl MS_OpROM_db.auth
+    sign-efi-sig-list -g "$MS_GUID" -k KEK.key -c KEK.crt db MS_OpROM_db.esl MS_OpROM_db.auth
 
     chmod 0400 ./*.{key,auth}
     sync
@@ -87,12 +87,12 @@ case "$1" in
 
     echo "Enrolling UEFI Secure Boot db key..."
     efi-updatevar -e -f db.esl db
+    
+    echo "Enrolling UEFI Secure Boot MS_OpROM_db key..."
+    efi-updatevar -a -e -f MS_OpROM_db.esl db
 
     echo "Enrolling UEFI Secure Boot PK key..."
     efi-updatevar -f PK.auth PK
-
-    echo "Enrolling UEFI Secure Boot MS_OpROM_db key..."
-    efi-updatevar -k KEK.key -a -e -f MS_OpROM_db.esl db
 
     echo "UEFI Secure Boot keys in '$EFI_KEYS_DIR' enrolled to UEFI firmware."
     echo "You should now sign your boot loader and reboot!"
