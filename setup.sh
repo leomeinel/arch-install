@@ -138,12 +138,14 @@ chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 
 # Configure /etc/cryptboot.conf
-mv /git/mdadm-encrypted-btrfs/etc/cryptboot.conf /etc/
+git clone https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
+mv /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 
 # Configure symlinks
-mv /git/mdadm-encrypted-btrfs/usr/bin/* /usr/bin/
-mv /git/mdadm-encrypted-btrfs/usr/local/bin/* /usr/local/bin/
+mv /git/cryptboot/cryptboot /usr/bin/
+mv /git/cryptboot/cryptboot-efikeys /usr/bin/
+mv /git/cryptboot/grub-install /usr/local/bin/
 ln -s "$(which nvim)" /usr/bin/edit
 ln -s "$(which nvim)" /usr/bin/vedit
 ln -s "$(which nvim)" /usr/bin/vi
