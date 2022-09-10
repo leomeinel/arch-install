@@ -7,3 +7,4 @@ macchina
 arc-kde-git
 papirus-icon-theme-stripped
 sddm-nordic-theme-git
+vscodium-bin
