@@ -148,6 +148,15 @@ chmod 644 /etc/cryptboot.conf
 mv /git/mdadm-encrypted-btrfs/etc/NetworkManager/conf.d/wifi_rand_mac.conf /etc/NetworkManager/conf.d/
 chmod 644 /etc/NetworkManager/conf.d/wifi_rand_mac.conf
 
+# Configure /etc/ssh/sshd_config
+{
+  echo ""
+  echo "# Override"
+  echo "PasswordAuthentication no"
+  echo "AuthenticationMethods publickey"
+  echo "PermitRootLogin no"
+} >> /etc/ssh/sshd_config
+
 # Configure symlinks
 mv /git/cryptboot/grub-install /usr/local/bin/
 mv /git/cryptboot/cryptboot /usr/bin/
