@@ -116,7 +116,7 @@ mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=an
 ## boot
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
-echo "INFO: us keymap will be used when booting for /dev/md/md0!"
+echo -e "INFO: \e[31mUS keymap will be used when booting from \e[0m/dev/md/md0"
 cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks1 /dev/md/md0
 cryptsetup open --type luks1 /dev/md/md0 md0_crypt
 ## root
