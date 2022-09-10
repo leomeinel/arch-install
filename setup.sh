@@ -112,8 +112,7 @@ mkdir /usr/share/screenshots
 chmod -R 777 /usr/share/screenshots
 
 # Add gruvbox.yml to /usr/share/gruvbox/gruvbox.yml
-mkdir /usr/share/gruvbox
-mv /git/mdadm-encrypted-btrfs/gruvbox.yml /usr/share/gruvbox/
+mv /git/mdadm-encrypted-btrfs/usr/share/gruvbox /usr/share/
 chmod -R 755 /usr/share/gruvbox
 chmod 644 /usr/share/gruvbox/gruvbox.yml
 
