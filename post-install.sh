@@ -268,10 +268,10 @@ doas sh -c 'ip6tables-save > /etc/iptables/ip6tables.rules'
 doas chmod 644 /etc/iptables/*.rules
 
 # Enable systemd services
+doas systemctl enable ip6tables
+doas systemctl enable iptables
 doas systemctl enable laptop-mode.service
 doas systemctl enable sddm
-doas systemctl enable iptables
-doas systemctl enable ip6tables
 
 # Remove script
 rm -f ~/post-install.sh
