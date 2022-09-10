@@ -142,9 +142,9 @@ mv /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 
 # Configure symlinks
+mv /git/cryptboot/grub-install /usr/local/bin/
 mv /git/cryptboot/cryptboot /usr/bin/
 mv /git/cryptboot/cryptboot-efikeys /usr/bin/
-mv /git/cryptboot/grub-install /usr/local/bin/
 mv /git/mdadm-encrypted-btrfs/usr/bin/ex /usr/bin/
 mv /git/mdadm-encrypted-btrfs/usr/bin/view /usr/bin/
 mv /git/mdadm-encrypted-btrfs/usr/bin/vimdiff /usr/bin/
