@@ -42,7 +42,7 @@ passwd "$GUESTUSER"
   echo "--sort rate"
 } > /etc/xdg/reflector/reflector.conf
 chmod -R 755 /etc/xdg
-chmod 644 /etc/xdg/reflector/reflector.confsudo
+chmod 644 /etc/xdg/reflector/reflector.conf
 curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | pacman-key -a -
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/repo /etc/pacman.d/
 chmod -R 755 /etc/pacman.d/repo
