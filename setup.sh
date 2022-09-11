@@ -42,7 +42,7 @@ passwd "$GUESTUSER"
   echo "--sort rate"
 } > /etc/xdg/reflector/reflector.conf
 chmod -R 755 /etc/xdg
-chmod 644 /etc/xdg/reflector/reflector.conf
+chmod 644 /etc/xdg/reflector/reflector.confsudo
 curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | pacman-key -a -
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/repo /etc/pacman.d/
 chmod -R 755 /etc/pacman.d/repo
@@ -75,7 +75,7 @@ pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/
   ## It shouldn't be enabled for ALL.
   ## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
     ## FUTURE GOAL: REPLACE sudo WITH doas
-echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
+echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/sudo
 
 ## opendoas
 mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
@@ -85,6 +85,7 @@ chmod -c 0400 /etc/doas.conf
 ## Set up post-install.sh
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
+echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
 
 # Configure /etc/crypttab
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
