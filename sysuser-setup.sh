@@ -3,6 +3,9 @@
 # Fail on error
 set -e
 
+# Install prettier and extensions through npm
+sudo npm install --global prettier @prettier/plugin-php @prettier/plugin-ruby @prettier/plugin-xml prettier-plugin-java prettier-plugin-properties prettier-plugin-rust prettier-plugin-sh prettier-plugin-toml prettier-plugin-kotlin
+
 # Install vscodium-bin
 git clone https://aur.archlinux.org/vscodium-bin.git ~/git/vscodium-bin
 cd ~/git/vscodium-bin
