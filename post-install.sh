@@ -7,12 +7,10 @@ KEYLAYOUT="de"
 set -e
 
 # Configure secureboot
-if mountpoint -q /boot
-then
+if mountpoint -q /boot; then
   doas umount -AR /boot
 fi
-if mountpoint -q /efi
-then
+if mountpoint -q /efi; then
   doas umount -AR /efi
 fi
 doas cryptboot mount
@@ -68,7 +66,7 @@ doas sed -i 's/^#Chroot/Chroot/;s/^#LocalRepo/LocalRepo/;s/^#RemoveMake/RemoveMa
 doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/paru.conf'
 
 # Install packages
-paru -S --noprogressbar --noconfirm --needed - < ~/packages_post-install.txt
+paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
 
@@ -98,11 +96,11 @@ doas iptables -X
 
 ### Set up new chains
 doas iptables -L | grep -q "Chain INPUT" ||
-doas iptables -N INPUT
+  doas iptables -N INPUT
 doas iptables -L | grep -q "Chain FORWARD" ||
-doas iptables -N FORWARD
+  doas iptables -N FORWARD
 doas iptables -L | grep -q "Chain OUTPUT" ||
-doas iptables -N OUTPUT
+  doas iptables -N OUTPUT
 
 ### Allow all connections on all chains to start
 doas iptables -P INPUT ACCEPT
@@ -162,7 +160,7 @@ doas iptables -A INPUT -p udp --dport 7881 -j ACCEPT
 doas iptables -A INPUT -p udp --dport 8881 -j ACCEPT
 
 ### Allow mDNS
-doas iptables -A INPUT -p udp --dport 5353 -j ACCEPT 
+doas iptables -A INPUT -p udp --dport 5353 -j ACCEPT
 
 ### Allow http and https (for wget)
 doas iptables -A INPUT -p tcp --dport 80 -j ACCEPT
@@ -184,11 +182,11 @@ doas ip6tables -X
 
 ### Set up new chains
 doas ip6tables -L | grep -q "Chain INPUT" ||
-doas ip6tables -N INPUT
+  doas ip6tables -N INPUT
 doas ip6tables -L | grep -q "Chain INPUT" ||
-doas ip6tables -N FORWARD
+  doas ip6tables -N FORWARD
 doas ip6tables -L | grep -q "Chain INPUT" ||
-doas ip6tables -N OUTPUT
+  doas ip6tables -N OUTPUT
 
 ### Allow all connections on all chains to start
 doas ip6tables -P INPUT ACCEPT
@@ -248,7 +246,7 @@ doas ip6tables -A INPUT -p udp --dport 7881 -j ACCEPT
 doas ip6tables -A INPUT -p udp --dport 8881 -j ACCEPT
 
 ### Allow mDNS
-doas ip6tables -A INPUT -p udp --dport 5353 -j ACCEPT 
+doas ip6tables -A INPUT -p udp --dport 5353 -j ACCEPT
 
 ### Allow http and https (for wget)
 doas ip6tables -A INPUT -p tcp --dport 80 -j ACCEPT

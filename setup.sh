@@ -40,7 +40,7 @@ passwd "$GUESTUSER"
   echo "--protocol https"
   echo "--latest 20"
   echo "--sort rate"
-} > /etc/xdg/reflector/reflector.conf
+} >/etc/xdg/reflector/reflector.conf
 chmod -R 755 /etc/xdg
 chmod 644 /etc/xdg/reflector/reflector.conf
 curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | pacman-key -a -
@@ -57,25 +57,25 @@ sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#C
   echo "[options]"
   echo "Include = /etc/pacman.d/repo/aur.conf"
   echo "Include = /etc/pacman.d/repo/home_ungoogled_chromium_Arch.conf"
-} >> /etc/pacman.conf
+} >>/etc/pacman.conf
 pacman-key --init
 
 # Update mirrors
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 
 # Install packages
-pacman -Syu --noprogressbar --noconfirm --needed - < /git/mdadm-encrypted-btrfs/packages_setup.txt
+pacman -Syu --noprogressbar --noconfirm --needed - </git/mdadm-encrypted-btrfs/packages_setup.txt
 
 # Configure $SYSUSER
 ## sudo
 ## FIXME: Sudo is mainly used for:
-  ## - /usr/bin/mkarchroot
-  ## - SETENV: /usr/bin/makechrootpkg
-  ## - /usr/bin/arch-nspawn
-  ## It shouldn't be enabled for ALL.
-  ## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
-    ## FUTURE GOAL: REPLACE sudo WITH doas
-echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/sudo
+## - /usr/bin/mkarchroot
+## - SETENV: /usr/bin/makechrootpkg
+## - /usr/bin/arch-nspawn
+## It shouldn't be enabled for ALL.
+## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
+## FUTURE GOAL: REPLACE sudo WITH doas
+echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" >/etc/sudoers.d/sudo
 
 ## opendoas
 mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
@@ -85,7 +85,7 @@ chmod -c 0400 /etc/doas.conf
 ## Set up post-install.sh
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
-echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo
+echo "%sudo ALL=(ALL:ALL) ALL" >/etc/sudoers.d/sudo
 
 # Configure /etc/crypttab
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
@@ -93,7 +93,7 @@ MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
 {
   echo "md0_crypt    UUID=$MD0UUID    /root/md0_crypt.keyfile    luks,key-slot=1"
   echo "md1_crypt    UUID=$MD1UUID    none    luks,key-slot=0"
-} > /etc/crypttab
+} >/etc/crypttab
 
 # Change ownership of /var/lib/repo/aur to $SYSUSER
 chown -R "$SYSUSER": /var/lib/repo/aur
@@ -156,7 +156,7 @@ chmod 644 /etc/NetworkManager/conf.d/wifi_rand_mac.conf
   echo "PasswordAuthentication no"
   echo "AuthenticationMethods publickey"
   echo "PermitRootLogin no"
-} >> /etc/ssh/sshd_config
+} >>/etc/ssh/sshd_config
 
 # Configure symlinks
 mv /git/cryptboot/grub-install /usr/local/bin/
@@ -189,24 +189,24 @@ chmod 644 /etc/sddm.conf.d/kde_settings.conf
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/;s/^#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/;s/^#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/;s/^#nl_NL.UTF-8 UTF-8/nl_NL.UTF-8 UTF-8/' /etc/locale.gen
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "LANG=en_US.UTF-8" >/etc/locale.conf
 locale-gen
-echo "KEYMAP=$KEYMAP" > /etc/vconsole.conf
-echo "$HOSTNAME" > /etc/hostname
+echo "KEYMAP=$KEYMAP" >/etc/vconsole.conf
+echo "$HOSTNAME" >/etc/hostname
 {
   echo "127.0.0.1  localhost"
   echo "127.0.1.1  $HOSTNAME.$DOMAIN	$HOSTNAME"
   echo "::1  ip6-localhost ip6-loopback"
   echo "ff02::1  ip6-allnodes"
   echo "ff02::2  ip6-allrouters"
-} > /etc/hosts
+} >/etc/hosts
 
 # Configure /etc/systemd/zram-generator.conf
 mv /git/mdadm-encrypted-btrfs/etc/systemd/zram-generator.conf /etc/systemd/
 chmod 644 /etc/systemd/zram-generator.conf
 
 # Configure /etc/mdadm.conf
-mdadm --detail --scan >> /etc/mdadm.conf
+mdadm --detail --scan >>/etc/mdadm.conf
 
 # Configure dot-files
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
@@ -241,38 +241,38 @@ sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' 
 
 ## If on nvidia add hooks
 pacman -Qq "nvidia-dkms" &&
-{
   {
-    echo '[Trigger]'
-    echo 'Operation=Install'
-    echo 'Operation=Upgrade'
-    echo 'Operation=Remove'
-    echo 'Type=Package'
-    echo 'Target=nvidia-dkms'
-    echo 'Target=linux'
-    echo 'Target=linux-lts'
-    echo 'Target=linux-hardened'
-    echo 'Target=linux-zen'
-    echo ''
-    echo '[Action]'
-    echo 'Description=Updating NVIDIA mkinitcpio...'
-    echo 'Depends=mkinitcpio'
-    echo 'When=PostTransaction'
-    echo 'NeedsTargets'
-    echo "Exec=/bin/sh -c '/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh'"
-  } > /etc/pacman.d/hooks/custom-nvidia-gen-mkinitcpio.hook
-  {
-    echo '#!/bin/sh'
-    echo ''
-    echo 'while read -r target'
-    echo 'do'
-    echo '    case $target in'
-    echo '        linux) exit 0'
-    echo '    esac'
-    echo 'done'
-    echo '/usr/bin/mkinitcpio -P'
-  } > /etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh
-}
+    {
+      echo '[Trigger]'
+      echo 'Operation=Install'
+      echo 'Operation=Upgrade'
+      echo 'Operation=Remove'
+      echo 'Type=Package'
+      echo 'Target=nvidia-dkms'
+      echo 'Target=linux'
+      echo 'Target=linux-lts'
+      echo 'Target=linux-hardened'
+      echo 'Target=linux-zen'
+      echo ''
+      echo '[Action]'
+      echo 'Description=Updating NVIDIA mkinitcpio...'
+      echo 'Depends=mkinitcpio'
+      echo 'When=PostTransaction'
+      echo 'NeedsTargets'
+      echo "Exec=/bin/sh -c '/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh'"
+    } >/etc/pacman.d/hooks/custom-nvidia-gen-mkinitcpio.hook
+    {
+      echo '#!/bin/sh'
+      echo ''
+      echo 'while read -r target'
+      echo 'do'
+      echo '    case $target in'
+      echo '        linux) exit 0'
+      echo '    esac'
+      echo 'done'
+      echo '/usr/bin/mkinitcpio -P'
+    } >/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh
+  }
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
 
@@ -287,7 +287,7 @@ sed -i 's/^FILES=.*/FILES=(\/root\/md0_crypt.keyfile)/;s/^MODULES=.*/MODULES=(bt
 
 ## If on nvidia add nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
-sed -i '/^MODULES=.*/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+  sed -i '/^MODULES=.*/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 chmod 600 /boot/initramfs-linux*
 
@@ -296,7 +296,7 @@ sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINA
 
 ## If on nvidia add nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
-sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
+  sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
@@ -304,8 +304,8 @@ grub-mkconfig -o /boot/grub/grub.cfg
 sed -i '/\/.efi.bak.*vfat/s/rw/noauto,rw/' /etc/fstab
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
-  # Detecting snapshots ...
-  # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md1_crypt> does not exist.
+# Detecting snapshots ...
+# mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md1_crypt> does not exist.
 systemctl enable snapper-cleanup.timer
 systemctl enable snapper-timeline.timer
 

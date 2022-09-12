@@ -43,13 +43,13 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 ```
 
-### *Low GRUBRESOLUTION for VM*
+### _Low GRUBRESOLUTION for VM_
 
-:bulb: | *You should set a low GRUBRESOLUTION for Virtual Machines.*
+:bulb: | _You should set a low GRUBRESOLUTION for Virtual Machines._
 
-:bulb: | *Otherwise there might be inconveniences during Post-installation.*
+:bulb: | _Otherwise there might be inconveniences during Post-installation._
 
-:bulb: | *For example "1280x720" on a "1920x1080" screen.*
+:bulb: | _For example "1280x720" on a "1920x1080" screen._
 
 ## Post-installation (tty)
 
@@ -72,6 +72,6 @@ reboot
 
 ### Do this for every user account
 
-:information_source: |  Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`.
+:information_source: | Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`.
 
-:information_source: |  Change Wallpaper by `right-clicking` your `Desktop`.
+:information_source: | Change Wallpaper by `right-clicking` your `Desktop`.

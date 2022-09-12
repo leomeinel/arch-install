@@ -8,31 +8,29 @@ set -e
 
 # Unmount everything from /mnt
 mountpoint -q /mnt &&
-umount -AR /mnt
+  umount -AR /mnt
 
 # Detect disks
 readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
 DISKS_LENGTH="${#DISKS[@]}"
-for (( i = 0; i < DISKS_LENGTH; i++ ))
-do
+for ((i = 0; i < DISKS_LENGTH; i++)); do
   udevadm info -q property --property=ID_BUS --value "${DISKS[$i]}" | grep -q "usb" &&
-  {
-    unset 'DISKS[$i]'
-    continue
-  }
-  DISKS=( "${DISKS[@]}" )
+    {
+      unset 'DISKS[$i]'
+      continue
+    }
+  DISKS=("${DISKS[@]}")
 done
 
 [ "${#DISKS[@]}" -ne 2 ] &&
-{
-  echo "ERROR: There are not exactly 2 disks attached!"
-  exit 19
-}
+  {
+    echo "ERROR: There are not exactly 2 disks attached!"
+    exit 19
+  }
 
 SIZE1="$(lsblk -drno SIZE "${DISKS[0]}" | tr -d "[:space:]")"
 SIZE2="$(lsblk -drno SIZE "${DISKS[1]}" | tr -d "[:space:]")"
-if [ "$SIZE1" = "$SIZE2" ]
-then
+if [ "$SIZE1" = "$SIZE2" ]; then
   DISK1="${DISKS[0]}"
   DISK2="${DISKS[1]}"
 else
@@ -43,16 +41,17 @@ fi
 # Prompt user
 read -rp "Erase $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
 case "$choice" in
-  YES ) echo "Erasing $DISK1 and $DISK2..."
+YES)
+  echo "Erasing $DISK1 and $DISK2..."
   ;;
-  * ) echo "ERROR: User aborted erasing $DISK1 and $DISK2"
+*)
+  echo "ERROR: User aborted erasing $DISK1 and $DISK2"
   exit 125
   ;;
 esac
 
 # Detect and close old crypt volumes
-if lsblk -rno TYPE | grep -q "crypt"
-then
+if lsblk -rno TYPE | grep -q "crypt"; then
   OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
   OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
   cryptsetup close "$OLD_CRYPT_0"
@@ -60,20 +59,17 @@ then
 fi
 
 # Detect and erase old crypt/raid1 volumes
-if lsblk -rno TYPE | grep -q "raid1"
-then
+if lsblk -rno TYPE | grep -q "raid1"; then
   DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
   DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
   DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
   DISK2P3="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
   OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
   OLD_RAID_1="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '2p' | tr -d "[:space:]")"
-  if cryptsetup isLuks "$OLD_RAID_0"
-  then
+  if cryptsetup isLuks "$OLD_RAID_0"; then
     cryptsetup erase "$OLD_RAID_0"
   fi
-  if cryptsetup isLuks "$OLD_RAID_1"
-  then
+  if cryptsetup isLuks "$OLD_RAID_1"; then
     cryptsetup erase "$OLD_RAID_1"
   fi
   sgdisk -Z "$OLD_RAID_0"
@@ -164,30 +160,30 @@ sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#N
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
-echo "intel-ucode" >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+  echo "intel-ucode" >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
-echo "amd-ucode" >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+  echo "amd-ucode" >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
-{
-  echo "nvidia-dkms"
-  echo "egl-wayland"
-} >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+  {
+    echo "nvidia-dkms"
+    echo "egl-wayland"
+  } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
-{
-  echo "xf86-video-amdgpu"
-  echo "vulkan-radeon"
-  echo "libva-mesa-driver"
-  echo "mesa-vdpau"
-} >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+  {
+    echo "xf86-video-amdgpu"
+    echo "vulkan-radeon"
+    echo "libva-mesa-driver"
+    echo "mesa-vdpau"
+  } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
-{
-  echo "xf86-video-intel"
-  echo "vulkan-intel"
-} >> /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
-pacstrap /mnt - < /root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+  {
+    echo "xf86-video-intel"
+    echo "vulkan-intel"
+  } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+pacstrap /mnt - </root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 
 # Configure /mnt/etc/fstab
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt >>/mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
