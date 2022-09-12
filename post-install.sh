@@ -17,10 +17,10 @@ set -e
 
 # Configure secureboot
 if mountpoint -q /boot; then
-  doas umount -AR /boot
+    doas umount -AR /boot
 fi
 if mountpoint -q /efi; then
-  doas umount -AR /efi
+    doas umount -AR /efi
 fi
 doas cryptboot mount
 doas cryptboot-efikeys create
@@ -105,11 +105,11 @@ doas iptables -X
 
 ### Set up new chains
 doas iptables -L | grep -q "Chain INPUT" ||
-  doas iptables -N INPUT
+    doas iptables -N INPUT
 doas iptables -L | grep -q "Chain FORWARD" ||
-  doas iptables -N FORWARD
+    doas iptables -N FORWARD
 doas iptables -L | grep -q "Chain OUTPUT" ||
-  doas iptables -N OUTPUT
+    doas iptables -N OUTPUT
 
 ### Allow all connections on all chains to start
 doas iptables -P INPUT ACCEPT
@@ -191,11 +191,11 @@ doas ip6tables -X
 
 ### Set up new chains
 doas ip6tables -L | grep -q "Chain INPUT" ||
-  doas ip6tables -N INPUT
+    doas ip6tables -N INPUT
 doas ip6tables -L | grep -q "Chain INPUT" ||
-  doas ip6tables -N FORWARD
+    doas ip6tables -N FORWARD
 doas ip6tables -L | grep -q "Chain INPUT" ||
-  doas ip6tables -N OUTPUT
+    doas ip6tables -N OUTPUT
 
 ### Allow all connections on all chains to start
 doas ip6tables -P INPUT ACCEPT
