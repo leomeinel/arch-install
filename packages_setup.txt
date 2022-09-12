@@ -9,6 +9,7 @@ arch-audit
 ark
 bat
 bleachbit
+bluedevil
 bluez
 bluez-utils
 cantarell-fonts
