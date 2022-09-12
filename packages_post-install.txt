@@ -1,5 +1,6 @@
 arc-kde-git
 chromium-extension-web-store
+dotnet-sdk-bin
 laptop-mode-tools
 librewolf-bin
 macchina
@@ -7,4 +8,3 @@ papirus-icon-theme-stripped
 sddm-nordic-theme-git
 snap-pac-grub
 snapper-gui-git
-dotnet-sdk-bin

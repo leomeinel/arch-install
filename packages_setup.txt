@@ -25,6 +25,7 @@ exa
 fd
 gimp
 git-delta
+go
 gradle
 grex
 grub
