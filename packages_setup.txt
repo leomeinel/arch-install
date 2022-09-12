@@ -64,7 +64,6 @@ mpv
 mtools
 notepadqq
 noto-fonts
-npm
 nss-mdns
 ntfs-3g
 okular
