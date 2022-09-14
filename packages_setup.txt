@@ -26,6 +26,7 @@ exa
 fd
 gimp
 git-delta
+glow
 go
 gradle
 grex
