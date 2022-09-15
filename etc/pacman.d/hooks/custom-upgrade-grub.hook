@@ -1,0 +1,11 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = grub
+
+[Action]
+Depends = grub
+Description = Updating grub...
+When = PostTransaction
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-upgrade-grub.sh'
