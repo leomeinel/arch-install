@@ -27,9 +27,6 @@ doas cryptboot-efikeys create
 doas cryptboot-efikeys enroll
 doas cryptboot update-grub
 
-# Enable pacman hooks
-doas chmod 744 /etc/pacman.d/hooks/scripts/*.sh
-
 # Configure clock
 doas timedatectl set-ntp true
 

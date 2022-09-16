@@ -284,6 +284,7 @@ pacman -Qq "nvidia-dkms" &&
     }
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
+chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
 # Add key for /dev/mapper/md0_crypt
 dd bs=1024 count=4 if=/dev/urandom of=/root/md0_crypt.keyfile iflag=fullblock
