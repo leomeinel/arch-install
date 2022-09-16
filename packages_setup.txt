@@ -8,6 +8,7 @@ arc-gtk-theme
 arch-audit
 ark
 bat
+bitwarden
 bleachbit
 bluedevil
 bluez
@@ -52,6 +53,7 @@ kompare
 krunner
 ksystemlog
 ktorrent
+libreoffice-extension-texmaths
 libreoffice-still
 libvirt
 lldb
@@ -75,7 +77,6 @@ oxipng
 p7zip
 pacman-contrib
 pam-u2f
-python-pip
 pipewire
 pipewire-alsa
 pipewire-jack
@@ -88,6 +89,7 @@ power-profiles-daemon
 powerdevil
 print-manager
 procs
+python-pip
 qemu-desktop
 quilt
 ripgrep
