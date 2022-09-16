@@ -27,35 +27,7 @@ doas cryptboot-efikeys create
 doas cryptboot-efikeys enroll
 doas cryptboot update-grub
 
-# Configure custom-efibackup.sh
-doas sh -c '{
-  echo "#!/bin/sh"
-  echo ""
-  echo "set -e"
-  echo "if /usr/bin/mountpoint -q /efi"
-  echo "then"
-  echo "  /usr/bin/umount -AR /efi"
-  echo "fi"
-  echo "if /usr/bin/mountpoint -q /.efi.bak"
-  echo "then"
-  echo "  /usr/bin/umount -AR /.efi.bak"
-  echo "fi"
-  echo "if /usr/bin/mountpoint -q /boot"
-  echo "then"
-  echo "  /usr/bin/umount -AR /boot"
-  echo "fi"
-  echo "/usr/bin/mount /boot"
-  echo "/usr/bin/mount /efi"
-  echo "/usr/bin/mount /.efi.bak"
-  echo "/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old"
-  echo "/usr/bin/rsync -aq --delete --mkpath /efi/ /.efi.bak"
-  echo "if [ -d /.boot.bak ]"
-  echo "then"
-  echo "  /usr/bin/rsync -aq --delete --mkpath /.boot.bak/ /.boot.bak.old"
-  echo "fi"
-  echo "/usr/bin/rsync -aq --delete --mkpath /boot/ /.boot.bak"
-  echo "/usr/bin/umount /.efi.bak"
-} > /etc/pacman.d/hooks/scripts/custom-efibackup.sh'
+# Enable pacman hooks
 doas chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
 # Configure clock
