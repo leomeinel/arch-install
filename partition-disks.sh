@@ -236,7 +236,7 @@ genfstab -U /mnt >>/mnt/etc/fstab
 } >>/mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
-git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
+git clone --branch security https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
 
 # Remove repo
