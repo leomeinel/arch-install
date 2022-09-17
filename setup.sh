@@ -230,27 +230,6 @@ sed -i 's/^#.*dir.*=.*/dir = \/var\/lib\/faillock/' /etc/security/faillock.conf
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 
-# Set SSD state to "frozen" after sleep
-DISK1=#TODO!
-DISK2=#TODO!
-DISK1UUID="$(blkid -s UUID -o value $DISK1)"
-DISK2UUID="$(blkid -s UUID -o value $DISK2)"
-{
-    echo'if [ "$1" = "post" ]; then'
-    echo'    sleep 1'
-    echo'    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK1UUID"'; then'
-    echo'        logger "$0: SSD freeze command executed successfully"'
-    echo'    else'
-    echo'        logger "$0: SSD freeze command failed"'
-    echo'    fi'
-    echo'    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK2UUID"'; then'
-    echo'        logger "$0: SSD freeze command executed successfully"'
-    echo'    else'
-    echo'        logger "$0: SSD freeze command failed"'
-    echo'    fi'
-    echo'fi'
-} >/usr/lib/systemd/system-sleep/freeze-ssd.sh
-
 # Configure dot-files
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
@@ -348,7 +327,17 @@ grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # Configure /etc/fstab
-sed -i '/\/.efi.bak.*vfat/s/rw/noauto,rw/' /etc/fstab
+sed -i '/\/boot.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/efi.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/.efi.bak.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/.snapshots.*btrfs/s/rw/noexec,nodev,nosuid,noauto,rw/' /etc/fstab
+{
+    echo ''
+    echo '# tmpfs'
+    # TODO! Replace u
+    echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
+    echo 'tmpfs /tmp tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
+    echo 'tmpfs /var/tmp tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
+    echo 'btrfs /var btrfs rw,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
+    echo 'btrfs /home btrfs rw,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
+} >>/etc/fstab
 
 # FIXME: Enable some systemd services later because of grub-install ERROR:
 # Detecting snapshots ...

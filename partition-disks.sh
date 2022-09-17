@@ -141,7 +141,13 @@ mkfs.fat -n BOOT -F32 /dev/mapper/md0_crypt
 mkfs.btrfs -L MDCRYPT /dev/mapper/md1_crypt
 mount /dev/mapper/md1_crypt /mnt
 btrfs subvolume create /mnt/@
-btrfs subvolume create /mnt/@var
+btrfs subvolume create /mnt/@var_cache
+btrfs subvolume create /mnt/@var_games
+btrfs subvolume create /mnt/@var_lib_aurbuild
+btrfs subvolume create /mnt/@var_lib_mysql
+btrfs subvolume create /mnt/@var_lib_libvirt
+btrfs subvolume create /mnt/@var_lib_xdg-ninja
+btrfs subvolume create /mnt/@var_log
 btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@snapshots
 
@@ -154,12 +160,39 @@ mkdir /mnt/.snapshots
 mkdir /mnt/efi
 mkdir /mnt/.efi.bak
 mkdir -p /mnt/boot/efikeys
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/home
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/.snapshots
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/aurbuild
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/mysql
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/var/log
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/home
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/md1_crypt /mnt/.snapshots
 mount "$DISK1P1" /mnt/efi
 mount "$DISK2P1" /mnt/.efi.bak
 mount /dev/mapper/md0_crypt /mnt/boot
+
+# Set SSD state to "frozen" after sleep
+mkdir -p /mnt/usr/lib/systemd/system-sleep
+DISK1UUID="$(blkid -s UUID -o value $DISK1)"
+DISK2UUID="$(blkid -s UUID -o value $DISK2)"
+{
+    echo'if [ "$1" = "post" ]; then'
+    echo'    sleep 1'
+    echo'    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK1UUID"'; then'
+    echo'        logger "$0: SSD freeze command executed successfully"'
+    echo'    else'
+    echo'        logger "$0: SSD freeze command failed"'
+    echo'    fi'
+    echo'    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK2UUID"'; then'
+    echo'        logger "$0: SSD freeze command executed successfully"'
+    echo'    else'
+    echo'        logger "$0: SSD freeze command failed"'
+    echo'    fi'
+    echo'fi'
+} >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 
 # Install packages
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#NoProgressBar/NoProgressBar/' /etc/pacman.conf
