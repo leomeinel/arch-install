@@ -165,7 +165,6 @@ mkdir /mnt/home
 mkdir /mnt/.snapshots
 mkdir /mnt/efi
 mkdir /mnt/.efi.bak
-mkdir -p /mnt/boot/efikeys
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/aurbuild
