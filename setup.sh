@@ -326,19 +326,6 @@ pacman -Qq "intel-ucode" &&
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# Configure /etc/fstab
-sed -i '/\/boot.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/efi.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/.efi.bak.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/.snapshots.*btrfs/s/rw/noexec,nodev,nosuid,noauto,rw/' /etc/fstab
-{
-    echo ''
-    echo '# tmpfs'
-    # TODO! Replace u
-    echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
-    echo 'tmpfs /tmp tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
-    echo 'tmpfs /var/tmp tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
-    echo 'btrfs /var btrfs rw,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
-    echo 'btrfs /home btrfs rw,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
-} >>/etc/fstab
-
 # FIXME: Enable some systemd services later because of grub-install ERROR:
 # Detecting snapshots ...
 # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md1_crypt> does not exist.

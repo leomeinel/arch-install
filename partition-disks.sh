@@ -154,7 +154,13 @@ btrfs subvolume create /mnt/@snapshots
 # Mount volumes
 umount /mnt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md1_crypt /mnt
-mkdir /mnt/var
+mkdir -p /mnt/var/cache
+mkdir /mnt/var/games
+mkdir /mnt/var/lib/aurbuild
+mkdir /mnt/var/lib/mysql
+mkdir /mnt/var/lib/libvirt
+mkdir /mnt/var/lib/xdg-ninja
+mkdir /mnt/var/log
 mkdir /mnt/home
 mkdir /mnt/.snapshots
 mkdir /mnt/efi
@@ -167,7 +173,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /de
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/var/log
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/home
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/var/log
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/md1_crypt /mnt/.snapshots
 mount "$DISK1P1" /mnt/efi
 mount "$DISK2P1" /mnt/.efi.bak
@@ -223,6 +229,21 @@ pacstrap /mnt - </root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab
+sed -i '/\/boot.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/efi.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/.efi.bak.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/.snapshots.*btrfs/s/rw/noexec,nodev,nosuid,noauto,rw/' /mnt/etc/fstab
+{
+    echo ''
+    echo '# tmpfs'
+    # TODO! Replace user & group
+    echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
+    echo 'tmpfs /tmp tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
+    echo ''
+    echo ''
+    echo '# procfs'
+    echo 'procfs /proc procfs noexec,nodev,nosuid 0 0'
+    echo '# btrfs'
+    echo 'btrfs /var btrfs nodev,nosuid 0 0'
+    echo 'btrfs /home btrfs nodev,nosuid 0 0'
+} >>/mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
