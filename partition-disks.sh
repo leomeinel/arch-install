@@ -166,18 +166,18 @@ mkdir /mnt/.snapshots
 mkdir /mnt/efi
 mkdir /mnt/.efi.bak
 mkdir -p /mnt/boot/efikeys
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/aurbuild
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/mysql
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/var/log
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/home
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/md1_crypt /mnt/.snapshots
-mount "$DISK1P1" /mnt/efi
-mount "$DISK2P1" /mnt/.efi.bak
-mount /dev/mapper/md0_crypt /mnt/boot
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/aurbuild
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/mysql
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/var/log
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/home
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/md1_crypt /mnt/.snapshots
+mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
+mount -o noexec,nodev,nosuid,noauto "$DISK2P1" /mnt/.efi.bak
+mount -o noexec,nodev,nosuid /dev/mapper/md0_crypt /mnt/boot
 
 # Set SSD state to "frozen" after sleep
 mkdir -p /mnt/usr/lib/systemd/system-sleep
@@ -229,20 +229,12 @@ pacstrap /mnt - </root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab
-sed -i '/\/boot.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/efi.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/.efi.bak.*vfat/s/rw/noexec,nodev,nosuid,noauto,rw/;/\/.snapshots.*btrfs/s/rw/noexec,nodev,nosuid,noauto,rw/' /mnt/etc/fstab
 {
     echo ''
     echo '# tmpfs'
     # TODO! Replace user & group
     echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
     echo 'tmpfs /tmp tmpfs rw,noexec,nodev,nosuid,uid=user,gid=group,mode=1700 0 0'
-    echo ''
-    echo ''
-    echo '# procfs'
-    echo 'procfs /proc procfs noexec,nodev,nosuid 0 0'
-    echo '# btrfs'
-    echo 'btrfs /var btrfs nodev,nosuid 0 0'
-    echo 'btrfs /home btrfs nodev,nosuid 0 0'
 } >>/mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
