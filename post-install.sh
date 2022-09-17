@@ -42,20 +42,6 @@ doas timedatectl set-ntp true
 doas localectl set-keymap "$KEYMAP"
 doas localectl set-x11-keymap "$KEYLAYOUT"
 
-# Install paru
-git clone https://aur.archlinux.org/paru.git ~/git/paru
-cd ~/git/paru
-makepkg -sri --noprogressbar --noconfirm --needed
-
-# Configure paru.conf
-doas sed -i 's/^#Chroot/Chroot/;s/^#LocalRepo/LocalRepo/;s/^#RemoveMake/RemoveMake/;s/^#CleanAfter/CleanAfter/;s/^#\[bin\]/\[bin\]/;s/^#FileManager =.*/FileManager = nvim/;s/^#Sudo =.*/Sudo = doas/' /etc/paru.conf
-doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/paru.conf'
-
-# Install packages
-paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
-paru --noprogressbar --noconfirm -Syu
-paru -Scc
-
 # Configure iptables
 ## FIXME: Replace with nftables
 
@@ -252,10 +238,15 @@ doas sh -c 'ip6tables-save > /etc/iptables/ip6tables.rules'
 doas chmod 644 /etc/iptables/*.rules
 
 # Enable systemd services
-doas systemctl enable ip6tables
-doas systemctl enable iptables
-doas systemctl enable laptop-mode.service
-doas systemctl enable sddm
+pacman -Qq "iptables" &&
+    {
+        doas systemctl enable ip6tables
+        doas systemctl enable iptables
+    }
+pacman -Qq "sddm" &&
+    doas systemctl enable sddm
+pacman -Qq "laptop-mode-tools" &&
+    doas systemctl enable laptop-mode.service
 
 # Remove script
 rm -f ~/post-install.sh

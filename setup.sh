@@ -42,7 +42,7 @@ passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
 passwd "$GUESTUSER"
 
-# Configure /etc/pacman.conf, /etc/xdg/reflector/reflector.conf, /etc/pacman.d/repo/aur.conf and add local repo /var/lib/repo/aur/aur.db.tar.gz
+# Configure /etc/pacman.conf and /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
     echo "--country $MIRRORCOUNTRIES"
@@ -56,15 +56,11 @@ curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arc
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/repo /etc/pacman.d/
 chmod -R 755 /etc/pacman.d/repo
 chmod 644 /etc/pacman.d/repo/*.conf
-mkdir -p /var/cache/aur/pkg
 mkdir -p /var/cache/home_ungoogled_chromium_Arch/pkg
-mkdir -p /var/lib/repo/aur
-repo-add /var/lib/repo/aur/aur.db.tar.gz
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
 {
     echo ""
     echo "[options]"
-    echo "Include = /etc/pacman.d/repo/aur.conf"
     echo "Include = /etc/pacman.d/repo/home_ungoogled_chromium_Arch.conf"
 } >>/etc/pacman.conf
 pacman-key --init
@@ -103,9 +99,6 @@ MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
     echo "md0_crypt UUID=$MD0UUID /root/md0_crypt.keyfile luks,key-slot=1"
     echo "md1_crypt UUID=$MD1UUID none luks,key-slot=0"
 } >/etc/crypttab
-
-# Change ownership of /var/lib/repo/aur to $SYSUSER
-chown -R "$SYSUSER": /var/lib/repo/aur
 
 # Set default java
 archlinux-java set java-17-openjdk
@@ -251,30 +244,37 @@ su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$GUESTUSER"
 
 # Enable systemd services
-systemctl enable acpid
-systemctl enable apparmor.service
-systemctl enable auditd.service
-systemctl enable avahi-daemon
-systemctl enable bluetooth
-systemctl enable cups.service
-systemctl enable fstrim.timer
-systemctl enable libvirtd
-systemctl enable NetworkManager
-systemctl enable power-profiles-daemon
-systemctl enable reflector
-systemctl enable reflector.timer
-systemctl enable usbguard-dbus.service
+pacman -Qq "acpi" &&
+    systemctl enable acpid
+pacman -Qq "apparmor" &&
+    {
+        systemctl enable apparmor.service
+        systemctl enable auditd.service
+    }
+pacman -Qq "avahi" &&
+    systemctl enable avahi-daemon
+pacman -Qq "bluez" &&
+    systemctl enable bluetooth
+pacman -Qq "cups" &&
+    systemctl enable cups.service
+pacman -Qq "util-linux" &&
+    systemctl enable fstrim.timer
+pacman -Qq "libvirt" &&
+    systemctl enable libvirtd
+pacman -Qq "networkmanager" &&
+    systemctl enable NetworkManager
+pacman -Qq "power-profiles-daemon" &&
+    systemctl enable power-profiles-daemon
+pacman -Qq "reflector" &&
+    {
+        systemctl enable reflector
+        systemctl enable reflector.timer
+    }
+pacman -Qq "usbguard" &&
+    systemctl enable usbguard-dbus.service
 
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
-
-# Configure mDNS for Avahi
-## Configure mDNS in /etc/systemd/resolved.conf
-sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/systemd/resolved.conf
-
-## Configure mDNS in /etc/nsswitch.conf
-sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
-
 ## If on nvidia add hooks
 pacman -Qq "nvidia-dkms" &&
     {
@@ -313,6 +313,12 @@ chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
+# Configure mDNS for Avahi
+## Configure mDNS in /etc/systemd/resolved.conf
+sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/systemd/resolved.conf
+## Configure mDNS in /etc/nsswitch.conf
+sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
+
 # Add key for /dev/mapper/md0_crypt
 dd bs=1024 count=4 if=/dev/urandom of=/root/md0_crypt.keyfile iflag=fullblock
 chmod 000 /root/md0_crypt.keyfile
@@ -342,8 +348,11 @@ grub-mkconfig -o /boot/grub/grub.cfg
 # FIXME: Enable some systemd services later because of grub-install ERROR:
 # Detecting snapshots ...
 # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md1_crypt> does not exist.
-systemctl enable snapper-cleanup.timer
-systemctl enable snapper-timeline.timer
+pacman -Qq "snapper" &&
+    {
+        systemctl enable snapper-cleanup.timer
+        systemctl enable snapper-timeline.timer
+    }
 
 # Run snapshot cleanup every hour
 sed -i 's/^OnUnitActiveSec=.*/OnUnitActiveSec=1h/' /usr/lib/systemd/system/snapper-cleanup.timer

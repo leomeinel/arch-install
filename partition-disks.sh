@@ -143,7 +143,6 @@ mount /dev/mapper/md1_crypt /mnt
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@var_cache
 btrfs subvolume create /mnt/@var_games
-btrfs subvolume create /mnt/@var_lib_aurbuild
 btrfs subvolume create /mnt/@var_lib_libvirt
 btrfs subvolume create /mnt/@var_lib_mysql
 btrfs subvolume create /mnt/@var_lib_xdg-ninja
@@ -159,7 +158,6 @@ mkdir /mnt/.efi.bak
 mkdir /mnt/boot
 mkdir -p /mnt/var/cache
 mkdir /mnt/var/games
-mkdir -p /mnt/var/lib/aurbuild
 mkdir /mnt/var/lib/libvirt
 mkdir /mnt/var/lib/mysql
 mkdir /mnt/var/lib/xdg-ninja
@@ -168,7 +166,6 @@ mkdir /mnt/home
 mkdir /mnt/.snapshots
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/aurbuild
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/mysql
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
@@ -231,7 +228,7 @@ pacstrap /mnt - </root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 genfstab -U /mnt >>/mnt/etc/fstab
 {
     echo '# tmpfs'
-    echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
+    echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid 0 0'
     echo 'tmpfs /tmp tmpfs rw,noexec,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
 } >>/mnt/etc/fstab
 
