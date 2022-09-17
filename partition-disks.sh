@@ -159,7 +159,7 @@ mkdir /mnt/.efi.bak
 mkdir /mnt/boot
 mkdir -p /mnt/var/cache
 mkdir /mnt/var/games
-mkdir /mnt/var/lib/aurbuild
+mkdir -p /mnt/var/lib/aurbuild
 mkdir /mnt/var/lib/libvirt
 mkdir /mnt/var/lib/mysql
 mkdir /mnt/var/lib/xdg-ninja
@@ -184,19 +184,19 @@ mkdir -p /mnt/usr/lib/systemd/system-sleep
 DISK1UUID="$(blkid -s UUID -o value $DISK1)"
 DISK2UUID="$(blkid -s UUID -o value $DISK2)"
 {
-    echo'if [ "$1" = "post" ]; then'
-    echo'    sleep 1'
-    echo'    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK1UUID"'; then'
-    echo'        logger "$0: SSD freeze command executed successfully"'
-    echo'    else'
-    echo'        logger "$0: SSD freeze command failed"'
-    echo'    fi'
-    echo'    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK2UUID"'; then'
-    echo'        logger "$0: SSD freeze command executed successfully"'
-    echo'    else'
-    echo'        logger "$0: SSD freeze command failed"'
-    echo'    fi'
-    echo'fi'
+    echo 'if [ "$1" = "post" ]; then'
+    echo '    sleep 1'
+    echo '    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK1UUID"'; then'
+    echo '        logger "$0: SSD freeze command executed successfully"'
+    echo '    else'
+    echo '        logger "$0: SSD freeze command failed"'
+    echo '    fi'
+    echo '    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK2UUID"'; then'
+    echo '        logger "$0: SSD freeze command executed successfully"'
+    echo '    else'
+    echo '        logger "$0: SSD freeze command failed"'
+    echo '    fi'
+    echo 'fi'
 } >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 
@@ -230,7 +230,6 @@ pacstrap /mnt - </root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab
 {
-    echo ''
     echo '# tmpfs'
     echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
     echo 'tmpfs /tmp tmpfs rw,noexec,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'

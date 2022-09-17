@@ -100,8 +100,8 @@ echo "%sudo ALL=(ALL:ALL) ALL" >/etc/sudoers.d/sudo
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
 {
-    echo "md0_crypt    UUID=$MD0UUID    /root/md0_crypt.keyfile    luks,key-slot=1"
-    echo "md1_crypt    UUID=$MD1UUID    none    luks,key-slot=0"
+    echo "md0_crypt UUID=$MD0UUID /root/md0_crypt.keyfile luks,key-slot=1"
+    echo "md1_crypt UUID=$MD1UUID none luks,key-slot=0"
 } >/etc/crypttab
 
 # Change ownership of /var/lib/repo/aur to $SYSUSER
@@ -131,7 +131,11 @@ umount /.snapshots
 rm -rf /.snapshots
 sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="sudo"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.1"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="10"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="10"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="4"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="2"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
 snapper --no-dbus -c root create-config /
-snapper --no-dbus -c var create-config /var
+snapper --no-dbus -c var_games create-config /var/games
+snapper --no-dbus -c var_lib_libvirt create-config /var/lib/libvirt
+snapper --no-dbus -c var_lib_mysql create-config /var/lib/mysql
+snapper --no-dbus -c var_lib_xdg-ninja create-config /var/lib/xdg-ninja
+snapper --no-dbus -c var_log create-config /var/log
 snapper --no-dbus -c home create-config /home
 btrfs subvolume delete /.snapshots
 mkdir /.snapshots
@@ -139,9 +143,21 @@ mount -a
 chmod 750 /.snapshots
 chmod a+rx /.snapshots
 chown :sudo /.snapshots
-chmod 750 /var/.snapshots
-chmod a+rx /var/.snapshots
-chown :sudo /var/.snapshots
+chmod 750 /var/games/.snapshots
+chmod a+rx /var/games/.snapshots
+chown :sudo /var/games/.snapshots
+chmod 750 /var/lib/libvirt/.snapshots
+chmod a+rx /var/lib/libvirt/.snapshots
+chown :sudo /var/lib/libvirt/.snapshots
+chmod 750 /var/lib/mysql/.snapshots
+chmod a+rx /var/lib/mysql/.snapshots
+chown :sudo /var/lib/mysql/.snapshots
+chmod 750 /var/lib/xdg-ninja/.snapshots
+chmod a+rx /var/lib/xdg-ninja/.snapshots
+chown :sudo /var/lib/xdg-ninja/.snapshots
+chmod 750 /var/log/.snapshots
+chmod a+rx /var/log/.snapshots
+chown :sudo /var/log/.snapshots
 chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
