@@ -173,7 +173,7 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /de
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/var/log
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/var/log
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/home
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/md1_crypt /mnt/.snapshots
 mount "$DISK1P1" /mnt/efi
 mount "$DISK2P1" /mnt/.efi.bak
