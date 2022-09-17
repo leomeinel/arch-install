@@ -25,6 +25,7 @@ efitools
 ethtool
 exa
 fd
+firejail
 gimp
 git-delta
 glow
@@ -109,6 +110,7 @@ unarchiver
 ungoogled-chromium
 unrar
 unzip
+usbguard
 virt-manager
 wget
 wireplumber

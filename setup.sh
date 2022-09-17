@@ -217,6 +217,40 @@ chmod 644 /etc/systemd/zram-generator.conf
 # Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
 
+# Configure /etc/usbguard/usbguard-daemon.conf and /etc/usbguard/rules.conf
+#/etc/usbguard/usbguard-daemon.conf TODO!
+usbguard generate-policy >/etc/usbguard/rules.conf
+
+# Configure firejail
+firecfg
+
+# Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su and /etc/pam.d/su-l
+echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
+sed -i 's/^#.*dir.*=.*/dir = \/var\/lib\/faillock/' /etc/security/faillock.conf
+echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
+echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
+
+# Set SSD state to "frozen" after sleep
+DISK1=#TODO!
+DISK2=#TODO!
+DISK1UUID="$(blkid -s UUID -o value $DISK1)"
+DISK2UUID="$(blkid -s UUID -o value $DISK2)"
+{
+    echo'if [ "$1" = "post" ]; then'
+    echo'    sleep 1'
+    echo'    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK1UUID"'; then'
+    echo'        logger "$0: SSD freeze command executed successfully"'
+    echo'    else'
+    echo'        logger "$0: SSD freeze command failed"'
+    echo'    fi'
+    echo'    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK2UUID"'; then'
+    echo'        logger "$0: SSD freeze command executed successfully"'
+    echo'    else'
+    echo'        logger "$0: SSD freeze command failed"'
+    echo'    fi'
+    echo'fi'
+} >/usr/lib/systemd/system-sleep/freeze-ssd.sh
+
 # Configure dot-files
 chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
 su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
@@ -237,6 +271,7 @@ systemctl enable NetworkManager
 systemctl enable power-profiles-daemon
 systemctl enable reflector
 systemctl enable reflector.timer
+systemctl enable usbguard-dbus.service
 
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
@@ -302,7 +337,7 @@ mkinitcpio -P
 chmod 600 /boot/initramfs-linux*
 
 # Configure /etc/default/grub
-sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt lockdown=integrity iommu=pt\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt lockdown=integrity iommu=pt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
+sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf module.sig_enforce=1 lockdown=integrity iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf module.sig_enforce=1 lockdown=integrity iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
 
 ## If on nvidia add nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&

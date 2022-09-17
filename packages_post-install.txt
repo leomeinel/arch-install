@@ -8,4 +8,5 @@ papirus-icon-theme-stripped
 sddm-nordic-theme-git
 snap-pac-grub
 snapper-gui-git
+usbguard-notifier
 xdg-ninja-git
