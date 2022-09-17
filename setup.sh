@@ -239,6 +239,7 @@ usbguard generate-policy >/etc/usbguard/rules.conf
 
 # Configure firejail
 sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
+apparmor_parser -r /etc/apparmor.d/firejail-default
 
 # Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su and /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
