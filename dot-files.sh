@@ -20,6 +20,7 @@ setup)
     ~/dot-files/setup.sh
     ;;
 vscodium)
+    chmod +x ~/dot-files/vscodium-extensions.sh
     ~/dot-files/vscodium-extensions.sh
     ;;
 esac
