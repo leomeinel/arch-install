@@ -89,7 +89,7 @@ chmod -c 0400 /etc/doas.conf
 
 ## Set up post-install.sh
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
-su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
+su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" >/etc/sudoers.d/sudo
 
 # Configure /etc/crypttab

@@ -11,16 +11,12 @@
 
 KEYMAP="de-latin1"
 KEYLAYOUT="de"
-SYSUSER="systux"
-VIRTUSER="virt"
-HOMEUSER="leo"
-GUESTUSER="guest"
 
 # Fail on error
 set -e
 
 # Configure firejail
-/usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
+/usr/bin/sudo firecfg --add-users root "<INSERT_USERS>"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 
 # Configure secureboot
