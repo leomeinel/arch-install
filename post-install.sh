@@ -20,13 +20,13 @@ SYSUSER="<INSERT_SYSUSER>"
 VIRTUSER="<INSERT_VIRTUSER>"
 HOMEUSER="<INSERT_HOMEUSER>"
 GUESTUSER="<INSERT_GUESTUSER>"
-~/dot-files.sh setup
+/dot-files.sh setup
 echo "Enter password for $VIRTUSER"
-su -c '~/dot-files.sh setup' "$VIRTUSER"
+su -c '/dot-files.sh setup' "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
-su -c '~/dot-files.sh setup' "$HOMEUSER"
+su -c '/dot-files.sh setup' "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
-su -c '~/dot-files.sh setup' "$GUESTUSER"
+su -c '/dot-files.sh setup' "$GUESTUSER"
 
 # Configure firejail
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
@@ -52,6 +52,7 @@ doas localectl set-keymap "$KEYMAP"
 doas localectl set-x11-keymap "$KEYLAYOUT"
 
 # Install paru
+source ~/.bash_profile
 git clone https://aur.archlinux.org/paru.git ~/git/paru
 cd ~/git/paru
 makepkg -sri --noprogressbar --noconfirm --needed
@@ -66,13 +67,13 @@ paru --noprogressbar --noconfirm -Syu
 paru -Scc
 
 # Configure dot-files (vscodium)
-~/dot-files.sh vscodium
+/dot-files.sh vscodium
 echo "Enter password for $VIRTUSER"
-su -c '~/dot-files.sh vscodium' "$VIRTUSER"
+su -c '/dot-files.sh vscodium' "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
-su -c '~/dot-files.sh vscodium' "$HOMEUSER"
+su -c '/dot-files.sh vscodium' "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
-su -c '~/dot-files.sh vscodium' "$GUESTUSER"
+su -c '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure iptables
 ## FIXME: Replace with nftables
@@ -282,7 +283,7 @@ pacman -Qq "laptop-mode-tools" &&
 
 # Remove script
 rm -f ~/post-install.sh
-rm -f ~/dot-files.sh
+rm -f /dot-files.sh
 rm -f ~/packages_post-install.txt
 
 # Remove repo
