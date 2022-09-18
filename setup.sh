@@ -29,14 +29,14 @@ btrfs quota enable /
 btrfs subvolume list / | cut -d' ' -f2 | xargs -I{} -n1 btrfs qgroup create 0/{} /
 btrfs quota rescan /
 btrfs qgroup limit -c none /
-btrfs qgroup limit -c $(( $SIZE/8 )) /mnt/var/cache
-btrfs qgroup limit -c $(( $SIZE/4 )) /mnt/var/games
-btrfs qgroup limit -c $(( $SIZE/4 )) /mnt/var/lib/libvirt
-btrfs qgroup limit -c $(( $SIZE/4 )) /mnt/var/lib/mysql
-btrfs qgroup limit -c $(( $SIZE/16 )) /mnt/var/lib/xdg-ninja
-btrfs qgroup limit -c $(( $SIZE/16 )) /mnt/var/log
-btrfs qgroup limit -c $(( $SIZE/2 )) /mnt/home
-btrfs qgroup limit -c $(( $SIZE/2 )) /mnt/.snapshots
+btrfs qgroup limit -c $(($SIZE / 8)) /var/cache
+btrfs qgroup limit -c $(($SIZE / 4)) /var/games
+btrfs qgroup limit -c $(($SIZE / 4)) /var/lib/libvirt
+btrfs qgroup limit -c $(($SIZE / 4)) /var/lib/mysql
+btrfs qgroup limit -c $(($SIZE / 16)) /var/lib/xdg-ninja
+btrfs qgroup limit -c $(($SIZE / 16)) /var/log
+btrfs qgroup limit -c $(($SIZE / 2)) /home
+btrfs qgroup limit -c $(($SIZE / 2)) /.snapshots
 
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
