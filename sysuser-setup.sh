@@ -16,10 +16,11 @@ set -e
 git clone --branch security https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git ~/git/mdadm-encrypted-btrfs
 mv ~/git/mdadm-encrypted-btrfs/post-install.sh ~/
 mv ~/git/mdadm-encrypted-btrfs/packages_sysuser-setup.txt ~/
-sed -i 's/"<INSERT_USERS>"/'"$1 $2 $3 $4"''
+sed -i 's/"<INSERT_USERS>"/'"$1 $2 $3 $4"'/' ~/post-install.sh
 chmod +x ~/post-install.sh
 
 # Install paru
+rustup default stable
 git clone https://aur.archlinux.org/paru.git ~/git/paru
 cd ~/git/paru
 makepkg -sri --noprogressbar --noconfirm --needed

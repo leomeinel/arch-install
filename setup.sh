@@ -26,7 +26,12 @@ set -e
 # Enable btrfs quotas
 SIZE="$(lsblk -Mrnbo NAME,SIZE | grep "md1_crypt" | sed 's/md1_crypt //' | tr -d "[:space:]")"
 btrfs quota enable /
-btrfs quota rescan /
+# FIXME: This is a hack because the first 'btrfs quota rescan /' fails
+btrfs quota rescan / ||
+    {
+        sleep 5
+        btrfs quota rescan /
+    }
 btrfs qgroup limit -c none /
 btrfs qgroup limit -c $(($SIZE / 8)) /var/cache
 btrfs qgroup limit -c $(($SIZE / 4)) /var/games
