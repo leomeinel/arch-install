@@ -15,11 +15,20 @@ KEYLAYOUT="de"
 # Fail on error
 set -e
 
-# Configure firejail
+# Configure dot-files (setup)
 SYSUSER="<INSERT_SYSUSER>"
 VIRTUSER="<INSERT_VIRTUSER>"
 HOMEUSER="<INSERT_HOMEUSER>"
 GUESTUSER="<INSERT_GUESTUSER>"
+~/dot-files.sh setup
+echo "Enter password for $VIRTUSER"
+su -c '~/dot-files.sh setup' "$VIRTUSER"
+echo "Enter password for $HOMEUSER"
+su -c '~/dot-files.sh setup' "$HOMEUSER"
+echo "Enter password for $GUESTUSER"
+su -c '~/dot-files.sh setup' "$GUESTUSER"
+
+# Configure firejail
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 
@@ -57,14 +66,14 @@ paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
 
-# Configure dot-files
-~/dot-files.sh
+# Configure dot-files (vscodium)
+~/dot-files.sh vscodium
 echo "Enter password for $VIRTUSER"
-su -c '~/dot-files.sh' "$VIRTUSER"
+su -c '~/dot-files.sh vscodium' "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
-su -c '~/dot-files.sh' "$HOMEUSER"
+su -c '~/dot-files.sh vscodium' "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
-su -c '~/dot-files.sh' "$GUESTUSER"
+su -c '~/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure iptables
 ## FIXME: Replace with nftables

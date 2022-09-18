@@ -12,7 +12,14 @@
 # Fail on error
 set -e
 
-# Run dot-files/setup.sh
-git clone https://github.com/LeoMeinel/dot-files.git ~/dot-files
-chmod +x ~/dot-files/setup.sh
-~/dot-files/setup.sh
+# Run ~/dot-files/setup.sh
+case "$1" in
+setup)
+    git clone https://github.com/LeoMeinel/dot-files.git ~/dot-files
+    chmod +x ~/dot-files/setup.sh
+    ~/dot-files/setup.sh
+    ;;
+vscodium)
+    ~/dot-files/vscodium-extensions.sh
+    ;;
+esac
