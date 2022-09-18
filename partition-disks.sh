@@ -172,12 +172,12 @@ mkdir /mnt/home
 mkdir /mnt/.snapshots
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/mysql
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/var/log
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/home
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/md1_crypt /mnt/.snapshots
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/mysql
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/log
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/home
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/.snapshots
 mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
 mount -o noexec,nodev,nosuid,noauto "$DISK2P1" /mnt/.efi.bak
 mount -o noexec,nodev,nosuid /dev/mapper/md0_crypt /mnt/boot
