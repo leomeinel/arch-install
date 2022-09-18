@@ -282,7 +282,8 @@ pacman -Qq "laptop-mode-tools" &&
 
 # Remove script
 rm -f ~/post-install.sh
+rm -f ~/post-install.sh
 rm -f ~/packages_post-install.txt
 
 # Remove repo
-rm -rf ~/git
+rm -rf ~/dot-files.sh
