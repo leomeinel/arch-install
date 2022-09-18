@@ -245,13 +245,6 @@ sed -i 's/^#.*dir.*=.*/dir = \/var\/lib\/faillock/' /etc/security/faillock.conf
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 
-# Configure dot-files
-chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$GUESTUSER"
-
 # Enable systemd services
 pacman -Qq "acpi" &&
     systemctl enable acpid

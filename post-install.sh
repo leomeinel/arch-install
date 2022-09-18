@@ -16,7 +16,11 @@ KEYLAYOUT="de"
 set -e
 
 # Configure firejail
-/usr/bin/sudo firecfg --add-users root "<INSERT_USERS>"
+SYSUSER="<INSERT_SYSUSER>"
+VIRTUSER="<INSERT_VIRTUSER>"
+HOMEUSER="<INSERT_HOMEUSER>"
+GUESTUSER="<INSERT_GUESTUSER>"
+/usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 
 # Configure secureboot
@@ -39,6 +43,7 @@ doas localectl set-keymap "$KEYMAP"
 doas localectl set-x11-keymap "$KEYLAYOUT"
 
 # Install paru
+rustup default stable
 git clone https://aur.archlinux.org/paru.git ~/git/paru
 cd ~/git/paru
 makepkg -sri --noprogressbar --noconfirm --needed
@@ -51,6 +56,15 @@ doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/par
 paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
+
+# Configure dot-files
+~/dot-files.sh
+echo "Enter password for $VIRTUSER"
+su -c '~/dot-files.sh' "$VIRTUSER"
+echo "Enter password for $HOMEUSER"
+su -c '~/dot-files.sh' "$HOMEUSER"
+echo "Enter password for $GUESTUSER"
+su -c '~/dot-files.sh' "$GUESTUSER"
 
 # Configure iptables
 ## FIXME: Replace with nftables
