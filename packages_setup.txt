@@ -107,7 +107,6 @@ starship
 tokei
 ttf-nerd-fonts-symbols-2048-em-mono
 unarchiver
-ungoogled-chromium
 unrar
 unzip
 usbguard

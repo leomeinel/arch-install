@@ -26,7 +26,6 @@ set -e
 # Enable btrfs quotas
 SIZE="$(lsblk -Mrnbo NAME,SIZE | grep "md1_crypt" | sed 's/md1_crypt //' | tr -d "[:space:]")"
 btrfs quota enable /
-btrfs subvolume list / | cut -d' ' -f2 | xargs -I{} -n1 btrfs qgroup create 0/{} /
 btrfs quota rescan /
 btrfs qgroup limit -c none /
 btrfs qgroup limit -c $(($SIZE / 8)) /var/cache
