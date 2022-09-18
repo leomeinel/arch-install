@@ -156,12 +156,18 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /de
 mkdir /mnt/efi
 mkdir /mnt/.efi.bak
 mkdir /mnt/boot
-mkdir -p /mnt/var/cache
-mkdir /mnt/var/games
-mkdir /mnt/var/lib/libvirt
-mkdir /mnt/var/lib/mysql
-mkdir /mnt/var/lib/xdg-ninja
-mkdir /mnt/var/log
+mkdir /mnt/var &&
+    {
+        mkdir /mnt/var/cache
+        mkdir /mnt/var/games
+        mkdir /mnt/var/lib &&
+            {
+                mkdir /mnt/var/lib/libvirt
+                mkdir /mnt/var/lib/mysql
+                mkdir /mnt/var/lib/xdg-ninja
+            }
+        mkdir /mnt/var/log
+    }
 mkdir /mnt/home
 mkdir /mnt/.snapshots
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache

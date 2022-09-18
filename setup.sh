@@ -52,17 +52,7 @@ passwd "$GUESTUSER"
 } >/etc/xdg/reflector/reflector.conf
 chmod -R 755 /etc/xdg
 chmod 644 /etc/xdg/reflector/reflector.conf
-curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | pacman-key -a -
-mv /git/mdadm-encrypted-btrfs/etc/pacman.d/repo /etc/pacman.d/
-chmod -R 755 /etc/pacman.d/repo
-chmod 644 /etc/pacman.d/repo/*.conf
-mkdir -p /var/cache/home_ungoogled_chromium_Arch/pkg
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
-{
-    echo ""
-    echo "[options]"
-    echo "Include = /etc/pacman.d/repo/home_ungoogled_chromium_Arch.conf"
-} >>/etc/pacman.conf
 pacman-key --init
 
 # Update mirrors
