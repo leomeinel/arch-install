@@ -40,7 +40,8 @@ btrfs qgroup limit -c $(($SIZE / 4)) /var/lib/mysql
 btrfs qgroup limit -c $(($SIZE / 16)) /var/lib/xdg-ninja
 btrfs qgroup limit -c $(($SIZE / 16)) /var/log
 btrfs qgroup limit -c $(($SIZE / 2)) /home
-btrfs qgroup limit -c $(($SIZE / 2)) /.snapshots
+btrfs qgroup limit -c $(($SIZE / 8)) /.snapshots
+btrfs quota rescan /
 
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
