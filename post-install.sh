@@ -15,6 +15,19 @@ KEYLAYOUT="de"
 # Fail on error
 set -e
 
+# Configure dot-files (setup)
+SYSUSER="<INSERT_SYSUSER>"
+VIRTUSER="<INSERT_VIRTUSER>"
+HOMEUSER="<INSERT_HOMEUSER>"
+GUESTUSER="<INSERT_GUESTUSER>"
+/dot-files.sh setup
+echo -e "\nEnter password for $VIRTUSER"
+su -c '/dot-files.sh setup' "$VIRTUSER"
+echo -e "\nEnter password for $HOMEUSER"
+su -c '/dot-files.sh setup' "$HOMEUSER"
+echo -e "\nEnter password for $GUESTUSER"
+su -c '/dot-files.sh setup' "$GUESTUSER"
+
 # Configure secureboot
 if mountpoint -q /boot; then
     doas umount -AR /boot
@@ -35,18 +48,30 @@ doas localectl set-keymap "$KEYMAP"
 doas localectl set-x11-keymap "$KEYLAYOUT"
 
 # Install paru
+source ~/.bash_profile
 git clone https://aur.archlinux.org/paru.git ~/git/paru
 cd ~/git/paru
 makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
-doas sed -i 's/^#Chroot/Chroot/;s/^#LocalRepo/LocalRepo/;s/^#RemoveMake/RemoveMake/;s/^#CleanAfter/CleanAfter/;s/^#\[bin\]/\[bin\]/;s/^#FileManager =.*/FileManager = nvim/;s/^#Sudo =.*/Sudo = doas/' /etc/paru.conf
+doas sed -i 's/^#RemoveMake/RemoveMake/;s/^#CleanAfter/CleanAfter/;s/^#\[bin\]/\[bin\]/;s/^#FileManager =.*/FileManager = nvim/;s/^#Sudo =.*/Sudo = doas/' /etc/paru.conf
 doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/paru.conf'
 
 # Install packages
 paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
+pacman -Qq "nvidia-dkms" &&
+    paru -S --noprogressbar --noconfirm --needed arch-sign-modules
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
+
+# Configure dot-files (vscodium)
+/dot-files.sh vscodium
+echo -e "\nEnter password for $VIRTUSER"
+su -c '/dot-files.sh vscodium' "$VIRTUSER"
+echo -e "\nEnter password for $HOMEUSER"
+su -c '/dot-files.sh vscodium' "$HOMEUSER"
+echo -e "\nEnter password for $GUESTUSER"
+su -c '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure iptables
 ## FIXME: Replace with nftables
@@ -244,14 +269,24 @@ doas sh -c 'ip6tables-save > /etc/iptables/ip6tables.rules'
 doas chmod 644 /etc/iptables/*.rules
 
 # Enable systemd services
-doas systemctl enable ip6tables
-doas systemctl enable iptables
-doas systemctl enable laptop-mode.service
-doas systemctl enable sddm
+pacman -Qq "iptables" &&
+    {
+        doas systemctl enable ip6tables
+        doas systemctl enable iptables
+    }
+pacman -Qq "sddm" &&
+    doas systemctl enable sddm
+pacman -Qq "laptop-mode-tools" &&
+    doas systemctl enable laptop-mode.service
 
-# Remove script
-rm -f ~/post-install.sh
-rm -f ~/packages_post-install.txt
+# Configure firejail
+/usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
+/usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 
 # Remove repo
 rm -rf ~/git
+
+# Remove scripts
+doas rm -f /dot-files.sh
+rm -f ~/packages_post-install.txt
+rm -f ~/post-install.sh

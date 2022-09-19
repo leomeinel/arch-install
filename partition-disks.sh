@@ -141,28 +141,67 @@ mkfs.fat -n BOOT -F32 /dev/mapper/md0_crypt
 mkfs.btrfs -L MDCRYPT /dev/mapper/md1_crypt
 mount /dev/mapper/md1_crypt /mnt
 btrfs subvolume create /mnt/@
-btrfs subvolume create /mnt/@var
+btrfs subvolume create /mnt/@var_cache
+btrfs subvolume create /mnt/@var_games
+btrfs subvolume create /mnt/@var_lib_libvirt
+btrfs subvolume create /mnt/@var_lib_mysql
+btrfs subvolume create /mnt/@var_lib_xdg-ninja
+btrfs subvolume create /mnt/@var_log
 btrfs subvolume create /mnt/@home
-btrfs subvolume create /mnt/@tmp
 btrfs subvolume create /mnt/@snapshots
 
 # Mount volumes
 umount /mnt
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md1_crypt /mnt
-mkdir /mnt/var
-mkdir /mnt/home
-mkdir /mnt/tmp
-mkdir /mnt/.snapshots
 mkdir /mnt/efi
 mkdir /mnt/.efi.bak
-mkdir -p /mnt/boot/efikeys
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/home
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/tmp
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/.snapshots
-mount "$DISK1P1" /mnt/efi
-mount "$DISK2P1" /mnt/.efi.bak
-mount /dev/mapper/md0_crypt /mnt/boot
+mkdir /mnt/boot
+mkdir /mnt/var &&
+    {
+        mkdir /mnt/var/cache
+        mkdir /mnt/var/games
+        mkdir /mnt/var/lib &&
+            {
+                mkdir /mnt/var/lib/libvirt
+                mkdir /mnt/var/lib/mysql
+                mkdir /mnt/var/lib/xdg-ninja
+            }
+        mkdir /mnt/var/log
+    }
+mkdir /mnt/home
+mkdir /mnt/.snapshots
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/mysql
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/log
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/home
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/.snapshots
+mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
+mount -o noexec,nodev,nosuid,noauto "$DISK2P1" /mnt/.efi.bak
+mount -o noexec,nodev,nosuid /dev/mapper/md0_crypt /mnt/boot
+
+# Set SSD state to "frozen" after sleep
+mkdir -p /mnt/usr/lib/systemd/system-sleep
+DISK1UUID="$(blkid -s UUID -o value $DISK1)"
+DISK2UUID="$(blkid -s UUID -o value $DISK2)"
+{
+    echo 'if [ "$1" = "post" ]; then'
+    echo '    sleep 1'
+    echo '    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK1UUID"'; then'
+    echo '        logger "$0: SSD freeze command executed successfully"'
+    echo '    else'
+    echo '        logger "$0: SSD freeze command failed"'
+    echo '    fi'
+    echo '    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK2UUID"'; then'
+    echo '        logger "$0: SSD freeze command executed successfully"'
+    echo '    else'
+    echo '        logger "$0: SSD freeze command failed"'
+    echo '    fi'
+    echo 'fi'
+} >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 
 # Install packages
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#NoProgressBar/NoProgressBar/' /etc/pacman.conf
@@ -193,9 +232,14 @@ pacstrap /mnt - </root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab
+{
+    echo '# tmpfs'
+    echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid 0 0'
+    echo 'tmpfs /tmp tmpfs rw,noexec,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
+} >>/mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
-git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
+git clone --branch security https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
 chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
 
 # Remove repo

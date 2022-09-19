@@ -42,7 +42,7 @@ passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
 passwd "$GUESTUSER"
 
-# Configure /etc/pacman.conf, /etc/xdg/reflector/reflector.conf, /etc/pacman.d/repo/aur.conf and add local repo /var/lib/repo/aur/aur.db.tar.gz
+# Configure /etc/pacman.conf and /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
     echo "--country $MIRRORCOUNTRIES"
@@ -52,21 +52,7 @@ passwd "$GUESTUSER"
 } >/etc/xdg/reflector/reflector.conf
 chmod -R 755 /etc/xdg
 chmod 644 /etc/xdg/reflector/reflector.conf
-curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Arch/x86_64/home_ungoogled_chromium_Arch.key' | pacman-key -a -
-mv /git/mdadm-encrypted-btrfs/etc/pacman.d/repo /etc/pacman.d/
-chmod -R 755 /etc/pacman.d/repo
-chmod 644 /etc/pacman.d/repo/*.conf
-mkdir -p /var/cache/aur/pkg
-mkdir -p /var/cache/home_ungoogled_chromium_Arch/pkg
-mkdir -p /var/lib/repo/aur
-repo-add /var/lib/repo/aur/aur.db.tar.gz
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
-{
-    echo ""
-    echo "[options]"
-    echo "Include = /etc/pacman.d/repo/aur.conf"
-    echo "Include = /etc/pacman.d/repo/home_ungoogled_chromium_Arch.conf"
-} >>/etc/pacman.conf
 pacman-key --init
 
 # Update mirrors
@@ -93,19 +79,16 @@ chmod -c 0400 /etc/doas.conf
 
 ## Set up post-install.sh
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
-su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh' "$SYSUSER"
+su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" >/etc/sudoers.d/sudo
 
 # Configure /etc/crypttab
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
 {
-    echo "md0_crypt    UUID=$MD0UUID    /root/md0_crypt.keyfile    luks,key-slot=1"
-    echo "md1_crypt    UUID=$MD1UUID    none    luks,key-slot=0"
+    echo "md0_crypt UUID=$MD0UUID /etc/luks/keys/md0_crypt.key luks,key-slot=1"
+    echo "md1_crypt UUID=$MD1UUID none luks,key-slot=0"
 } >/etc/crypttab
-
-# Change ownership of /var/lib/repo/aur to $SYSUSER
-chown -R "$SYSUSER": /var/lib/repo/aur
 
 # Set default java
 archlinux-java set java-17-openjdk
@@ -129,9 +112,13 @@ chmod 644 /usr/share/gruvbox/gruvbox.yml
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
 rm -rf /.snapshots
-sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="sudo"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.1"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="10"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="10"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="4"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="2"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
+sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="sudo"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.1"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="0"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="2"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/default
 snapper --no-dbus -c root create-config /
-snapper --no-dbus -c var create-config /var
+snapper --no-dbus -c var_games create-config /var/games
+snapper --no-dbus -c var_lib_libvirt create-config /var/lib/libvirt
+snapper --no-dbus -c var_lib_mysql create-config /var/lib/mysql
+snapper --no-dbus -c var_lib_xdg-ninja create-config /var/lib/xdg-ninja
+snapper --no-dbus -c var_log create-config /var/log
 snapper --no-dbus -c home create-config /home
 btrfs subvolume delete /.snapshots
 mkdir /.snapshots
@@ -139,9 +126,21 @@ mount -a
 chmod 750 /.snapshots
 chmod a+rx /.snapshots
 chown :sudo /.snapshots
-chmod 750 /var/.snapshots
-chmod a+rx /var/.snapshots
-chown :sudo /var/.snapshots
+chmod 750 /var/games/.snapshots
+chmod a+rx /var/games/.snapshots
+chown :sudo /var/games/.snapshots
+chmod 750 /var/lib/libvirt/.snapshots
+chmod a+rx /var/lib/libvirt/.snapshots
+chown :sudo /var/lib/libvirt/.snapshots
+chmod 750 /var/lib/mysql/.snapshots
+chmod a+rx /var/lib/mysql/.snapshots
+chown :sudo /var/lib/mysql/.snapshots
+chmod 750 /var/lib/xdg-ninja/.snapshots
+chmod a+rx /var/lib/xdg-ninja/.snapshots
+chown :sudo /var/lib/xdg-ninja/.snapshots
+chmod 750 /var/log/.snapshots
+chmod a+rx /var/log/.snapshots
+chown :sudo /var/log/.snapshots
 chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
@@ -210,6 +209,9 @@ echo "$HOSTNAME" >/etc/hostname
     echo "ff02::2  ip6-allrouters"
 } >/etc/hosts
 
+# Configure /etc/xdg/user-dirs.defaults
+sed -i 's/^TEMPLATES=.*/TEMPLATES=Documents\/Templates/;s/^PUBLICSHARE=.*/PUBLICSHARE=Documents\/Public/;s/^DESKTOP=.*/DESKTOP=Documents\/Desktop/;s/^MUSIC=.*/MUSIC=Documents\/Music/;s/^PICTURES=.*/PICTURES=Documents\/Pictures/;s/^VIDEOS=.*/VIDEOS=Documents\/Videos/' /etc/xdg/user-dirs.defaults
+
 # Configure /etc/systemd/zram-generator.conf
 mv /git/mdadm-encrypted-btrfs/etc/systemd/zram-generator.conf /etc/systemd/
 chmod 644 /etc/systemd/zram-generator.conf
@@ -217,37 +219,48 @@ chmod 644 /etc/systemd/zram-generator.conf
 # Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
 
-# Configure dot-files
-chmod +x /git/mdadm-encrypted-btrfs/dot-files.sh
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$SYSUSER"
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$VIRTUSER"
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$HOMEUSER"
-su -c '/git/mdadm-encrypted-btrfs/dot-files.sh' "$GUESTUSER"
+# Configure /etc/usbguard/usbguard-daemon.conf and /etc/usbguard/rules.conf
+#/etc/usbguard/usbguard-daemon.conf TODO!
+usbguard generate-policy >/etc/usbguard/rules.conf
+
+# Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su and /etc/pam.d/su-l
+echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
+sed -i 's/^#.*dir.*=.*/dir = \/var\/lib\/faillock/' /etc/security/faillock.conf
+echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
+echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 
 # Enable systemd services
-systemctl enable acpid
-systemctl enable apparmor.service
-systemctl enable auditd.service
-systemctl enable avahi-daemon
-systemctl enable bluetooth
-systemctl enable cups.service
-systemctl enable fstrim.timer
-systemctl enable libvirtd
-systemctl enable NetworkManager
-systemctl enable power-profiles-daemon
-systemctl enable reflector
-systemctl enable reflector.timer
+pacman -Qq "acpi" &&
+    systemctl enable acpid
+pacman -Qq "apparmor" &&
+    {
+        systemctl enable apparmor.service
+        systemctl enable auditd.service
+    }
+pacman -Qq "avahi" &&
+    systemctl enable avahi-daemon
+pacman -Qq "bluez" &&
+    systemctl enable bluetooth
+pacman -Qq "cups" &&
+    systemctl enable cups.service
+pacman -Qq "util-linux" &&
+    systemctl enable fstrim.timer
+pacman -Qq "libvirt" &&
+    systemctl enable libvirtd
+pacman -Qq "networkmanager" &&
+    systemctl enable NetworkManager
+pacman -Qq "power-profiles-daemon" &&
+    systemctl enable power-profiles-daemon
+pacman -Qq "reflector" &&
+    {
+        systemctl enable reflector
+        systemctl enable reflector.timer
+    }
+pacman -Qq "usbguard" &&
+    systemctl enable usbguard-dbus.service
 
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
-
-# Configure mDNS for Avahi
-## Configure mDNS in /etc/systemd/resolved.conf
-sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/systemd/resolved.conf
-
-## Configure mDNS in /etc/nsswitch.conf
-sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
-
 ## If on nvidia add hooks
 pacman -Qq "nvidia-dkms" &&
     {
@@ -286,14 +299,21 @@ chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
+# Configure mDNS for Avahi
+## Configure mDNS in /etc/systemd/resolved.conf
+sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/systemd/resolved.conf
+## Configure mDNS in /etc/nsswitch.conf
+sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
+
 # Add key for /dev/mapper/md0_crypt
-dd bs=1024 count=4 if=/dev/urandom of=/root/md0_crypt.keyfile iflag=fullblock
-chmod 000 /root/md0_crypt.keyfile
+mkdir -p /etc/luks/keys
+dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
+chmod 000 /etc/luks/keys/md0_crypt.key
 echo "Enter passphrase for /dev/md/md0"
-cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /root/md0_crypt.keyfile
+cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 
 # Configure /etc/mkinitcpio.conf
-sed -i 's/^FILES=.*/FILES=(\/root\/md0_crypt.keyfile)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+sed -i 's/^FILES=.*/FILES=(\/etc\/luks\/keys\/md0_crypt.key)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 
 ## If on nvidia add nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
@@ -302,7 +322,7 @@ mkinitcpio -P
 chmod 600 /boot/initramfs-linux*
 
 # Configure /etc/default/grub
-sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt lockdown=integrity iommu=pt\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/root\/md0_crypt.keyfile cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt lockdown=integrity iommu=pt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
+sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf module.sig_enforce=1 lockdown=integrity iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/etc\/luks\/keys\/md0_crypt.key cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf module.sig_enforce=1 lockdown=integrity iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/etc\/luks\/keys\/md0_crypt.key cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
 
 ## If on nvidia add nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
@@ -312,14 +332,14 @@ pacman -Qq "intel-ucode" &&
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# Configure /etc/fstab
-sed -i '/\/.efi.bak.*vfat/s/rw/noauto,rw/' /etc/fstab
-
 # FIXME: Enable some systemd services later because of grub-install ERROR:
 # Detecting snapshots ...
 # mount: /tmp/grub-btrfs.<...>: special device /dev/disk/by-uuid/<UUID of /dev/mapper/md1_crypt> does not exist.
-systemctl enable snapper-cleanup.timer
-systemctl enable snapper-timeline.timer
+pacman -Qq "snapper" &&
+    {
+        systemctl enable snapper-cleanup.timer
+        systemctl enable snapper-timeline.timer
+    }
 
 # Run snapshot cleanup every hour
 sed -i 's/^OnUnitActiveSec=.*/OnUnitActiveSec=1h/' /usr/lib/systemd/system/snapper-cleanup.timer

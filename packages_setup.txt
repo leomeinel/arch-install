@@ -25,6 +25,7 @@ efitools
 ethtool
 exa
 fd
+firejail
 gimp
 git-delta
 glow
@@ -106,9 +107,9 @@ starship
 tokei
 ttf-nerd-fonts-symbols-2048-em-mono
 unarchiver
-ungoogled-chromium
 unrar
 unzip
+usbguard
 virt-manager
 wget
 wireplumber
