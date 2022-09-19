@@ -28,10 +28,6 @@ su -c '/dot-files.sh setup' "$HOMEUSER"
 echo -e "\nEnter password for $GUESTUSER"
 su -c '/dot-files.sh setup' "$GUESTUSER"
 
-# Configure firejail
-/usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
-/usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
-
 # Configure secureboot
 if mountpoint -q /boot; then
     doas umount -AR /boot
@@ -283,10 +279,14 @@ pacman -Qq "sddm" &&
 pacman -Qq "laptop-mode-tools" &&
     doas systemctl enable laptop-mode.service
 
-# Remove script
-rm -f ~/post-install.sh
-rm -f /dot-files.sh
-rm -f ~/packages_post-install.txt
+# Configure firejail
+/usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
+/usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 
 # Remove repo
 rm -rf ~/git
+
+# Remove scripts
+rm -f ~/post-install.sh
+rm -f /dot-files.sh
+rm -f ~/packages_post-install.txt
