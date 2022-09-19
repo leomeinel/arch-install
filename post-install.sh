@@ -21,11 +21,11 @@ VIRTUSER="<INSERT_VIRTUSER>"
 HOMEUSER="<INSERT_HOMEUSER>"
 GUESTUSER="<INSERT_GUESTUSER>"
 /dot-files.sh setup
-echo "Enter password for $VIRTUSER"
+echo -e "\nEnter password for $VIRTUSER"
 su -c '/dot-files.sh setup' "$VIRTUSER"
-echo "Enter password for $HOMEUSER"
+echo -e "\nEnter password for $HOMEUSER"
 su -c '/dot-files.sh setup' "$HOMEUSER"
-echo "Enter password for $GUESTUSER"
+echo -e "\nEnter password for $GUESTUSER"
 su -c '/dot-files.sh setup' "$GUESTUSER"
 
 # Configure firejail
@@ -70,11 +70,11 @@ paru -Scc
 
 # Configure dot-files (vscodium)
 /dot-files.sh vscodium
-echo "Enter password for $VIRTUSER"
+echo -e "\nEnter password for $VIRTUSER"
 su -c '/dot-files.sh vscodium' "$VIRTUSER"
-echo "Enter password for $HOMEUSER"
+echo -e "\nEnter password for $HOMEUSER"
 su -c '/dot-files.sh vscodium' "$HOMEUSER"
-echo "Enter password for $GUESTUSER"
+echo -e "\nEnter password for $GUESTUSER"
 su -c '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure iptables
