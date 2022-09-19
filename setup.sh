@@ -308,7 +308,7 @@ sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' 
 # Add key for /dev/mapper/md0_crypt
 mkdir -p /etc/luks/keys
 dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
-chmod 0400 /etc/luks/keys/md0_crypt.key
+chmod 000 /etc/luks/keys/md0_crypt.key
 echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 
