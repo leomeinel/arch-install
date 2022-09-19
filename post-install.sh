@@ -63,6 +63,8 @@ doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/par
 
 # Install packages
 paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
+pacman -Qq "nvidia-dkms" &&
+paru -S --noprogressbar --noconfirm --needed arch-sign-modules
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
 
