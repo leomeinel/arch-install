@@ -262,6 +262,7 @@ pacman -Qq "usbguard" &&
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 ## If on nvidia add hooks
+## FIXME: Change custom-nvidia-gen-mkinitcpio.sh to fit nvidia-dkms and arch-sign-modules
 pacman -Qq "nvidia-dkms" &&
     {
         {

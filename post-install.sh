@@ -59,6 +59,8 @@ doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/par
 
 # Install packages
 paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
+# FIXME: Find a way to sign the modules after this and make it automatically sign them on upgrade.
+# For some reason the symlinked kernel-sign.conf does not exist
 pacman -Qq "nvidia-dkms" &&
     paru -S --noprogressbar --noconfirm --needed arch-sign-modules
 paru --noprogressbar --noconfirm -Syu
@@ -280,6 +282,7 @@ pacman -Qq "laptop-mode-tools" &&
     doas systemctl enable laptop-mode.service
 
 # Configure firejail
+# FIXME: Find out why this is not working
 doas sed -i 's/^dnsmasq/#dnsmasq/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
