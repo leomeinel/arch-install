@@ -61,7 +61,7 @@ doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/par
 paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
 # FIXME: Find a way to sign the modules after this and make it automatically sign them on upgrade.
 # For some reason the symlinked kernel-sign.conf does not exist
-pacman -Qq "nvidia-dkms" &&
+pacman -Qq "nvidia" &&
     paru -S --noprogressbar --noconfirm --needed arch-sign-modules
 paru --noprogressbar --noconfirm -Syu
 paru -Scc

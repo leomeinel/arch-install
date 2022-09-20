@@ -211,11 +211,20 @@ lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
     echo "amd-ucode" >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
-lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
+if lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation"; then
     {
-        echo "nvidia-dkms"
+        echo "nvidia"
+        echo "nvidia-lts"
         echo "egl-wayland"
     } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+else
+    {
+        echo "linux-hardened"
+        echo "linux-hardened-headers"
+        echo "linux-zen"
+        echo "linux-zen-headers"
+    } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+fi
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
     {
         echo "xf86-video-amdgpu"
