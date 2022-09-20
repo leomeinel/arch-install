@@ -223,6 +223,7 @@ else
         echo "linux-hardened-headers"
         echo "linux-zen"
         echo "linux-zen-headers"
+        echo "usbctl"
     } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 fi
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
