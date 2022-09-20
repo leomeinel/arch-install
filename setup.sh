@@ -325,7 +325,7 @@ sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINA
 
 ## If on nvidia add nvidia_drm.modeset=1 and set linux as default kernel
 pacman -Qq "nvidia" &&
-    sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/;/^GRUB_CMDLINE_LINUX=.*/s/"$/ nvidia_drm.modeset=1"/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=2/;' /etc/default/grub
+    sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/;/^GRUB_CMDLINE_LINUX=.*/s/"$/ nvidia_drm.modeset=1"/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=2/' /etc/default/grub
 pacman -Qq "intel-ucode" &&
     sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ intel_iommu=on"/;/^GRUB_CMDLINE_LINUX=.*/s/"$/ intel_iommu=on"/' /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
