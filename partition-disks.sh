@@ -237,7 +237,7 @@ genfstab -U /mnt >>/mnt/etc/fstab
     echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid 0 0'
     echo 'tmpfs /tmp tmpfs rw,noexec,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
 } >>/mnt/etc/fstab
-sed -i '/\/.efi.bak.*vfat/s/rw/rw,noauto/' /etc/fstab
+sed -i '/\/.efi.bak.*vfat/s/rw/rw,noauto/' /mnt/etc/fstab
 
 # Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
