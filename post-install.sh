@@ -15,6 +15,9 @@ KEYLAYOUT="de"
 # Fail on error
 set -e
 
+# Clean default firecfg
+/usr/bin/sudo firecfg --clean
+
 # Configure dot-files (setup)
 SYSUSER="<INSERT_SYSUSER>"
 VIRTUSER="<INSERT_VIRTUSER>"
@@ -46,9 +49,6 @@ doas timedatectl set-ntp true
 # Configure $KEYMAP
 doas localectl set-keymap "$KEYMAP"
 doas localectl set-x11-keymap "$KEYLAYOUT"
-
-# Clean default firecfg
-/usr/bin/sudo firecfg --clean
 
 # Install paru
 source ~/.bash_profile
