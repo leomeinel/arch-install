@@ -22,11 +22,11 @@ HOMEUSER="<INSERT_HOMEUSER>"
 GUESTUSER="<INSERT_GUESTUSER>"
 /dot-files.sh setup
 echo -e "\nEnter password for $VIRTUSER"
-su -c '/dot-files.sh setup' "$VIRTUSER"
+su -lc '/dot-files.sh setup' "$VIRTUSER"
 echo -e "\nEnter password for $HOMEUSER"
-su -c '/dot-files.sh setup' "$HOMEUSER"
+su -lc '/dot-files.sh setup' "$HOMEUSER"
 echo -e "\nEnter password for $GUESTUSER"
-su -c '/dot-files.sh setup' "$GUESTUSER"
+su -lc '/dot-files.sh setup' "$GUESTUSER"
 
 # Configure secureboot
 if mountpoint -q /boot; then
@@ -68,11 +68,11 @@ paru -Scc
 # Configure dot-files (vscodium)
 /dot-files.sh vscodium
 echo -e "\nEnter password for $VIRTUSER"
-su -c '/dot-files.sh vscodium' "$VIRTUSER"
+su -lc '/dot-files.sh vscodium' "$VIRTUSER"
 echo -e "\nEnter password for $HOMEUSER"
-su -c '/dot-files.sh vscodium' "$HOMEUSER"
+su -lc '/dot-files.sh vscodium' "$HOMEUSER"
 echo -e "\nEnter password for $GUESTUSER"
-su -c '/dot-files.sh vscodium' "$GUESTUSER"
+su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure iptables
 ## FIXME: Replace with nftables
