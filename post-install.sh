@@ -284,6 +284,7 @@ pacman -Qq "laptop-mode-tools" &&
 doas sed -i 's/^dnsmasq/#dnsmasq/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
+/usr/bin/sudo firecfg
 
 # Remove repo
 rm -rf ~/git
