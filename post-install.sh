@@ -15,9 +15,6 @@ KEYLAYOUT="de"
 # Fail on error
 set -e
 
-# Clean default firecfg
-/usr/bin/sudo firecfg --clean
-
 # Configure dot-files (setup)
 SYSUSER="<INSERT_SYSUSER>"
 VIRTUSER="<INSERT_VIRTUSER>"
@@ -64,6 +61,9 @@ doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/par
 paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
+
+# Clean default firecfg
+/usr/bin/sudo firecfg --clean
 
 # Configure dot-files (vscodium)
 /dot-files.sh vscodium
