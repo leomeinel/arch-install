@@ -47,6 +47,9 @@ doas timedatectl set-ntp true
 doas localectl set-keymap "$KEYMAP"
 doas localectl set-x11-keymap "$KEYLAYOUT"
 
+# Clean default firecfg
+/usr/bin/sudo firecfg --clean
+
 # Install paru
 source ~/.bash_profile
 git clone https://aur.archlinux.org/paru.git ~/git/paru
@@ -281,7 +284,6 @@ pacman -Qq "laptop-mode-tools" &&
 doas sed -i 's/^dnsmasq/#dnsmasq/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
-doas rm -f /usr/bin/local/dnsmasq
 
 # Remove repo
 rm -rf ~/git
