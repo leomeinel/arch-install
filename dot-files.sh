@@ -12,6 +12,7 @@
 # Fail on error
 set -e
 
+# Set up dot-files in 2 stages
 case "$1" in
 setup)
     git clone https://github.com/LeoMeinel/dot-files.git ~/dot-files

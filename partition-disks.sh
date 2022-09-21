@@ -13,7 +13,7 @@ KEYMAP="de-latin1"
 MIRRORCOUNTRIES="NL,DE,DK,FR"
 
 # Fail on error
-set -e
+set -eu
 
 # Unmount everything from /mnt
 mountpoint -q /mnt &&

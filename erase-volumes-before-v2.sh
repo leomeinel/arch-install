@@ -10,7 +10,7 @@
 ###
 
 # Fail on error
-set -e
+set -eu
 
 # Unmount everything from /mnt
 mountpoint -q /mnt &&

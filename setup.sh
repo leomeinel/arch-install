@@ -21,7 +21,7 @@ MIRRORCOUNTRIES="NL,DE,DK,FR"
 GRUBRESOLUTION="2560x1440"
 
 # Fail on error
-set -e
+set -eu
 
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd

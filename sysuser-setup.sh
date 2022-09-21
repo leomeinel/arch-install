@@ -10,7 +10,7 @@
 ###
 
 # Fail on error
-set -e
+set -eu
 
 # Set up post-install.sh
 git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git ~/git/mdadm-encrypted-btrfs

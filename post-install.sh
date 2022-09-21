@@ -13,7 +13,7 @@ KEYMAP="de-latin1"
 KEYLAYOUT="de"
 
 # Fail on error
-set -e
+set -eu
 
 # Configure dot-files (setup)
 SYSUSER="<INSERT_SYSUSER>"
