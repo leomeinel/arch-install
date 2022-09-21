@@ -12,7 +12,6 @@
 # Fail on error
 set -e
 
-# Run ~/dot-files/setup.sh
 case "$1" in
 setup)
     git clone https://github.com/LeoMeinel/dot-files.git ~/dot-files
