@@ -62,8 +62,8 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
 # Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - </git/mdadm-encrypted-btrfs/packages_setup.txt
 
-# Move /git/mdadm-encrypted-btrfs/etc/* to /etc
-rsync -rq /git/mdadm-encrypted-btrfs/etc/* /etc
+# rsync /git/mdadm-encrypted-btrfs/etc/ to /etc
+rsync -rq /git/mdadm-encrypted-btrfs/etc/ /etc
 ## opendoas
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
