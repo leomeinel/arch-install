@@ -25,11 +25,13 @@ set -eu
 
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
-groupadd -r sudo
+groupadd -r usbguard-notify
+groupadd -r usbguard
 groupadd -r libvirt
-useradd -ms /bin/bash -G sudo,wheel "$SYSUSER"
-useradd -ms /bin/bash -G libvirt "$VIRTUSER"
-useradd -ms /bin/bash "$HOMEUSER"
+groupadd -r sudo
+useradd -ms /bin/bash -G sudo,usbguard,wheel "$SYSUSER"
+useradd -ms /bin/bash -G libvirt,usbguard-notify "$VIRTUSER"
+useradd -ms /bin/bash -G usbguard-notify "$HOMEUSER"
 useradd -ms /bin/bash "$GUESTUSER"
 echo "Enter password for root"
 passwd root
