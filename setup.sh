@@ -224,7 +224,7 @@ mdadm --detail --scan >>/etc/mdadm.conf
 # Configure /etc/usbguard/usbguard-daemon.conf and /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
-usbguard add-user -g usbguard-notify --devices=list,listen
+usbguard add-user -g usbguard-notify --devices=list,listen --policy=list --exceptions=listen
 
 # Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su and /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
