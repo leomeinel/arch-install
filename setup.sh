@@ -111,6 +111,11 @@ chmod -R 755 /etc/sddm.conf.d
 chmod 644 /etc/sddm.conf.d/kde_settings.conf
 ## Configure /etc/systemd/zram-generator.conf
 chmod 644 /etc/systemd/zram-generator.conf
+## Configure /etc/sysctl.d
+chmod 744 /etc/sysctl.d
+chmod 644 /etc/sysctl.d/*
+## Configure /etc/firejail/spectacle.local
+chmod 644 /etc/firejail/spectacle.local
 
 # Configure $SYSUSER
 ## sudo
