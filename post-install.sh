@@ -281,7 +281,7 @@ pacman -Qq "laptop-mode-tools" &&
     doas systemctl enable laptop-mode.service
 
 # Configure firejail
-doas sed -i 's/^dnsmasq/#dnsmasq/' /etc/firejail/firecfg.config
+doas sed -i 's/^dnsmasq/#dnsmasq/;s/^ktorrent/#ktorrent/;s/^spectacle/#spectacle/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 /usr/bin/sudo firecfg
