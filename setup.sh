@@ -25,8 +25,8 @@ set -eu
 
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
-groupadd -r usbguard-notify
 groupadd -r usbguard
+groupadd -r usbguard-notify
 groupadd -r libvirt
 groupadd -r sudo
 useradd -ms /bin/bash -G sudo,usbguard,wheel "$SYSUSER"
@@ -222,8 +222,9 @@ chmod 644 /etc/systemd/zram-generator.conf
 mdadm --detail --scan >>/etc/mdadm.conf
 
 # Configure /etc/usbguard/usbguard-daemon.conf and /etc/usbguard/rules.conf
-#/etc/usbguard/usbguard-daemon.conf TODO!
 usbguard generate-policy >/etc/usbguard/rules.conf
+usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
+usbguard add-user -g usbguard-notify --devices=list,listen
 
 # Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su and /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
