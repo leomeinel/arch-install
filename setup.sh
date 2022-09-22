@@ -26,12 +26,11 @@ set -eu
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r usbguard
-groupadd -r usbguard-notify
 groupadd -r libvirt
 groupadd -r sudo
 useradd -ms /bin/bash -G sudo,usbguard,wheel "$SYSUSER"
-useradd -ms /bin/bash -G libvirt,usbguard-notify "$VIRTUSER"
-useradd -ms /bin/bash -G usbguard-notify "$HOMEUSER"
+useradd -ms /bin/bash -G libvirt "$VIRTUSER"
+useradd -ms /bin/bash "$HOMEUSER"
 useradd -ms /bin/bash "$GUESTUSER"
 echo "Enter password for root"
 passwd root
@@ -224,7 +223,6 @@ mdadm --detail --scan >>/etc/mdadm.conf
 # Configure /etc/usbguard/usbguard-daemon.conf and /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
-usbguard add-user -g usbguard-notify --devices=list,listen --policy=list --exceptions=listen
 
 # Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su and /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
