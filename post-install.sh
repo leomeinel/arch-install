@@ -280,6 +280,10 @@ pacman -Qq "sddm" &&
 pacman -Qq "laptop-mode-tools" &&
     doas systemctl enable laptop-mode.service
 
+# Enable systemd user services
+pacman -Qq "usbguard-notifier" &&
+    systemctl enable --user usbguard-notifier.service
+
 # Configure firejail
 doas sed -i 's/^dnsmasq/#dnsmasq/;s/^ktorrent/#ktorrent/;s/^spectacle/#spectacle/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
