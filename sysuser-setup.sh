@@ -21,5 +21,8 @@ sed -i 's/<INSERT_SYSUSER>/'"$1"'/;s/<INSERT_VIRTUSER>/'"$2"'/;s/<INSERT_HOMEUSE
 /usr/bin/sudo chmod 777 /dot-files.sh
 chmod +x ~/post-install.sh
 
+# Enable systemd user services
+systemctl enable --user usbguard-notifier.service
+
 # Remove repo
 rm -rf ~/git
