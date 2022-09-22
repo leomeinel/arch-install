@@ -43,6 +43,9 @@ passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
 passwd "$GUESTUSER"
 
+# Move /git/mdadm-encrypted-btrfs/etc/* to /etc
+mv /git/mdadm-encrypted-btrfs/etc/* /etc
+
 # Configure /etc/pacman.conf and /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
@@ -74,7 +77,6 @@ pacman -Syu --noprogressbar --noconfirm --needed - </git/mdadm-encrypted-btrfs/p
 echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" >/etc/sudoers.d/sudo
 
 ## opendoas
-mv /git/mdadm-encrypted-btrfs/etc/doas.conf /etc/
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
 
@@ -155,7 +157,6 @@ mv /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 
 # Configure random MAC address for WiFi
-mv /git/mdadm-encrypted-btrfs/etc/NetworkManager/conf.d/wifi_rand_mac.conf /etc/NetworkManager/conf.d/
 chmod 644 /etc/NetworkManager/conf.d/wifi_rand_mac.conf
 
 # Configure /etc/ssh/sshd_config
@@ -190,7 +191,6 @@ chmod 755 /usr/bin/vi
 chmod 755 /usr/bin/vim
 
 # Configure /etc/sddm.conf.d/kde_settings.conf
-mv /git/mdadm-encrypted-btrfs/etc/sddm.conf.d /etc/
 chmod -R 755 /etc/sddm.conf.d
 chmod 644 /etc/sddm.conf.d/kde_settings.conf
 
@@ -214,7 +214,6 @@ echo "$HOSTNAME" >/etc/hostname
 sed -i 's/^TEMPLATES=.*/TEMPLATES=Documents\/Templates/;s/^PUBLICSHARE=.*/PUBLICSHARE=Documents\/Public/;s/^DESKTOP=.*/DESKTOP=Documents\/Desktop/;s/^MUSIC=.*/MUSIC=Documents\/Music/;s/^PICTURES=.*/PICTURES=Documents\/Pictures/;s/^VIDEOS=.*/VIDEOS=Documents\/Videos/' /etc/xdg/user-dirs.defaults
 
 # Configure /etc/systemd/zram-generator.conf
-mv /git/mdadm-encrypted-btrfs/etc/systemd/zram-generator.conf /etc/systemd/
 chmod 644 /etc/systemd/zram-generator.conf
 
 # Configure /etc/mdadm.conf
@@ -261,7 +260,6 @@ pacman -Qq "usbguard" &&
     systemctl enable usbguard.service
 
 # Configure pacman hooks in /etc/pacman.d/hooks
-mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
 ## If on nvidia add hooks
 pacman -Qq "nvidia" &&
     {
