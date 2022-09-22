@@ -257,7 +257,7 @@ pacman -Qq "reflector" &&
         systemctl enable reflector.timer
     }
 pacman -Qq "usbguard" &&
-    systemctl enable usbguard-dbus.service
+    systemctl enable usbguard.service
 
 # Configure pacman hooks in /etc/pacman.d/hooks
 mv /git/mdadm-encrypted-btrfs/etc/pacman.d/hooks /etc/pacman.d/
