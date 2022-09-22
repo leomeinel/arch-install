@@ -43,9 +43,6 @@ passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
 passwd "$GUESTUSER"
 
-# Move /git/mdadm-encrypted-btrfs/etc/* to /etc
-mv /git/mdadm-encrypted-btrfs/etc/* /etc
-
 # Configure /etc/pacman.conf and /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
@@ -65,6 +62,56 @@ reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol 
 # Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - </git/mdadm-encrypted-btrfs/packages_setup.txt
 
+# Move /git/mdadm-encrypted-btrfs/etc/* to /etc
+mv /git/mdadm-encrypted-btrfs/etc/* /etc
+## opendoas
+chown -c root:root /etc/doas.conf
+chmod -c 0400 /etc/doas.conf
+## Configure random MAC address for WiFi
+chmod 644 /etc/NetworkManager/conf.d/wifi_rand_mac.conf
+## Configure pacman hooks in /etc/pacman.d/hooks
+### If on nvidia add hooks
+pacman -Qq "nvidia" &&
+    {
+        {
+            echo '[Trigger]'
+            echo 'Operation=Install'
+            echo 'Operation=Upgrade'
+            echo 'Operation=Remove'
+            echo 'Type=Package'
+            echo 'Target=linux'
+            echo 'Target=linux-lts'
+            echo 'Target=nvidia'
+            echo 'Target=nvidia-lts'
+            echo ''
+            echo '[Action]'
+            echo 'Description=Updating NVIDIA mkinitcpio...'
+            echo 'Depends=mkinitcpio'
+            echo 'When=PostTransaction'
+            echo 'NeedsTargets'
+            echo "Exec=/bin/sh -c '/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh'"
+        } >/etc/pacman.d/hooks/custom-nvidia-gen-mkinitcpio.hook
+        {
+            echo '#!/bin/sh'
+            echo ''
+            echo 'while read -r target'
+            echo 'do'
+            echo '    case $target in'
+            echo '        linux) exit 0'
+            echo '    esac'
+            echo 'done'
+            echo '/usr/bin/mkinitcpio -P'
+        } >/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh
+    }
+chmod -R 755 /etc/pacman.d/hooks
+chmod 644 /etc/pacman.d/hooks/*.hook
+chmod 744 /etc/pacman.d/hooks/scripts/*.sh
+## Configure /etc/sddm.conf.d/kde_settings.conf
+chmod -R 755 /etc/sddm.conf.d
+chmod 644 /etc/sddm.conf.d/kde_settings.conf
+## Configure /etc/systemd/zram-generator.conf
+chmod 644 /etc/systemd/zram-generator.conf
+
 # Configure $SYSUSER
 ## sudo
 ## FIXME: Sudo is mainly used for:
@@ -75,10 +122,6 @@ pacman -Syu --noprogressbar --noconfirm --needed - </git/mdadm-encrypted-btrfs/p
 ## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
 ## FUTURE GOAL: REPLACE sudo WITH doas
 echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" >/etc/sudoers.d/sudo
-
-## opendoas
-chown -c root:root /etc/doas.conf
-chmod -c 0400 /etc/doas.conf
 
 ## Set up post-install.sh
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
@@ -156,9 +199,6 @@ git clone https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
 mv /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 
-# Configure random MAC address for WiFi
-chmod 644 /etc/NetworkManager/conf.d/wifi_rand_mac.conf
-
 # Configure /etc/ssh/sshd_config
 {
     echo ""
@@ -190,10 +230,6 @@ chmod 755 /usr/bin/vedit
 chmod 755 /usr/bin/vi
 chmod 755 /usr/bin/vim
 
-# Configure /etc/sddm.conf.d/kde_settings.conf
-chmod -R 755 /etc/sddm.conf.d
-chmod 644 /etc/sddm.conf.d/kde_settings.conf
-
 # Configure /etc/localtime, /etc/locale.conf, /etc/vconsole.conf, /etc/hostname and /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
@@ -212,9 +248,6 @@ echo "$HOSTNAME" >/etc/hostname
 
 # Configure /etc/xdg/user-dirs.defaults
 sed -i 's/^TEMPLATES=.*/TEMPLATES=Documents\/Templates/;s/^PUBLICSHARE=.*/PUBLICSHARE=Documents\/Public/;s/^DESKTOP=.*/DESKTOP=Documents\/Desktop/;s/^MUSIC=.*/MUSIC=Documents\/Music/;s/^PICTURES=.*/PICTURES=Documents\/Pictures/;s/^VIDEOS=.*/VIDEOS=Documents\/Videos/' /etc/xdg/user-dirs.defaults
-
-# Configure /etc/systemd/zram-generator.conf
-chmod 644 /etc/systemd/zram-generator.conf
 
 # Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
@@ -258,44 +291,6 @@ pacman -Qq "reflector" &&
     }
 pacman -Qq "usbguard" &&
     systemctl enable usbguard.service
-
-# Configure pacman hooks in /etc/pacman.d/hooks
-## If on nvidia add hooks
-pacman -Qq "nvidia" &&
-    {
-        {
-            echo '[Trigger]'
-            echo 'Operation=Install'
-            echo 'Operation=Upgrade'
-            echo 'Operation=Remove'
-            echo 'Type=Package'
-            echo 'Target=linux'
-            echo 'Target=linux-lts'
-            echo 'Target=nvidia'
-            echo 'Target=nvidia-lts'
-            echo ''
-            echo '[Action]'
-            echo 'Description=Updating NVIDIA mkinitcpio...'
-            echo 'Depends=mkinitcpio'
-            echo 'When=PostTransaction'
-            echo 'NeedsTargets'
-            echo "Exec=/bin/sh -c '/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh'"
-        } >/etc/pacman.d/hooks/custom-nvidia-gen-mkinitcpio.hook
-        {
-            echo '#!/bin/sh'
-            echo ''
-            echo 'while read -r target'
-            echo 'do'
-            echo '    case $target in'
-            echo '        linux) exit 0'
-            echo '    esac'
-            echo 'done'
-            echo '/usr/bin/mkinitcpio -P'
-        } >/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh
-    }
-chmod -R 755 /etc/pacman.d/hooks
-chmod 644 /etc/pacman.d/hooks/*.hook
-chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 
 # Configure mDNS for Avahi
 ## Configure mDNS in /etc/systemd/resolved.conf
