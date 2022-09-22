@@ -9,7 +9,7 @@ sddm-nordic-theme-git
 snap-pac-grub
 snapper-gui-git
 ungoogled-chromium-bin
-usbguard-applet-qt
+usbguard-notifier
 vscodium-bin
 vscodium-bin-marketplace
 xdg-ninja-git
