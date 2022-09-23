@@ -1,5 +1,6 @@
 acpi
 acpi_call
+acpi_call-lts
 acpid
 alacritty
 alsa-utils
