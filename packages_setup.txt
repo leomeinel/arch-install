@@ -90,7 +90,9 @@ power-profiles-daemon
 powerdevil
 print-manager
 procs
+python-notify2
 python-pip
+python-psutil
 qemu-desktop
 quilt
 ripgrep
