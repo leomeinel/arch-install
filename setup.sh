@@ -119,14 +119,14 @@ chmod 644 /etc/sysctl.d/*
 chmod 644 /etc/firejail/spectacle.local
 
 # Configure $SYSUSER
-# sudo
-# FIXME: Sudo is mainly used for:
-# - /usr/bin/mkarchroot
-# - SETENV: /usr/bin/makechrootpkg
-# - /usr/bin/arch-nspawn
-# It shouldn't be enabled for ALL.
-# However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
-# FUTURE GOAL: REPLACE sudo WITH doas
+## sudo
+## FIXME: Sudo is mainly used for:
+## - /usr/bin/mkarchroot
+## - SETENV: /usr/bin/makechrootpkg
+## - /usr/bin/arch-nspawn
+## It shouldn't be enabled for ALL.
+## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
+## FUTURE GOAL: REPLACE sudo WITH doas
 echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" >/etc/sudoers.d/sudo
 ## Set up post-install.sh
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
