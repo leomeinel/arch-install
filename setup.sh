@@ -25,10 +25,11 @@ set -eu
 
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
+groupadd -r audit
 groupadd -r usbguard
 groupadd -r libvirt
 groupadd -r sudo
-useradd -ms /bin/bash -G sudo,usbguard,wheel "$SYSUSER"
+useradd -ms /bin/bash -G audit,sudo,usbguard,wheel "$SYSUSER"
 useradd -ms /bin/bash -G libvirt "$VIRTUSER"
 useradd -ms /bin/bash "$HOMEUSER"
 useradd -ms /bin/bash "$GUESTUSER"
