@@ -26,9 +26,9 @@ set -eu
 # Add groups and users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r audit
-groupadd -r usbguard
 groupadd -r libvirt
 groupadd -r sudo
+groupadd -r usbguard
 useradd -ms /bin/bash -G audit,sudo,usbguard,wheel "$SYSUSER"
 useradd -ms /bin/bash -G libvirt "$VIRTUSER"
 useradd -ms /bin/bash "$HOMEUSER"
@@ -119,16 +119,15 @@ chmod 644 /etc/sysctl.d/*
 chmod 644 /etc/firejail/spectacle.local
 
 # Configure $SYSUSER
-## sudo
-## FIXME: Sudo is mainly used for:
-## - /usr/bin/mkarchroot
-## - SETENV: /usr/bin/makechrootpkg
-## - /usr/bin/arch-nspawn
-## It shouldn't be enabled for ALL.
-## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
-## FUTURE GOAL: REPLACE sudo WITH doas
+# sudo
+# FIXME: Sudo is mainly used for:
+# - /usr/bin/mkarchroot
+# - SETENV: /usr/bin/makechrootpkg
+# - /usr/bin/arch-nspawn
+# It shouldn't be enabled for ALL.
+# However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
+# FUTURE GOAL: REPLACE sudo WITH doas
 echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" >/etc/sudoers.d/sudo
-
 ## Set up post-install.sh
 chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
 su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
