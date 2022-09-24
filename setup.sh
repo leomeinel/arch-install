@@ -163,17 +163,16 @@ chmod 644 /usr/share/gruvbox/gruvbox.yml
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
 rm -rf /.snapshots
-mkdir -p /etc/snapper/config-templates
-cp /usr/share/snapper/config-templates/default /etc/snapper/config-templates/
-sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="sudo"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.1"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="3"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /etc/snapper/config-templates/default
-chmod 644 /etc/snapper/config-templates/default
-snapper --no-dbus -c root create-config -t /etc/snapper/config-templates/default /
-snapper --no-dbus -c var_games create-config -t /etc/snapper/config-templates/default /var/games
-snapper --no-dbus -c var_lib_libvirt create-config -t /etc/snapper/config-templates/default /var/lib/libvirt
-snapper --no-dbus -c var_lib_mysql create-config -t /etc/snapper/config-templates/default /var/lib/mysql
-snapper --no-dbus -c var_lib_xdg-ninja create-config -t /etc/snapper/config-templates/default /var/lib/xdg-ninja
-snapper --no-dbus -c var_log create-config -t /etc/snapper/config-templates/default /var/log
-snapper --no-dbus -c home create-config -t /etc/snapper/config-templates/default /home
+cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/custom_0
+sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="sudo"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.1"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="3"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/custom_0
+chmod 644 /usr/share/snapper/config-templates/custom_0
+snapper --no-dbus -c root create-config -t custom_0 /
+snapper --no-dbus -c var_games create-config -t custom_0 /var/games
+snapper --no-dbus -c var_lib_libvirt create-config -t custom_0 /var/lib/libvirt
+snapper --no-dbus -c var_lib_mysql create-config -t custom_0 /var/lib/mysql
+snapper --no-dbus -c var_lib_xdg-ninja create-config -t custom_0 /var/lib/xdg-ninja
+snapper --no-dbus -c var_log create-config -t custom_0 /var/log
+snapper --no-dbus -c home create-config -t custom_0 /home
 btrfs subvolume delete /.snapshots
 mkdir /.snapshots
 mount -a
