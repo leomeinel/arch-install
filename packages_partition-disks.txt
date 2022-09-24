@@ -17,4 +17,5 @@ mesa
 neovim
 opendoas
 reflector
+usbctl
 wireless-regdb
