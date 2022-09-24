@@ -234,7 +234,7 @@ genfstab -U /mnt >>/mnt/etc/fstab
 {
     echo '# tmpfs'
     echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid 0 0'
-    echo 'tmpfs /tmp tmpfs rw,noexec,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
+    echo 'tmpfs /tmp tmpfs rw,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
 } >>/mnt/etc/fstab
 sed -i '/\/.efi.bak.*vfat/s/rw/rw,noauto/' /mnt/etc/fstab
 
