@@ -5,9 +5,13 @@ git
 iptables
 linux
 linux-firmware
+linux-hardened
+linux-hardened-headers
 linux-headers
 linux-lts
 linux-lts-headers
+linux-zen
+linux-zen-headers
 mdadm
 mesa
 neovim
