@@ -145,7 +145,6 @@ btrfs subvolume create /mnt/@var_cache
 btrfs subvolume create /mnt/@var_games
 btrfs subvolume create /mnt/@var_lib_libvirt
 btrfs subvolume create /mnt/@var_lib_mysql
-btrfs subvolume create /mnt/@var_lib_xdg-ninja
 btrfs subvolume create /mnt/@var_log
 btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@snapshots
@@ -164,7 +163,6 @@ mkdir /mnt/var &&
             {
                 mkdir /mnt/var/lib/libvirt
                 mkdir /mnt/var/lib/mysql
-                mkdir /mnt/var/lib/xdg-ninja
             }
         mkdir /mnt/var/log
     }
@@ -174,7 +172,6 @@ mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,sub
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/mysql
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/lib/xdg-ninja
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/var/log
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/home
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/.snapshots
