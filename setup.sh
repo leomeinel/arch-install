@@ -343,16 +343,8 @@ pacman -Qq "snapper" &&
 # Run snapshot cleanup every hour
 mkdir -p /etc/systemd/system/snapper-cleanup.timer.d
 {
-    echo "[Unit]"
-    echo "Description=Daily Cleanup of Snapper Snapshots"
-    echo "Documentation=man:snapper(8) man:snapper-configs(5)"
-    echo ""
     echo "[Timer]"
-    echo "OnBootSec=10m"
     echo "OnUnitActiveSec=1h"
-    echo ""
-    echo "[Install]"
-    echo "WantedBy=timers.target"
 } >/etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 600 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 
