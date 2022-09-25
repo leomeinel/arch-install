@@ -8,4 +8,4 @@ Target = *
 [Action]
 Description = Logging orphans...
 When = PostTransaction
-Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-log-orphans.sh'
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/50-log-orphans.sh'

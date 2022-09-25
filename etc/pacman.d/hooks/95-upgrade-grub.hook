@@ -15,4 +15,4 @@ Depends = linux-lts
 Depends = linux-zen
 Description = Updating grub...
 When = PostTransaction
-Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-upgrade-grub.sh'
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/95-upgrade-grub.sh'

@@ -228,6 +228,9 @@ paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
 
+# Clean firecfg
+/usr/bin/sudo firecfg --clean
+
 # Configure dot-files (vscodium)
 /dot-files.sh vscodium
 echo -e "\nEnter password for $VIRTUSER"
@@ -238,7 +241,6 @@ echo -e "\nEnter password for $GUESTUSER"
 su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure firejail
-/usr/bin/sudo firecfg --clean
 doas sed -i 's/^dnsmasq/#dnsmasq/;s/^ktorrent/#ktorrent/;s/^spectacle/#spectacle/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default

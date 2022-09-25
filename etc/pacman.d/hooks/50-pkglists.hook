@@ -7,4 +7,4 @@ Target = *
 [Action]
 Description = Generating pkglists...
 When = PostTransaction
-Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-pkglists.sh'
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/50-pkglists.sh'
