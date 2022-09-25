@@ -186,21 +186,6 @@ doas sh -c 'iptables-save > /etc/iptables/iptables.rules'
 doas sh -c 'ip6tables-save > /etc/iptables/ip6tables.rules'
 doas chmod 644 /etc/iptables/*.rules
 
-# Enable systemd services
-pacman -Qq "iptables" &&
-    {
-        doas systemctl enable ip6tables
-        doas systemctl enable iptables
-    }
-pacman -Qq "sddm" &&
-    doas systemctl enable sddm
-pacman -Qq "laptop-mode-tools" &&
-    doas systemctl enable laptop-mode.service
-
-# Enable systemd user services
-pacman -Qq "usbguard-notifier" &&
-    systemctl enable --user usbguard-notifier.service
-
 # Configure secureboot
 if mountpoint -q /boot; then
     doas umount -AR /boot
@@ -245,6 +230,21 @@ doas sed -i 's/^dnsmasq/#dnsmasq/;s/^ktorrent/#ktorrent/;s/^spectacle/#spectacle
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 /usr/bin/sudo firecfg
+
+# Enable systemd services
+pacman -Qq "iptables" &&
+    {
+        doas systemctl enable ip6tables
+        doas systemctl enable iptables
+    }
+pacman -Qq "sddm" &&
+    doas systemctl enable sddm
+pacman -Qq "laptop-mode-tools" &&
+    doas systemctl enable laptop-mode.service
+
+# Enable systemd user services
+pacman -Qq "usbguard-notifier" &&
+    systemctl enable --user usbguard-notifier.service
 
 # Remove repo
 rm -rf ~/git
