@@ -28,51 +28,12 @@ su -lc '/dot-files.sh setup' "$HOMEUSER"
 echo -e "\nEnter password for $GUESTUSER"
 su -lc '/dot-files.sh setup' "$GUESTUSER"
 
-# Configure secureboot
-if mountpoint -q /boot; then
-    doas umount -AR /boot
-fi
-if mountpoint -q /efi; then
-    doas umount -AR /efi
-fi
-doas cryptboot mount
-doas cryptboot-efikeys create
-doas cryptboot-efikeys enroll
-doas cryptboot update-grub
-
 # Configure clock
 doas timedatectl set-ntp true
 
 # Configure $KEYMAP
 doas localectl set-keymap "$KEYMAP"
 doas localectl set-x11-keymap "$KEYLAYOUT"
-
-# Install paru
-source ~/.bash_profile
-git clone https://aur.archlinux.org/paru.git ~/git/paru
-cd ~/git/paru
-makepkg -sri --noprogressbar --noconfirm --needed
-
-# Configure paru.conf
-doas sed -i 's/^#RemoveMake/RemoveMake/;s/^#CleanAfter/CleanAfter/;s/^#\[bin\]/\[bin\]/;s/^#FileManager =.*/FileManager = nvim/;s/^#Sudo =.*/Sudo = doas/' /etc/paru.conf
-doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/paru.conf'
-
-# Install packages
-paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
-paru --noprogressbar --noconfirm -Syu
-paru -Scc
-
-# Clean default firecfg
-/usr/bin/sudo firecfg --clean
-
-# Configure dot-files (vscodium)
-/dot-files.sh vscodium
-echo -e "\nEnter password for $VIRTUSER"
-su -lc '/dot-files.sh vscodium' "$VIRTUSER"
-echo -e "\nEnter password for $HOMEUSER"
-su -lc '/dot-files.sh vscodium' "$HOMEUSER"
-echo -e "\nEnter password for $GUESTUSER"
-su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure iptables
 # FIXME: Replace with nftables
@@ -240,7 +201,44 @@ pacman -Qq "laptop-mode-tools" &&
 pacman -Qq "usbguard-notifier" &&
     systemctl enable --user usbguard-notifier.service
 
+# Configure secureboot
+if mountpoint -q /boot; then
+    doas umount -AR /boot
+fi
+if mountpoint -q /efi; then
+    doas umount -AR /efi
+fi
+doas cryptboot mount
+doas cryptboot-efikeys create
+doas cryptboot-efikeys enroll
+doas cryptboot update-grub
+
+# Install paru
+source ~/.bash_profile
+git clone https://aur.archlinux.org/paru.git ~/git/paru
+cd ~/git/paru
+makepkg -sri --noprogressbar --noconfirm --needed
+
+# Configure paru.conf
+doas sed -i 's/^#RemoveMake/RemoveMake/;s/^#CleanAfter/CleanAfter/;s/^#\[bin\]/\[bin\]/;s/^#FileManager =.*/FileManager = nvim/;s/^#Sudo =.*/Sudo = doas/' /etc/paru.conf
+doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/paru.conf'
+
+# Install packages
+paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
+paru --noprogressbar --noconfirm -Syu
+paru -Scc
+
+# Configure dot-files (vscodium)
+/dot-files.sh vscodium
+echo -e "\nEnter password for $VIRTUSER"
+su -lc '/dot-files.sh vscodium' "$VIRTUSER"
+echo -e "\nEnter password for $HOMEUSER"
+su -lc '/dot-files.sh vscodium' "$HOMEUSER"
+echo -e "\nEnter password for $GUESTUSER"
+su -lc '/dot-files.sh vscodium' "$GUESTUSER"
+
 # Configure firejail
+/usr/bin/sudo firecfg --clean
 doas sed -i 's/^dnsmasq/#dnsmasq/;s/^ktorrent/#ktorrent/;s/^spectacle/#spectacle/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
