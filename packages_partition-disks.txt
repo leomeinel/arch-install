@@ -5,8 +5,6 @@ git
 iptables
 linux
 linux-firmware
-linux-hardened
-linux-hardened-headers
 linux-headers
 linux-lts
 linux-lts-headers
@@ -17,5 +15,4 @@ mesa
 neovim
 opendoas
 reflector
-usbctl
 wireless-regdb
