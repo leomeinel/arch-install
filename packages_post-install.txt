@@ -1,4 +1,5 @@
 arc-kde-git
+arch-sign-modules
 chromium-extension-web-store
 dotnet-sdk-bin
 gdlauncher-bin

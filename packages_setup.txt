@@ -1,5 +1,4 @@
 acpi
-acpi_call-dkms
 acpid
 alacritty
 alsa-utils
