@@ -91,6 +91,7 @@ pacman -Qq "nvidia-dkms" &&
             echo 'When = PostTransaction'
             echo 'NeedsTargets'
             echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh'"
+            echo ''
         } >/etc/pacman.d/hooks/custom-nvidia-gen-mkinitcpio.hook
         {
             echo '#!/bin/sh'
@@ -102,6 +103,7 @@ pacman -Qq "nvidia-dkms" &&
             echo '    esac'
             echo 'done'
             echo '/usr/bin/mkinitcpio -P'
+            echo ''
         } >/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh
         sed -i '/Target = linux-zen/a Target = nvidia-dkms' /etc/pacman.d/hooks/custom-sign-modules.hook
     }
