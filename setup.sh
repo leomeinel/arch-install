@@ -105,7 +105,7 @@ pacman -Qq "nvidia-dkms" &&
             echo '/usr/bin/mkinitcpio -P'
             echo ''
         } >/etc/pacman.d/hooks/scripts/custom-nvidia-gen-mkinitcpio.sh
-        sed -i '/Target = linux-zen/a Target = nvidia-dkms' /etc/pacman.d/hooks/custom-sign-modules.hook
+        sed -i '/Target = linux-zen/a Target = nvidia-dkms' /etc/pacman.d/hooks/custom-upgrade-grub.hook
     }
 chmod -R 755 /etc/pacman.d/hooks
 chmod 644 /etc/pacman.d/hooks/*.hook

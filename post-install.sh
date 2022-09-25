@@ -240,26 +240,6 @@ pacman -Qq "laptop-mode-tools" &&
 pacman -Qq "usbguard-notifier" &&
     systemctl enable --user usbguard-notifier.service
 
-# Rebuild kernels and sign modules
-pacman -Qq "linux" &&
-    {
-        doas abk -u linux
-        doas abk -b linux
-        doas abk -i linux
-    }
-pacman -Qq "linux-lts" &&
-    {
-        doas abk -u linux-lts
-        doas abk -b linux-lts
-        doas abk -i linux-lts
-    }
-pacman -Qq "linux-zen" &&
-    {
-        doas abk -u linux-zen
-        doas abk -b linux-zen
-        doas abk -i linux-zen
-    }
-
 # Configure firejail
 doas sed -i 's/^dnsmasq/#dnsmasq/;s/^ktorrent/#ktorrent/;s/^spectacle/#spectacle/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"

@@ -3,9 +3,16 @@ Operation = Install
 Operation = Upgrade
 Type = Package
 Target = grub
+Target = linux
+Target = linux-lts
+Target = linux-zen
 
 [Action]
+NeedsTargets
 Depends = grub
+Depends = linux
+Depends = linux-lts
+Depends = linux-zen
 Description = Updating grub...
 When = PostTransaction
 Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/custom-upgrade-grub.sh'
