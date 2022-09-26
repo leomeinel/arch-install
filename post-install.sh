@@ -239,8 +239,6 @@ pacman -Qq "iptables" &&
     }
 pacman -Qq "sddm" &&
     doas systemctl enable sddm
-pacman -Qq "laptop-mode-tools" &&
-    doas systemctl enable laptop-mode.service
 
 # Enable systemd user services
 pacman -Qq "usbguard-notifier" &&

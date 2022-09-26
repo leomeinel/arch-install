@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-# File: custom-log-orphans.sh
+# File: 50-log-orphans.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2022 Leopold Meinel & contributors

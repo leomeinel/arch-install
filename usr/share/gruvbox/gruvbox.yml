@@ -1,9 +1,6 @@
-# Colors (Gruvbox dark)
 colors:
   primary:
-    # hard contrast background - '#1d2021'
     background: &gruvbox_dark_bg "#282828"
-    # soft contrast background - '#32302f'
     foreground: "#ebdbb2"
     bright_foreground: "#fbf1c7"
     dim_foreground: "#a89984"
@@ -13,19 +10,6 @@ colors:
   vi_mode_cursor:
     text: CellBackground
     cursor: CellForeground
-  # search:
-  #   matches:
-  #     foreground: '#000000'
-  #     background: '#ffffff'
-  #   focused_match:
-  #    foreground: CellBackground
-  #    background: CellForeground
-  #   bar:
-  #     background: ''
-  #     foreground: ''
-  # line_indicator:
-  #   foreground: None
-  #   background: None
   selection:
     text: CellBackground
     background: CellForeground

@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-# File: custom-pkglists.sh
+# File: 50-pkglists.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2022 Leopold Meinel & contributors

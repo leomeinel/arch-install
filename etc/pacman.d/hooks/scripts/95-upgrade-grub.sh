@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-# File: custom-upgrade-grub.sh
+# File: 95-upgrade-grub.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2022 Leopold Meinel & contributors

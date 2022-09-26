@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-# File: custom-efibackup.sh
+# File: 99-efibackup.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2022 Leopold Meinel & contributors
