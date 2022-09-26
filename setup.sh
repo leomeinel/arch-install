@@ -288,8 +288,6 @@ sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/systemd/resolved.conf
 sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
 
 # Enable systemd services
-pacman -Qq "acpi" &&
-    systemctl enable acpid
 pacman -Qq "apparmor" &&
     {
         systemctl enable apparmor.service
