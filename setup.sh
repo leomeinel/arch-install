@@ -160,11 +160,6 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 mkdir /usr/share/screenshots
 chmod -R 777 /usr/share/screenshots
 
-# Add gruvbox.yml to /usr/share/gruvbox/gruvbox.yml
-mv /git/mdadm-encrypted-btrfs/usr/share/gruvbox /usr/share/
-chmod -R 755 /usr/share/gruvbox
-chmod 644 /usr/share/gruvbox/gruvbox.yml
-
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
 rm -rf /.snapshots
@@ -224,27 +219,29 @@ chmod 644 /etc/cryptboot.conf
     echo "PermitRootLogin no"
 } >>/etc/ssh/sshd_config
 
-# Configure symlinks
+# Configure /usr
+rsync -rq /git/mdadm-encrypted-btrfs/usr/ /usr
 mv /git/cryptboot/grub-install /usr/local/bin/
-mv /git/cryptboot/cryptboot /usr/bin/
-mv /git/cryptboot/cryptboot-efikeys /usr/bin/
-mv /git/mdadm-encrypted-btrfs/usr/bin/ex /usr/bin/
-mv /git/mdadm-encrypted-btrfs/usr/bin/view /usr/bin/
-mv /git/mdadm-encrypted-btrfs/usr/bin/vimdiff /usr/bin/
-ln -s "$(which nvim)" /usr/bin/edit
-ln -s "$(which nvim)" /usr/bin/vedit
-ln -s "$(which nvim)" /usr/bin/vi
-ln -s "$(which nvim)" /usr/bin/vim
-chmod 755 /usr/bin/cryptboot
-chmod 755 /usr/bin/cryptboot-efikeys
+mv /git/cryptboot/cryptboot /usr/local/bin/
+mv /git/cryptboot/cryptboot-efikeys /usr/local/bin/
+## Configure /usr/share/gruvbox/gruvbox.yml
+chmod 755 /usr/share/gruvbox
+chmod 644 /usr/share/gruvbox/gruvbox.yml
+## Configure symlinks
+chmod 755 /usr/local/bin/cryptboot
+chmod 755 /usr/local/bin/cryptboot-efikeys
 chmod 755 /usr/local/bin/grub-install
-chmod 755 /usr/bin/ex
-chmod 755 /usr/bin/view
-chmod 755 /usr/bin/vimdiff
-chmod 755 /usr/bin/edit
-chmod 755 /usr/bin/vedit
-chmod 755 /usr/bin/vi
-chmod 755 /usr/bin/vim
+ln -s "$(which nvim)" /usr/local/bin/edit
+ln -s "$(which nvim)" /usr/local/bin/vedit
+ln -s "$(which nvim)" /usr/local/bin/vi
+ln -s "$(which nvim)" /usr/local/bin/vim
+chmod 755 /usr/local/bin/ex
+chmod 755 /usr/local/bin/view
+chmod 755 /usr/local/bin/vimdiff
+chmod 755 /usr/local/bin/edit
+chmod 755 /usr/local/bin/vedit
+chmod 755 /usr/local/bin/vi
+chmod 755 /usr/local/bin/vim
 
 # Configure /etc/localtime, /etc/locale.conf, /etc/vconsole.conf, /etc/hostname and /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
