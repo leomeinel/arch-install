@@ -211,20 +211,21 @@ lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
     echo "amd-ucode" >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
     {
-        echo "nvidia-dkms"
         echo "egl-wayland"
+        echo "nvidia-dkms"
     } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
     {
-        echo "xf86-video-amdgpu"
-        echo "vulkan-radeon"
         echo "libva-mesa-driver"
         echo "mesa-vdpau"
+        echo "vulkan-radeon"
+        echo "xf86-video-amdgpu"
     } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
     {
-        echo "xf86-video-intel"
+        echo "intel-media-driver"
         echo "vulkan-intel"
+        echo "xf86-video-intel"
     } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 pacstrap /mnt - </root/mdadm-encrypted-btrfs/packages_partition-disks.txt
 

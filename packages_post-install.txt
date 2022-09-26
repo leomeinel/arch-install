@@ -1,8 +1,8 @@
 arc-kde-git
+aspnet-targeting-pack-bin
 chromium-extension-web-store
 dotnet-sdk-bin
 gdlauncher-bin
-laptop-mode-tools
 librewolf-bin
 macchina
 papirus-icon-theme-stripped

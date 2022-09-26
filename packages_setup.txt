@@ -6,6 +6,7 @@ apparmor
 arc-gtk-theme
 arch-audit
 ark
+bash-completion
 bat
 bitwarden
 bleachbit
@@ -24,6 +25,7 @@ efitools
 ethtool
 exa
 fd
+ffmpegthumbs
 firejail
 gimp
 git-delta
@@ -33,9 +35,14 @@ gradle
 grex
 grub
 grub-btrfs
+gutenprint
 gwenview
-hplip
 htop
+hunspell
+hunspell-de
+hunspell-en_us
+hunspell-fr
+hunspell-nl
 hwinfo
 hyperfine
 inetutils
@@ -46,7 +53,10 @@ jpegoptim
 kalendar
 kde-cli-tools
 kde-gtk-config
+kdegraphics-thumbnailers
+kdialog
 kgpg
+kimageformats
 kinfocenter
 kmail
 kompare
@@ -57,8 +67,11 @@ libreoffice-extension-texmaths
 libreoffice-still
 libvirt
 lldb
+llvm
+logrotate
 lrzip
 lshw
+lsof
 lzop
 mailcap
 man-db
@@ -85,6 +98,8 @@ plasma-desktop
 plasma-nm
 plasma-pa
 plasma-wayland-session
+postgresql
+postgresql-libs
 power-profiles-daemon
 powerdevil
 print-manager
@@ -93,6 +108,7 @@ python-notify2
 python-pip
 python-psutil
 qemu-desktop
+qt5-imageformats
 quilt
 ripgrep
 rsync
@@ -101,10 +117,12 @@ sbsigntools
 screen
 sddm
 sddm-kcm
+simple-scan
 snapper
 spectacle
 sshfs
 starship
+system-config-printer
 tokei
 ttf-nerd-fonts-symbols-2048-em-mono
 unarchiver
@@ -112,8 +130,10 @@ unrar
 unzip
 usbguard
 virt-manager
+webp-pixbuf-loader
 wget
 wireplumber
 wl-clipboard
+xdg-dbus-proxy
 xdg-utils
 zram-generator
