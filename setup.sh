@@ -203,7 +203,12 @@ chmod a+rx /home/.snapshots
 chown :sudo /home/.snapshots
 
 # Configure /etc/fwupd/uefi_capsule.conf
-sed -i 's/^#OverrideESPMountPoint=.*/OverrideESPMountPoint=\/efi/' /etc/fwupd/uefi_capsule.conf
+{
+    echo ""
+    echo "# Custom"
+    echo "## Set /efi as mountpoint"
+    echo "OverrideESPMountPoint=/efi"
+} >> /etc/fwupd/uefi_capsule.conf
 
 # Configure /etc/cryptboot.conf
 git clone https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
