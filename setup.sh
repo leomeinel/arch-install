@@ -350,13 +350,15 @@ pacman -Qq "snapper" &&
         systemctl enable snapper-timeline.timer
     }
 
-# Sign kernel modules
+# kernel modules
+## Generate key
 mkdir -p /etc/kernel/keys
 cd /etc/kernel/keys/
-openssl req -new -nodes -utf8 -sha256 -days 3650 -subj "/CN=$HOSTNAME kernel/" -batch -x509 -config x509.genkey -outform PEM -out kernel.key -keyout kernel.key
-KEYRINGID="$(keyctl id %:.system_keyring)"
+openssl req  
+openssl req -newkey rsa:4096 -utf8 -nodes -keyout kernel.key -new -x509 -sha256 -days 3650 -subj "/CN=$HOSTNAME kernel/" -batch -outform PEM -out kernel.key
+KEYRINGID="$(keyctl id %:.builtin_trusted_keys)"
 keyctl padd asymmetric "" "$KEYRINGID" <kernel.key
-echo "Signing modules with $HOSTNAME kernel key..."
+## Sign kernel modules
 if pacman -Qq "linux"; then
     readarray -t LINUX_MODULES < <(/usr/bin/find /lib/modules/$(pacman -Q linux | sed 's/linux//;s/.arch/-arch/' | tr -d "[:space:]") -type f -name '*.ko*')
     for ((i = 0; i < "${#LINUX_MODULES[@]}"; i++)); do
