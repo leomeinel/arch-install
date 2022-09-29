@@ -208,7 +208,7 @@ chown :sudo /home/.snapshots
     echo "# Custom"
     echo "## Set /efi as mountpoint"
     echo "OverrideESPMountPoint=/efi"
-} >> /etc/fwupd/uefi_capsule.conf
+} >>/etc/fwupd/uefi_capsule.conf
 
 # Configure /etc/cryptboot.conf
 git clone https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
@@ -349,6 +349,62 @@ pacman -Qq "snapper" &&
         systemctl enable snapper-cleanup.timer
         systemctl enable snapper-timeline.timer
     }
+
+# Sign kernel modules
+mkdir -p /etc/kernel/keys
+cd /etc/kernel/keys/
+openssl req -new -nodes -utf8 -sha256 -days 3650 -subj "/CN=$HOSTNAME kernel/" -batch -x509 -config x509.genkey -outform PEM -out kernel.key -keyout kernel.key
+KEYRINGID="$(keyctl id %:.system_keyring)"
+keyctl padd asymmetric "" "$KEYRINGID" <kernel.key
+echo "Signing modules with $HOSTNAME kernel key..."
+if pacman -Qq "linux"; then
+    readarray -t LINUX_MODULES < <(/usr/bin/find /lib/modules/$(pacman -Q linux | sed 's/linux//;s/.arch/-arch/' | tr -d "[:space:]") -type f -name '*.ko*')
+    for ((i = 0; i < "${#LINUX_MODULES[@]}"; i++)); do
+        {
+            LINUX_MODULE="${LINUX_MODULES[$i]}"
+            zstd -d "${LINUX_MODULES[$i]}" -fq --rm
+            LINUX_MODULE="${LINUX_MODULE:0:-4}"
+            /usr/src/linux/scripts/sign-file sha256 kernel.key kernel.x509 "$LINUX_MODULE"
+            zstd -z "$LINUX_MODULE" -fq --rm
+        } ||
+            {
+                echo "ERROR: modules couldn't be signed with $HOSTNAME kernel key"
+                exit 1
+            }
+    done
+fi
+if pacman -Qq "linux-lts"; then
+    readarray -t LINUX_MODULES < <(/usr/bin/find /lib/modules/$(pacman -Q linux-lts | sed 's/linux-lts//' | tr -d "[:space:]")-lts -type f -name '*.ko*')
+    for ((i = 0; i < "${#LINUX_MODULES[@]}"; i++)); do
+        {
+            LINUX_MODULE="${LINUX_MODULES[$i]}"
+            zstd -d "${LINUX_MODULES[$i]}" -fq --rm
+            LINUX_MODULE="${LINUX_MODULE:0:-4}"
+            /usr/src/linux/scripts/sign-file sha256 kernel.key kernel.x509 "$LINUX_MODULE"
+            zstd -z "$LINUX_MODULE" -fq --rm
+        } ||
+            {
+                echo "ERROR: modules couldn't be signed with $HOSTNAME kernel key"
+                exit 1
+            }
+    done
+fi
+if pacman -Qq "linux-zen"; then
+    readarray -t LINUX_MODULES < <(/usr/bin/find /lib/modules/$(pacman -Q linux-zen | sed 's/linux-zen//;s/.zen/-zen/' | tr -d "[:space:]")-zen -type f -name '*.ko*')
+    for ((i = 0; i < "${#LINUX_MODULES[@]}"; i++)); do
+        {
+            LINUX_MODULE="${LINUX_MODULES[$i]}"
+            zstd -d "${LINUX_MODULES[$i]}" -fq --rm
+            LINUX_MODULE="${LINUX_MODULE:0:-4}"
+            /usr/src/linux/scripts/sign-file sha256 kernel.key kernel.x509 "$LINUX_MODULE"
+            zstd -z "$LINUX_MODULE" -fq --rm
+        } ||
+            {
+                echo "ERROR: modules couldn't be signed with $HOSTNAME kernel key"
+                exit 1
+            }
+    done
+fi
 
 # Remove repo
 rm -rf /git
