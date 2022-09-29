@@ -350,8 +350,8 @@ pacman -Qq "snapper" &&
         systemctl enable snapper-timeline.timer
     }
 
-# kernel modules
-## Generate key
+# Kernel modules
+## Generate $HOSTNAME kernel key
 mkdir -p /etc/kernel/keys
 cd /etc/kernel/keys/
 openssl req  
