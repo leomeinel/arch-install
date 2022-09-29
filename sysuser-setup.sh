@@ -26,7 +26,7 @@ mkdir -p ~/.config/autostart
 } >~/.config/autostart/apparmor-notify.desktop
 
 # Set up post-install.sh
-git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git ~/git/mdadm-encrypted-btrfs
+git clone --branch signed-kernel-modules https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git ~/git/mdadm-encrypted-btrfs
 mv ~/git/mdadm-encrypted-btrfs/packages_post-install.txt ~/
 mv ~/git/mdadm-encrypted-btrfs/post-install.sh ~/
 sed -i 's/<INSERT_SYSUSER>/'"$1"'/;s/<INSERT_VIRTUSER>/'"$2"'/;s/<INSERT_HOMEUSER>/'"$3"'/;s/<INSERT_GUESTUSER>/'"$4"'/' ~/post-install.sh
