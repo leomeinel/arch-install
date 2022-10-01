@@ -24,6 +24,7 @@ ethtool
 exa
 fd
 ffmpegthumbs
+filezilla
 firejail
 gimp
 git-delta
