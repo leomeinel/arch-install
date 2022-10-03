@@ -44,7 +44,7 @@ passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
 passwd "$GUESTUSER"
 
-# Configure /etc/pacman.conf and /etc/xdg/reflector/reflector.conf
+# Configure /etc/pacman.conf , /etc/makepkg.conf and /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
     echo "--country $MIRRORCOUNTRIES"
@@ -54,6 +54,7 @@ passwd "$GUESTUSER"
 } >/etc/xdg/reflector/reflector.conf
 chmod -R 755 /etc/xdg
 chmod 644 /etc/xdg/reflector/reflector.conf
+sed -i 's/^#PACMAN_AUTH=.*/PACMAN_AUTH=(doas)/' /etc/makepkg.conf
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
 pacman-key --init
 
