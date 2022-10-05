@@ -16,6 +16,7 @@ cups
 devtools
 dnsmasq
 dolphin
+duf
 dust
 edk2-ovmf
 efibootmgr
