@@ -55,7 +55,7 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 
 :warning: | If on virt-manager VM skip ¹.
 
-:information_source: | ¹Select `UEFI Firmware Settings` in GRUB and set Secure Boot into `Setup Mode`.
+:information_source: | ¹Set Secure Boot [`Setup Mode`](https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Putting_firmware_in_"Setup_Mode") in `UEFI Firmware Settings`.
 
 :information_source: | ¹Set your UEFI password(s) and reboot.
 
