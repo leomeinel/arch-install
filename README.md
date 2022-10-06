@@ -57,7 +57,7 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 
 :information_source: | ¹Select `UEFI Firmware Settings` in GRUB and set Secure Boot into `Setup Mode`.
 
-:information_source: | ¹Set your UEFI firmware supervisor password and reboot.
+:information_source: | ¹Set your UEFI password(s) and reboot.
 
 :information_source: | Log into sysuser account and run:
 
