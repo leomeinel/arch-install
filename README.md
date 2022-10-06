@@ -14,7 +14,7 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 ## Pre-installation
 
-:information_source: | Follow the `Pre-installation` section of this [guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section if needed.
+:information_source: | Follow the `Pre-installation` section of this [guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section.
 
 ## Installation
 
