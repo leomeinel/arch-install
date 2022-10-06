@@ -55,11 +55,9 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 
 :warning: | If on virt-manager VM skip ¹&².
 
-:information_source: | ¹Select `UEFI Firmware Settings` in GRUB, enable Secure Boot and clear all preloaded Secure Boot keys.
+:information_source: | ¹Select `UEFI Firmware Settings` in GRUB, enable Secure Boot and enable `Setup Mode`.
 
 :information_source: | ²Set your UEFI firmware supervisor password and reboot.
-
-:information_source: | Select your preferred kernel in GRUB.
 
 :information_source: | Log into sysuser account and run:
 
