@@ -61,7 +61,7 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 
 :information_source: | Select your preferred kernel in GRUB.
 
-:information_source: | Log into sysuser account and run.
+:information_source: | Log into sysuser account and run:
 
 ```sh
 ~/post-install.sh
