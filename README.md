@@ -53,11 +53,11 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 
 ## Post-installation (tty)
 
-:warning: | If on virt-manager VM skip ¹&².
+:warning: | If on virt-manager VM skip ¹.
 
-:information_source: | ¹Select `UEFI Firmware Settings` in GRUB, enable Secure Boot and enable `Setup Mode`.
+:information_source: | ¹Select `UEFI Firmware Settings` in GRUB and set Secure Boot into `Setup Mode`.
 
-:information_source: | ²Set your UEFI firmware supervisor password and reboot.
+:information_source: | ¹Set your UEFI firmware supervisor password and reboot.
 
 :information_source: | Log into sysuser account and run:
 
@@ -65,6 +65,8 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 ~/post-install.sh
 reboot
 ```
+
+:information_source: | ¹Enable Secure Boot.
 
 ## Post-installation (DE)
 
