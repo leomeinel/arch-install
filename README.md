@@ -36,8 +36,6 @@ reboot
 
 :information_source: | Set variables after `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`.
 
-:warning: | If you're upgrading from versions prior to 2.x.x run this before running `partition-disks.sh`:
-
 ```sh
 chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
