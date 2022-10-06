@@ -36,7 +36,7 @@ reboot
 
 :information_source: | Set variables after `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`.
 
-:warning: | If you're upgrading from versions prior to 2.x.x run this before running `partition-disks.sh`
+:warning: | If you're upgrading from versions prior to 2.x.x run this before running `partition-disks.sh`:
 
 ```sh
 chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
@@ -53,7 +53,7 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 
 ## Post-installation (tty)
 
-:warning: | If on virt-manager VM skip ¹&². In other cases, ¹&² are mandatory
+:warning: | If on virt-manager VM skip ¹&².
 
 :information_source: | ¹Select `UEFI Firmware Settings` in GRUB, enable Secure Boot and clear all preloaded Secure Boot keys.
 
