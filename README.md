@@ -51,7 +51,7 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 
 ## Post-installation (tty)
 
-:warning: | If on virt-manager VM skip ¹.
+:warning: | If using virt-manager skip ¹.
 
 :information_source: | ¹Set Secure Boot [`Setup Mode`](https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Putting_firmware_in_"Setup_Mode") in `UEFI Firmware Settings`.
 
