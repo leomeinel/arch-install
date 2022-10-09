@@ -21,12 +21,9 @@ VIRTUSER="<INSERT_VIRTUSER>"
 HOMEUSER="<INSERT_HOMEUSER>"
 GUESTUSER="<INSERT_GUESTUSER>"
 /dot-files.sh setup
-echo -e "\nEnter password for $VIRTUSER"
-su -lc '/dot-files.sh setup' "$VIRTUSER"
-echo -e "\nEnter password for $HOMEUSER"
-su -lc '/dot-files.sh setup' "$HOMEUSER"
-echo -e "\nEnter password for $GUESTUSER"
-su -lc '/dot-files.sh setup' "$GUESTUSER"
+doas su -lc '/dot-files.sh setup' "$VIRTUSER"
+doas su -lc '/dot-files.sh setup' "$HOMEUSER"
+doas su -lc '/dot-files.sh setup' "$GUESTUSER"
 
 # Configure clock
 doas timedatectl set-ntp true
@@ -218,18 +215,19 @@ paru -Scc
 
 # Configure dot-files (vscodium)
 /dot-files.sh vscodium
-echo -e "\nEnter password for $VIRTUSER"
-su -lc '/dot-files.sh vscodium' "$VIRTUSER"
-echo -e "\nEnter password for $HOMEUSER"
-su -lc '/dot-files.sh vscodium' "$HOMEUSER"
-echo -e "\nEnter password for $GUESTUSER"
-su -lc '/dot-files.sh vscodium' "$GUESTUSER"
+doas su -lc '/dot-files.sh vscodium' "$VIRTUSER"
+doas su -lc '/dot-files.sh vscodium' "$HOMEUSER"
+doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure firejail
 doas sed -i 's/^dnsmasq/#dnsmasq/;s/^ktorrent/#ktorrent/;s/^spectacle/#spectacle/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 /usr/bin/sudo firecfg
+firecfg -fix
+doas su -c 'firecfg -fix' "$VIRTUSER"
+doas su -c 'firecfg -fix' "$HOMEUSER"
+doas su -c 'firecfg -fix' "$GUESTUSER"
 
 # Enable systemd services
 pacman -Qq "iptables" &&

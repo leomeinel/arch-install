@@ -11,4 +11,4 @@ Target = usr/share/applications/*.desktop
 Description = Configure symlinks in /usr/local/bin based on firecfg.config...
 When = PostTransaction
 Depends = firejail
-Exec = /bin/sh -c 'firecfg >/dev/null 2>&1'
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/70-firejail.sh'

@@ -72,7 +72,17 @@ chmod -c 0400 /etc/doas.conf
 ## Configure random MAC address for WiFi
 chmod 644 /etc/NetworkManager/conf.d/wifi_rand_mac.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
-### If on nvidia add hooks
+{
+    echo '#!/bin/sh'
+    echo ''
+    echo '/usr/bin/firecfg >/dev/null 2>&1'
+    echo "su -c '/usr/bin/firecfg -fix' $SYSUSER"
+    echo "su -c '/usr/bin/firecfg -fix' $VIRTUSER"
+    echo "su -c '/usr/bin/firecfg -fix' $HOMEUSER"
+    echo "su -c '/usr/bin/firecfg -fix' $GUESTUSER"
+    echo ''
+} >/etc/pacman.d/hooks/scripts/70-firejail.sh
+### Add hooks for nvidia
 pacman -Qq "nvidia-dkms" &&
     {
         {
@@ -183,7 +193,21 @@ snapper --no-dbus -c root create-config -t root /
 snapper --no-dbus -c var_lib_libvirt create-config -t var_lib_libvirt /var/lib/libvirt
 snapper --no-dbus -c var_lib_mysql create-config -t var_lib_mysql /var/lib/mysql
 snapper --no-dbus -c var_log create-config -t var_log /var/log
-snapper --no-dbus -c home create-config -t home /home
+snapper --no-dbus -c home create-config -t home [Trigger]
+Type = Path
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Target = usr/bin/*
+Target = usr/local/bin/*
+Target = usr/share/applications/*.desktop
+
+[Action]
+Description = Configure symlinks in /usr/local/bin based on firecfg.config...
+When = PostTransaction
+Depends = firejail
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/70-firejail.sh'
+/home
 btrfs subvolume delete /.snapshots
 mkdir /.snapshots
 mount -a
