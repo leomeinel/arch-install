@@ -1,6 +1,5 @@
 arc-kde-git
 aspnet-targeting-pack-bin
-chromium-extension-web-store
 dotnet-sdk-bin
 gdlauncher-bin
 librewolf-bin
