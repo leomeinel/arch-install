@@ -224,10 +224,10 @@ doas sed -i 's/^dnsmasq/#dnsmasq/;s/^ktorrent/#ktorrent/;s/^spectacle/#spectacle
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 /usr/bin/sudo firecfg
-firecfg -fix
-doas su -c 'firecfg -fix' "$VIRTUSER"
-doas su -c 'firecfg -fix' "$HOMEUSER"
-doas su -c 'firecfg -fix' "$GUESTUSER"
+firecfg --fix
+doas su -c 'firecfg --fix' "$VIRTUSER"
+doas su -c 'firecfg --fix' "$HOMEUSER"
+doas su -c 'firecfg --fix' "$GUESTUSER"
 
 # Enable systemd services
 pacman -Qq "iptables" &&
