@@ -1,6 +1,5 @@
 arc-kde-git
 aspnet-targeting-pack-bin
-chromium-extension-web-store
 dotnet-sdk-bin
 gdlauncher-bin
 librewolf-bin
@@ -9,8 +8,8 @@ papirus-icon-theme-stripped
 sddm-nordic-theme-git
 snap-pac-grub
 snapper-gui-git
-ungoogled-chromium-bin
 usbguard-notifier
 vscodium-bin
 vscodium-bin-marketplace
+waterfox-g-bin
 xdg-ninja-git
