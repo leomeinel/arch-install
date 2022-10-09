@@ -8,8 +8,8 @@ papirus-icon-theme-stripped
 sddm-nordic-theme-git
 snap-pac-grub
 snapper-gui-git
-icecat
 usbguard-notifier
 vscodium-bin
 vscodium-bin-marketplace
+waterfox-g-bin
 xdg-ninja-git
