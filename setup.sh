@@ -27,7 +27,7 @@ set -eu
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r audit
 groupadd -r libvirt
-groupadd -r share
+groupadd share
 groupadd -r sudo
 groupadd -r usbguard
 useradd -ms /bin/bash -G audit,share,sudo,usbguard,wheel "$SYSUSER"
@@ -170,7 +170,8 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 
 # Add screenshot folder to /usr/share/screenshots/
 mkdir /share/screenshots
-chmod 777 /share/screenshots
+chmod 3775 /share/screenshots
+chown -R :share /share
 
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
