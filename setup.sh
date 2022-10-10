@@ -169,8 +169,8 @@ chmod -R 755 /usr/share/wallpapers/Custom
 chmod 644 /usr/share/wallpapers/Custom/content/*
 
 # Add screenshot folder to /usr/share/screenshots/
-mkdir /usr/share/screenshots
-chmod -R 777 /usr/share/screenshots
+mkdir /var/share/screenshots
+chmod -R 777 /var/share/screenshots
 
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
