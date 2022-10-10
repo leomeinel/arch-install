@@ -353,7 +353,7 @@ pacman -Qq "intel-ucode" &&
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# Enable systemd services later
+# Enable systemd services later that cause problems with `grub-install`
 pacman -Qq "snapper" &&
     {
         systemctl enable snapper-cleanup.timer
