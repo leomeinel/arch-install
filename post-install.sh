@@ -225,9 +225,9 @@ doas sed -i 's/^dnsmasq/#dnsmasq #custom/;s/^ktorrent/#ktorrent #custom/;s/^spec
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 /usr/bin/sudo firecfg
 rm -rf ~/.local/share/applications/*
-su -c 'rm -rf ~/.local/share/applications/*' "$VIRTUSER"
-su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
-su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
+doas su -c 'rm -rf ~/.local/share/applications/*' "$VIRTUSER"
+doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
+doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
 
 # Enable systemd services
 pacman -Qq "iptables" &&
