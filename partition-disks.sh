@@ -147,6 +147,7 @@ btrfs subvolume create /mnt/@var_lib_libvirt
 btrfs subvolume create /mnt/@var_lib_mysql
 btrfs subvolume create /mnt/@var_log
 btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@share
 btrfs subvolume create /mnt/@snapshots
 
 # Mount volumes
@@ -167,6 +168,7 @@ mkdir /mnt/var &&
         mkdir /mnt/var/log
     }
 mkdir /mnt/home
+mkdir /mnt/share
 mkdir /mnt/.snapshots
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
@@ -174,11 +176,13 @@ mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,sub
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/mysql
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/log
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/home
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/share
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/md1_crypt /mnt/.snapshots
 mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
 mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
 mount -o noexec,nodev,nosuid /dev/mapper/md0_crypt /mnt/boot
 chmod 775 /mnt/var/games
+chmod 755 /mnt/share
 
 # Set SSD state to "frozen" after sleep
 mkdir -p /mnt/usr/lib/systemd/system-sleep

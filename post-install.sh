@@ -23,7 +23,7 @@ GUESTUSER="<INSERT_GUESTUSER>"
 /dot-files.sh setup
 doas su -lc '/dot-files.sh setup' "$VIRTUSER"
 doas su -lc '/dot-files.sh setup' "$HOMEUSER"
-doas su -lc '/dot-files.sh setup' "$GUESTUSER"
+doas su -lc "/dot-files.sh setup-guest $GUESTUSER" "$GUESTUSER"
 
 # Configure clock
 doas timedatectl set-ntp true
