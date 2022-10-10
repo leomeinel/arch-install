@@ -76,10 +76,10 @@ chmod 644 /etc/NetworkManager/conf.d/wifi_rand_mac.conf
     echo '#!/bin/sh'
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
-    echo "su -c '/usr/bin/firecfg --fix' $SYSUSER"
-    echo "su -c '/usr/bin/firecfg --fix' $VIRTUSER"
-    echo "su -c '/usr/bin/firecfg --fix' $HOMEUSER"
-    echo "su -c '/usr/bin/firecfg --fix' $GUESTUSER"
+    echo "su -c 'rm -rf ~/.local/share/applications/*' $SYSUSER"
+    echo "su -c 'rm -rf ~/.local/share/applications/*' $VIRTUSER"
+    echo "su -c 'rm -rf ~/.local/share/applications/*' $HOMEUSER"
+    echo "su -c 'rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
 ### Add hooks for nvidia
