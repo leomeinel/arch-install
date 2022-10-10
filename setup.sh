@@ -73,13 +73,14 @@ chmod -c 0400 /etc/doas.conf
 chmod 644 /etc/NetworkManager/conf.d/wifi_rand_mac.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
+/usr/bin/firecfg >/dev/null 2>&1
     echo '#!/bin/sh'
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
-    echo "su -c 'rm -rf ~/.local/share/applications/*' $SYSUSER"
-    echo "su -c 'rm -rf ~/.local/share/applications/*' $VIRTUSER"
-    echo "su -c 'rm -rf ~/.local/share/applications/*' $HOMEUSER"
-    echo "su -c 'rm -rf ~/.local/share/applications/*' $GUESTUSER"
+    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $SYSUSER"
+    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $VIRTUSER"
+    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $HOMEUSER"
+    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
 ### Add hooks for nvidia
