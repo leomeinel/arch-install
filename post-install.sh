@@ -220,7 +220,7 @@ doas su -lc '/dot-files.sh vscodium' "$HOMEUSER"
 doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure firejail
-doas sed -i 's/^dnsmasq/#dnsmasq/;s/^ktorrent/#ktorrent/;s/^spectacle/#spectacle/' /etc/firejail/firecfg.config
+doas sed -i 's/^dnsmasq/#dnsmasq #custom/;s/^ktorrent/#ktorrent #custom/;s/^spectacle/#spectacle #custom/;s/^vscodium/#vscodium #custom/' /etc/firejail/firecfg.config
 /usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 /usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
 /usr/bin/sudo firecfg
