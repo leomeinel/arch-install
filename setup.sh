@@ -129,8 +129,8 @@ chmod 644 /etc/systemd/zram-generator.conf
 ## Configure /etc/sysctl.d
 chmod 755 /etc/sysctl.d
 chmod 644 /etc/sysctl.d/*
-## Configure /etc/firejail/spectacle.local
-chmod 644 /etc/firejail/spectacle.local
+## Configure /etc/firejail/whitelist-var-common.local
+chmod 644 /etc/firejail/whitelist-var-common.local
 ## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 
