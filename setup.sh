@@ -73,7 +73,6 @@ chmod -c 0400 /etc/doas.conf
 chmod 644 /etc/NetworkManager/conf.d/wifi_rand_mac.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
-/usr/bin/firecfg >/dev/null 2>&1
     echo '#!/bin/sh'
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
