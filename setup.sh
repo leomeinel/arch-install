@@ -129,8 +129,8 @@ chmod 644 /etc/systemd/zram-generator.conf
 ## Configure /etc/sysctl.d
 chmod 755 /etc/sysctl.d
 chmod 644 /etc/sysctl.d/*
-## Configure /etc/firejail/whitelist-var-common.local
-chmod 644 /etc/firejail/whitelist-var-common.local
+## Configure /etc/firejail/whitelist-common.local
+chmod 644 /etc/firejail/whitelist-common.local
 ## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 
@@ -168,8 +168,9 @@ chmod -R 755 /usr/share/wallpapers/Custom
 chmod 644 /usr/share/wallpapers/Custom/content/*
 
 # Add screenshot folder to /usr/share/screenshots/
-mkdir /var/share/screenshots
-chmod -R 777 /var/share/screenshots
+mkdir /share/screenshots
+chmod 755 /share
+chmod 777 /share/screenshots
 
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
 umount /.snapshots
