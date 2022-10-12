@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-# File: partition-disks.sh
+# File: prepare.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2022 Leopold Meinel & contributors
@@ -210,28 +210,28 @@ sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#N
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
-    echo "intel-ucode" >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+    echo "intel-ucode" >>/root/arch-install/pkgs-prepare.txt
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
-    echo "amd-ucode" >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+    echo "amd-ucode" >>/root/arch-install/pkgs-prepare.txt
 lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
     {
         echo "egl-wayland"
         echo "nvidia-dkms"
-    } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+    } >>/root/arch-install/pkgs-prepare.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
     {
         echo "libva-mesa-driver"
         echo "mesa-vdpau"
         echo "vulkan-radeon"
         echo "xf86-video-amdgpu"
-    } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+    } >>/root/arch-install/pkgs-prepare.txt
 lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
     {
         echo "intel-media-driver"
         echo "vulkan-intel"
         echo "xf86-video-intel"
-    } >>/root/mdadm-encrypted-btrfs/packages_partition-disks.txt
-pacstrap /mnt - </root/mdadm-encrypted-btrfs/packages_partition-disks.txt
+    } >>/root/arch-install/pkgs-prepare.txt
+pacstrap /mnt - </root/arch-install/pkgs-prepare.txt
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab
@@ -242,9 +242,9 @@ genfstab -U /mnt >>/mnt/etc/fstab
 } >>/mnt/etc/fstab
 sed -i '/\/.efi.bak.*vfat/s/rw/rw,noauto/' /mnt/etc/fstab
 
-# Prepare /mnt/git/mdadm-encrypted-btrfs/setup.sh
-git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git /mnt/git/mdadm-encrypted-btrfs
-chmod +x /mnt/git/mdadm-encrypted-btrfs/setup.sh
+# Prepare /mnt/git/arch-install/setup.sh
+git clone https://github.com/LeoMeinel/arch-install.git /mnt/git/arch-install
+chmod +x /mnt/git/arch-install/setup.sh
 
 # Remove repo
-rm -rf /root/mdadm-encrypted-btrfs
+rm -rf /root/arch-install

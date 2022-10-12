@@ -1,4 +1,4 @@
-# mdadm-encrypted-btrfs
+# arch-install
 
 Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
@@ -8,7 +8,7 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 :information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
 
-:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/mdadm-encrypted-btrfs/blob/main/secure_boot_virt-manager.md) for virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
 
 :warning: | All data on both disks will be wiped!
 
@@ -20,11 +20,11 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 ```sh
 pacman -Sy git
-git clone https://github.com/LeoMeinel/mdadm-encrypted-btrfs.git
-chmod +x /root/mdadm-encrypted-btrfs/partition-disks.sh
-/root/mdadm-encrypted-btrfs/partition-disks.sh
+git clone https://github.com/LeoMeinel/arch-install.git
+chmod +x /root/arch-install/prepare.sh
+/root/arch-install/prepare.sh
 arch-chroot /mnt
-/git/mdadm-encrypted-btrfs/setup.sh
+/git/arch-install/setup.sh
 exit
 umount -AR /mnt
 reboot
@@ -32,13 +32,13 @@ reboot
 
 :information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-:information_source: | Set variables before `partition-disks.sh` using `vim /root/<...>/partition-disks.sh`.
+:information_source: | Set variables before `prepare.sh` using `vim /root/<...>/prepare.sh`.
 
-:information_source: | Set variables after `partition-disks.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post-install.sh`.
+:information_source: | Set variables after `prepare.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post.sh`.
 
 ```sh
-chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
-/root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
+chmod +x /root/arch-install/erase-volumes-before-v2.sh
+/root/arch-install/erase-volumes-before-v2.sh
 ```
 
 ### _Low GRUBRESOLUTION for VM_
@@ -60,7 +60,7 @@ chmod +x /root/mdadm-encrypted-btrfs/erase-volumes-before-v2.sh
 :information_source: | Log into sysuser account and run:
 
 ```sh
-~/post-install.sh
+~/post.sh
 reboot
 ```
 
