@@ -36,11 +36,6 @@ reboot
 
 :information_source: | Set variables after `prepare.sh` using `nvim /git/<...>/setup.sh` and `nvim ~/post.sh`.
 
-```sh
-chmod +x /root/arch-install/erase-volumes-before-v2.sh
-/root/arch-install/erase-volumes-before-v2.sh
-```
-
 ### _Low GRUBRESOLUTION for VM_
 
 :bulb: | _You should set a low GRUBRESOLUTION for Virtual Machines._
