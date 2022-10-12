@@ -98,7 +98,7 @@ doas iptables -A INPUT -p tcp -m state --state NEW -m tcpmss ! --mss 536:65535 -
 doas iptables -A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
 ### Drop ICMP
 doas iptables -A INPUT -p icmp -j DROP
-### Allow default ktorrent ports (Forard them if not using UPnP)
+### Allow default ktorrent ports (Forward them if not using UPnP)
 doas iptables -A INPUT -p tcp --dport 6881 -j ACCEPT
 doas iptables -A INPUT -p udp --dport 7881 -j ACCEPT
 doas iptables -A INPUT -p udp --dport 8881 -j ACCEPT
@@ -163,7 +163,7 @@ doas ip6tables -A INPUT -p tcp -m state --state NEW -m tcpmss ! --mss 536:65535 
 doas ip6tables -A INPUT -s ::1/128 ! -i lo -j DROP
 ### Drop ICMP
 doas ip6tables -A INPUT -p icmp -j DROP
-### Allow default ktorrent ports (Forard them if not using UPnP)
+### Allow default ktorrent ports (Forward them if not using UPnP)
 doas ip6tables -A INPUT -p tcp --dport 6881 -j ACCEPT
 doas ip6tables -A INPUT -p udp --dport 7881 -j ACCEPT
 doas ip6tables -A INPUT -p udp --dport 8881 -j ACCEPT
