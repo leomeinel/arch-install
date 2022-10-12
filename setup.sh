@@ -63,10 +63,10 @@ pacman-key --init
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 
 # Install packages
-pacman -Syu --noprogressbar --noconfirm --needed - </git/mdadm-encrypted-btrfs/packages_setup.txt
+pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup.txt
 
-# rsync /git/mdadm-encrypted-btrfs/etc/ to /etc
-rsync -rq /git/mdadm-encrypted-btrfs/etc/ /etc
+# rsync /git/arch-install/etc/ to /etc
+rsync -rq /git/arch-install/etc/ /etc
 ## opendoas
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
@@ -145,9 +145,9 @@ chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 ## However those scripts use different scripts/commands so it is very hard to tell which should actually be allowed.
 ## FUTURE GOAL: REPLACE sudo WITH doas
 echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" >/etc/sudoers.d/sudo
-## Set up post-install.sh
-chmod +x /git/mdadm-encrypted-btrfs/sysuser-setup.sh
-su -c '/git/mdadm-encrypted-btrfs/sysuser-setup.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
+## Set up post.sh
+chmod +x /git/arch-install/sysuser.sh
+su -c '/git/arch-install/sysuser.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
 echo "%sudo ALL=(ALL:ALL) ALL" >/etc/sudoers.d/sudo
 
 # Configure /etc/crypttab
@@ -245,7 +245,7 @@ chmod 644 /etc/cryptboot.conf
 } >>/etc/ssh/sshd_config
 
 # Configure /usr
-rsync -rq /git/mdadm-encrypted-btrfs/usr/ /usr
+rsync -rq /git/arch-install/usr/ /usr
 mv /git/cryptboot/grub-install /usr/local/bin/
 mv /git/cryptboot/cryptboot /usr/local/bin/
 mv /git/cryptboot/cryptboot-efikeys /usr/local/bin/

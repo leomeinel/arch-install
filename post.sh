@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-# File: post-install.sh
+# File: post.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2022 Leopold Meinel & contributors
@@ -206,7 +206,7 @@ doas sed -i 's/^#RemoveMake/RemoveMake/;s/^#CleanAfter/CleanAfter/;s/^#SudoLoop.
 doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/paru.conf'
 
 # Install packages
-paru -S --noprogressbar --noconfirm --needed - <~/packages_post-install.txt
+paru -S --noprogressbar --noconfirm --needed - <~/pkgs-post.txt
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
 
@@ -247,5 +247,5 @@ rm -rf ~/git
 
 # Remove scripts
 doas rm -f /dot-files.sh
-rm -f ~/packages_post-install.txt
-rm -f ~/post-install.sh
+rm -f ~/pkgs-post.txt
+rm -f ~/post.sh

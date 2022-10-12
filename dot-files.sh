@@ -26,7 +26,7 @@ setup-guest)
     sed -i "s/defaultSaveLocation=.*/defaultSaveLocation=\/home\/$2\/Documents\/Pictures\/screenshots/" ~/.config/spectaclerc
     ;;
 vscodium)
-    chmod +x ~/dot-files/vscodium-extensions.sh
-    ~/dot-files/vscodium-extensions.sh
+    chmod +x ~/dot-files/exts-code.sh
+    ~/dot-files/exts-code.sh
     ;;
 esac
