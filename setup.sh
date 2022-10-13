@@ -314,7 +314,7 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 chown :games /var/games
 
 # Configure /share
-# Add screenshot folder to /share/screenshots
+# Configure /share/screenshots
 mkdir /share/screenshots
 chmod 1775 /share/screenshots
 chown -R :share /share
