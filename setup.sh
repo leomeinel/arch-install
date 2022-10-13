@@ -54,7 +54,8 @@ passwd "$GUESTUSER"
     echo "--latest 20"
     echo "--sort rate"
 } >/etc/xdg/reflector/reflector.conf
-chmod -R 755 /etc/xdg
+chmod 755 /etc/xdg
+chmod 755 /etc/xdg/reflector
 chmod 644 /etc/xdg/reflector/reflector.conf
 sed -i 's/^#PACMAN_AUTH=.*/PACMAN_AUTH=(doas)/' /etc/makepkg.conf
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
@@ -119,11 +120,12 @@ pacman -Qq "nvidia-dkms" &&
         } >/etc/pacman.d/hooks/scripts/90-nvidia-gen-mkinitcpio.sh
         sed -i '/Target = linux-zen/a Target = nvidia-dkms' /etc/pacman.d/hooks/95-upgrade-grub.hook
     }
-chmod -R 755 /etc/pacman.d/hooks
+chmod 755 /etc/pacman.d/hooks
+chmod 755 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 ## Configure /etc/sddm.conf.d/kde_settings.conf
-chmod -R 755 /etc/sddm.conf.d
+chmod 755 /etc/sddm.conf.d
 chmod 644 /etc/sddm.conf.d/kde_settings.conf
 ## Configure /etc/systemd/zram-generator.conf
 chmod 644 /etc/systemd/zram-generator.conf
@@ -308,7 +310,8 @@ chown :sudo /share/.snapshots
 mkdir -p /usr/share/wallpapers/Custom/content
 git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
 mv /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
-chmod -R 755 /usr/share/wallpapers/Custom
+chmod 755 /usr/share/wallpapers/Custom
+chmod 755 /usr/share/wallpapers/Custom/content
 chmod 644 /usr/share/wallpapers/Custom/content/*
 
 # Configure /var
