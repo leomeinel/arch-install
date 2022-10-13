@@ -82,7 +82,7 @@ chmod 644 /etc/NetworkManager/conf.d/wifi-rand-mac.conf
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
-### Add hooks for nvidia
+### Configure hooks for nvidia
 pacman -Qq "nvidia-dkms" &&
     {
         {
@@ -218,12 +218,12 @@ echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 ## Configure /etc/mkinitcpio.conf
 sed -i 's/^FILES=.*/FILES=(\/etc\/luks\/keys\/md0_crypt.key)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
-### If on nvidia add nvidia nvidia_modeset nvidia_uvm nvidia_drm
+### If on nvidia enable modules nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
     sed -i '/^MODULES=.*/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 ## Configure /etc/default/grub
 sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/etc\/luks\/keys\/md0_crypt.key cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/etc\/luks\/keys\/md0_crypt.key cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
-### If on nvidia add nvidia_drm.modeset=1 and set linux as default kernel
+### If on nvidia set kernel parameters nvidia_drm.modeset=1 and set linux as default kernel
 pacman -Qq "nvidia-dkms" &&
     sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/;/^GRUB_CMDLINE_LINUX=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
 pacman -Qq "intel-ucode" &&
@@ -254,7 +254,7 @@ chmod 755 /usr/local/bin/vi
 chmod 755 /usr/local/bin/vim
 
 # Configure /usr
-## Configure /usr/share/snapper/config-templates/default and add snapper configs
+## Configure /usr/share/snapper/config-templates/default and configure snapper configs
 umount /.snapshots
 rm -rf /.snapshots
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/root
@@ -302,7 +302,7 @@ chown :sudo /home/.snapshots
 chmod 750 /share/.snapshots
 chmod a+rx /share/.snapshots
 chown :sudo /share/.snapshots
-## Add wallpapers to /usr/share/wallpapers/Custom/content
+## Configure /usr/share/wallpapers/Custom/content
 mkdir -p /usr/share/wallpapers/Custom/content
 git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
 mv /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
