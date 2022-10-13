@@ -45,7 +45,7 @@ passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
 passwd "$GUESTUSER"
 
-# Setup pacman
+# Configure pacman
 ## Configure /etc/pacman.conf , /etc/makepkg.conf and /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
