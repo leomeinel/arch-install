@@ -65,6 +65,4 @@ reboot
 
 ### Do this for every user account
 
-:information_source: | Set `chrome://flags/#extension-mime-request-handling` in `ungoogled-chromium` to `Always prompt for install`.
-
 :information_source: | Change Wallpaper by `right-clicking` your `Desktop`.
