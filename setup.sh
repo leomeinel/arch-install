@@ -54,8 +54,6 @@ passwd "$GUESTUSER"
     echo "--latest 20"
     echo "--sort rate"
 } >/etc/xdg/reflector/reflector.conf
-chmod 755 /etc/xdg
-chmod 755 /etc/xdg/reflector
 chmod 644 /etc/xdg/reflector/reflector.conf
 sed -i 's/^#PACMAN_AUTH=.*/PACMAN_AUTH=(doas)/' /etc/makepkg.conf
 sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
