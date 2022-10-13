@@ -170,7 +170,7 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 
 # Add screenshot folder to /usr/share/screenshots/
 mkdir /share/screenshots
-chmod 3775 /share/screenshots
+chmod 1775 /share/screenshots
 chown -R :share /share
 
 # Configure /usr/share/snapper/config-templates/default and add snapper configs
