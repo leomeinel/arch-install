@@ -248,5 +248,7 @@ rm -rf ~/git
 
 # Remove scripts
 doas rm -f /dot-files.sh
+doas rm -f ~/.bash_history
+doas rm -f /root/.bash_history
 rm -f ~/pkgs-post.txt
 rm -f ~/post.sh
