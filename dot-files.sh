@@ -25,6 +25,11 @@ setup-guest)
     ~/dot-files/setup.sh
     sed -i "s/defaultSaveLocation=.*/defaultSaveLocation=\/home\/$2\/Documents\/Pictures\/screenshots/" ~/.config/spectaclerc
     ;;
+setup-root)
+    git clone https://github.com/LeoMeinel/dot-files.git ~/dot-files
+    chmod +x ~/dot-files/setup-root.sh
+    ~/dot-files/setup-root.sh
+    ;;
 vscodium)
     chmod +x ~/dot-files/exts-code.sh
     ~/dot-files/exts-code.sh
