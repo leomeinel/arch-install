@@ -75,10 +75,8 @@ lzop
 mailcap
 man-db
 mariadb
-mathjax2
 mpv
 mtools
-notepadqq
 noto-fonts
 nss-mdns
 ntfs-3g
