@@ -40,7 +40,7 @@ reboot
 
 :bulb: | _For a VM set a low GRUBRESOLUTION._
 
-:bulb: | _Otherwise there might be inconveniences._
+:bulb: | _Expect inconveniences otherwise._
 
 :bulb: | _"1280x720" should be reasonable._
 
