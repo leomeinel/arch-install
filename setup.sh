@@ -138,7 +138,7 @@ chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 ## Run sysuser.sh
 chmod +x /git/arch-install/sysuser.sh
 su -c '/git/arch-install/sysuser.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
-mv /git/arch-install/dot-files.sh /
+cp /git/arch-install/dot-files.sh /
 chmod 777 /dot-files.sh
 
 # Configure /etc
@@ -173,7 +173,7 @@ echo "$HOSTNAME" >/etc/hostname
 } >>/etc/fwupd/uefi_capsule.conf
 ## Configure /etc/cryptboot.conf
 git clone https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
-mv /git/cryptboot/cryptboot.conf /etc/
+cp /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 ## Configure /etc/ssh/sshd_config
 {
@@ -224,9 +224,9 @@ pacman -Qq "intel-ucode" &&
 
 # Setup /usr
 rsync -rq /git/arch-install/usr/ /usr
-mv /git/cryptboot/grub-install /usr/local/bin/
-mv /git/cryptboot/cryptboot /usr/local/bin/
-mv /git/cryptboot/cryptboot-efikeys /usr/local/bin/
+cp /git/cryptboot/grub-install /usr/local/bin/
+cp /git/cryptboot/cryptboot /usr/local/bin/
+cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
 ## Configure /usr/share/gruvbox/gruvbox.yml
 chmod 755 /usr/share/gruvbox
 chmod 644 /usr/share/gruvbox/gruvbox.yml
@@ -298,7 +298,7 @@ chown :wheel /share/.snapshots
 ## Configure /usr/share/wallpapers/Custom/content
 mkdir -p /usr/share/wallpapers/Custom/content
 git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
-mv /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
+cp /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
 chmod 755 /usr/share/wallpapers/Custom
 chmod 755 /usr/share/wallpapers/Custom/content
 chmod 644 /usr/share/wallpapers/Custom/content/*
