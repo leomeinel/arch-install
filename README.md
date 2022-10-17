@@ -38,9 +38,9 @@ reboot
 
 ### _Low GRUBRESOLUTION for VM_
 
-:bulb: | _You should set a low GRUBRESOLUTION for Virtual Machines._
+:bulb: | _For a VM set a low GRUBRESOLUTION._
 
-:bulb: | _Otherwise there might be inconveniences during Post-installation._
+:bulb: | _Otherwise there might be inconveniences._
 
 :bulb: | _For example "1280x720" on a "1920x1080" screen._
 
