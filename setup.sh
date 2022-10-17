@@ -153,7 +153,22 @@ MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/;s/^#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/;s/^#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/;s/^#nl_NL.UTF-8 UTF-8/nl_NL.UTF-8 UTF-8/' /etc/locale.gen
-echo "LANG=en_US.UTF-8" >/etc/locale.conf
+{
+    echo 'LANG=en_US.UTF-8'
+    echo 'LANGUAGE=en_US.UTF-8'
+    echo 'LC_CTYPE=en_US.UTF-8'
+    echo 'LC_NUMERIC=nl_NL.UTF-8'
+    echo 'LC_TIME=nl_NL.UTF-8'
+    echo 'LC_COLLATE=en_US.UTF-8'
+    echo 'LC_MONETARY=nl_NL.UTF-8'
+    echo 'LC_MESSAGES=en_US.UTF-8'
+    echo 'LC_PAPER=nl_NL.UTF-8'
+    echo 'LC_NAME=nl_NL.UTF-8'
+    echo 'LC_ADDRESS=nl_NL.UTF-8'
+    echo 'LC_TELEPHONE=nl_NL.UTF-8'
+    echo 'LC_MEASUREMENT=nl_NL.UTF-8'
+    echo 'LC_IDENTIFICATION=nl_NL.UTF-8'
+} >/etc/locale.conf
 locale-gen
 echo "KEYMAP=$KEYMAP" >/etc/vconsole.conf
 echo "$HOSTNAME" >/etc/hostname
