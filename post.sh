@@ -212,7 +212,7 @@ paru --noprogressbar --noconfirm -Syu
 paru -Scc
 
 # Clean firecfg
-/usr/bin/sudo firecfg --clean
+doas firecfg --clean
 
 # Configure dot-files (vscodium)
 /dot-files.sh vscodium
@@ -222,9 +222,9 @@ doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure firejail
 doas sed -i 's/^dnsmasq/#dnsmasq #custom/;s/^ktorrent/#ktorrent #custom/;s/^spectacle/#spectacle #custom/;s/^vscodium/#vscodium #custom/' /etc/firejail/firecfg.config
-/usr/bin/sudo firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
-/usr/bin/sudo apparmor_parser -r /etc/apparmor.d/firejail-default
-/usr/bin/sudo firecfg
+doas firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
+doas apparmor_parser -r /etc/apparmor.d/firejail-default
+doas firecfg
 rm -rf ~/.local/share/applications/*
 doas su -c 'rm -rf ~/.local/share/applications/*' "$VIRTUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"

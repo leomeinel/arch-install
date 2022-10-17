@@ -30,8 +30,6 @@ git clone https://github.com/LeoMeinel/arch-install.git ~/git/arch-install
 mv ~/git/arch-install/pkgs-post.txt ~/
 mv ~/git/arch-install/post.sh ~/
 sed -i 's/<INSERT_SYSUSER>/'"$1"'/;s/<INSERT_VIRTUSER>/'"$2"'/;s/<INSERT_HOMEUSER>/'"$3"'/;s/<INSERT_GUESTUSER>/'"$4"'/' ~/post.sh
-/usr/bin/sudo mv ~/git/arch-install/dot-files.sh /
-/usr/bin/sudo chmod 777 /dot-files.sh
 chmod +x ~/post.sh
 
 # Remove repo
