@@ -28,9 +28,8 @@ sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r audit
 groupadd -r libvirt
 groupadd share
-groupadd -r doas
 groupadd -r usbguard
-useradd -ms /bin/bash -G audit,share,doas,usbguard,wheel "$SYSUSER"
+useradd -ms /bin/bash -G adm,audit,log,rfkill,share,sys,systemd-journal,usbguard,wheel "$SYSUSER"
 useradd -ms /bin/bash -G share,libvirt "$VIRTUSER"
 useradd -ms /bin/bash -G share "$HOMEUSER"
 useradd -ms /bin/bash "$GUESTUSER"
@@ -66,7 +65,7 @@ pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup
 
 # Setup /etc
 rsync -rq /git/arch-install/etc/ /etc
-## opendoas
+## doas
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
 ## Configure random MAC address for WiFi
