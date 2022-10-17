@@ -42,7 +42,7 @@ reboot
 
 :bulb: | _Otherwise there might be inconveniences._
 
-:bulb: | _For example "1280x720" on a "1920x1080" screen._
+:bulb: | _"1280x720" should be reasonable._
 
 ## Post-installation (tty)
 
