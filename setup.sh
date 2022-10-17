@@ -138,7 +138,7 @@ chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 ## Run sysuser.sh
 chmod +x /git/arch-install/sysuser.sh
 su -c '/git/arch-install/sysuser.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
-mv /git/dot-files.sh /
+mv /git/arch-install/dot-files.sh /
 chmod 777 /dot-files.sh
 
 # Configure /etc
