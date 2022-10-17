@@ -27,7 +27,7 @@ set -eu
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r audit
 groupadd -r libvirt
-groupadd share
+groupadd -r share
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,rfkill,share,sys,systemd-journal,usbguard,wheel "$SYSUSER"
 useradd -ms /bin/bash -G share,libvirt "$VIRTUSER"
