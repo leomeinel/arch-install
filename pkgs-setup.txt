@@ -114,6 +114,7 @@ sbsigntools
 screen
 sddm
 sddm-kcm
+signal-desktop
 simple-scan
 snapper
 spectacle
