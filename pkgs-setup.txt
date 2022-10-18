@@ -87,6 +87,7 @@ oxipng
 p7zip
 pacman-contrib
 pam-u2f
+pdftk
 pipewire
 pipewire-alsa
 pipewire-jack
