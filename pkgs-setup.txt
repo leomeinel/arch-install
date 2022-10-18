@@ -87,6 +87,7 @@ oxipng
 p7zip
 pacman-contrib
 pam-u2f
+perl-rename
 pdftk
 pipewire
 pipewire-alsa
