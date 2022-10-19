@@ -76,7 +76,6 @@ lzop
 mailcap
 man-db
 mariadb
-mpv
 mtools
 noto-fonts
 nss-mdns
