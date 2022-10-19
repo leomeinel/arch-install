@@ -11,6 +11,7 @@ bluedevil
 bluez
 bluez-utils
 cantarell-fonts
+celluloid
 cups
 devtools
 dnsmasq
