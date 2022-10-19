@@ -15,4 +15,5 @@ mesa
 neovim
 opendoas
 reflector
+rsync
 wireless-regdb

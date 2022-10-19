@@ -23,7 +23,7 @@ GRUBRESOLUTION="2560x1440"
 # Fail on error
 set -eu
 
-# Add groups and users
+# Add groups & users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r audit
 groupadd -r libvirt
@@ -44,31 +44,16 @@ passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
 passwd "$GUESTUSER"
 
-# Configure pacman
-## Configure /etc/pacman.conf , /etc/makepkg.conf and /etc/xdg/reflector/reflector.conf
-{
-    echo "--save /etc/pacman.d/mirrorlist"
-    echo "--country $MIRRORCOUNTRIES"
-    echo "--protocol https"
-    echo "--latest 20"
-    echo "--sort rate"
-} >/etc/xdg/reflector/reflector.conf
-chmod 644 /etc/xdg/reflector/reflector.conf
-sed -i 's/^#PACMAN_AUTH=.*/PACMAN_AUTH=(doas)/' /etc/makepkg.conf
-sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
-pacman-key --init
-## Update mirrors
-reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
-
-# Install packages
-pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup.txt
-
 # Setup /etc
 rsync -rq /git/arch-install/etc/ /etc
-## doas
+## Configure locale in /etc/locale.gen & /etc/locale.conf
+sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/;s/^#en_DK.UTF-8 UTF-8/en_DK.UTF-8 UTF-8/;s/^#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/;s/^#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/;s/^#nl_NL.UTF-8 UTF-8/nl_NL.UTF-8 UTF-8/' /etc/locale.gen
+chmod 644 /etc/locale.conf
+locale-gen
+## Configure /etc/doas.conf
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
-## Configure random MAC address for WiFi
+## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/wifi-rand-mac.conf 
 chmod 644 /etc/NetworkManager/conf.d/wifi-rand-mac.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
@@ -81,7 +66,7 @@ chmod 644 /etc/NetworkManager/conf.d/wifi-rand-mac.conf
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
-### Configure hooks for nvidia
+### Configure hooks for nvidia in /etc/pacman.d/hooks/
 pacman -Qq "nvidia-dkms" &&
     {
         {
@@ -133,6 +118,23 @@ chmod 644 /etc/sysctl.d/*
 chmod 644 /etc/firejail/whitelist-common.local
 ## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
+## Configure /etc/pacman.conf , /etc/makepkg.conf & /etc/xdg/reflector/reflector.conf
+{
+    echo "--save /etc/pacman.d/mirrorlist"
+    echo "--country $MIRRORCOUNTRIES"
+    echo "--protocol https"
+    echo "--latest 20"
+    echo "--sort rate"
+} >/etc/xdg/reflector/reflector.conf
+chmod 644 /etc/xdg/reflector/reflector.conf
+sed -i 's/^#PACMAN_AUTH=.*/PACMAN_AUTH=(doas)/' /etc/makepkg.conf
+sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
+pacman-key --init
+## Update mirrors
+reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
+
+# Install packages
+pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup.txt
 
 # Configure $SYSUSER
 ## Run sysuser.sh
@@ -149,27 +151,9 @@ MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
     echo "md0_crypt UUID=$MD0UUID /etc/luks/keys/md0_crypt.key luks,key-slot=1"
     echo "md1_crypt UUID=$MD1UUID none luks,key-slot=0"
 } >/etc/crypttab
-## Configure /etc/localtime, /etc/locale.conf, /etc/vconsole.conf, /etc/hostname and /etc/hosts
+## Configure /etc/localtime, /etc/vconsole.conf, /etc/hostname & /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
-sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/;s/^#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/;s/^#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/;s/^#nl_NL.UTF-8 UTF-8/nl_NL.UTF-8 UTF-8/' /etc/locale.gen
-{
-    echo 'LANG=en_US.UTF-8'
-    echo 'LANGUAGE=en_US.UTF-8:en_US:en:C'
-    echo 'LC_CTYPE=en_US.UTF-8'
-    echo 'LC_COLLATE=en_US.UTF-8'
-    echo 'LC_MESSAGES=en_US.UTF-8'
-    echo 'LC_NUMERIC=nl_NL.UTF-8'
-    echo 'LC_TIME=nl_NL.UTF-8'
-    echo 'LC_MONETARY=nl_NL.UTF-8'
-    echo 'LC_PAPER=nl_NL.UTF-8'
-    echo 'LC_NAME=nl_NL.UTF-8'
-    echo 'LC_ADDRESS=nl_NL.UTF-8'
-    echo 'LC_TELEPHONE=nl_NL.UTF-8'
-    echo 'LC_MEASUREMENT=nl_NL.UTF-8'
-    echo 'LC_IDENTIFICATION=nl_NL.UTF-8'
-} >/etc/locale.conf
-locale-gen
 echo "KEYMAP=$KEYMAP" >/etc/vconsole.conf
 echo "$HOSTNAME" >/etc/hostname
 {
@@ -202,10 +186,10 @@ chmod 644 /etc/cryptboot.conf
 sed -i 's/^TEMPLATES=.*/TEMPLATES=Documents\/Templates/;s/^PUBLICSHARE=.*/PUBLICSHARE=Documents\/Public/;s/^DESKTOP=.*/DESKTOP=Documents\/Desktop/;s/^MUSIC=.*/MUSIC=Documents\/Music/;s/^PICTURES=.*/PICTURES=Documents\/Pictures/;s/^VIDEOS=.*/VIDEOS=Documents\/Videos/' /etc/xdg/user-dirs.defaults
 ## Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
-## Configure /etc/usbguard/usbguard-daemon.conf and /etc/usbguard/rules.conf
+## Configure /etc/usbguard/usbguard-daemon.conf & /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
-## Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su and /etc/pam.d/su-l
+## Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su & /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
 sed -i 's/^#.*dir.*=.*/dir = \/var\/lib\/faillock/' /etc/security/faillock.conf
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
@@ -262,7 +246,7 @@ chmod 755 /usr/local/bin/vi
 chmod 755 /usr/local/bin/vim
 
 # Configure /usr
-## Configure /usr/share/snapper/config-templates/default and configure snapper configs
+## Configure /usr/share/snapper/config-templates/default & configure snapper configs
 umount /.snapshots
 rm -rf /.snapshots
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/root
@@ -359,7 +343,7 @@ pacman -Qq "reflector" &&
 pacman -Qq "usbguard" &&
     systemctl enable usbguard.service
 
-# Setup /boot and /efi
+# Setup /boot & /efi
 mkinitcpio -P
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg

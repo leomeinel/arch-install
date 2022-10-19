@@ -87,8 +87,8 @@ oxipng
 p7zip
 pacman-contrib
 pam-u2f
-perl-rename
 pdftk
+perl-rename
 pipewire
 pipewire-alsa
 pipewire-jack
@@ -110,7 +110,6 @@ qemu-desktop
 qt5-imageformats
 quilt
 ripgrep
-rsync
 rustup
 sbsigntools
 screen

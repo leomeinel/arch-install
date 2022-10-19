@@ -59,7 +59,7 @@ YES)
     ;;
 esac
 
-# Detect and close old crypt volumes
+# Detect & close old crypt volumes
 if lsblk -rno TYPE | grep -q "crypt"; then
     OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
     OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
@@ -67,7 +67,7 @@ if lsblk -rno TYPE | grep -q "crypt"; then
     cryptsetup close "$OLD_CRYPT_1"
 fi
 
-# Detect and erase old crypt/raid1 volumes
+# Detect & erase old crypt/raid1 volumes
 if lsblk -rno TYPE | grep -q "raid1"; then
     DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
     DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
@@ -91,11 +91,11 @@ if lsblk -rno TYPE | grep -q "raid1"; then
     mdadm --zero-superblock "$DISK2P3"
 fi
 
-# Load $KEYMAP and set time
+# Load $KEYMAP & set time
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
 
-# Erase and partition disks
+# Erase & partition disks
 sgdisk -Z "$DISK1"
 sgdisk -Z "$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
@@ -105,7 +105,7 @@ sgdisk -n 0:0:+1G -t 1:fd00 "$DISK2"
 sgdisk -n 0:0:0 -t 1:fd00 "$DISK1"
 sgdisk -n 0:0:0 -t 1:fd00 "$DISK2"
 
-# Detect partitions and set variables accordingly
+# Detect partitions & set variables accordingly
 DISK1P1="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"

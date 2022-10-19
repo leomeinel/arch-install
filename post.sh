@@ -50,7 +50,7 @@ doas localectl set-x11-keymap "$KEYLAYOUT"
 # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security_guide/sect-security_guide-firewalls-malicious_software_and_spoofed_ip_addresses
 #
 ## ipv4
-### Flush and delete all chains
+### Flush & delete all chains
 doas iptables -F
 doas iptables -X
 ### Set up new chains
@@ -105,7 +105,7 @@ doas iptables -A INPUT -p udp --dport 7881 -j ACCEPT
 doas iptables -A INPUT -p udp --dport 8881 -j ACCEPT
 ### Allow mDNS
 doas iptables -A INPUT -p udp --dport 5353 -j ACCEPT
-### Allow http and https (for wget)
+### Allow http & https (for wget)
 doas iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 doas iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 ### Allow established connections
@@ -115,7 +115,7 @@ doas iptables -P INPUT DROP
 doas iptables -P FORWARD ACCEPT
 doas iptables -P OUTPUT ACCEPT
 ## ipv6
-### Flush and delete all chains
+### Flush & delete all chains
 doas ip6tables -F
 doas ip6tables -X
 ### Set up new chains
@@ -170,7 +170,7 @@ doas ip6tables -A INPUT -p udp --dport 7881 -j ACCEPT
 doas ip6tables -A INPUT -p udp --dport 8881 -j ACCEPT
 ### Allow mDNS
 doas ip6tables -A INPUT -p udp --dport 5353 -j ACCEPT
-### Allow http and https (for wget)
+### Allow http & https (for wget)
 doas ip6tables -A INPUT -p tcp --dport 80 -j ACCEPT
 doas ip6tables -A INPUT -p tcp --dport 443 -j ACCEPT
 ### Allow established connections
