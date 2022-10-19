@@ -47,7 +47,7 @@ passwd "$GUESTUSER"
 # Setup /etc
 rsync -rq /git/arch-install/etc/ /etc
 ## Configure locale in /etc/locale.gen & /etc/locale.conf
-sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/;s/^#en_DK.UTF-8 UTF-8/en_DK.UTF-8 UTF-8/;s/^#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/;s/^#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/;s/^#nl_NL.UTF-8 UTF-8/nl_NL.UTF-8 UTF-8/' /etc/locale.gen
+sed -i 's/^#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/;s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/;s/^#en_DK.UTF-8 UTF-8/en_DK.UTF-8 UTF-8/;s/^#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/;s/^#nl_NL.UTF-8 UTF-8/nl_NL.UTF-8 UTF-8/' /etc/locale.gen
 chmod 644 /etc/locale.conf
 locale-gen
 ## Configure /etc/doas.conf
