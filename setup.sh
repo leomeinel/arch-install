@@ -307,7 +307,6 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 chown :games /var/games
 
 # Configure /share
-# Configure /share/screenshots
 mkdir /share/screenshots
 chmod 1775 /share/screenshots
 chown -R :share /share
