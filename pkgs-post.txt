@@ -1,9 +1,9 @@
-arc-kde-git
+arc-kde
 aspnet-targeting-pack-bin
 dotnet-sdk-bin
 gdlauncher-bin
 librewolf-bin
-macchina
+macchina-bin
 papirus-icon-theme-stripped
 sddm-nordic-theme-git
 snap-pac-grub
