@@ -77,6 +77,7 @@ mailcap
 man-db
 mariadb
 mtools
+nextcloud-client
 noto-fonts
 nss-mdns
 ntfs-3g
