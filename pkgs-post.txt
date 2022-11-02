@@ -1,6 +1,7 @@
 arc-kde
 aspnet-targeting-pack-bin
 dotnet-sdk-bin
+freetube-bin
 gdlauncher-bin
 librewolf-bin
 macchina-bin
