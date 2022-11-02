@@ -308,7 +308,7 @@ chown :games /var/games
 
 # Configure /share
 mkdir /share/screenshots
-chmod 3775 /share/screenshots
+chmod 775 /share/screenshots
 chown -R :share /share
 
 # Set default java
