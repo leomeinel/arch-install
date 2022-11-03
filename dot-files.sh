@@ -19,12 +19,6 @@ setup)
     chmod +x ~/dot-files/setup.sh
     ~/dot-files/setup.sh
     ;;
-setup-guest)
-    git clone https://github.com/LeoMeinel/dot-files.git ~/dot-files
-    chmod +x ~/dot-files/setup.sh
-    ~/dot-files/setup.sh
-    sed -i "s/defaultSaveLocation=.*/defaultSaveLocation=\/home\/$2\/Documents\/Pictures\/screenshots/" ~/.config/spectaclerc
-    ;;
 setup-root)
     git clone https://github.com/LeoMeinel/dot-files.git ~/dot-files
     chmod +x ~/dot-files/setup-root.sh
