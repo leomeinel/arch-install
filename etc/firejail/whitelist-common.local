@@ -1,1 +1,3 @@
 whitelist /share/screenshots
+whitelist /share/Documents
+whitelist /share/Resources
