@@ -113,8 +113,6 @@ chmod 644 /etc/systemd/zram-generator.conf
 ## Configure /etc/sysctl.d
 chmod 755 /etc/sysctl.d
 chmod 644 /etc/sysctl.d/*
-## Configure /etc/firejail/whitelist-common.local
-chmod 644 /etc/firejail/whitelist-common.local
 ## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 ## Configure /etc/pacman.conf , /etc/makepkg.conf & /etc/xdg/reflector/reflector.conf
