@@ -310,7 +310,8 @@ chown :games /var/games
 setfacl -d -m u:root:rwX,g:share:rwX /share
 mkdir /share/screenshots
 chmod 2770 /share/screenshots
-chown -R root:share /share
+chown root:share /share
+chown root:share /share/screenshots
 
 # Set default java
 archlinux-java set java-17-openjdk
