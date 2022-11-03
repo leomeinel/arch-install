@@ -299,14 +299,6 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 ## Configure /var/games
 chown :games /var/games
 
-# Configure /share
-# FIXME: The permissions specified here are pretty much a hack
-setfacl -d -m u:root:rwX,u:"$SYSUSER":rwX,u:"$VIRTUSER":rwX,u:"$HOMEUSER":rwX,g:share:rwX /share
-mkdir /share/screenshots
-chmod 2770 /share/screenshots
-chown root:share /share
-chown root:share /share/screenshots
-
 # Set default java
 archlinux-java set java-17-openjdk
 
