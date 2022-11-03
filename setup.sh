@@ -300,7 +300,8 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 chown :games /var/games
 
 # Configure /share
-setfacl -d -m u:root:rwX,g:share:rwX /share
+# FIXME: The permissions specified here are pretty much a hack
+setfacl -d -m u:root:rwX,u:"$SYSUSER":rwX,u:"$VIRTUSER":rwX,u:"$HOMEUSER":rwX,g:share:rwX /share
 mkdir /share/screenshots
 chmod 2770 /share/screenshots
 chown root:share /share
