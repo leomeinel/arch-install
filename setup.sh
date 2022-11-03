@@ -308,8 +308,8 @@ chown :games /var/games
 
 # Configure /share
 mkdir /share/screenshots
-chmod 775 /share/screenshots
-chown -R :share /share
+chmod 770 /share/screenshots
+chown -R root:share /share
 
 # Set default java
 archlinux-java set java-17-openjdk
