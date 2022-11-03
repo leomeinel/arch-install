@@ -182,7 +182,7 @@ mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
 mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
 mount -o noexec,nodev,nosuid /dev/mapper/md0_crypt /mnt/boot
 chmod 775 /mnt/var/games
-chmod 6775 /mnt/share
+chmod 6770 /mnt/share
 
 # Set SSD state to "frozen" after sleep
 mkdir -p /mnt/usr/lib/systemd/system-sleep
