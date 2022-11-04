@@ -52,7 +52,7 @@ locale-gen
 ## Configure /etc/doas.conf
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
-## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/wifi-rand-mac.conf 
+## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/wifi-rand-mac.conf
 chmod 644 /etc/NetworkManager/conf.d/wifi-rand-mac.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
