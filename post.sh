@@ -196,10 +196,10 @@ doas cryptboot-efikeys create
 doas cryptboot-efikeys enroll
 doas cryptboot update-grub
 
-# Install paru
+# Install paru-bin
 source ~/.bash_profile
-git clone https://aur.archlinux.org/paru.git ~/git/paru
-cd ~/git/paru
+git clone https://aur.archlinux.org/paru-bin.git ~/git/paru-bin
+cd ~/git/paru-bin
 makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
