@@ -180,7 +180,7 @@ chmod 644 /etc/cryptboot.conf
     echo "PermitRootLogin no"
 } >>/etc/ssh/sshd_config
 ## Configure /etc/xdg/user-dirs.defaults
-sed -i 's/^TEMPLATES=.*/TEMPLATES=Documents\/Templates/;s/^PUBLICSHARE=.*/PUBLICSHARE=Documents\/Public/;s/^DESKTOP=.*/DESKTOP=Documents\/Desktop/;s/^MUSIC=.*/MUSIC=Documents\/Music/;s/^PICTURES=.*/PICTURES=Documents\/Pictures/;s/^VIDEOS=.*/VIDEOS=Documents\/Videos/' /etc/xdg/user-dirs.defaults
+sed -i 's/^TEMPLATES=.*/TEMPLATES=Documents\/Templates/;s/^PUBLICSHARE=.*/PUBLICSHARE=Documents\/Public/;s/^DESKTOP=.*/DESKTOP=Desktop/;s/^MUSIC=.*/MUSIC=Documents\/Music/;s/^PICTURES=.*/PICTURES=Documents\/Pictures/;s/^VIDEOS=.*/VIDEOS=Documents\/Videos/' /etc/xdg/user-dirs.defaults
 ## Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
 ## Configure /etc/usbguard/usbguard-daemon.conf & /etc/usbguard/rules.conf
