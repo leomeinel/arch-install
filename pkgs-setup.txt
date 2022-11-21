@@ -6,6 +6,7 @@ arch-audit
 ark
 bash-completion
 bat
+bc
 bleachbit
 bluedevil
 bluez
