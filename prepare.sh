@@ -9,7 +9,7 @@
 # -----
 ###
 
-KEYMAP="de-latin1"
+KEYMAP="de-latin1-nodeadkeys"
 MIRRORCOUNTRIES="NL,DE,DK,FR"
 
 # Fail on error

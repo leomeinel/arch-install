@@ -9,7 +9,7 @@
 # -----
 ###
 
-KEYMAP="de-latin1"
+KEYMAP="de-latin1-nodeadkeys"
 HOSTNAME="stellaris-15"
 SYSUSER="systux"
 VIRTUSER="virt"

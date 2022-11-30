@@ -9,8 +9,8 @@
 # -----
 ###
 
-KEYMAP="de-latin1"
-KEYLAYOUT="de"
+KEYMAP="de-latin1-nodeadkeys"
+KEYLAYOUT="de_nodeadkeys"
 
 # Fail on error
 set -e
