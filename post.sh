@@ -10,7 +10,9 @@
 ###
 
 KEYMAP="de-latin1-nodeadkeys"
-KEYLAYOUT="de_nodeadkeys"
+KEYLAYOUT="de"
+# "" for default
+KEYLAYOUT_VARIANT="de_nodeadkeys"
 
 # Fail on error
 set -e
@@ -30,8 +32,8 @@ doas su -lc "/dot-files.sh setup-root" root
 doas timedatectl set-ntp true
 
 # Configure $KEYMAP
-doas localectl set-keymap "$KEYMAP"
-doas localectl set-x11-keymap "$KEYLAYOUT"
+doas localectl --no-convert set-keymap "$KEYMAP"
+doas localectl --no-convert set-x11-keymap "$KEYLAYOUT" "$KEYLAYOUT_VARIANT"
 
 # Configure iptables
 # FIXME: Replace with nftables
