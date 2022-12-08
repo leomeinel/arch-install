@@ -115,8 +115,6 @@ chmod 755 /etc/sysctl.d
 chmod 644 /etc/sysctl.d/*
 ## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
-## Configure /etc/bluetooth/main.conf
-sed -i 's/^#AutoEnable=.*/AutoEnable=true/' /etc/bluetooth/main.conf
 ## Configure /etc/pacman.conf , /etc/makepkg.conf & /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
@@ -206,6 +204,8 @@ dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblo
 chmod 000 /etc/luks/keys/md0_crypt.key
 echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
+## Configure /etc/bluetooth/main.conf
+sed -i 's/^#AutoEnable=.*/AutoEnable=true/' /etc/bluetooth/main.conf
 ## Configure /etc/mkinitcpio.conf
 sed -i 's/^FILES=.*/FILES=(\/etc\/luks\/keys\/md0_crypt.key)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev bluetooth encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 ### If on nvidia enable kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
