@@ -9,10 +9,8 @@
 # -----
 ###
 
-KEYMAP="de-latin1-nodeadkeys"
+KEYMAP="de-latin1"
 KEYLAYOUT="de"
-# "" for default
-KEYLAYOUT_VARIANT="de_nodeadkeys"
 
 # Fail on error
 set -e
@@ -33,7 +31,7 @@ doas timedatectl set-ntp true
 
 # Configure $KEYMAP
 doas localectl --no-convert set-keymap "$KEYMAP"
-doas localectl --no-convert set-x11-keymap "$KEYLAYOUT" "$KEYLAYOUT_VARIANT"
+doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 
 # Configure iptables
 # FIXME: Replace with nftables
