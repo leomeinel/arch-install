@@ -135,7 +135,7 @@ mkfs.fat -n EFI -F32 "$DISK1P1"
 mkfs.fat -n EFI -F32 "$DISK2P1"
 
 # Format boot
-mkfs.fat -n BOOT -F32 /dev/mapper/md0_crypt
+mkfs.ext4 -n BOOT -F32 /dev/mapper/md0_crypt
 
 # Configure btrfs
 mkfs.btrfs -L MDCRYPT /dev/mapper/md1_crypt
