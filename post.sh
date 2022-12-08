@@ -220,8 +220,7 @@ doas su -lc '/dot-files.sh vscodium' "$VIRTUSER"
 doas su -lc '/dot-files.sh vscodium' "$HOMEUSER"
 doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
-# Configure /etc
-## Configure firejail
+# Configure firejail
 doas sed -i 's/^code-oss$/#code-oss #arch-install/;s/^code$/#code #arch-install/;s/^codium$/#codium #arch-install/;s/^dnsmasq$/#dnsmasq #arch-install/;s/^ktorrent$/#ktorrent #arch-install/;s/^nextcloud-desktop$/#nextcloud-desktop #arch-install/;s/^nextcloud$/#nextcloud #arch-install/;s/^signal-desktop$/#signal-desktop #arch-install/;s/^spectacle$/#spectacle #arch-install/;s/^vscodium$/#vscodium #arch-install/' /etc/firejail/firecfg.config
 doas firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 doas apparmor_parser -r /etc/apparmor.d/firejail-default
@@ -230,7 +229,8 @@ rm -rf ~/.local/share/applications/*
 doas su -c 'rm -rf ~/.local/share/applications/*' "$VIRTUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
-## Configure /etc/mkinitcpio.conf
+
+# Configure /etc/mkinitcpio.conf
 pacman -Qq mkinitcpio-bluetooth &&
     doas sed -i '/^HOOKS=.*/s/encrypt/bluetooth encrypt/' /etc/mkinitcpio.conf
 
