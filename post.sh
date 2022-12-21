@@ -99,6 +99,15 @@ doas iptables -A INPUT -p tcp -m state --state NEW -m tcpmss ! --mss 536:65535 -
 doas iptables -A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
 ### Drop ICMP
 doas iptables -A INPUT -p icmp -j DROP
+### Allow SMTP
+doas iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+doas iptables -A INPUT -p tcp --dport 587 -j ACCEPT
+### Allow POP & POPS
+doas iptables -A INPUT -p tcp --dport 110 -j ACCEPT
+doas iptables -A INPUT -p tcp --dport 995 -j ACCEPT
+### Allow IMAP & IMAPS
+doas iptables -A INPUT -p tcp --dport 143 -j ACCEPT
+doas iptables -A INPUT -p tcp --dport 993 -j ACCEPT
 ### Allow default ktorrent ports (Forward them if not using UPnP)
 doas iptables -A INPUT -p tcp --dport 6881 -j ACCEPT
 doas iptables -A INPUT -p udp --dport 7881 -j ACCEPT
@@ -164,6 +173,15 @@ doas ip6tables -A INPUT -p tcp -m state --state NEW -m tcpmss ! --mss 536:65535 
 doas ip6tables -A INPUT -s ::1/128 ! -i lo -j DROP
 ### Drop ICMP
 doas ip6tables -A INPUT -p icmp -j DROP
+### Allow SMTP
+doas ip6tables -A INPUT -p tcp --dport 25 -j ACCEPT
+doas ip6tables -A INPUT -p tcp --dport 587 -j ACCEPT
+### Allow POP & POPS
+doas ip6tables -A INPUT -p tcp --dport 110 -j ACCEPT
+doas ip6tables -A INPUT -p tcp --dport 995 -j ACCEPT
+### Allow IMAP & IMAPS
+doas ip6tables -A INPUT -p tcp --dport 143 -j ACCEPT
+doas ip6tables -A INPUT -p tcp --dport 993 -j ACCEPT
 ### Allow default ktorrent ports (Forward them if not using UPnP)
 doas ip6tables -A INPUT -p tcp --dport 6881 -j ACCEPT
 doas ip6tables -A INPUT -p udp --dport 7881 -j ACCEPT
