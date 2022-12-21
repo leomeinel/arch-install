@@ -60,7 +60,6 @@ kdialog
 kgpg
 kimageformats
 kinfocenter
-kmail
 kompare
 krunner
 ksystemlog
@@ -125,6 +124,7 @@ spectacle
 sshfs
 starship
 system-config-printer
+thunderbird
 tokei
 ttf-nerd-fonts-symbols-2048-em-mono
 unarchiver
