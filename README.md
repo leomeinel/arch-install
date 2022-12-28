@@ -32,7 +32,7 @@ reboot
 
 :information_source: | Use `<...>.sh |& tee <logfile>.log` to create a log file.
 
-:information_source: | Set variables before `prepare.sh` using `vim /root/arch-install/prepare.sh`.
+:information_source: | Set variables for `prepare.sh` using `vim /root/arch-install/prepare.sh`.
 
 :information_source: | Set variables after `prepare.sh` using `nvim /git/arch-install/setup.sh` and `nvim ~/post.sh`.
 
