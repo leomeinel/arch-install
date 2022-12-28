@@ -225,6 +225,7 @@ doas sed -i 's/^#RemoveMake/RemoveMake/;s/^#CleanAfter/CleanAfter/;s/^#SudoLoop.
 doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/paru.conf'
 
 # Install packages
+# FIXME: This can't be tested in a VM
 [ -d /sys/class/bluetooth ] &&
 echo "mkinitcpio-bluetooth" >> ~/pkgs-post.txt
 paru -S --noprogressbar --noconfirm --needed - <~/pkgs-post.txt
