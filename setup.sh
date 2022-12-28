@@ -10,13 +10,14 @@
 ###
 
 KEYMAP="de-latin1"
-HOSTNAME="stellaris-15"
+HOSTNAME="infinitybook-pro-16"
 SYSUSER="systux"
 VIRTUSER="virt"
 HOMEUSER="leo"
 GUESTUSER="guest"
 TIMEZONE="Europe/Amsterdam"
-DOMAIN="meinel.dev"
+# https://www.rfc-editor.org/rfc/rfc8375.html
+DOMAIN="home.arpa"
 MIRRORCOUNTRIES="NL,DE,DK,FR"
 GRUBRESOLUTION="2560x1440"
 
