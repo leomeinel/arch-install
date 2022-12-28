@@ -269,7 +269,7 @@ snapper --no-dbus -c var_lib_mysql create-config -t var_lib_mysql /var/lib/mysql
 snapper --no-dbus -c var_log create-config -t var_log /var/log
 snapper --no-dbus -c home create-config -t home /home
 btrfs subvolume delete /.snapshots
-mkdir /.snapshots
+mkdir -p /.snapshots
 mount -a
 chmod 750 /.snapshots
 chmod a+rx /.snapshots
