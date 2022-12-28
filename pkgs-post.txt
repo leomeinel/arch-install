@@ -5,7 +5,6 @@ freetube-bin
 gdlauncher-bin
 librewolf-bin
 macchina-bin
-mkinitcpio-bluetooth
 papirus-icon-theme-stripped
 sddm-nordic-theme-git
 snap-pac-grub
