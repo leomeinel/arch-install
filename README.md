@@ -52,7 +52,7 @@ reboot
 
 :information_source: | ¹Set your UEFI password(s) and reboot.
 
-:information_source: | Log into sysuser account and run:
+:information_source: | Log into $SYSUSER account and run:
 
 ```sh
 ~/post.sh
