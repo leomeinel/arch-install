@@ -1,17 +1,5 @@
-arc-kde
 aspnet-targeting-pack-bin
 dotnet-sdk-bin
-freetube-bin
-gdlauncher-bin
-librewolf-bin
 macchina-bin
-papirus-icon-theme-stripped
-sddm-nordic-theme-git
 snap-pac-grub
-snapper-gui-git
-trilium-bin
-usbguard-notifier
-vscodium-bin
-vscodium-bin-marketplace
-waterfox-g-bin
 xdg-ninja-git
