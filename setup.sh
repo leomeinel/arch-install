@@ -10,19 +10,20 @@
 ###
 
 KEYMAP="de-latin1"
+MIRRORCOUNTRIES="NL,DE,DK,FR"
+TIMEZONE="Europe/Amsterdam"
+GRUBRESOLUTION="2560x1440"
 # https://www.rfc-editor.org/rfc/rfc1178.html
-# Theme: elements
-# For different purpose machines: colors, flowers etc.
-HOSTNAME="oxygen"
+## Network devices: elements
+## Servers: colors
+## Clients: flowers
+HOSTNAME="tulip"
+# https://www.rfc-editor.org/rfc/rfc8375.html
+DOMAIN="home.arpa"
 SYSUSER="systux"
 VIRTUSER="virt"
 HOMEUSER="leo"
 GUESTUSER="guest"
-TIMEZONE="Europe/Amsterdam"
-# https://www.rfc-editor.org/rfc/rfc8375.html
-DOMAIN="home.arpa"
-MIRRORCOUNTRIES="NL,DE,DK,FR"
-GRUBRESOLUTION="2560x1440"
 
 # Fail on error
 set -eu
