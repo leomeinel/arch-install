@@ -10,7 +10,10 @@
 ###
 
 KEYMAP="de-latin1"
-HOSTNAME="infinitybook-pro-16"
+# https://www.rfc-editor.org/rfc/rfc1178.html
+# Theme: elements
+# For different purpose machines: colors, flowers etc.
+HOSTNAME="oxygen"
 SYSUSER="systux"
 VIRTUSER="virt"
 HOMEUSER="leo"
