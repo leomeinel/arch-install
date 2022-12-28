@@ -266,9 +266,9 @@ pacman -Qq "usbguard-notifier" &&
     systemctl enable --user usbguard-notifier.service
 
 # Setup /boot & /efi
-mkinitcpio -P
-grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
-grub-mkconfig -o /boot/grub/grub.cfg
+doas mkinitcpio -P
+doas grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
+doas grub-mkconfig -o /boot/grub/grub.cfg
 
 # Remove repo
 rm -rf ~/git
