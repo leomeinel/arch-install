@@ -243,6 +243,8 @@ pacman -Qq "cronie" &&
     systemctl enable cronie.service
 pacman -Qq "docker" &&
     systemctl enable docker.service
+pacman -Qq "openssh" &&
+    systemctl enable sshd.service
 pacman -Qq "systemd" &&
     {
         systemctl enable systemd-resolved.service
