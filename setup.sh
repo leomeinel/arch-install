@@ -193,18 +193,22 @@ chmod 755 /usr/local/bin/vim
 umount /.snapshots
 rm -rf /.snapshots
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/root
+cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_libvirt
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_mysql
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_log
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/home
 sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.2"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="3"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/root
+sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.05"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="1"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/var_lib_libvirt
 sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.2"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="3"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="2"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/var_lib_mysql
 sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.02"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="1"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/var_log
 sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.2"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="3"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="3"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/home
 chmod 644 /usr/share/snapper/config-templates/root
+chmod 644 /usr/share/snapper/config-templates/var_lib_libvirt
 chmod 644 /usr/share/snapper/config-templates/var_lib_mysql
 chmod 644 /usr/share/snapper/config-templates/var_log
 chmod 644 /usr/share/snapper/config-templates/home
 snapper --no-dbus -c root create-config -t root /
+snapper --no-dbus -c var_lib_libvirt create-config -t var_lib_libvirt /var/lib/libvirt
 snapper --no-dbus -c var_lib_mysql create-config -t var_lib_mysql /var/lib/mysql
 snapper --no-dbus -c var_log create-config -t var_log /var/log
 snapper --no-dbus -c home create-config -t home /home
@@ -214,6 +218,9 @@ mount -a
 chmod 750 /.snapshots
 chmod a+rx /.snapshots
 chown :wheel /.snapshots
+chmod 750 /var/lib/libvirt/.snapshots
+chmod a+rx /var/lib/libvirt/.snapshots
+chown :wheel /var/lib/libvirt/.snapshots
 chmod 750 /var/lib/mysql/.snapshots
 chmod a+rx /var/lib/mysql/.snapshots
 chown :wheel /var/lib/mysql/.snapshots
