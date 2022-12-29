@@ -28,6 +28,7 @@ fd
 ffmpegthumbs
 filezilla
 firejail
+fwupd
 gimp
 git-delta
 glow
