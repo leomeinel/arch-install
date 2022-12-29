@@ -230,10 +230,13 @@ pacman -Qq "apparmor" &&
     }
 pacman -Qq "docker" &&
     systemctl enable docker.service
+pacman -Qq "systemd" &&
+    {
+        systemctl enable systemd-resolved.service
+        systemctl enable systemd-networkd.service
+    }
 pacman -Qq "util-linux" &&
     systemctl enable fstrim.timer
-pacman -Qq "networkmanager" &&
-    systemctl enable NetworkManager
 pacman -Qq "reflector" &&
     {
         systemctl enable reflector
