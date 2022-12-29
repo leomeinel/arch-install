@@ -232,6 +232,8 @@ pacman -Qq "apparmor" &&
         systemctl enable apparmor.service
         systemctl enable auditd.service
     }
+pacman -Qq "containerd" &&
+    systemctl enable containerd.service
 pacman -Qq "docker" &&
     systemctl enable docker.service
 pacman -Qq "systemd" &&
