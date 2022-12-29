@@ -2,6 +2,7 @@ apparmor
 arch-audit
 bash-completion
 bat
+cronie
 dnsmasq
 duf
 dust
@@ -41,6 +42,7 @@ screen
 snapper
 sshfs
 starship
+tree
 unarchiver
 unrar
 unzip
