@@ -233,7 +233,7 @@ pacman -Qq "apparmor" &&
 pacman -Qq "containerd" &&
     systemctl enable containerd.service
 pacman -Qq "cronie" &&
-    doas systemctl enable cronie.service
+    systemctl enable cronie.service
 pacman -Qq "docker" &&
     systemctl enable docker.service
 pacman -Qq "systemd" &&
