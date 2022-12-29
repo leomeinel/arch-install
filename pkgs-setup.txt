@@ -11,6 +11,7 @@ ethtool
 exa
 fd
 firejail
+fwupd
 grub
 grub-btrfs
 htop
