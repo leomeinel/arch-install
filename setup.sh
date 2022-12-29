@@ -75,6 +75,8 @@ chmod 644 /etc/sysctl.d/*
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 ## Configure /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
 chmod 644 /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
+## Configure /etc/systemd/network/10-en.network
+chmod 644 /etc/systemd/network/10-en.network
 ## Configure /etc/pacman.conf , /etc/makepkg.conf & /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
