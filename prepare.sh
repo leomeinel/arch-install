@@ -202,24 +202,6 @@ lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>/root/arch-install/pkgs-prepare.txt
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
     echo "amd-ucode" >>/root/arch-install/pkgs-prepare.txt
-lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
-    {
-        echo "egl-wayland"
-        echo "nvidia-dkms"
-    } >>/root/arch-install/pkgs-prepare.txt
-lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
-    {
-        echo "libva-mesa-driver"
-        echo "mesa-vdpau"
-        echo "vulkan-radeon"
-        echo "xf86-video-amdgpu"
-    } >>/root/arch-install/pkgs-prepare.txt
-lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
-    {
-        echo "intel-media-driver"
-        echo "vulkan-intel"
-        echo "xf86-video-intel"
-    } >>/root/arch-install/pkgs-prepare.txt
 pacstrap /mnt - </root/arch-install/pkgs-prepare.txt
 
 # Configure /mnt/etc/fstab
