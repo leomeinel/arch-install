@@ -92,9 +92,12 @@ doas iptables -A OUTPUT -f -j DROP
 doas iptables -A INPUT -p tcp -m state --state NEW -m tcpmss ! --mss 536:65535 -j DROP
 ### Block spoofed packets
 doas iptables -A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
+### Drop ICMP
+doas iptables -A INPUT -p icmp -j DROP
 ### Allow http & https
 doas iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 doas iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+doas iptables -A INPUT -p tcp --dport 9980 -j ACCEPT
 ### Allow ssh
 doas iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 ### Allow established connections
@@ -154,10 +157,11 @@ doas ip6tables -A INPUT -s ::1/128 ! -i lo -j DROP
 ### Drop ICMP
 doas ip6tables -A INPUT -p icmp -j DROP
 ### Allow http & https
-doas iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-doas iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+doas ip6tables -A INPUT -p tcp --dport 80 -j ACCEPT
+doas ip6tables -A INPUT -p tcp --dport 443 -j ACCEPT
+doas ip6tables -A INPUT -p tcp --dport 9980 -j ACCEPT
 ### Allow ssh
-doas iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+doas ip6tables -A INPUT -p tcp --dport 22 -j ACCEPT
 ### Allow established connections
 doas ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 ### Set default policies for chains
