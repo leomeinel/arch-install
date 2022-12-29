@@ -1,6 +1,8 @@
 base
 base-devel
 btrfs-progs
+docker
+docker-compose
 git
 iptables
 linux
@@ -16,4 +18,3 @@ neovim
 opendoas
 reflector
 rsync
-wireless-regdb

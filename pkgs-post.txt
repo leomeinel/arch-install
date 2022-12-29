@@ -1,5 +1,3 @@
-aspnet-targeting-pack-bin
-dotnet-sdk-bin
 macchina-bin
 snap-pac-grub
 xdg-ninja-git
