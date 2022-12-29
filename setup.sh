@@ -17,13 +17,12 @@ GRUBRESOLUTION="2560x1440"
 ## Network devices: elements
 ## Servers: colors
 ## Clients: flowers
-HOSTNAME="tulip"
+HOSTNAME="cyan"
 # https://www.rfc-editor.org/rfc/rfc8375.html
 DOMAIN="home.arpa"
-SYSUSER="systux"
-VIRTUSER="virt"
+SYSUSER="sysdock"
+DOCKUSER="dock"
 HOMEUSER="leo"
-GUESTUSER="guest"
 
 # Fail on error
 set -eu
@@ -31,22 +30,18 @@ set -eu
 # Add groups & users
 sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
 groupadd -r audit
-groupadd -r libvirt
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel "$SYSUSER"
-useradd -ms /bin/bash -G libvirt "$VIRTUSER"
+useradd -ms /bin/bash -G docker "$DOCKUSER"
 useradd -ms /bin/bash "$HOMEUSER"
-useradd -ms /bin/bash "$GUESTUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
 passwd "$SYSUSER"
-echo "Enter password for $VIRTUSER"
-passwd "$VIRTUSER"
+echo "Enter password for $DOCKUSER"
+passwd "$DOCKUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
-echo "Enter password for $GUESTUSER"
-passwd "$GUESTUSER"
 
 # Setup /etc
 rsync -rq /git/arch-install/etc/ /etc
@@ -57,7 +52,7 @@ locale-gen
 ## Configure /etc/doas.conf
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
-## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/50-mac-random.conf
+## Configure random MAC address in /etc/NetworkManager/conf.d/50-mac-random.conf
 chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
@@ -65,9 +60,8 @@ chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $SYSUSER"
-    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $VIRTUSER"
+    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $DOCKUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $HOMEUSER"
-    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
 ### Configure hooks for nvidia in /etc/pacman.d/hooks/
@@ -110,9 +104,6 @@ chmod 755 /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
-## Configure /etc/sddm.conf.d/kde_settings.conf
-chmod 755 /etc/sddm.conf.d
-chmod 644 /etc/sddm.conf.d/kde_settings.conf
 ## Configure /etc/systemd/zram-generator.conf
 chmod 644 /etc/systemd/zram-generator.conf
 ## Configure /etc/sysctl.d
@@ -141,7 +132,7 @@ pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup
 # Configure $SYSUSER
 ## Run sysuser.sh
 chmod +x /git/arch-install/sysuser.sh
-su -c '/git/arch-install/sysuser.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
+su -c '/git/arch-install/sysuser.sh '"$SYSUSER $DOCKUSER $HOMEUSER"'' "$SYSUSER"
 cp /git/arch-install/dot-files.sh /
 chmod 777 /dot-files.sh
 
@@ -184,8 +175,6 @@ chmod 644 /etc/cryptboot.conf
     echo "AuthenticationMethods publickey"
     echo "PermitRootLogin no"
 } >>/etc/ssh/sshd_config
-## Configure /etc/xdg/user-dirs.defaults
-sed -i 's/^TEMPLATES=.*/TEMPLATES=Documents\/Templates/;s/^PUBLICSHARE=.*/PUBLICSHARE=Documents\/Public/;s/^DESKTOP=.*/DESKTOP=Desktop/;s/^MUSIC=.*/MUSIC=Documents\/Music/;s/^PICTURES=.*/PICTURES=Documents\/Pictures/;s/^VIDEOS=.*/VIDEOS=Documents\/Videos/' /etc/xdg/user-dirs.defaults
 ## Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
 ## Configure /etc/usbguard/usbguard-daemon.conf & /etc/usbguard/rules.conf
@@ -198,19 +187,12 @@ echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 ## Configure /etc/audit/auditd.conf
 sed -i 's/^log_group.*=.*/log_group = audit/' /etc/audit/auditd.conf
-## mDNS
-### Configure /etc/systemd/resolved.conf
-sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/systemd/resolved.conf
-### Configure /etc/nsswitch.conf
-sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
 ## Configure /etc/luks/keys
 mkdir -p /etc/luks/keys
 dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
 chmod 000 /etc/luks/keys/md0_crypt.key
 echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
-## Configure /etc/bluetooth/main.conf
-sed -i 's/^#AutoEnable=.*/AutoEnable=true/' /etc/bluetooth/main.conf
 ## Configure /etc/mkinitcpio.conf
 sed -i 's/^FILES=.*/FILES=(\/etc\/luks\/keys\/md0_crypt.key)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 ### If on nvidia enable kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
@@ -230,9 +212,6 @@ rsync -rq /git/arch-install/usr/ /usr
 cp /git/cryptboot/grub-install /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
-## Configure /usr/share/gruvbox/gruvbox.yml
-chmod 755 /usr/share/gruvbox
-chmod 644 /usr/share/gruvbox/gruvbox.yml
 ## Configure /usr/local/bin
 chmod 755 /usr/local/bin/cryptboot
 chmod 755 /usr/local/bin/cryptboot-efikeys
@@ -254,22 +233,18 @@ chmod 755 /usr/local/bin/vim
 umount /.snapshots
 rm -rf /.snapshots
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/root
-cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_libvirt
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_mysql
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_log
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/home
 sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.2"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="3"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/root
-sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.05"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="1"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/var_lib_libvirt
 sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.2"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="3"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="2"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/var_lib_mysql
 sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.02"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="1"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/var_log
 sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.2"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="3"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="3"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/home
 chmod 644 /usr/share/snapper/config-templates/root
-chmod 644 /usr/share/snapper/config-templates/var_lib_libvirt
 chmod 644 /usr/share/snapper/config-templates/var_lib_mysql
 chmod 644 /usr/share/snapper/config-templates/var_log
 chmod 644 /usr/share/snapper/config-templates/home
 snapper --no-dbus -c root create-config -t root /
-snapper --no-dbus -c var_lib_libvirt create-config -t var_lib_libvirt /var/lib/libvirt
 snapper --no-dbus -c var_lib_mysql create-config -t var_lib_mysql /var/lib/mysql
 snapper --no-dbus -c var_log create-config -t var_log /var/log
 snapper --no-dbus -c home create-config -t home /home
@@ -279,9 +254,6 @@ mount -a
 chmod 750 /.snapshots
 chmod a+rx /.snapshots
 chown :wheel /.snapshots
-chmod 750 /var/lib/libvirt/.snapshots
-chmod a+rx /var/lib/libvirt/.snapshots
-chown :wheel /var/lib/libvirt/.snapshots
 chmod 750 /var/lib/mysql/.snapshots
 chmod a+rx /var/lib/mysql/.snapshots
 chown :wheel /var/lib/mysql/.snapshots
@@ -291,20 +263,6 @@ chown :wheel /var/log/.snapshots
 chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :wheel /home/.snapshots
-## Configure /usr/share/wallpapers/Custom/content
-mkdir -p /usr/share/wallpapers/Custom/content
-git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
-cp /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
-chmod 755 /usr/share/wallpapers/Custom
-chmod 755 /usr/share/wallpapers/Custom/content
-chmod 644 /usr/share/wallpapers/Custom/content/*
-
-# Configure /var
-## Configure /var/games
-chown :games /var/games
-
-# Set default java
-archlinux-java set java-17-openjdk
 
 # Enable systemd services
 pacman -Qq "apparmor" &&
@@ -312,20 +270,12 @@ pacman -Qq "apparmor" &&
         systemctl enable apparmor.service
         systemctl enable auditd.service
     }
-pacman -Qq "avahi" &&
-    systemctl enable avahi-daemon
-pacman -Qq "bluez" &&
-    systemctl enable bluetooth
-pacman -Qq "cups" &&
-    systemctl enable cups.service
+pacman -Qq "docker" &&
+    systemctl enable docker.service
 pacman -Qq "util-linux" &&
     systemctl enable fstrim.timer
-pacman -Qq "libvirt" &&
-    systemctl enable libvirtd
 pacman -Qq "networkmanager" &&
     systemctl enable NetworkManager
-pacman -Qq "power-profiles-daemon" &&
-    systemctl enable power-profiles-daemon
 pacman -Qq "reflector" &&
     {
         systemctl enable reflector

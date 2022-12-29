@@ -232,7 +232,7 @@ genfstab -U /mnt >>/mnt/etc/fstab
 sed -i '/\/.efi.bak.*vfat/s/rw/rw,noauto/' /mnt/etc/fstab
 
 # Prepare /mnt/git/arch-install/setup.sh
-git clone https://github.com/LeoMeinel/arch-install.git /mnt/git/arch-install
+git clone -b server https://github.com/LeoMeinel/arch-install.git /mnt/git/arch-install
 chmod +x /mnt/git/arch-install/setup.sh
 
 # Remove repo
