@@ -52,8 +52,6 @@ locale-gen
 ## Configure /etc/doas.conf
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
-## Configure random MAC address in /etc/NetworkManager/conf.d/50-mac-random.conf
-chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
     echo '#!/bin/sh'
