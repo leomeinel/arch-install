@@ -1,6 +1,6 @@
 # arch-install
 
-Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
+Arch Linux Server Installation using mdadm RAID1, LUKS encryption and btrfs
 
 ## Info
 
@@ -8,7 +8,7 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 :information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
 
-:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/arch-install/blob/server/virt-manager.md) for virt-manager.
 
 :warning: | All data on both disks will be wiped!
 
@@ -20,7 +20,7 @@ Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
 ```sh
 pacman -Sy git
-git clone https://github.com/LeoMeinel/arch-install.git
+git clone -b server https://github.com/LeoMeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt
