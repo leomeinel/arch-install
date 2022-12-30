@@ -1,7 +1,6 @@
 base
 base-devel
 btrfs-progs
-containerd
 docker
 docker-compose
 docker-scan
