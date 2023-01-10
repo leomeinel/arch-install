@@ -42,6 +42,7 @@ screen
 snapper
 sshfs
 starship
+tpm2-tools
 tree
 unarchiver
 unrar
