@@ -128,6 +128,7 @@ starship
 system-config-printer
 thunderbird
 tokei
+tpm2-tools
 ttf-nerd-fonts-symbols-2048-em-mono
 unarchiver
 unrar
