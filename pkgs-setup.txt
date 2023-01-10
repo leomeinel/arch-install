@@ -20,6 +20,7 @@ hwinfo
 hyperfine
 inetutils
 jpegoptim
+jq
 logrotate
 lrzip
 lshw
@@ -49,4 +50,5 @@ unrar
 unzip
 usbguard
 wget
+yq
 zram-generator
