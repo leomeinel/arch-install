@@ -52,6 +52,7 @@ jdk-openjdk
 jdk11-openjdk
 jdk17-openjdk
 jpegoptim
+jq
 kaccounts-providers
 kalendar
 kde-cli-tools
@@ -142,4 +143,5 @@ wireplumber
 wl-clipboard
 xdg-dbus-proxy
 xdg-utils
+yq
 zram-generator
