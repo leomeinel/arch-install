@@ -1,3 +1,4 @@
 macchina-bin
 snap-pac-grub
 xdg-ninja-git
+xxd-standalone
