@@ -129,6 +129,7 @@ system-config-printer
 thunderbird
 tokei
 tpm2-tools
+tree
 ttf-nerd-fonts-symbols-2048-em-mono
 unarchiver
 unrar
