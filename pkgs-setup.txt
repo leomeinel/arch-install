@@ -1,5 +1,6 @@
 alacritty
 alsa-utils
+android-tools
 apparmor
 arc-gtk-theme
 arch-audit
@@ -136,6 +137,7 @@ unarchiver
 unrar
 unzip
 usbguard
+usbutils
 virt-manager
 webp-pixbuf-loader
 wget
