@@ -1,3 +1,4 @@
+
 apparmor
 arch-audit
 bash-completion
@@ -49,6 +50,8 @@ unarchiver
 unrar
 unzip
 usbguard
+usbutils
+
 wget
 yq
 zram-generator
