@@ -1,6 +1,8 @@
 # arch-install
 
-Arch Linux Installation using LUKS encryption and btrfs
+Arch Linux Installation using LUKS encryption and btrfs.
+
+Meant for systems that mainly run steam and other games.
 
 ## Info
 
