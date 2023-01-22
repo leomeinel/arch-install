@@ -130,7 +130,7 @@ sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#C
     echo "# Custom"
     echo "[multilib]"
     echo "Include = /etc/pacman.d/mirrorlist"
-}
+} >>/etc/pacman.conf
 pacman-key --init
 ## Update mirrors
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
