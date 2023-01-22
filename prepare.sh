@@ -146,6 +146,7 @@ lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
     {
         echo "egl-wayland"
         echo "nvidia-dkms"
+        echo "lib32-nvidia-utils"
     } >>/root/arch-install/pkgs-prepare.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
     {

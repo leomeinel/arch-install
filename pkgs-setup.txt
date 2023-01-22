@@ -51,6 +51,7 @@ kompare
 krunner
 ksystemlog
 ktorrent
+lib32-mesa
 logrotate
 lrzip
 lshw
@@ -97,9 +98,11 @@ snapper
 spectacle
 sshfs
 starship
+steam
 thunderbird
 tpm2-tools
 tree
+ttf-liberation
 ttf-nerd-fonts-symbols-2048-em-mono
 unarchiver
 unrar
