@@ -4,8 +4,6 @@ Arch Linux Installation using LUKS encryption and btrfs.
 
 Meant for systems that mainly run steam and other games.
 
-Meant for systems that mainly run steam and other games.
-
 ## Info
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
