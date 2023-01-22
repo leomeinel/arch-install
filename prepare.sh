@@ -34,9 +34,16 @@ fi
 # Detect, close & erase old crypt volumes
 if lsblk -rno TYPE | grep -q "crypt"; then
     OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME $DISK1 | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
+    OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME $DISK1 | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
     cryptsetup close "$OLD_CRYPT_0"
-    if cryptsetup isLuks "$DISK1"; then
-        cryptsetup erase "$DISK1"
+    if cryptsetup isLuks "$OLD_CRYPT_0"; then
+        cryptsetup erase "$OLD_CRYPT_0"
+    else
+        echo "ERROR: Can't erase old crypt volume"
+        exit 125
+    fi
+    if cryptsetup isLuks "$OLD_CRYPT_1"; then
+        cryptsetup erase "$OLD_CRYPT_1"
     else
         echo "ERROR: Can't erase old crypt volume"
         exit 125
