@@ -208,7 +208,7 @@ sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' 
 mkdir -p /etc/luks/keys
 dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
 chmod 000 /etc/luks/keys/md0_crypt.key
-echo "Enter passphrase for /dev/md/md0"
+echo "Enter passphrase for $DISK1"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 ## Configure /etc/bluetooth/main.conf
 sed -i 's/^#AutoEnable=.*/AutoEnable=true/' /etc/bluetooth/main.conf
