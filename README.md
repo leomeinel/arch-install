@@ -2,7 +2,7 @@
 
 Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
-Meant for general purpose systems.
+Meant for systems that mainly run steam and other games.
 
 ## Info
 
