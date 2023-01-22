@@ -51,7 +51,6 @@ kompare
 krunner
 ksystemlog
 ktorrent
-lib32-mesa
 logrotate
 lrzip
 lshw
