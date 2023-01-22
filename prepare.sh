@@ -43,6 +43,7 @@ fi
 DISK1P2="$(lsblk -rnpo TYPE,NAME $DISK1 | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 if cryptsetup isLuks "$DISK1P2"; then
     cryptsetup erase "$DISK1P2"
+    sgdisk -Z "$DISK1P2"
 else
     echo "ERROR: Can't erase old crypt volume"
     exit 125
@@ -50,6 +51,7 @@ fi
 DISK1P3="$(lsblk -rnpo TYPE,NAME $DISK1 | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
 if cryptsetup isLuks "$DISK1P3"; then
     cryptsetup erase "$DISK1P3"
+    sgdisk -Z "$DISK1P3"
 else
     echo "ERROR: Can't erase old crypt volume"
     exit 125
