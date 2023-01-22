@@ -3,6 +3,7 @@ base-devel
 btrfs-progs
 git
 iptables
+lib32-mesa
 linux
 linux-firmware
 linux-headers
