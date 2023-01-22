@@ -10,7 +10,6 @@ linux-lts
 linux-lts-headers
 linux-zen
 linux-zen-headers
-mdadm
 mesa
 neovim
 opendoas
