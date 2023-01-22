@@ -2,6 +2,8 @@
 
 Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
 
+Meant for general purpose systems.
+
 ## Info
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
