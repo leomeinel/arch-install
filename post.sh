@@ -17,11 +17,9 @@ set -e
 
 # Configure dot-files (setup)
 SYSUSER="<INSERT_SYSUSER>"
-VIRTUSER="<INSERT_VIRTUSER>"
 HOMEUSER="<INSERT_HOMEUSER>"
 GUESTUSER="<INSERT_GUESTUSER>"
 /dot-files.sh setup
-doas su -lc '/dot-files.sh setup' "$VIRTUSER"
 doas su -lc '/dot-files.sh setup' "$HOMEUSER"
 doas su -lc '/dot-files.sh setup' "$GUESTUSER"
 doas su -lc '/dot-files.sh setup-root' root
@@ -237,17 +235,15 @@ doas firecfg --clean
 
 # Configure dot-files (vscodium)
 /dot-files.sh vscodium
-doas su -lc '/dot-files.sh vscodium' "$VIRTUSER"
 doas su -lc '/dot-files.sh vscodium' "$HOMEUSER"
 doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure firejail
 doas sed -i 's/^code-oss$/#code-oss #arch-install/;s/^code$/#code #arch-install/;s/^codium$/#codium #arch-install/;s/^dnsmasq$/#dnsmasq #arch-install/;s/^ktorrent$/#ktorrent #arch-install/;s/^nextcloud-desktop$/#nextcloud-desktop #arch-install/;s/^nextcloud$/#nextcloud #arch-install/;s/^signal-desktop$/#signal-desktop #arch-install/;s/^spectacle$/#spectacle #arch-install/;s/^vscodium$/#vscodium #arch-install/' /etc/firejail/firecfg.config
-doas firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
+doas firecfg --add-users root "$SYSUSER" "$HOMEUSER" "$GUESTUSER"
 doas apparmor_parser -r /etc/apparmor.d/firejail-default
 doas firecfg
 rm -rf ~/.local/share/applications/*
-doas su -c 'rm -rf ~/.local/share/applications/*' "$VIRTUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
 
