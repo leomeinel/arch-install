@@ -8,7 +8,7 @@ Meant for systems that mainly run steam and other games.
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
-:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/arch-install/blob/games/virt-manager.md) for virt-manager.
 
 :warning: | All data on the disk will be wiped!
 
