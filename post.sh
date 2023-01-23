@@ -203,16 +203,55 @@ doas sh -c 'ip6tables-save > /etc/iptables/ip6tables.rules'
 doas chmod 644 /etc/iptables/*.rules
 
 # Configure secureboot
-if mountpoint -q /boot; then
-    doas umount -AR /boot
-fi
-if mountpoint -q /efi; then
-    doas umount -AR /efi
-fi
-doas cryptboot mount
-doas cryptboot-efikeys create
-doas cryptboot-efikeys enroll
-doas cryptboot update-grub
+# Prompt user
+# This prompt prevents unwanted overrides of already enrolled keys
+echo "INFO: To deploy your own keys, don't confirm the next prompt"
+read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
+case "$choice" in
+YES)
+    if mountpoint -q /boot; then
+        doas umount -AR /boot
+    fi
+    if mountpoint -q /efi; then
+        doas umount -AR /efi
+    fi
+    doas cryptboot mount
+    doas cryptboot-efikeys create
+    doas cryptboot-efikeys enroll
+    doas cryptboot update-grub
+    ;;
+*)
+    {
+        echo '#!/bin/sh'
+        echo ''
+        echo 'EFI_KEYS_DIR="/etc/secureboot/keys"'
+        echo 'source "/etc/cryptboot.conf"'
+        echo 'read -rp "Have you transferred your keys to $EFI_KEYS_DIR? (Type '"'"'yes'"'"' in capital letters): " choice'
+        echo 'case "$choice" in'
+        echo 'YES)'
+        echo "    if mountpoint -q /boot; then"
+        echo "        doas umount -AR /boot"
+        echo "    fi"
+        echo "    if mountpoint -q /efi; then"
+        echo "        doas umount -AR /efi"
+        echo "    fi"
+        echo '    mkdir -p "$EFI_KEYS_DIR"'
+        echo '    doas cryptboot mount'
+        echo '    doas cryptboot update-grub'
+        echo '    ;;'
+        echo '*)'
+        echo '    echo "ERROR: User has not transferred keys to $EFI_KEYS_DIR"'
+        echo '    exit 78'
+        echo '    ;;'
+        echo 'esac'
+    } >~/secureboot.sh
+    chmod 700 ~/secureboot.sh
+    echo "WARNING: User aborted enrolling secureboot keys"
+    EFI_KEYS_DIR="/etc/secureboot/keys"
+    source "/etc/cryptboot.conf"
+    echo "         Deploy your own keys in $EFI_KEYS_DIR and run ~/secureboot.sh to sign your bootloader"
+    ;;
+esac
 
 # Install paru-bin
 source ~/.bash_profile
