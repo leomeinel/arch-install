@@ -222,7 +222,7 @@ YES)
     ;;
 *)
     {
-        echo '#!/bin/sh'
+        echo '#!/bin/bash'
         echo ''
         echo 'EFI_KEYS_DIR="/etc/secureboot/keys"'
         echo 'source "/etc/cryptboot.conf"'
