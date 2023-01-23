@@ -198,12 +198,12 @@ YES)
         echo 'read -rp "Have you transferred your keys to $EFI_KEYS_DIR? (Type '"'"'yes'"'"' in capital letters): " choice'
         echo 'case "$choice" in'
         echo 'YES)'
-        echo "    if mountpoint -q /boot; then"
-        echo "        doas umount -AR /boot"
-        echo "    fi"
-        echo "    if mountpoint -q /efi; then"
-        echo "        doas umount -AR /efi"
-        echo "    fi"
+        echo '    if mountpoint -q /boot; then'
+        echo '        doas umount -AR /boot'
+        echo '    fi'
+        echo '    if mountpoint -q /efi; then'
+        echo '        doas umount -AR /efi'
+        echo '    fi'
         echo '    mkdir -p "$EFI_KEYS_DIR"'
         echo '    doas cryptboot mount'
         echo '    doas cryptboot update-grub'
