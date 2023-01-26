@@ -361,7 +361,7 @@ pacman -Qq mkinitcpio-bluetooth &&
                 STRING1="encrypt"
                 grep -q "$STRING1" "$FILE" &&
                     doas sed -i "/$STRING0/s/$STRING1/bluetooth $STRING1/" "$FILE" || sed_exit
-            }
+            } || sed_exit
         ## END sed
     }
 
