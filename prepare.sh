@@ -149,7 +149,7 @@ mkfs.btrfs -L MDCRYPT /dev/mapper/md1_crypt
 mount /dev/mapper/md1_crypt /mnt
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@var_cache
-btrfs subvolume create /mnt/@var_games
+btrfs subvolume create /mnt/@var_lib_docker
 btrfs subvolume create /mnt/@var_lib_libvirt
 btrfs subvolume create /mnt/@var_lib_mysql
 btrfs subvolume create /mnt/@var_log
@@ -165,9 +165,9 @@ mkdir /mnt/boot
 mkdir /mnt/var &&
     {
         mkdir /mnt/var/cache
-        mkdir /mnt/var/games
         mkdir /mnt/var/lib &&
             {
+                mkdir /mnt/var/lib/docker
                 mkdir /mnt/var/lib/libvirt
                 mkdir /mnt/var/lib/mysql
             }
@@ -176,7 +176,7 @@ mkdir /mnt/var &&
 mkdir /mnt/home
 mkdir /mnt/.snapshots
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/games
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/lib/docker
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/mysql
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/log
@@ -185,7 +185,6 @@ mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=as
 mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
 mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
 mount -o noexec,nodev,nosuid /dev/mapper/md0_crypt /mnt/boot
-chmod 775 /mnt/var/games
 
 # Set SSD state to "frozen" after sleep
 mkdir -p /mnt/usr/lib/systemd/system-sleep
@@ -227,24 +226,6 @@ lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>/root/arch-install/pkgs-prepare.txt
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
     echo "amd-ucode" >>/root/arch-install/pkgs-prepare.txt
-lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
-    {
-        echo "egl-wayland"
-        echo "nvidia-dkms"
-    } >>/root/arch-install/pkgs-prepare.txt
-lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
-    {
-        echo "libva-mesa-driver"
-        echo "mesa-vdpau"
-        echo "vulkan-radeon"
-        echo "xf86-video-amdgpu"
-    } >>/root/arch-install/pkgs-prepare.txt
-lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
-    {
-        echo "intel-media-driver"
-        echo "vulkan-intel"
-        echo "xf86-video-intel"
-    } >>/root/arch-install/pkgs-prepare.txt
 pacstrap /mnt - </root/arch-install/pkgs-prepare.txt
 
 # Configure /mnt/etc/fstab
@@ -265,8 +246,11 @@ grep -q "$STRING0" "$FILE" &&
     } || sed_exit
 ## END sed
 
+# Configure /mnt/etc/resolv.conf
+ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+
 # Prepare /mnt/git/arch-install/setup.sh
-git clone https://github.com/LeoMeinel/arch-install.git /mnt/git/arch-install
+git clone -b server https://github.com/LeoMeinel/arch-install.git /mnt/git/arch-install
 chmod +x /mnt/git/arch-install/setup.sh
 
 # Remove repo
