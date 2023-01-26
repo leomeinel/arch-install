@@ -230,7 +230,7 @@ makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
 ## START sed
-FILE="/etc/paru.conf"
+FILE=/etc/paru.conf
 STRING="^#RemoveMake"
 grep -q "$STRING" "$FILE" &&
     doas sed -i "s/$STRING/RemoveMake/" "$FILE"
@@ -267,7 +267,7 @@ doas firecfg --clean
 
 # Configure firejail
 ## START sed
-FILE="/etc/firejail/firecfg.config"
+FILE=/etc/firejail/firecfg.config
 STRING="^code-oss$"
 grep -q "$STRING" "$FILE" &&
     doas sed -i "s/$STRING/#code-oss #arch-install/" "$FILE"

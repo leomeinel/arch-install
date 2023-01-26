@@ -29,7 +29,7 @@ set -eu
 
 # Add groups & users
 ## START sed
-FILE="/etc/default/useradd"
+FILE=/etc/default/useradd
 STRING="^SHELL=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
@@ -52,7 +52,7 @@ passwd "$HOMEUSER"
 rsync -rq /git/arch-install/etc/ /etc
 ## Configure locale in /etc/locale.gen & /etc/locale.conf
 ### START sed
-FILE="/etc/locale.gen"
+FILE=/etc/locale.gen
 STRING="^#de_DE.UTF-8 UTF-8"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/de_DE.UTF-8 UTF-8/" "$FILE"
@@ -109,12 +109,12 @@ chmod 644 /etc/systemd/network/10-en.network
 } >/etc/xdg/reflector/reflector.conf
 chmod 644 /etc/xdg/reflector/reflector.conf
 ### START sed
-FILE="/etc/makepkg.conf"
+FILE=/etc/makepkg.conf
 STRING="^#PACMAN_AUTH=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/PACMAN_AUTH=(doas)/" "$FILE"
 ###
-FILE="/etc/pacman.conf"
+FILE=/etc/pacman.conf
 STRING="^#Color"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/Color/" "$FILE"
@@ -186,7 +186,7 @@ usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --excep
 ## Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su & /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
 ### START sed
-FILE="/etc/security/faillock.conf"
+FILE=/etc/security/faillock.conf
 STRING="^#.*dir.*=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s|$STRING|dir = /var/lib/faillock|" "$FILE"
@@ -195,7 +195,7 @@ echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 ## Configure /etc/audit/auditd.conf
 ### START sed
-FILE="/etc/audit/auditd.conf"
+FILE=/etc/audit/auditd.conf
 STRING="^log_group.*=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/log_group = audit/" "$FILE"
@@ -206,10 +206,9 @@ dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblo
 chmod 000 /etc/luks/keys/md0_crypt.key
 echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
-
 ## Configure /etc/mkinitcpio.conf
 ### START sed
-FILE="/etc/mkinitcpio.conf"
+FILE=/etc/mkinitcpio.conf
 STRING="^FILES=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s|$STRING|FILES=(/etc/luks/keys/md0_crypt.key)|" "$FILE"
@@ -222,7 +221,7 @@ grep -q "$STRING" "$FILE" &&
 ### END sed
 ## Configure /etc/default/grub
 ### START sed
-FILE="/etc/default/grub"
+FILE=/etc/default/grub
 STRING="^#GRUB_ENABLE_CRYPTODISK=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/GRUB_ENABLE_CRYPTODISK=y/" "$FILE"
@@ -306,7 +305,7 @@ STRING7="^TIMELINE_LIMIT_DAILY=.*"
 STRING8="^TIMELINE_LIMIT_MONTHLY=.*"
 STRING9="^TIMELINE_LIMIT_YEARLY=.*"
 ###
-FILE="/usr/share/snapper/config-templates/root"
+FILE=/usr/share/snapper/config-templates/root
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
@@ -350,7 +349,7 @@ grep -q "$STRING8" "$FILE" &&
 grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ###
-FILE="/usr/share/snapper/config-templates/var_lib_libvirt"
+FILE=/usr/share/snapper/config-templates/var_lib_libvirt
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
@@ -372,7 +371,7 @@ grep -q "$STRING8" "$FILE" &&
 grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ###
-FILE="/usr/share/snapper/config-templates/var_lib_mysql"
+FILE=/usr/share/snapper/config-templates/var_lib_mysql
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
@@ -394,7 +393,7 @@ grep -q "$STRING8" "$FILE" &&
 grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ###
-FILE="/usr/share/snapper/config-templates/var_log"
+FILE=/usr/share/snapper/config-templates/var_log
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
@@ -416,7 +415,7 @@ grep -q "$STRING8" "$FILE" &&
 grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ###
-FILE="/usr/share/snapper/config-templates/home"
+FILE=/usr/share/snapper/config-templates/home
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
