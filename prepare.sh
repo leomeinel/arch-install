@@ -203,7 +203,7 @@ chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 
 # Install packages
 ## START sed
-FILE="/etc/pacman.conf"
+FILE=/etc/pacman.conf
 STRING="^#Color"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/Color/" "$FILE"
@@ -248,7 +248,7 @@ genfstab -U /mnt >>/mnt/etc/fstab
     echo 'tmpfs /tmp tmpfs rw,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
 } >>/mnt/etc/fstab
 ## START sed
-FILE="/mnt/etc/fstab"
+FILE=/mnt/etc/fstab
 STRING0="\/.efi.bak.*vfat"
 grep -q "$STRING0" "$FILE" &&
     {
