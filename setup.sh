@@ -396,6 +396,8 @@ chmod 755 /usr/local/bin/vim
 umount /.snapshots
 rm -rf /.snapshots
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/root
+cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_libvirt
+cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_mysql
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_log
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/home
 ### START sed
@@ -521,9 +523,13 @@ grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ### END sed
 chmod 644 /usr/share/snapper/config-templates/root
+chmod 644 /usr/share/snapper/config-templates/var_lib_libvirt
+chmod 644 /usr/share/snapper/config-templates/var_lib_mysql
 chmod 644 /usr/share/snapper/config-templates/var_log
 chmod 644 /usr/share/snapper/config-templates/home
 snapper --no-dbus -c root create-config -t root /
+snapper --no-dbus -c var_lib_libvirt create-config -t var_lib_libvirt /var/lib/libvirt
+snapper --no-dbus -c var_lib_mysql create-config -t var_lib_mysql /var/lib/mysql
 snapper --no-dbus -c var_log create-config -t var_log /var/log
 snapper --no-dbus -c home create-config -t home /home
 btrfs subvolume delete /.snapshots
@@ -532,6 +538,12 @@ mount -a
 chmod 750 /.snapshots
 chmod a+rx /.snapshots
 chown :wheel /.snapshots
+chmod 750 /var/lib/libvirt/.snapshots
+chmod a+rx /var/lib/libvirt/.snapshots
+chown :wheel /var/lib/libvirt/.snapshots
+chmod 750 /var/lib/mysql/.snapshots
+chmod a+rx /var/lib/mysql/.snapshots
+chown :wheel /var/lib/mysql/.snapshots
 chmod 750 /var/log/.snapshots
 chmod a+rx /var/log/.snapshots
 chown :wheel /var/log/.snapshots
