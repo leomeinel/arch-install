@@ -259,7 +259,7 @@ makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
 ## START sed
-FILE="/etc/paru.conf"
+FILE=/etc/paru.conf
 STRING="^#RemoveMake"
 grep -q "$STRING" "$FILE" &&
     doas sed -i "s/$STRING/RemoveMake/" "$FILE"
@@ -304,7 +304,7 @@ doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure firejail
 ## START sed
-FILE="/etc/firejail/firecfg.config"
+FILE=/etc/firejail/firecfg.config
 STRING="^code-oss$"
 grep -q "$STRING" "$FILE" &&
     doas sed -i "s/$STRING/#code-oss #arch-install/" "$FILE"
@@ -347,7 +347,7 @@ doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
 pacman -Qq mkinitcpio-bluetooth &&
     {
         ## START sed
-        FILE="/etc/mkinitcpio.conf"
+        FILE=/etc/mkinitcpio.conf
         STRING0="^HOOKS=.*"
         grep -q "$STRING0" "$FILE" &&
             {

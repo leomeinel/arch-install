@@ -150,7 +150,7 @@ chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 
 # Install packages
 ## START sed
-FILE="/etc/pacman.conf"
+FILE=/etc/pacman.conf
 STRING="^#Color"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/Color/" "$FILE"
