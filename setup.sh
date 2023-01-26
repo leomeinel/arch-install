@@ -17,13 +17,12 @@ GRUBRESOLUTION="2560x1440"
 ## Network devices: elements
 ## Servers: colors
 ## Clients: flowers
-HOSTNAME="tulip"
+HOSTNAME="cyan"
 # https://www.rfc-editor.org/rfc/rfc8375.html
 DOMAIN="home.arpa"
-SYSUSER="systux"
-VIRTUSER="virt"
+SYSUSER="sysdock"
+DOCKUSER="dock"
 HOMEUSER="leo"
-GUESTUSER="guest"
 
 # Fail on error
 set -eu
@@ -36,22 +35,18 @@ grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
-groupadd -r libvirt
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel "$SYSUSER"
-useradd -ms /bin/bash -G libvirt "$VIRTUSER"
+useradd -ms /bin/bash -G docker "$DOCKUSER"
 useradd -ms /bin/bash "$HOMEUSER"
-useradd -ms /bin/bash "$GUESTUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
 passwd "$SYSUSER"
-echo "Enter password for $VIRTUSER"
-passwd "$VIRTUSER"
+echo "Enter password for $DOCKUSER"
+passwd "$DOCKUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
-echo "Enter password for $GUESTUSER"
-passwd "$GUESTUSER"
 
 # Setup /etc
 rsync -rq /git/arch-install/etc/ /etc
@@ -79,67 +74,20 @@ locale-gen
 ## Configure /etc/doas.conf
 chown -c root:root /etc/doas.conf
 chmod -c 0400 /etc/doas.conf
-## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/50-mac-random.conf
-chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
     echo '#!/bin/sh'
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $SYSUSER"
-    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $VIRTUSER"
+    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $DOCKUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $HOMEUSER"
-    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
-### Configure hooks for nvidia in /etc/pacman.d/hooks/
-pacman -Qq "nvidia-dkms" &&
-    {
-        {
-            echo '[Trigger]'
-            echo 'Operation = Install'
-            echo 'Operation = Upgrade'
-            echo 'Operation = Remove'
-            echo 'Type = Package'
-            echo 'Target = linux'
-            echo 'Target = linux-lts'
-            echo 'Target = linux-zen'
-            echo 'Target = nvidia-dkms'
-            echo ''
-            echo '[Action]'
-            echo 'Description = Updating NVIDIA mkinitcpio...'
-            echo 'Depends = mkinitcpio'
-            echo 'When = PostTransaction'
-            echo 'NeedsTargets'
-            echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/90-nvidia-gen-mkinitcpio.sh'"
-            echo ''
-        } >/etc/pacman.d/hooks/90-nvidia-gen-mkinitcpio.hook
-        {
-            echo '#!/bin/sh'
-            echo ''
-            echo 'while read -r target'
-            echo 'do'
-            echo '    case $target in'
-            echo '        linux) exit 0'
-            echo '    esac'
-            echo 'done'
-            echo '/usr/bin/mkinitcpio -P'
-            echo ''
-        } >/etc/pacman.d/hooks/scripts/90-nvidia-gen-mkinitcpio.sh
-        #### START sed
-        FILE="/etc/pacman.d/hooks/95-upgrade-grub.hook"
-        STRING="^Target = linux-zen"
-        grep -q "$STRING" "$FILE" &&
-            sed -i "/$STRING/a Target = nvidia-dkms" "$FILE"
-        #### END sed
-    }
 chmod 755 /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
-## Configure /etc/sddm.conf.d/kde_settings.conf
-chmod 755 /etc/sddm.conf.d
-chmod 644 /etc/sddm.conf.d/kde_settings.conf
 ## Configure /etc/systemd/zram-generator.conf
 chmod 644 /etc/systemd/zram-generator.conf
 ## Configure /etc/sysctl.d
@@ -147,6 +95,10 @@ chmod 755 /etc/sysctl.d
 chmod 644 /etc/sysctl.d/*
 ## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
+## Configure /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
+chmod 644 /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
+## Configure /etc/systemd/network/10-en.network
+chmod 644 /etc/systemd/network/10-en.network
 ## Configure /etc/pacman.conf , /etc/makepkg.conf & /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
@@ -183,7 +135,7 @@ pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup
 # Configure $SYSUSER
 ## Run sysuser.sh
 chmod +x /git/arch-install/sysuser.sh
-su -c '/git/arch-install/sysuser.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
+su -c '/git/arch-install/sysuser.sh '"$SYSUSER $DOCKUSER $HOMEUSER"'' "$SYSUSER"
 cp /git/arch-install/dot-files.sh /
 chmod 777 /dot-files.sh
 
@@ -215,7 +167,7 @@ echo "$HOSTNAME" >/etc/hostname
     echo "OverrideESPMountPoint=/efi"
 } >>/etc/fwupd/uefi_capsule.conf
 ## Configure /etc/cryptboot.conf
-git clone https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
+git clone -b server https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 ## Configure /etc/ssh/sshd_config
@@ -226,28 +178,6 @@ chmod 644 /etc/cryptboot.conf
     echo "AuthenticationMethods publickey"
     echo "PermitRootLogin no"
 } >>/etc/ssh/sshd_config
-## Configure /etc/xdg/user-dirs.defaults
-### START sed
-FILE="/etc/xdg/user-dirs.defaults"
-STRING="^TEMPLATES=.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s|$STRING|TEMPLATES=Documents/Templates|" "$FILE"
-STRING="^PUBLICSHARE=.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s|$STRING|PUBLICSHARE=Documents/Public|" "$FILE"
-STRING="^DESKTOP=.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s|$STRING|DESKTOP=Desktop|" "$FILE"
-STRING="^MUSIC=.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s|$STRING|MUSIC=Documents/Music|" "$FILE"
-STRING="^PICTURES=.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s|$STRING|PICTURES=Documents/Pictures|" "$FILE"
-STRING="^VIDEOS=.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
-### END sed
 ## Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
 ## Configure /etc/usbguard/usbguard-daemon.conf & /etc/usbguard/rules.conf
@@ -270,34 +200,13 @@ STRING="^log_group.*=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/log_group = audit/" "$FILE"
 ### END sed
-## mDNS
-### Configure /etc/systemd/resolved.conf
-### START sed
-FILE="/etc/systemd/resolved.conf"
-STRING="^#MulticastDNS=.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/MulticastDNS=no/" "$FILE"
-### END sed
-### Configure /etc/nsswitch.conf
-### START sed
-FILE="/etc/nsswitch.conf"
-STRING="^hosts: mymachines"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/hosts: mymachines mdns_minimal [NOTFOUND=return]/" "$FILE"
-### END sed
 ## Configure /etc/luks/keys
 mkdir -p /etc/luks/keys
 dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
 chmod 000 /etc/luks/keys/md0_crypt.key
 echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
-## Configure /etc/bluetooth/main.conf
-### START sed
-FILE="/etc/bluetooth/main.conf"
-STRING="^#AutoEnable=.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/AutoEnable=true/" "$FILE"
-### END sed
+
 ## Configure /etc/mkinitcpio.conf
 ### START sed
 FILE="/etc/mkinitcpio.conf"
@@ -306,12 +215,7 @@ grep -q "$STRING" "$FILE" &&
     sed -i "s|$STRING|FILES=(/etc/luks/keys/md0_crypt.key)|" "$FILE"
 STRING="^MODULES=.*"
 grep -q "$STRING" "$FILE" &&
-    {
-        sed -i "s/$STRING/MODULES=(btrfs)/" "$FILE"
-        #### If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
-        pacman -Qq "nvidia-dkms" &&
-            sed -i "/$STRING/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/" "$FILE"
-    }
+    sed -i "s/$STRING/MODULES=(btrfs)/" "$FILE"
 STRING="^HOOKS=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/" "$FILE"
@@ -336,9 +240,6 @@ STRING="^GRUB_CMDLINE_LINUX_DEFAULT=.*"
 grep -q "$STRING" "$FILE" &&
     {
         sed -i "s/$STRING/GRUB_CMDLINE_LINUX_DEFAULT=$PARAMETERS/" "$FILE"
-        #### If on nvidia set kernel parameter nvidia_drm.modeset=1
-        pacman -Qq "nvidia-dkms" &&
-            sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE"
         #### If on intel set kernel parameter intel_iommu=on
         pacman -Qq "intel-ucode" &&
             sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE"
@@ -347,9 +248,6 @@ STRING="^GRUB_CMDLINE_LINUX=.*"
 grep -q "$STRING" "$FILE" &&
     {
         sed -i "s/$STRING/GRUB_CMDLINE_LINUX=$PARAMETERS/" "$FILE"
-        #### If on nvidia set kernel parameter nvidia_drm.modeset=1
-        pacman -Qq "nvidia-dkms" &&
-            sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE"
         pacman -Qq "intel-ucode" &&
             #### If on intel set kernel parameter intel_iommu=on
             sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE"
@@ -359,7 +257,7 @@ grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/GRUB_DISABLE_SUBMENU=y/" "$FILE"
 STRING="^GRUB_DEFAULT=.*"
 grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/GRUB_DEFAULT=0/" "$FILE"
+    sed -i "s/$STRING/GRUB_DEFAULT=2/" "$FILE"
 STRING="^#GRUB_SAVEDEFAULT=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/GRUB_SAVEDEFAULT=false/" "$FILE"
@@ -370,9 +268,6 @@ rsync -rq /git/arch-install/usr/ /usr
 cp /git/cryptboot/grub-install /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
-## Configure /usr/share/gruvbox/gruvbox.yml
-chmod 755 /usr/share/gruvbox
-chmod 644 /usr/share/gruvbox/gruvbox.yml
 ## Configure /usr/local/bin
 chmod 755 /usr/local/bin/cryptboot
 chmod 755 /usr/local/bin/cryptboot-efikeys
@@ -394,6 +289,7 @@ chmod 755 /usr/local/bin/vim
 umount /.snapshots
 rm -rf /.snapshots
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/root
+cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_docker
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_libvirt
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_mysql
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_log
@@ -414,7 +310,7 @@ FILE="/usr/share/snapper/config-templates/root"
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
-    sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE"
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
 grep -q "$STRING2" "$FILE" &&
     sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
 grep -q "$STRING3" "$FILE" &&
@@ -424,9 +320,31 @@ grep -q "$STRING4" "$FILE" &&
 grep -q "$STRING5" "$FILE" &&
     sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
 grep -q "$STRING6" "$FILE" &&
-    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE"
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE"
 grep -q "$STRING7" "$FILE" &&
-    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"3\"/" "$FILE"
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"4\"/" "$FILE"
+grep -q "$STRING8" "$FILE" &&
+    sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
+grep -q "$STRING9" "$FILE" &&
+    sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
+###
+FILE="/usr/share/snapper/config-templates/var_lib_docker"
+grep -q "$STRING0" "$FILE" &&
+    sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
+grep -q "$STRING1" "$FILE" &&
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
+grep -q "$STRING2" "$FILE" &&
+    sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
+grep -q "$STRING3" "$FILE" &&
+    sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
+grep -q "$STRING4" "$FILE" &&
+    sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
+grep -q "$STRING5" "$FILE" &&
+    sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
+grep -q "$STRING6" "$FILE" &&
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"4\"/" "$FILE"
+grep -q "$STRING7" "$FILE" &&
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"4\"/" "$FILE"
 grep -q "$STRING8" "$FILE" &&
     sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
 grep -q "$STRING9" "$FILE" &&
@@ -436,7 +354,7 @@ FILE="/usr/share/snapper/config-templates/var_lib_libvirt"
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
-    sed -i "s/$STRING1/SPACE_LIMIT=\"0.05\"/" "$FILE"
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
 grep -q "$STRING2" "$FILE" &&
     sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
 grep -q "$STRING3" "$FILE" &&
@@ -446,9 +364,9 @@ grep -q "$STRING4" "$FILE" &&
 grep -q "$STRING5" "$FILE" &&
     sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
 grep -q "$STRING6" "$FILE" &&
-    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE"
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE"
 grep -q "$STRING7" "$FILE" &&
-    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE"
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"5\"/" "$FILE"
 grep -q "$STRING8" "$FILE" &&
     sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
 grep -q "$STRING9" "$FILE" &&
@@ -458,7 +376,7 @@ FILE="/usr/share/snapper/config-templates/var_lib_mysql"
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
-    sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE"
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
 grep -q "$STRING2" "$FILE" &&
     sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
 grep -q "$STRING3" "$FILE" &&
@@ -468,9 +386,9 @@ grep -q "$STRING4" "$FILE" &&
 grep -q "$STRING5" "$FILE" &&
     sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
 grep -q "$STRING6" "$FILE" &&
-    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"3\"/" "$FILE"
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE"
 grep -q "$STRING7" "$FILE" &&
-    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"2\"/" "$FILE"
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"5\"/" "$FILE"
 grep -q "$STRING8" "$FILE" &&
     sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
 grep -q "$STRING9" "$FILE" &&
@@ -480,7 +398,7 @@ FILE="/usr/share/snapper/config-templates/var_log"
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
-    sed -i "s/$STRING1/SPACE_LIMIT=\"0.02\"/" "$FILE"
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
 grep -q "$STRING2" "$FILE" &&
     sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
 grep -q "$STRING3" "$FILE" &&
@@ -512,20 +430,22 @@ grep -q "$STRING4" "$FILE" &&
 grep -q "$STRING5" "$FILE" &&
     sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
 grep -q "$STRING6" "$FILE" &&
-    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"3\"/" "$FILE"
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE"
 grep -q "$STRING7" "$FILE" &&
-    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"3\"/" "$FILE"
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"5\"/" "$FILE"
 grep -q "$STRING8" "$FILE" &&
     sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
 grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ### END sed
 chmod 644 /usr/share/snapper/config-templates/root
+chmod 644 /usr/share/snapper/config-templates/var_lib_docker
 chmod 644 /usr/share/snapper/config-templates/var_lib_libvirt
 chmod 644 /usr/share/snapper/config-templates/var_lib_mysql
 chmod 644 /usr/share/snapper/config-templates/var_log
 chmod 644 /usr/share/snapper/config-templates/home
 snapper --no-dbus -c root create-config -t root /
+snapper --no-dbus -c var_lib_docker create-config -t var_lib_docker /var/lib/docker
 snapper --no-dbus -c var_lib_libvirt create-config -t var_lib_libvirt /var/lib/libvirt
 snapper --no-dbus -c var_lib_mysql create-config -t var_lib_mysql /var/lib/mysql
 snapper --no-dbus -c var_log create-config -t var_log /var/log
@@ -536,6 +456,9 @@ mount -a
 chmod 750 /.snapshots
 chmod a+rx /.snapshots
 chown :wheel /.snapshots
+chmod 750 /var/lib/docker/.snapshots
+chmod a+rx /var/lib/docker/.snapshots
+chown :wheel /var/lib/docker/.snapshots
 chmod 750 /var/lib/libvirt/.snapshots
 chmod a+rx /var/lib/libvirt/.snapshots
 chown :wheel /var/lib/libvirt/.snapshots
@@ -548,20 +471,6 @@ chown :wheel /var/log/.snapshots
 chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :wheel /home/.snapshots
-## Configure /usr/share/wallpapers/Custom/content
-mkdir -p /usr/share/wallpapers/Custom/content
-git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
-cp /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
-chmod 755 /usr/share/wallpapers/Custom
-chmod 755 /usr/share/wallpapers/Custom/content
-chmod 644 /usr/share/wallpapers/Custom/content/*
-
-# Configure /var
-## Configure /var/games
-chown :games /var/games
-
-# Set default java
-archlinux-java set java-17-openjdk
 
 # Enable systemd services
 pacman -Qq "apparmor" &&
@@ -569,20 +478,21 @@ pacman -Qq "apparmor" &&
         systemctl enable apparmor.service
         systemctl enable auditd.service
     }
-pacman -Qq "avahi" &&
-    systemctl enable avahi-daemon
-pacman -Qq "bluez" &&
-    systemctl enable bluetooth
-pacman -Qq "cups" &&
-    systemctl enable cups.service
+pacman -Qq "containerd" &&
+    systemctl enable containerd.service
+pacman -Qq "cronie" &&
+    systemctl enable cronie.service
+pacman -Qq "docker" &&
+    systemctl enable docker.service
+pacman -Qq "openssh" &&
+    systemctl enable sshd.service
+pacman -Qq "systemd" &&
+    {
+        systemctl enable systemd-resolved.service
+        systemctl enable systemd-networkd.service
+    }
 pacman -Qq "util-linux" &&
     systemctl enable fstrim.timer
-pacman -Qq "libvirt" &&
-    systemctl enable libvirtd
-pacman -Qq "networkmanager" &&
-    systemctl enable NetworkManager
-pacman -Qq "power-profiles-daemon" &&
-    systemctl enable power-profiles-daemon
 pacman -Qq "reflector" &&
     {
         systemctl enable reflector
