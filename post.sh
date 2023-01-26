@@ -14,6 +14,13 @@ KEYMAP="de-latin1"
 # Fail on error
 set -e
 
+# Define functions
+sed_exit() {
+    echo "ERROR: 'sed' didn't replace, report this @"
+    echo "       https://github.com/LeoMeinel/arch-install/issues"
+    exit 1
+}
+
 # Configure dot-files (setup)
 SYSUSER="<INSERT_SYSUSER>"
 DOCKUSER="<INSERT_DOCKUSER>"
@@ -210,7 +217,7 @@ YES)
         echo '    ;;'
         echo '*)'
         echo '    echo "ERROR: User has not transferred keys to $EFI_KEYS_DIR"'
-        echo '    exit 78'
+        echo '    exit 1'
         echo '    ;;'
         echo 'esac'
     } >~/secureboot.sh
@@ -233,28 +240,28 @@ makepkg -sri --noprogressbar --noconfirm --needed
 FILE=/etc/paru.conf
 STRING="^#RemoveMake"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/RemoveMake/" "$FILE"
+    doas sed -i "s/$STRING/RemoveMake/" "$FILE" || sed_exit
 STRING="^#CleanAfter"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/CleanAfter/" "$FILE"
+    doas sed -i "s/$STRING/CleanAfter/" "$FILE" || sed_exit
 STRING="^#SudoLoop.*"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/SudoLoop = true/" "$FILE"
+    doas sed -i "s/$STRING/SudoLoop = true/" "$FILE" || sed_exit
 STRING="^#\[bin\]"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/\[bin\]/" "$FILE"
+    doas sed -i "s/$STRING/\[bin\]/" "$FILE" || sed_exit
 STRING="^#FileManager =.*"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/FileManager = nvim/" "$FILE"
+    doas sed -i "s/$STRING/FileManager = nvim/" "$FILE" || sed_exit
 STRING="^FileManager = nvim"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "/$STRING/a FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"" "$FILE"
+    doas sed -i "/$STRING/a FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"" "$FILE" || sed_exit
 STRING="^#Sudo =.*"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/Sudo = doas/" "$FILE"
+    doas sed -i "s/$STRING/Sudo = doas/" "$FILE" || sed_exit
 STRING="^#CombinedUpgrade"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "/$STRING/a BatchInstall" "$FILE"
+    doas sed -i "/$STRING/a BatchInstall" "$FILE" || sed_exit
 ## END sed
 
 # Install packages
@@ -270,34 +277,34 @@ doas firecfg --clean
 FILE=/etc/firejail/firecfg.config
 STRING="^code-oss$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#code-oss #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#code-oss #arch-install/" "$FILE" || sed_exit
 STRING="^code$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#code #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#code #arch-install/" "$FILE" || sed_exit
 STRING="^codium$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#codium #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#codium #arch-install/" "$FILE" || sed_exit
 STRING="^dnsmasq$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#dnsmasq #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#dnsmasq #arch-install/" "$FILE" || sed_exit
 STRING="^ktorrent$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#ktorrent #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#ktorrent #arch-install/" "$FILE" || sed_exit
 STRING="^nextcloud-desktop$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#nextcloud-desktop #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#nextcloud-desktop #arch-install/" "$FILE" || sed_exit
 STRING="^nextcloud$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#nextcloud #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#nextcloud #arch-install/" "$FILE" || sed_exit
 STRING="^signal-desktop$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#signal-desktop #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#signal-desktop #arch-install/" "$FILE" || sed_exit
 STRING="^spectacle$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#spectacle #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#spectacle #arch-install/" "$FILE" || sed_exit
 STRING="^vscodium$"
 grep -q "$STRING" "$FILE" &&
-    doas sed -i "s/$STRING/#vscodium #arch-install/" "$FILE"
+    doas sed -i "s/$STRING/#vscodium #arch-install/" "$FILE" || sed_exit
 ## END sed
 doas firecfg --add-users root "$SYSUSER" "$DOCKUSER" "$HOMEUSER"
 doas apparmor_parser -r /etc/apparmor.d/firejail-default

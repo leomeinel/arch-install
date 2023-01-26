@@ -15,6 +15,13 @@ MIRRORCOUNTRIES="NL,DE,DK,FR"
 # Fail on error
 set -eu
 
+# Define functions
+sed_exit() {
+    echo "ERROR: 'sed' didn't replace, report this @"
+    echo "       https://github.com/LeoMeinel/arch-install/issues"
+    exit 1
+}
+
 # Unmount everything from /mnt
 mountpoint -q /mnt &&
     umount -AR /mnt
@@ -34,7 +41,7 @@ done
 [ "${#DISKS[@]}" -ne 2 ] &&
     {
         echo "ERROR: There are not exactly 2 disks attached!"
-        exit 19
+        exit 1
     }
 
 SIZE1="$(lsblk -drno SIZE "${DISKS[0]}" | tr -d "[:space:]")"
@@ -44,7 +51,7 @@ if [ "$SIZE1" = "$SIZE2" ]; then
     DISK2="${DISKS[1]}"
 else
     echo "ERROR: The attached disks don't have the same size!"
-    exit 19
+    exit 1
 fi
 
 # Prompt user
@@ -55,7 +62,7 @@ YES)
     ;;
 *)
     echo "ERROR: User aborted erasing $DISK1 and $DISK2"
-    exit 125
+    exit 1
     ;;
 esac
 
@@ -205,13 +212,13 @@ chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 FILE=/etc/pacman.conf
 STRING="^#Color"
 grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/Color/" "$FILE"
+    sed -i "s/$STRING/Color/" "$FILE" || sed_exit
 STRING="^#ParallelDownloads =.*"
 grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
+    sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE" || sed_exit
 STRING="^#NoProgressBar"
 grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/NoProgressBar/" "$FILE"
+    sed -i "s/$STRING/NoProgressBar/" "$FILE" || sed_exit
 ## END sed
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
@@ -235,7 +242,7 @@ grep -q "$STRING0" "$FILE" &&
     {
         STRING1="rw"
         grep -q "$STRING1" "$FILE" &&
-            sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE"
+            sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE" || sed_exit
     }
 ## END sed
 
