@@ -15,6 +15,13 @@ MIRRORCOUNTRIES="NL,DE,DK,FR"
 # Fail on error
 set -eu
 
+# Define functions
+sed_exit() {
+    echo "ERROR: 'sed' didn't replace, report this @"
+    echo "       https://github.com/LeoMeinel/arch-install/issues"
+    exit 1
+}
+
 # Unmount everything from /mnt
 mountpoint -q /mnt &&
     umount -AR /mnt
@@ -153,13 +160,13 @@ chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 FILE=/etc/pacman.conf
 STRING="^#Color"
 grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/Color/" "$FILE"
+    sed -i "s/$STRING/Color/" "$FILE" || sed_exit
 STRING="^#ParallelDownloads =.*"
 grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
+    sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE" || sed_exit
 STRING="^#NoProgressBar"
 grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/NoProgressBar/" "$FILE"
+    sed -i "s/$STRING/NoProgressBar/" "$FILE" || sed_exit
 ## END sed
 {
     echo ""
