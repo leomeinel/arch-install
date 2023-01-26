@@ -28,7 +28,12 @@ GUESTUSER="guest"
 set -eu
 
 # Add groups & users
-sed -i 's/^SHELL=.*/SHELL=\/bin\/bash/' /etc/default/useradd
+## START sed
+FILE="/etc/default/useradd"
+STRING="^SHELL=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
+## END sed
 groupadd -r audit
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel "$SYSUSER"
@@ -46,7 +51,24 @@ passwd "$GUESTUSER"
 # Setup /etc
 rsync -rq /git/arch-install/etc/ /etc
 ## Configure locale in /etc/locale.gen & /etc/locale.conf
-sed -i 's/^#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/;s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/;s/^#en_DK.UTF-8 UTF-8/en_DK.UTF-8 UTF-8/;s/^#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/;s/^#nl_NL.UTF-8 UTF-8/nl_NL.UTF-8 UTF-8/' /etc/locale.gen
+### START sed
+FILE="/etc/locale.gen"
+STRING="^#de_DE.UTF-8 UTF-8"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/de_DE.UTF-8 UTF-8/" "$FILE"
+STRING="^#en_US.UTF-8 UTF-8"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/en_US.UTF-8 UTF-8/" "$FILE"
+STRING="^#en_DK.UTF-8 UTF-8"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/en_DK.UTF-8 UTF-8/" "$FILE"
+STRING="^#fr_FR.UTF-8 UTF-8"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/fr_FR.UTF-8 UTF-8/" "$FILE"
+STRING="^#nl_NL.UTF-8 UTF-8"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/nl_NL.UTF-8 UTF-8/" "$FILE"
+### END sed
 chmod 644 /etc/locale.conf
 locale-gen
 ## Configure /etc/doas.conf
@@ -98,7 +120,12 @@ pacman -Qq "nvidia-dkms" &&
             echo '/usr/bin/mkinitcpio -P'
             echo ''
         } >/etc/pacman.d/hooks/scripts/90-nvidia-gen-mkinitcpio.sh
-        sed -i '/Target = linux-zen/a Target = nvidia-dkms' /etc/pacman.d/hooks/95-upgrade-grub.hook
+        #### START sed
+        FILE="/etc/pacman.d/hooks/95-upgrade-grub.hook"
+        STRING="^Target = linux-zen"
+        grep -q "$STRING" "$FILE" &&
+            sed -i "/$STRING/a Target = nvidia-dkms" "$FILE"
+        #### END sed
     }
 chmod 755 /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts
@@ -123,8 +150,23 @@ chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
     echo "--sort rate"
 } >/etc/xdg/reflector/reflector.conf
 chmod 644 /etc/xdg/reflector/reflector.conf
-sed -i 's/^#PACMAN_AUTH=.*/PACMAN_AUTH=(doas)/' /etc/makepkg.conf
-sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#CacheDir/CacheDir/' /etc/pacman.conf
+### START sed
+FILE="/etc/makepkg.conf"
+STRING="^#PACMAN_AUTH=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/PACMAN_AUTH=(doas)/" "$FILE"
+###
+FILE="/etc/pacman.conf"
+STRING="^#Color"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/Color/" "$FILE"
+STRING="^#ParallelDownloads =.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
+STRING="^#CacheDir"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/CacheDir/" "$FILE"
+### END sed
 {
     echo ""
     echo "# Custom"
@@ -188,22 +230,63 @@ chmod 644 /etc/cryptboot.conf
     echo "PermitRootLogin no"
 } >>/etc/ssh/sshd_config
 ## Configure /etc/xdg/user-dirs.defaults
-sed -i 's/^TEMPLATES=.*/TEMPLATES=Documents\/Templates/;s/^PUBLICSHARE=.*/PUBLICSHARE=Documents\/Public/;s/^DESKTOP=.*/DESKTOP=Desktop/;s/^MUSIC=.*/MUSIC=Documents\/Music/;s/^PICTURES=.*/PICTURES=Documents\/Pictures/;s/^VIDEOS=.*/VIDEOS=Documents\/Videos/' /etc/xdg/user-dirs.defaults
+
+### START sed
+FILE="/etc/xdg/user-dirs.defaults"
+STRING="^TEMPLATES=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s|$STRING|TEMPLATES=Documents/Templates|" "$FILE"
+STRING="^PUBLICSHARE=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s|$STRING|PUBLICSHARE=Documents/Public|" "$FILE"
+STRING="^DESKTOP=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s|$STRING|DESKTOP=Desktop|" "$FILE"
+STRING="^MUSIC=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s|$STRING|MUSIC=Documents/Music|" "$FILE"
+STRING="^PICTURES=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s|$STRING|PICTURES=Documents/Pictures|" "$FILE"
+STRING="^VIDEOS=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
+### END sed
 ## Configure /etc/usbguard/usbguard-daemon.conf & /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
 ## Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su & /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
-sed -i 's/^#.*dir.*=.*/dir = \/var\/lib\/faillock/' /etc/security/faillock.conf
+### START sed
+FILE="/etc/security/faillock.conf"
+STRING="^#.*dir.*=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s|$STRING|dir = /var/lib/faillock|" "$FILE"
+### END sed
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 ## Configure /etc/audit/auditd.conf
-sed -i 's/^log_group.*=.*/log_group = audit/' /etc/audit/auditd.conf
+### START sed
+FILE="/etc/audit/auditd.conf"
+STRING="^log_group.*=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/log_group = audit/" "$FILE"
+### END sed
 ## mDNS
 ### Configure /etc/systemd/resolved.conf
-sed -i 's/^#MulticastDNS=.*/MulticastDNS=no/' /etc/systemd/resolved.conf
+### START sed
+FILE="/etc/systemd/resolved.conf"
+STRING="^#MulticastDNS=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/MulticastDNS=no/" "$FILE"
+### END sed
 ### Configure /etc/nsswitch.conf
-sed -i 's/^hosts: mymachines/hosts: mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
+### START sed
+FILE="/etc/nsswitch.conf"
+STRING="^hosts: mymachines"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/hosts: mymachines mdns_minimal [NOTFOUND=return]/" "$FILE"
+### END sed
 ## Configure /etc/luks/keys
 mkdir -p /etc/luks/keys
 dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
@@ -211,20 +294,78 @@ chmod 000 /etc/luks/keys/md0_crypt.key
 echo "Enter passphrase for $DISK1"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 ## Configure /etc/bluetooth/main.conf
-sed -i 's/^#AutoEnable=.*/AutoEnable=true/' /etc/bluetooth/main.conf
+### START sed
+FILE="/etc/bluetooth/main.conf"
+STRING="^#AutoEnable=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/AutoEnable=true/" "$FILE"
+### END sed
 ## Configure /etc/mkinitcpio.conf
-sed -i 's/^FILES=.*/FILES=(\/etc\/luks\/keys\/md0_crypt.key)/;s/^MODULES=.*/MODULES=(btrfs)/;s/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt filesystems fsck)/' /etc/mkinitcpio.conf
-### If on nvidia enable kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
-pacman -Qq "nvidia-dkms" &&
-    sed -i '/^MODULES=.*/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+### START sed
+FILE="/etc/mkinitcpio.conf"
+STRING="^FILES=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s|$STRING|FILES=(/etc/luks/keys/md0_crypt.key)|" "$FILE"
+STRING="^MODULES=.*"
+grep -q "$STRING" "$FILE" &&
+    {
+        sed -i "s/$STRING/MODULES=(btrfs)/" "$FILE"
+        #### If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
+        pacman -Qq "nvidia-dkms" &&
+            sed -i "/$STRING/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/" "$FILE"
+    }
+STRING="^HOOKS=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt filesystems fsck)/" "$FILE"
+### END sed
 ## Configure /etc/default/grub
-sed -i "s/^#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/;s/^#GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/;s/^GRUB_GFXPAYLOAD_LINUX=.*/GRUB_GFXPAYLOAD_LINUX=keep/;s/^GRUB_GFXMODE=.*/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/;s/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/etc\/luks\/keys\/md0_crypt.key cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/etc\/luks\/keys\/md0_crypt.key cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\"/;s/^#GRUB_DISABLE_SUBMENU=.*/GRUB_DISABLE_SUBMENU=y/;s/^GRUB_DEFAULT=.*/GRUB_DEFAULT=0/;s/^#GRUB_SAVEDEFAULT=.*/GRUB_SAVEDEFAULT=false/" /etc/default/grub
-### If on nvidia set kernel parameter nvidia_drm.modeset=1
-pacman -Qq "nvidia-dkms" &&
-    sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ nvidia_drm.modeset=1"/;/^GRUB_CMDLINE_LINUX=.*/s/"$/ nvidia_drm.modeset=1"/' /etc/default/grub
-### If on intel set kernel parameter intel_iommu=on
-pacman -Qq "intel-ucode" &&
-    sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=.*/s/"$/ intel_iommu=on"/;/^GRUB_CMDLINE_LINUX=.*/s/"$/ intel_iommu=on"/' /etc/default/grub
+### START sed
+FILE="/etc/default/grub"
+STRING="^#GRUB_ENABLE_CRYPTODISK=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/GRUB_ENABLE_CRYPTODISK=y/" "$FILE"
+STRING="^#GRUB_TERMINAL_OUTPUT=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/" "$FILE"
+STRING="^GRUB_GFXPAYLOAD_LINUX=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/GRUB_GFXPAYLOAD_LINUX=keep/" "$FILE"
+STRING="^GRUB_GFXMODE=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/" "$FILE"
+PARAMETERS="\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/etc\/luks\/keys\/md0_crypt.key cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\""
+STRING="^GRUB_CMDLINE_LINUX_DEFAULT=.*"
+grep -q "$STRING" "$FILE" &&
+    {
+        sed -i "s/$STRING/GRUB_CMDLINE_LINUX_DEFAULT=$PARAMETERS/" "$FILE"
+        #### If on nvidia set kernel parameter nvidia_drm.modeset=1
+        pacman -Qq "nvidia-dkms" &&
+            sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE"
+        #### If on intel set kernel parameter intel_iommu=on
+        pacman -Qq "intel-ucode" &&
+            sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE"
+    }
+STRING="^GRUB_CMDLINE_LINUX=.*"
+grep -q "$STRING" "$FILE" &&
+    {
+        sed -i "s/$STRING/GRUB_CMDLINE_LINUX=$PARAMETERS/" "$FILE"
+        #### If on nvidia set kernel parameter nvidia_drm.modeset=1
+        pacman -Qq "nvidia-dkms" &&
+            sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE"
+        pacman -Qq "intel-ucode" &&
+            #### If on intel set kernel parameter intel_iommu=on
+            sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE"
+    }
+STRING="^#GRUB_DISABLE_SUBMENU=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/GRUB_DISABLE_SUBMENU=y/" "$FILE"
+STRING="^GRUB_DEFAULT=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/GRUB_DEFAULT=0/" "$FILE"
+STRING="^#GRUB_SAVEDEFAULT=.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/GRUB_SAVEDEFAULT=false/" "$FILE"
+### END sed
 
 # Setup /usr
 rsync -rq /git/arch-install/usr/ /usr
@@ -257,9 +398,128 @@ rm -rf /.snapshots
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/root
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_log
 cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/home
-sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.2"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="3"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/root
-sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.02"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="1"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="1"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/var_log
-sed -i 's/^ALLOW_GROUPS=.*/ALLOW_GROUPS="wheel"/;s/^SPACE_LIMIT=.*/SPACE_LIMIT="0.2"/;s/^NUMBER_LIMIT=.*/NUMBER_LIMIT="5"/;s/^NUMBER_LIMIT_IMPORTANT=.*/NUMBER_LIMIT_IMPORTANT="5"/;s/^TIMELINE_CREATE=.*/TIMELINE_CREATE="yes"/;s/^TIMELINE_CLEANUP=.*/TIMELINE_CLEANUP="yes"/;s/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="3"/;s/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="3"/;s/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/;s/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' /usr/share/snapper/config-templates/home
+### START sed
+STRING0="^ALLOW_GROUPS=.*"
+STRING1="^SPACE_LIMIT=.*"
+STRING2="^NUMBER_LIMIT=.*"
+STRING3="^NUMBER_LIMIT_IMPORTANT=.*"
+STRING4="^TIMELINE_CREATE=.*"
+STRING5="^TIMELINE_CLEANUP=.*"
+STRING6="^TIMELINE_LIMIT_HOURLY=.*"
+STRING7="^TIMELINE_LIMIT_DAILY=.*"
+STRING8="^TIMELINE_LIMIT_MONTHLY=.*"
+STRING9="^TIMELINE_LIMIT_YEARLY=.*"
+###
+FILE="/usr/share/snapper/config-templates/root"
+grep -q "$STRING0" "$FILE" &&
+    sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
+grep -q "$STRING1" "$FILE" &&
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE"
+grep -q "$STRING2" "$FILE" &&
+    sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
+grep -q "$STRING3" "$FILE" &&
+    sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
+grep -q "$STRING4" "$FILE" &&
+    sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
+grep -q "$STRING5" "$FILE" &&
+    sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
+grep -q "$STRING6" "$FILE" &&
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE"
+grep -q "$STRING7" "$FILE" &&
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"3\"/" "$FILE"
+grep -q "$STRING8" "$FILE" &&
+    sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
+grep -q "$STRING9" "$FILE" &&
+    sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
+###
+FILE="/usr/share/snapper/config-templates/var_lib_libvirt"
+grep -q "$STRING0" "$FILE" &&
+    sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
+grep -q "$STRING1" "$FILE" &&
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.05\"/" "$FILE"
+grep -q "$STRING2" "$FILE" &&
+    sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
+grep -q "$STRING3" "$FILE" &&
+    sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
+grep -q "$STRING4" "$FILE" &&
+    sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
+grep -q "$STRING5" "$FILE" &&
+    sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
+grep -q "$STRING6" "$FILE" &&
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE"
+grep -q "$STRING7" "$FILE" &&
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE"
+grep -q "$STRING8" "$FILE" &&
+    sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
+grep -q "$STRING9" "$FILE" &&
+    sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
+###
+FILE="/usr/share/snapper/config-templates/var_lib_mysql"
+grep -q "$STRING0" "$FILE" &&
+    sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
+grep -q "$STRING1" "$FILE" &&
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE"
+grep -q "$STRING2" "$FILE" &&
+    sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
+grep -q "$STRING3" "$FILE" &&
+    sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
+grep -q "$STRING4" "$FILE" &&
+    sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
+grep -q "$STRING5" "$FILE" &&
+    sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
+grep -q "$STRING6" "$FILE" &&
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"3\"/" "$FILE"
+grep -q "$STRING7" "$FILE" &&
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"2\"/" "$FILE"
+grep -q "$STRING8" "$FILE" &&
+    sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
+grep -q "$STRING9" "$FILE" &&
+    sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
+###
+FILE="/usr/share/snapper/config-templates/var_log"
+grep -q "$STRING0" "$FILE" &&
+    sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
+grep -q "$STRING1" "$FILE" &&
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.02\"/" "$FILE"
+grep -q "$STRING2" "$FILE" &&
+    sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
+grep -q "$STRING3" "$FILE" &&
+    sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
+grep -q "$STRING4" "$FILE" &&
+    sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
+grep -q "$STRING5" "$FILE" &&
+    sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
+grep -q "$STRING6" "$FILE" &&
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE"
+grep -q "$STRING7" "$FILE" &&
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE"
+grep -q "$STRING8" "$FILE" &&
+    sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
+grep -q "$STRING9" "$FILE" &&
+    sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
+###
+FILE="/usr/share/snapper/config-templates/home"
+grep -q "$STRING0" "$FILE" &&
+    sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
+grep -q "$STRING1" "$FILE" &&
+    sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE"
+grep -q "$STRING2" "$FILE" &&
+    sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
+grep -q "$STRING3" "$FILE" &&
+    sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
+grep -q "$STRING4" "$FILE" &&
+    sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
+grep -q "$STRING5" "$FILE" &&
+    sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
+grep -q "$STRING6" "$FILE" &&
+    sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"3\"/" "$FILE"
+grep -q "$STRING7" "$FILE" &&
+    sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"3\"/" "$FILE"
+grep -q "$STRING8" "$FILE" &&
+    sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
+grep -q "$STRING9" "$FILE" &&
+    sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
+### END sed
 chmod 644 /usr/share/snapper/config-templates/root
 chmod 644 /usr/share/snapper/config-templates/var_log
 chmod 644 /usr/share/snapper/config-templates/home

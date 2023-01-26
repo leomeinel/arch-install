@@ -149,7 +149,18 @@ DISK1UUID="$(blkid -s UUID -o value $DISK1)"
 chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 
 # Install packages
-sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#NoProgressBar/NoProgressBar/' /etc/pacman.conf
+## START sed
+FILE="/etc/pacman.conf"
+STRING="^#Color"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/Color/" "$FILE"
+STRING="^#ParallelDownloads =.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
+STRING="^#NoProgressBar"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/NoProgressBar/" "$FILE"
+## END sed
 {
     echo ""
     echo "# Custom"
