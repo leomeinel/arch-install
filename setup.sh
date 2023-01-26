@@ -314,11 +314,11 @@ grep -q "$STRING" "$FILE" &&
 STRING="^MODULES=.*"
 grep -q "$STRING" "$FILE" &&
     {
-        sed -i "s/$STRING/MODULES=(btrfs)/" "$FILE" || sed_exit
+        sed -i "s/$STRING/MODULES=(btrfs)/" "$FILE"
         #### If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
         pacman -Qq "nvidia-dkms" &&
-            sed -i "/$STRING/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/" "$FILE" || sed_exit
-    }
+            sed -i "/$STRING/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/" "$FILE"
+    } || sed_exit
 STRING="^HOOKS=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/" "$FILE" || sed_exit
@@ -342,25 +342,25 @@ PARAMETERS="\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,appa
 STRING="^GRUB_CMDLINE_LINUX_DEFAULT=.*"
 grep -q "$STRING" "$FILE" &&
     {
-        sed -i "s/$STRING/GRUB_CMDLINE_LINUX_DEFAULT=$PARAMETERS/" "$FILE" || sed_exit
+        sed -i "s/$STRING/GRUB_CMDLINE_LINUX_DEFAULT=$PARAMETERS/" "$FILE"
         #### If on nvidia set kernel parameter nvidia_drm.modeset=1
         pacman -Qq "nvidia-dkms" &&
-            sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE" || sed_exit
+            sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE"
         #### If on intel set kernel parameter intel_iommu=on
         pacman -Qq "intel-ucode" &&
-            sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE" || sed_exit
-    }
+            sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE"
+    } || sed_exit
 STRING="^GRUB_CMDLINE_LINUX=.*"
 grep -q "$STRING" "$FILE" &&
     {
-        sed -i "s/$STRING/GRUB_CMDLINE_LINUX=$PARAMETERS/" "$FILE" || sed_exit
+        sed -i "s/$STRING/GRUB_CMDLINE_LINUX=$PARAMETERS/" "$FILE"
         #### If on nvidia set kernel parameter nvidia_drm.modeset=1
         pacman -Qq "nvidia-dkms" &&
-            sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE" || sed_exit
+            sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE"
         pacman -Qq "intel-ucode" &&
             #### If on intel set kernel parameter intel_iommu=on
-            sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE" || sed_exit
-    }
+            sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE"
+    } || sed_exit
 STRING="^#GRUB_DISABLE_SUBMENU=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/GRUB_DISABLE_SUBMENU=y/" "$FILE" || sed_exit

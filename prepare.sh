@@ -262,7 +262,7 @@ grep -q "$STRING0" "$FILE" &&
         STRING1="rw"
         grep -q "$STRING1" "$FILE" &&
             sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE" || sed_exit
-    }
+    } || sed_exit
 ## END sed
 
 # Prepare /mnt/git/arch-install/setup.sh
