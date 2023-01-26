@@ -3,7 +3,7 @@
 # File: prepare.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
-# Copyright (c) 2022 Leopold Meinel & contributors
+# Copyright (c) 2023 Leopold Meinel & contributors
 # SPDX ID: GPL-3.0-or-later
 # URL: https://www.gnu.org/licenses/gpl-3.0-standalone.html
 # -----
@@ -202,7 +202,18 @@ DISK2UUID="$(blkid -s UUID -o value $DISK2)"
 chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 
 # Install packages
-sed -i 's/^#Color/Color/;s/^#ParallelDownloads =.*/ParallelDownloads = 10/;s/^#NoProgressBar/NoProgressBar/' /etc/pacman.conf
+## START sed
+FILE="/etc/pacman.conf"
+STRING="^#Color"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/Color/" "$FILE"
+STRING="^#ParallelDownloads =.*"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
+STRING="^#NoProgressBar"
+grep -q "$STRING" "$FILE" &&
+    sed -i "s/$STRING/NoProgressBar/" "$FILE"
+## END sed
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
@@ -236,7 +247,16 @@ genfstab -U /mnt >>/mnt/etc/fstab
     echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid 0 0'
     echo 'tmpfs /tmp tmpfs rw,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
 } >>/mnt/etc/fstab
-sed -i '/\/.efi.bak.*vfat/s/rw/rw,noauto/' /mnt/etc/fstab
+## START sed
+FILE="/mnt/etc/fstab"
+STRING0="\/.efi.bak.*vfat"
+grep -q "$STRING0" "$FILE" &&
+    {
+        STRING1="rw"
+        grep -q "$STRING1" "$FILE" &&
+            sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE"
+    }
+## END sed
 
 # Prepare /mnt/git/arch-install/setup.sh
 git clone https://github.com/LeoMeinel/arch-install.git /mnt/git/arch-install

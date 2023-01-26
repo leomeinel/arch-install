@@ -260,8 +260,33 @@ cd ~/git/paru-bin
 makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
-doas sed -i 's/^#RemoveMake/RemoveMake/;s/^#CleanAfter/CleanAfter/;s/^#SudoLoop.*/SudoLoop = true/;s/^#\[bin\]/\[bin\]/;s/^#FileManager =.*/FileManager = nvim/;s/^#Sudo =.*/Sudo = doas/;/^#CombinedUpgrade/a BatchInstall' /etc/paru.conf
-doas sh -c 'echo FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"' >> /etc/paru.conf'
+## START sed
+FILE="/etc/paru.conf"
+STRING="^#RemoveMake"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/RemoveMake/" "$FILE"
+STRING="^#CleanAfter"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/CleanAfter/" "$FILE"
+STRING="^#SudoLoop.*"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/SudoLoop = true/" "$FILE"
+STRING="^#\[bin\]"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/\[bin\]/" "$FILE"
+STRING="^#FileManager =.*"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/FileManager = nvim/" "$FILE"
+STRING="^FileManager = nvim"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "/$STRING/a FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"" "$FILE"
+STRING="^#Sudo =.*"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/Sudo = doas/" "$FILE"
+STRING="^#CombinedUpgrade"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "/$STRING/a BatchInstall" "$FILE"
+## END sed
 
 # Install packages
 # FIXME: This can't be tested in a VM
@@ -281,7 +306,39 @@ doas su -lc '/dot-files.sh vscodium' "$HOMEUSER"
 doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
 # Configure firejail
-doas sed -i 's/^code-oss$/#code-oss #arch-install/;s/^code$/#code #arch-install/;s/^codium$/#codium #arch-install/;s/^dnsmasq$/#dnsmasq #arch-install/;s/^ktorrent$/#ktorrent #arch-install/;s/^nextcloud-desktop$/#nextcloud-desktop #arch-install/;s/^nextcloud$/#nextcloud #arch-install/;s/^signal-desktop$/#signal-desktop #arch-install/;s/^spectacle$/#spectacle #arch-install/;s/^vscodium$/#vscodium #arch-install/' /etc/firejail/firecfg.config
+## START sed
+FILE="/etc/firejail/firecfg.config"
+STRING="^code-oss$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#code-oss #arch-install/" "$FILE"
+STRING="^code$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#code #arch-install/" "$FILE"
+STRING="^codium$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#codium #arch-install/" "$FILE"
+STRING="^dnsmasq$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#dnsmasq #arch-install/" "$FILE"
+STRING="^ktorrent$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#ktorrent #arch-install/" "$FILE"
+STRING="^nextcloud-desktop$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#nextcloud-desktop #arch-install/" "$FILE"
+STRING="^nextcloud$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#nextcloud #arch-install/" "$FILE"
+STRING="^signal-desktop$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#signal-desktop #arch-install/" "$FILE"
+STRING="^spectacle$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#spectacle #arch-install/" "$FILE"
+STRING="^vscodium$"
+grep -q "$STRING" "$FILE" &&
+    doas sed -i "s/$STRING/#vscodium #arch-install/" "$FILE"
+## END sed
 doas firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
 doas apparmor_parser -r /etc/apparmor.d/firejail-default
 doas firecfg
@@ -292,7 +349,18 @@ doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
 
 # Configure /etc/mkinitcpio.conf
 pacman -Qq mkinitcpio-bluetooth &&
-    doas sed -i '/^HOOKS=.*/s/encrypt/bluetooth encrypt/' /etc/mkinitcpio.conf
+    {
+        ## START sed
+        FILE="/etc/mkinitcpio.conf"
+        STRING0="^HOOKS=.*"
+        grep -q "$STRING0" "$FILE" &&
+            {
+                STRING1="encrypt"
+                grep -q "$STRING1" "$FILE" &&
+                    doas sed -i "/$STRING0/s/$STRING1/bluetooth $STRING1/" "$FILE"
+            }
+        ## END sed
+    }
 
 # Enable systemd services
 pacman -Qq "iptables" &&
