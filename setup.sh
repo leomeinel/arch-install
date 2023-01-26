@@ -30,7 +30,7 @@ set -eu
 
 # Add groups & users
 ## START sed
-FILE="/etc/default/useradd"
+FILE=/etc/default/useradd
 STRING="^SHELL=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
@@ -57,7 +57,7 @@ passwd "$GUESTUSER"
 rsync -rq /git/arch-install/etc/ /etc
 ## Configure locale in /etc/locale.gen & /etc/locale.conf
 ### START sed
-FILE="/etc/locale.gen"
+FILE=/etc/locale.gen
 STRING="^#de_DE.UTF-8 UTF-8"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/de_DE.UTF-8 UTF-8/" "$FILE"
@@ -127,7 +127,7 @@ pacman -Qq "nvidia-dkms" &&
             echo ''
         } >/etc/pacman.d/hooks/scripts/90-nvidia-gen-mkinitcpio.sh
         #### START sed
-        FILE="/etc/pacman.d/hooks/95-upgrade-grub.hook"
+        FILE=/etc/pacman.d/hooks/95-upgrade-grub.hook
         STRING="^Target = linux-zen"
         grep -q "$STRING" "$FILE" &&
             sed -i "/$STRING/a Target = nvidia-dkms" "$FILE"
@@ -157,12 +157,12 @@ chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 } >/etc/xdg/reflector/reflector.conf
 chmod 644 /etc/xdg/reflector/reflector.conf
 ### START sed
-FILE="/etc/makepkg.conf"
+FILE=/etc/makepkg.conf
 STRING="^#PACMAN_AUTH=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/PACMAN_AUTH=(doas)/" "$FILE"
 ###
-FILE="/etc/pacman.conf"
+FILE=/etc/pacman.conf
 STRING="^#Color"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/Color/" "$FILE"
@@ -228,7 +228,7 @@ chmod 644 /etc/cryptboot.conf
 } >>/etc/ssh/sshd_config
 ## Configure /etc/xdg/user-dirs.defaults
 ### START sed
-FILE="/etc/xdg/user-dirs.defaults"
+FILE=/etc/xdg/user-dirs.defaults
 STRING="^TEMPLATES=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s|$STRING|TEMPLATES=Documents/Templates|" "$FILE"
@@ -256,7 +256,7 @@ usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --excep
 ## Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su & /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
 ### START sed
-FILE="/etc/security/faillock.conf"
+FILE=/etc/security/faillock.conf
 STRING="^#.*dir.*=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s|$STRING|dir = /var/lib/faillock|" "$FILE"
@@ -265,7 +265,7 @@ echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 ## Configure /etc/audit/auditd.conf
 ### START sed
-FILE="/etc/audit/auditd.conf"
+FILE=/etc/audit/auditd.conf
 STRING="^log_group.*=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/log_group = audit/" "$FILE"
@@ -273,14 +273,14 @@ grep -q "$STRING" "$FILE" &&
 ## mDNS
 ### Configure /etc/systemd/resolved.conf
 ### START sed
-FILE="/etc/systemd/resolved.conf"
+FILE=/etc/systemd/resolved.conf
 STRING="^#MulticastDNS=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/MulticastDNS=no/" "$FILE"
 ### END sed
 ### Configure /etc/nsswitch.conf
 ### START sed
-FILE="/etc/nsswitch.conf"
+FILE=/etc/nsswitch.conf
 STRING="^hosts: mymachines"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/hosts: mymachines mdns_minimal [NOTFOUND=return]/" "$FILE"
@@ -293,14 +293,14 @@ echo "Enter passphrase for /dev/md/md0"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 ## Configure /etc/bluetooth/main.conf
 ### START sed
-FILE="/etc/bluetooth/main.conf"
+FILE=/etc/bluetooth/main.conf
 STRING="^#AutoEnable=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/AutoEnable=true/" "$FILE"
 ### END sed
 ## Configure /etc/mkinitcpio.conf
 ### START sed
-FILE="/etc/mkinitcpio.conf"
+FILE=/etc/mkinitcpio.conf
 STRING="^FILES=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s|$STRING|FILES=(/etc/luks/keys/md0_crypt.key)|" "$FILE"
@@ -318,7 +318,7 @@ grep -q "$STRING" "$FILE" &&
 ### END sed
 ## Configure /etc/default/grub
 ### START sed
-FILE="/etc/default/grub"
+FILE=/etc/default/grub
 STRING="^#GRUB_ENABLE_CRYPTODISK=.*"
 grep -q "$STRING" "$FILE" &&
     sed -i "s/$STRING/GRUB_ENABLE_CRYPTODISK=y/" "$FILE"
@@ -410,7 +410,7 @@ STRING7="^TIMELINE_LIMIT_DAILY=.*"
 STRING8="^TIMELINE_LIMIT_MONTHLY=.*"
 STRING9="^TIMELINE_LIMIT_YEARLY=.*"
 ###
-FILE="/usr/share/snapper/config-templates/root"
+FILE=/usr/share/snapper/config-templates/root
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
@@ -432,7 +432,7 @@ grep -q "$STRING8" "$FILE" &&
 grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ###
-FILE="/usr/share/snapper/config-templates/var_lib_libvirt"
+FILE=/usr/share/snapper/config-templates/var_lib_libvirt
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
@@ -454,7 +454,7 @@ grep -q "$STRING8" "$FILE" &&
 grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ###
-FILE="/usr/share/snapper/config-templates/var_lib_mysql"
+FILE=/usr/share/snapper/config-templates/var_lib_mysql
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
@@ -476,7 +476,7 @@ grep -q "$STRING8" "$FILE" &&
 grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ###
-FILE="/usr/share/snapper/config-templates/var_log"
+FILE=/usr/share/snapper/config-templates/var_log
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
@@ -498,7 +498,7 @@ grep -q "$STRING8" "$FILE" &&
 grep -q "$STRING9" "$FILE" &&
     sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ###
-FILE="/usr/share/snapper/config-templates/home"
+FILE=/usr/share/snapper/config-templates/home
 grep -q "$STRING0" "$FILE" &&
     sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
 grep -q "$STRING1" "$FILE" &&
