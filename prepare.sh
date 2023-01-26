@@ -41,7 +41,7 @@ done
 [ "${#DISKS[@]}" -ne 2 ] &&
     {
         echo "ERROR: There are not exactly 2 disks attached!"
-        exit 19
+        exit 1
     }
 
 SIZE1="$(lsblk -drno SIZE "${DISKS[0]}" | tr -d "[:space:]")"
@@ -51,7 +51,7 @@ if [ "$SIZE1" = "$SIZE2" ]; then
     DISK2="${DISKS[1]}"
 else
     echo "ERROR: The attached disks don't have the same size!"
-    exit 19
+    exit 1
 fi
 
 # Prompt user
@@ -62,7 +62,7 @@ YES)
     ;;
 *)
     echo "ERROR: User aborted erasing $DISK1 and $DISK2"
-    exit 125
+    exit 1
     ;;
 esac
 

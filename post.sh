@@ -248,7 +248,7 @@ YES)
         echo '    ;;'
         echo '*)'
         echo '    echo "ERROR: User has not transferred keys to $EFI_KEYS_DIR"'
-        echo '    exit 78'
+        echo '    exit 1'
         echo '    ;;'
         echo 'esac'
     } >~/secureboot.sh
