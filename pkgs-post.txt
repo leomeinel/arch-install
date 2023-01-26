@@ -1,7 +1,4 @@
 arc-kde
-aspnet-targeting-pack-bin
-dotnet-sdk-bin
-freetube-bin
 gdlauncher-bin
 librewolf-bin
 macchina-bin
@@ -15,4 +12,3 @@ vscodium-bin
 vscodium-bin-marketplace
 waterfox-g-bin
 xdg-ninja-git
-xxd-standalone
