@@ -159,14 +159,14 @@ chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 ## START sed
 FILE=/etc/pacman.conf
 STRING="^#Color"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/Color/" "$FILE" || sed_exit
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/Color/" "$FILE"
 STRING="^#ParallelDownloads =.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE" || sed_exit
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
 STRING="^#NoProgressBar"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/NoProgressBar/" "$FILE" || sed_exit
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/NoProgressBar/" "$FILE"
 ## END sed
 {
     echo ""
