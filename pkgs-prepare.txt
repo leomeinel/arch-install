@@ -3,6 +3,7 @@ base-devel
 btrfs-progs
 git
 iptables
+lib32-mesa
 linux
 linux-firmware
 linux-headers
@@ -10,7 +11,6 @@ linux-lts
 linux-lts-headers
 linux-zen
 linux-zen-headers
-mdadm
 mesa
 neovim
 opendoas
