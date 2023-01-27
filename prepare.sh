@@ -37,13 +37,11 @@ for ((i = 0; i < DISKS_LENGTH; i++)); do
         }
     DISKS=("${DISKS[@]}")
 done
-
 [ "${#DISKS[@]}" -ne 2 ] &&
     {
         echo "ERROR: There are not exactly 2 disks attached!"
         exit 1
     }
-
 SIZE1="$(lsblk -drno SIZE "${DISKS[0]}" | tr -d "[:space:]")"
 SIZE2="$(lsblk -drno SIZE "${DISKS[1]}" | tr -d "[:space:]")"
 if [ "$SIZE1" = "$SIZE2" ]; then
