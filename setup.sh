@@ -297,7 +297,7 @@ sed -i "s/$STRING/hosts: mymachines mdns_minimal [NOTFOUND=return]/" "$FILE"
 mkdir -p /etc/luks/keys
 dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
 chmod 000 /etc/luks/keys/md0_crypt.key
-echo "Enter passphrase for $DISK1"
+echo "Enter passphrase for $DISK1P2"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 ## Configure /etc/bluetooth/main.conf
 ### START sed
