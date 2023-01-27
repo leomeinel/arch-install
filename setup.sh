@@ -237,7 +237,6 @@ chmod 644 /etc/cryptboot.conf
     echo "PermitRootLogin no"
 } >>/etc/ssh/sshd_config
 ## Configure /etc/xdg/user-dirs.defaults
-
 ### START sed
 FILE=/etc/xdg/user-dirs.defaults
 STRING="^TEMPLATES=.*"
