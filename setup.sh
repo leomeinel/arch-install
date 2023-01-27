@@ -243,7 +243,6 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/" "$FILE"
 PARAMETERS="\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf lockdown=integrity module.sig_enforce=1 iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/etc\/luks\/keys\/md0_crypt.key cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\""
 STRING="^GRUB_CMDLINE_LINUX_DEFAULT=.*"
-
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/GRUB_CMDLINE_LINUX_DEFAULT=$PARAMETERS/" "$FILE"
 #### If on intel set kernel parameter intel_iommu=on
