@@ -211,14 +211,14 @@ chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 ## START sed
 FILE=/etc/pacman.conf
 STRING="^#Color"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/Color/" "$FILE" || sed_exit
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/Color/" "$FILE"
 STRING="^#ParallelDownloads =.*"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE" || sed_exit
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
 STRING="^#NoProgressBar"
-grep -q "$STRING" "$FILE" &&
-    sed -i "s/$STRING/NoProgressBar/" "$FILE" || sed_exit
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/NoProgressBar/" "$FILE"
 ## END sed
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
@@ -238,12 +238,10 @@ genfstab -U /mnt >>/mnt/etc/fstab
 ## START sed
 FILE=/mnt/etc/fstab
 STRING0="\/.efi.bak.*vfat"
-grep -q "$STRING0" "$FILE" &&
-    {
-        STRING1="rw"
-        grep -q "$STRING1" "$FILE" &&
-            sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE" || sed_exit
-    } || sed_exit
+grep -q "$STRING0" "$FILE" || sed_exit
+STRING1="rw"
+grep -q "$STRING1" "$FILE" || sed_exit
+sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE"
 ## END sed
 
 # Configure /mnt/etc/resolv.conf
