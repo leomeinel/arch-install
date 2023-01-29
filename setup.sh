@@ -20,7 +20,7 @@ GRUBRESOLUTION="2560x1440"
 HOSTNAME="cyan"
 # https://www.rfc-editor.org/rfc/rfc8375.html
 DOMAIN="home.arpa"
-SYSUSER="sysdock"
+SYSUSER="systux"
 DOCKUSER="dock"
 HOMEUSER="leo"
 
