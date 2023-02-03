@@ -142,7 +142,7 @@ chmod 775 /mnt/var/games
 
 # Set SSD state to "frozen" after sleep
 mkdir -p /mnt/usr/lib/systemd/system-sleep
-DISK1UUID="$(blkid -s UUID -o value $DISK1)"
+DISK1UUID="$(blkid -s UUID -o value "$DISK1")"
 {
     echo 'if [ "$1" = "post" ]; then'
     echo '    sleep 1'
@@ -209,9 +209,8 @@ genfstab -U /mnt >>/mnt/etc/fstab
     echo 'tmpfs /tmp tmpfs rw,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
 } >>/mnt/etc/fstab
 
-# Prepare /mnt/git/arch-install/setup.sh
-git clone -b games https://github.com/LeoMeinel/arch-install.git /mnt/git/arch-install
+# Prepare /mnt/git/arch-install
+TO_MOVE="$(dirname -- "$(readlink -f -- "$0")")"
+mkdir /mnt/git
+mv "$TO_MOVE" /mnt/git/
 chmod +x /mnt/git/arch-install/setup.sh
-
-# Remove repo
-rm -rf /root/arch-install
