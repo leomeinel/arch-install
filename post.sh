@@ -378,7 +378,7 @@ pacman -Qq "usbguard-notifier" &&
 
 # Setup /boot & /efi
 doas mkinitcpio -P
-doas grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-main"
+doas grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-games"
 doas grub-mkconfig -o /boot/grub/grub.cfg
 
 # Remove repo
