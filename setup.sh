@@ -177,6 +177,12 @@ echo "$HOSTNAME" >/etc/hostname
 git clone -b server https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
+### START sed
+FILE=/etc/cryptboot.conf
+STRING="^EFI_ID_GRUB=.*"
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s|$STRING|EFI_ID_GRUB=\"grub-arch-server\"|" "$FILE"
+### END sed
 ## Configure /etc/ssh/sshd_config
 {
     echo ""
@@ -505,7 +511,7 @@ pacman -Qq "usbguard" &&
 
 # Setup /boot & /efi
 mkinitcpio -P
-grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-server"
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # Enable systemd services later that cause problems with `grub-install`
