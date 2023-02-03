@@ -196,7 +196,7 @@ chmod 777 /dot-files.sh
 
 # Configure /etc
 ## Configure /etc/crypttab
-DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /boot) | tr -d "[:space:]")"
+DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
 MD0UUID="$(blkid -s UUID -o value $DISK1P2)"
