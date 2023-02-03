@@ -187,8 +187,8 @@ chmod 775 /mnt/var/games
 
 # Set SSD state to "frozen" after sleep
 mkdir -p /mnt/usr/lib/systemd/system-sleep
-DISK1UUID="$(blkid -s UUID -o value $DISK1)"
-DISK2UUID="$(blkid -s UUID -o value $DISK2)"
+DISK1UUID="$(blkid -s UUID -o value "$DISK1")"
+DISK2UUID="$(blkid -s UUID -o value "$DISK2")"
 {
     echo 'if [ "$1" = "post" ]; then'
     echo '    sleep 1'
@@ -261,9 +261,8 @@ grep -q "$STRING1" "$FILE" || sed_exit
 sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE"
 ## END sed
 
-# Prepare /mnt/git/arch-install/setup.sh
-git clone https://github.com/LeoMeinel/arch-install.git /mnt/git/arch-install
+# Prepare /mnt/git/arch-install
+TO_MOVE="$(dirname -- "$(readlink -f -- "$0")")"
+mkdir /mnt/git
+mv "$TO_MOVE" /mnt/git/
 chmod +x /mnt/git/arch-install/setup.sh
-
-# Remove repo
-rm -rf /root/arch-install

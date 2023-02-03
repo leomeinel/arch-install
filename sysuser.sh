@@ -3,7 +3,7 @@
 # File: sysuser.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
-# Copyright (c) 2022 Leopold Meinel & contributors
+# Copyright (c) 2023 Leopold Meinel & contributors
 # SPDX ID: GPL-3.0-or-later
 # URL: https://www.gnu.org/licenses/gpl-3.0-standalone.html
 # -----
@@ -26,9 +26,8 @@ mkdir -p ~/.config/autostart
 } >~/.config/autostart/apparmor-notify.desktop
 
 # Set up post.sh
-git clone https://github.com/LeoMeinel/arch-install.git ~/git/arch-install
-cp ~/git/arch-install/pkgs-post.txt ~/
-cp ~/git/arch-install/post.sh ~/
+cp /git/arch-install/pkgs-post.txt ~/
+cp /git/arch-install/post.sh ~/
 sed -i 's/<INSERT_SYSUSER>/'"$1"'/;s/<INSERT_VIRTUSER>/'"$2"'/;s/<INSERT_HOMEUSER>/'"$3"'/;s/<INSERT_GUESTUSER>/'"$4"'/' ~/post.sh
 chmod +x ~/post.sh
 
