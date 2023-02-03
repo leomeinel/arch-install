@@ -1,18 +1,16 @@
 # arch-install
 
-Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
+Arch Linux Installation using LUKS encryption and btrfs.
 
-Meant for general purpose systems.
+Meant for systems that mainly run steam and other games.
 
 ## Info
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
-:information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
+:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/arch-install/blob/games/virt-manager.md) for virt-manager.
 
-:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
-
-:warning: | All data on both disks will be wiped!
+:warning: | All data on the disk will be wiped!
 
 ## Pre-installation
 
@@ -22,7 +20,7 @@ Meant for general purpose systems.
 
 ```sh
 pacman -Sy git
-git clone https://github.com/LeoMeinel/arch-install.git
+git clone -b games https://github.com/LeoMeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt
