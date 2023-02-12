@@ -35,7 +35,7 @@ if lsblk -drnpo SIZE,NAME -I 259,8,254 $choice; then
     DISK1="$choice"
 else
     echo "ERROR: Drive not suitable for installation"
-    exit 125
+    exit 1
 fi
 
 # Detect, close & erase old crypt volumes
@@ -53,14 +53,14 @@ if lsblk -rno TYPE "$DISK1" | grep -q "crypt"; then
         sgdisk -Z "$OLD_DISK1P2"
     else
         echo "ERROR: Can't erase old crypt volume"
-        exit 125
+        exit 1
     fi
     if cryptsetup isLuks "$OLD_DISK1P3"; then
         cryptsetup erase "$OLD_DISK1P3"
         sgdisk -Z "$OLD_DISK1P3"
     else
         echo "ERROR: Can't erase old crypt volume"
-        exit 125
+        exit 1
     fi
 fi
 
