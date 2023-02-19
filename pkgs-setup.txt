@@ -26,6 +26,7 @@ efitools
 ethtool
 exa
 fd
+ffmpeg
 ffmpegthumbs
 filezilla
 firejail
@@ -59,6 +60,7 @@ kalendar
 kde-cli-tools
 kde-gtk-config
 kdegraphics-thumbnailers
+kdenlive
 kdialog
 kgpg
 kimageformats
@@ -80,15 +82,18 @@ lzop
 mailcap
 man-db
 mariadb
+mediainfo
 mtools
 networkmanager
 nextcloud-client
+noise-suppression-for-voice
 noto-fonts
 nss-mdns
 ntfs-3g
 okular
 openbsd-netcat
 openssh
+opentimelineio
 oxipng
 p7zip
 pacman-contrib
