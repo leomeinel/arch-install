@@ -1,9 +1,5 @@
 arc-kde
-aspnet-targeting-pack-bin
-dotnet-sdk-bin
-freetube-bin
 gdlauncher-bin
-libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
 papirus-icon-theme-stripped
@@ -16,4 +12,3 @@ vscodium-bin
 vscodium-bin-marketplace
 waterfox-g-bin
 xdg-ninja-git
-xxd-standalone
