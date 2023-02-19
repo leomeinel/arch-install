@@ -23,6 +23,7 @@ efitools
 ethtool
 exa
 fd
+ffmpeg
 ffmpegthumbs
 firejail
 fwupd
