@@ -99,6 +99,7 @@ p7zip
 pacman-contrib
 pam-u2f
 pdftk
+perl-image-exiftool
 perl-rename
 pipewire
 pipewire-alsa
