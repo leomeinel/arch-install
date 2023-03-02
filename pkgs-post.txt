@@ -2,7 +2,6 @@ arc-kde
 gdlauncher-bin
 librewolf-bin
 macchina-bin
-papirus-icon-theme-stripped
 sddm-nordic-theme-git
 snap-pac-grub
 snapper-gui-git

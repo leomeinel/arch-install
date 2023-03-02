@@ -71,6 +71,7 @@ oxipng
 p7zip
 pacman-contrib
 pam-u2f
+papirus-icon-theme
 pdftk
 perl-rename
 pipewire
