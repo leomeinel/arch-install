@@ -51,7 +51,7 @@ hwinfo
 hyperfine
 inetutils
 jdk-openjdk
-jdk11-openjdk
+jdk8-openjdk
 jdk17-openjdk
 jpegoptim
 jq
