@@ -567,9 +567,6 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 ## Configure /var/games
 chown :games /var/games
 
-# Set default java
-archlinux-java set java-17-openjdk
-
 # Enable systemd services
 pacman -Qq "apparmor" &&
     {
