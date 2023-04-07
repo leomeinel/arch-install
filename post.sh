@@ -38,6 +38,9 @@ doas timedatectl set-ntp true
 doas localectl --no-convert set-keymap "$KEYMAP"
 doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 
+# Set default java
+doas archlinux-java set java-17-openjdk
+
 # Configure iptables
 # FIXME: Replace with nftables
 # References
