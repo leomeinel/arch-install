@@ -21,8 +21,6 @@ hyperfine
 inetutils
 jpegoptim
 jq
-jre8-openjdk-headless
-jre17-openjdk-headless
 logrotate
 lrzip
 lshw
