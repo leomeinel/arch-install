@@ -598,9 +598,9 @@ pacman -Qq "usbguard" &&
 # Setup /boot & /efi
 mkinitcpio -P
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-games" --removable
+    grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-games" --modules="tpm" --disable-shim-lock --removable
 else
-    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-games"
+    grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-games" --modules="tpm" --disable-shim-lock
 fi
 grub-mkconfig -o /boot/grub/grub.cfg
 
