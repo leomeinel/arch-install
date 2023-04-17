@@ -182,6 +182,9 @@ FILE=/etc/cryptboot.conf
 STRING="^EFI_ID_GRUB=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s|$STRING|EFI_ID_GRUB=\"grub-arch-server\"|" "$FILE"
+STRING="^EFI_PATH_GRUB=.*"
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s|$STRING|EFI_PATH_GRUB=\"EFI/grub-arch-server/grubx64.efi\"|" "$FILE"
 ### END sed
 ## Configure /etc/ssh/sshd_config
 {
