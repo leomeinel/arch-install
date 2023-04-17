@@ -1,6 +1,6 @@
 # arch-install
 
-Arch Linux Server Installation using mdadm RAID1, LUKS encryption and btrfs
+Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs.
 
 Meant for servers that are mainly hosting docker.
 
@@ -10,7 +10,7 @@ Meant for servers that are mainly hosting docker.
 
 :information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
 
-:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/arch-install/blob/server/virt-manager.md) for virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/server/virt-manager.md) for virt-manager.
 
 :warning: | All data on both disks will be wiped!
 
@@ -22,7 +22,7 @@ Meant for servers that are mainly hosting docker.
 
 ```sh
 pacman -Sy git
-git clone -b server https://github.com/LeoMeinel/arch-install.git
+git clone -b server https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt

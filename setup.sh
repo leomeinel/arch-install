@@ -30,7 +30,7 @@ set -eu
 # Define functions
 sed_exit() {
     echo "ERROR: 'sed' didn't replace, report this @"
-    echo "       https://github.com/LeoMeinel/arch-install/issues"
+    echo "       https://github.com/leomeinel/arch-install/issues"
     exit 1
 }
 
@@ -174,7 +174,7 @@ echo "$HOSTNAME" >/etc/hostname
     echo "OverrideESPMountPoint=/efi"
 } >>/etc/fwupd/uefi_capsule.conf
 ## Configure /etc/cryptboot.conf
-git clone -b server https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
+git clone -b server https://github.com/leomeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 ### START sed
