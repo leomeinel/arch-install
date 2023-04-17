@@ -24,11 +24,9 @@ sed_exit() {
 
 # Configure dot-files (setup)
 SYSUSER="<INSERT_SYSUSER>"
-VIRTUSER="<INSERT_VIRTUSER>"
 HOMEUSER="<INSERT_HOMEUSER>"
 GUESTUSER="<INSERT_GUESTUSER>"
 /dot-files.sh setup
-doas su -lc '/dot-files.sh setup' "$VIRTUSER"
 doas su -lc '/dot-files.sh setup' "$HOMEUSER"
 doas su -lc '/dot-files.sh setup' "$GUESTUSER"
 doas su -lc '/dot-files.sh setup-root' root
@@ -311,7 +309,6 @@ doas firecfg --clean
 
 # Configure dot-files (vscodium)
 /dot-files.sh vscodium
-doas su -lc '/dot-files.sh vscodium' "$VIRTUSER"
 doas su -lc '/dot-files.sh vscodium' "$HOMEUSER"
 doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 
@@ -349,11 +346,10 @@ STRING="^vscodium$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#vscodium #arch-install/" "$FILE"
 ## END sed
-doas firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
+doas firecfg --add-users root "$SYSUSER" "$HOMEUSER" "$GUESTUSER"
 doas apparmor_parser -r /etc/apparmor.d/firejail-default
 doas firecfg
 rm -rf ~/.local/share/applications/*
-doas su -c 'rm -rf ~/.local/share/applications/*' "$VIRTUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
 
@@ -387,9 +383,9 @@ pacman -Qq "usbguard-notifier" &&
 doas mkinitcpio -P
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    doas grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-main" --modules="tpm" --disable-shim-lock --removable
+    doas grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-games" --modules="tpm" --disable-shim-lock --removable
 else
-    doas grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-main" --modules="tpm" --disable-shim-lock
+    doas grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-games" --modules="tpm" --disable-shim-lock
 fi
 doas grub-mkconfig -o /boot/grub/grub.cfg
 
