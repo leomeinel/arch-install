@@ -602,9 +602,9 @@ pacman -Qq "usbguard" &&
 mkinitcpio -P
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-main" --removable
+    grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-main" --modules="tpm" --disable-shim-lock --removable
 else
-    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-main"
+    grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-main" --modules="tpm" --disable-shim-lock
 fi
 grub-mkconfig -o /boot/grub/grub.cfg
 
