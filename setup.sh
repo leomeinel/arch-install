@@ -17,11 +17,10 @@ GRUBRESOLUTION="2560x1440"
 ## Network devices: elements
 ## Servers: colors
 ## Clients: flowers
-HOSTNAME="tulip"
+HOSTNAME="lilium"
 # https://www.rfc-editor.org/rfc/rfc8375.html
 DOMAIN="home.arpa"
 SYSUSER="systux"
-VIRTUSER="virt"
 HOMEUSER="leo"
 GUESTUSER="guest"
 
@@ -43,18 +42,14 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
-groupadd -r libvirt
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel "$SYSUSER"
-useradd -ms /bin/bash -G libvirt "$VIRTUSER"
 useradd -ms /bin/bash "$HOMEUSER"
 useradd -ms /bin/bash "$GUESTUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
 passwd "$SYSUSER"
-echo "Enter password for $VIRTUSER"
-passwd "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
@@ -94,7 +89,6 @@ chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $SYSUSER"
-    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $VIRTUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $HOMEUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
@@ -180,6 +174,12 @@ STRING="^#CacheDir"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/CacheDir/" "$FILE"
 ### END sed
+{
+    echo ""
+    echo "# Custom"
+    echo "[multilib]"
+    echo "Include = /etc/pacman.d/mirrorlist"
+} >>/etc/pacman.conf
 pacman-key --init
 ## Update mirrors
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
@@ -190,14 +190,17 @@ pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup
 # Configure $SYSUSER
 ## Run sysuser.sh
 chmod +x /git/arch-install/sysuser.sh
-su -c '/git/arch-install/sysuser.sh '"$SYSUSER $VIRTUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
+su -c '/git/arch-install/sysuser.sh '"$SYSUSER $HOMEUSER $GUESTUSER"'' "$SYSUSER"
 cp /git/arch-install/dot-files.sh /
 chmod 777 /dot-files.sh
 
 # Configure /etc
 ## Configure /etc/crypttab
-MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
-MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
+DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+MD0UUID="$(blkid -s UUID -o value $DISK1P2)"
+MD1UUID="$(blkid -s UUID -o value $DISK1P3)"
 {
     echo "md0_crypt UUID=$MD0UUID /etc/luks/keys/md0_crypt.key luks,key-slot=1"
     echo "md1_crypt UUID=$MD1UUID none luks,key-slot=0"
@@ -229,7 +232,7 @@ chmod 644 /etc/cryptboot.conf
 FILE=/etc/cryptboot.conf
 STRING="^EFI_ID_GRUB=.*"
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|EFI_ID_GRUB=\"grub-arch-main\"|" "$FILE"
+sed -i "s|$STRING|EFI_ID_GRUB=\"grub-arch-games\"|" "$FILE"
 ### END sed
 ## Configure /etc/ssh/sshd_config
 {
@@ -261,8 +264,6 @@ STRING="^VIDEOS=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
 ### END sed
-## Configure /etc/mdadm.conf
-mdadm --detail --scan >>/etc/mdadm.conf
 ## Configure /etc/usbguard/usbguard-daemon.conf & /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
@@ -302,7 +303,7 @@ sed -i "s/$STRING/hosts: mymachines mdns_minimal [NOTFOUND=return]/" "$FILE"
 mkdir -p /etc/luks/keys
 dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
 chmod 000 /etc/luks/keys/md0_crypt.key
-echo "Enter passphrase for /dev/md/md0"
+echo "Enter passphrase for $DISK1P2"
 cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 ## Configure /etc/bluetooth/main.conf
 ### START sed
@@ -325,7 +326,7 @@ pacman -Qq "nvidia-dkms" &&
     sed -i "/$STRING/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/" "$FILE"
 STRING="^HOOKS=.*"
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/" "$FILE"
+sed -i "s/$STRING/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt filesystems fsck)/" "$FILE"
 ### END sed
 ## Configure /etc/default/grub
 ### START sed
@@ -577,12 +578,8 @@ pacman -Qq "avahi" &&
     systemctl enable avahi-daemon
 pacman -Qq "bluez" &&
     systemctl enable bluetooth
-pacman -Qq "cups" &&
-    systemctl enable cups.service
 pacman -Qq "util-linux" &&
     systemctl enable fstrim.timer
-pacman -Qq "libvirt" &&
-    systemctl enable libvirtd
 pacman -Qq "networkmanager" &&
     systemctl enable NetworkManager
 pacman -Qq "power-profiles-daemon" &&
@@ -597,11 +594,10 @@ pacman -Qq "usbguard" &&
 
 # Setup /boot & /efi
 mkinitcpio -P
-DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-main" --removable
+    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-games" --removable
 else
-    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-main"
+    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-games"
 fi
 grub-mkconfig -o /boot/grub/grub.cfg
 
