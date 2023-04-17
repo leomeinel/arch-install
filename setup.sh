@@ -31,7 +31,7 @@ set -eu
 # Define functions
 sed_exit() {
     echo "ERROR: 'sed' didn't replace, report this @"
-    echo "       https://github.com/LeoMeinel/arch-install/issues"
+    echo "       https://github.com/leomeinel/arch-install/issues"
     exit 1
 }
 
@@ -222,7 +222,7 @@ echo "$HOSTNAME" >/etc/hostname
     echo "OverrideESPMountPoint=/efi"
 } >>/etc/fwupd/uefi_capsule.conf
 ## Configure /etc/cryptboot.conf
-git clone https://github.com/LeoMeinel/cryptboot.git /git/cryptboot
+git clone https://github.com/leomeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 ### START sed
@@ -557,7 +557,7 @@ chmod a+rx /home/.snapshots
 chown :wheel /home/.snapshots
 ## Configure /usr/share/wallpapers/Custom/content
 mkdir -p /usr/share/wallpapers/Custom/content
-git clone https://github.com/LeoMeinel/wallpapers.git /git/wallpapers
+git clone https://github.com/leomeinel/wallpapers.git /git/wallpapers
 cp /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
 chmod 755 /usr/share/wallpapers/Custom
 chmod 755 /usr/share/wallpapers/Custom/content

@@ -10,7 +10,7 @@ Meant for general purpose systems.
 
 :information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
 
-:exclamation: | Follow [these instructions](https://github.com/LeoMeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
 
 :warning: | All data on both disks will be wiped!
 
@@ -22,7 +22,7 @@ Meant for general purpose systems.
 
 ```sh
 pacman -Sy git
-git clone https://github.com/LeoMeinel/arch-install.git
+git clone https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt
