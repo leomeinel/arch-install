@@ -232,7 +232,7 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s|$STRING|EFI_ID_GRUB=\"grub-arch-main\"|" "$FILE"
 STRING="^EFI_PATH_GRUB=.*"
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|EFI_ID_GRUB=\"EFI/grub-arch-main/grubx64.efi\"|" "$FILE"
+sed -i "s|$STRING|EFI_PATH_GRUB=\"EFI/grub-arch-main/grubx64.efi\"|" "$FILE"
 ### END sed
 ## Configure /etc/ssh/sshd_config
 {
