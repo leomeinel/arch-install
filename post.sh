@@ -385,7 +385,12 @@ pacman -Qq "usbguard-notifier" &&
 
 # Setup /boot & /efi
 doas mkinitcpio -P
-doas grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-main"
+DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
+if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
+    doas grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-main" --removable
+else
+    doas grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id="grub-arch-main"
+fi
 doas grub-mkconfig -o /boot/grub/grub.cfg
 
 # Remove repo
