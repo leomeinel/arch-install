@@ -1,6 +1,6 @@
 # arch-install
 
-Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs
+Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs.
 
 Meant for general purpose systems.
 
