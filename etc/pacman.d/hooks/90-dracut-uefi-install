@@ -1,0 +1,26 @@
+[Trigger]
+Type = Path
+Operation = Install
+Operation = Upgrade
+Target = usr/lib/modules/*/pkgbase
+Target = usr/src/*/dkms.conf
+
+[Trigger]
+Type = Packages
+Operation = Install
+Operation = Upgrade
+Target = dracut
+Target = systemd
+Target = amd-ucode
+Target = intel-ucode
+Target = dracut-hook-uefi
+Target = plymouth
+Target = cryptsetup
+Target = device-mapper
+Target = lvm2
+
+[Action]
+Description = Generating unified EFI kernel images...
+When = PostTransaction
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/90-dracut-uefi.sh install'
+NeedsTargets
