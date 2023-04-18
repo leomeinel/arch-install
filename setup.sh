@@ -511,6 +511,10 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 ## Configure /var/games
 chown :games /var/games
 
+# Setup /efi
+rsync -rq /git/arch-install/efi/ /efi
+chmod 644 /efi/loader/loader.conf
+
 # Enable systemd services
 pacman -Qq "apparmor" &&
     {
