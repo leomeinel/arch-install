@@ -554,9 +554,9 @@ pacman -Qq "usbguard" &&
 dracut --regenerate-all --force
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    bootctl --boot-path=/boot --esp-path=/efi --no-variables install
+    bootctl --esp-path=/efi --no-variables install
 else
-    bootctl --boot-path=/boot --esp-path=/efi install
+    bootctl --esp-path=/efi install
 fi
 
 # Remove repo

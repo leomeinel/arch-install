@@ -372,9 +372,9 @@ pacman -Qq "usbguard-notifier" &&
 doas dracut --regenerate-all --force
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    bootctl --boot-path=/boot --esp-path=/efi --no-variables update
+    bootctl --esp-path=/efi --no-variables update
 else
-    bootctl --boot-path=/boot --esp-path=/efi update
+    bootctl --esp-path=/efi update
 fi
 
 # Remove repo
