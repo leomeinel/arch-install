@@ -226,6 +226,10 @@ YES)
     doas cryptboot-efikeys create
     doas cryptboot-efikeys enroll
     doas cryptboot systemd-boot-sign
+    {
+        echo "uefi_secureboot_cert=\"/etc/secureboot/keys/db.crt\""
+        echo "uefi_secureboot_key=\"/etc/secureboot/keys/db.key\""
+    } >/etc/dracut.conf.d/secureboot.conf
     ;;
 *)
     {
@@ -241,6 +245,10 @@ YES)
         echo '    fi'
         echo '    doas mount /efi'
         echo '    doas cryptboot systemd-boot-sign'
+        echo '    {'
+        echo '        echo "uefi_secureboot_cert=\"/etc/secureboot/keys/db.crt\""'
+        echo '        echo "uefi_secureboot_key=\"/etc/secureboot/keys/db.key\""'
+        echo '    } >/etc/dracut.conf.d/secureboot.conf'
         echo '    ;;'
         echo '*)'
         echo '    echo "ERROR: User has not transferred keys to $EFI_KEYS_DIR"'
