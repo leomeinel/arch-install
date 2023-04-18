@@ -559,11 +559,11 @@ pacman -Qq "usbguard" &&
 mkinitcpio -P
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    bootctl --boot-path=/boot --esp-path=/efi --no-variables -q install
+    bootctl --boot-path=/boot --esp-path=/efi --no-variables install
 else
-    bootctl --boot-path=/boot --esp-path=/efi -q install
+    bootctl --boot-path=/boot --esp-path=/efi install
 fi
-dracut --uefi -q
+dracut --uefi
 
 # Remove repo
 rm -rf /git
