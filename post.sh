@@ -222,10 +222,10 @@ YES)
     if mountpoint -q /efi; then
         doas umount -AR /efi
     fi
-    doas cryptboot mount
+    doas mount /efi
     doas cryptboot-efikeys create
     doas cryptboot-efikeys enroll
-    doas cryptboot update-grub
+    doas cryptboot systemd-boot-sign
     ;;
 *)
     {
@@ -239,9 +239,8 @@ YES)
         echo '    if mountpoint -q /efi; then'
         echo '        doas umount -AR /efi'
         echo '    fi'
-        echo '    mkdir -p "$EFI_KEYS_DIR"'
-        echo '    doas cryptboot mount'
-        echo '    doas cryptboot update-grub'
+        echo '    doas mount /efi'
+        echo '    doas cryptboot systemd-boot-sign'
         echo '    ;;'
         echo '*)'
         echo '    echo "ERROR: User has not transferred keys to $EFI_KEYS_DIR"'
@@ -380,12 +379,8 @@ pacman -Qq "usbguard-notifier" &&
 # Setup /boot & /efi
 doas mkinitcpio -P
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
-if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    doas grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-main" --modules="tpm" --disable-shim-lock --removable
-else
-    doas grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-main" --modules="tpm" --disable-shim-lock
-fi
-doas grub-mkconfig -o /boot/grub/grub.cfg
+bootctl update
+doas dracut --uefi -q
 
 # Remove repo
 rm -rf ~/git
