@@ -219,9 +219,6 @@ echo "INFO: To deploy your own keys, don't confirm the next prompt"
 read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
 case "$choice" in
 YES)
-    if mountpoint -q /boot; then
-        doas umount -AR /boot
-    fi
     if mountpoint -q /efi; then
         doas umount -AR /efi
     fi
@@ -239,9 +236,6 @@ YES)
         echo 'read -rp "Have you transferred your keys to $EFI_KEYS_DIR? (Type '"'"'yes'"'"' in capital letters): " choice'
         echo 'case "$choice" in'
         echo 'YES)'
-        echo '    if mountpoint -q /boot; then'
-        echo '        doas umount -AR /boot'
-        echo '    fi'
         echo '    if mountpoint -q /efi; then'
         echo '        doas umount -AR /efi'
         echo '    fi'

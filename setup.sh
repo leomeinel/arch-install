@@ -196,11 +196,9 @@ chmod 777 /dot-files.sh
 
 # Configure /etc
 ## Configure /etc/crypttab
-MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
-MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
+MD0UUID="$(blkid -s UUID -o value /dev/md/md1)"
 {
-    echo "md0_crypt UUID=$MD0UUID /etc/luks/keys/md0_crypt.key luks,key-slot=1"
-    echo "md1_crypt UUID=$MD1UUID none luks,key-slot=0"
+    echo "md1_crypt UUID=$MD0UUID none luks,key-slot=0"
 } >/etc/crypttab
 ## Configure /etc/localtime, /etc/vconsole.conf, /etc/hostname & /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
@@ -301,12 +299,6 @@ STRING="^hosts: mymachines"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/hosts: mymachines mdns_minimal [NOTFOUND=return]/" "$FILE"
 ### END sed
-## Configure /etc/luks/keys
-mkdir -p /etc/luks/keys
-dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
-chmod 000 /etc/luks/keys/md0_crypt.key
-echo "Enter passphrase for /dev/md/md0"
-cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 ## Configure /etc/bluetooth/main.conf
 ### START sed
 FILE=/etc/bluetooth/main.conf
@@ -319,7 +311,6 @@ sed -i "s/$STRING/AutoEnable=true/" "$FILE"
 FILE=/etc/mkinitcpio.conf
 STRING="^FILES=.*"
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|FILES=(/etc/luks/keys/md0_crypt.key)|" "$FILE"
 STRING="^MODULES=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/MODULES=(btrfs)/" "$FILE"
