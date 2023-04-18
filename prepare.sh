@@ -93,8 +93,8 @@ sgdisk -Z "$DISK1"
 sgdisk -Z "$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
-sgdisk -n 0:0:0 -t 1:fd00 "$DISK1"
-sgdisk -n 0:0:0 -t 1:fd00 "$DISK2"
+sgdisk -n 0:0:0 -t 2:fd00 "$DISK1"
+sgdisk -n 0:0:0 -t 2:fd00 "$DISK2"
 
 # Detect partitions & set variables accordingly
 DISK1P1="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
