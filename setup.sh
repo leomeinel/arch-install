@@ -113,13 +113,13 @@ pacman -Qq "nvidia-dkms" &&
             echo 'Target = nvidia-dkms'
             echo ''
             echo '[Action]'
-            echo 'Description = Updating NVIDIA mkinitcpio...'
-            echo 'Depends = mkinitcpio'
+            echo 'Description = Updating NVIDIA initcpio...'
+            echo 'Depends = dracut'
             echo 'When = PostTransaction'
             echo 'NeedsTargets'
-            echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/90-nvidia-gen-mkinitcpio.sh'"
+            echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/90-dracut-nvidia.sh'"
             echo ''
-        } >/etc/pacman.d/hooks/90-nvidia-gen-mkinitcpio.hook
+        } >/etc/pacman.d/hooks/90-dracut-nvidia.hook
         {
             echo '#!/bin/sh'
             echo ''
@@ -129,9 +129,9 @@ pacman -Qq "nvidia-dkms" &&
             echo '        linux) exit 0'
             echo '    esac'
             echo 'done'
-            echo '/usr/bin/mkinitcpio -P'
+            echo '/usr/bin/dracut --regenerate-all --force'
             echo ''
-        } >/etc/pacman.d/hooks/scripts/90-nvidia-gen-mkinitcpio.sh
+        } >/etc/pacman.d/hooks/scripts/90-dracut-nvidia.sh
         #### START sed
         FILE=/etc/pacman.d/hooks/96-systemd-boot-sign.hook
         STRING="^Target = linux-zen"
@@ -296,25 +296,16 @@ STRING="^#AutoEnable=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/AutoEnable=true/" "$FILE"
 ### END sed
-## Configure /etc/mkinitcpio.conf
-### START sed
-FILE=/etc/mkinitcpio.conf
-STRING="^FILES=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-STRING="^MODULES=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/MODULES=(btrfs)/" "$FILE"
-#### If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
+## Configure /etc/dracut.conf.d/modules.conf
+echo "add_dracutmodules+=\" btrfs \"" >/etc/dracut.conf.d/modules.conf
+## If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
-    sed -i "/$STRING/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/" "$FILE"
-STRING="^HOOKS=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/" "$FILE"
-# Configure /etc/dracut.conf.d/cmdline.conf
+    echo "force_drivers+=\" nvidia nvidia_modeset nvidia_uvm nvidia_drm \"" >/etc/dracut.conf.d/modules.conf
+## Configure /etc/dracut.conf.d/cmdline.conf
 MD0CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md0_crypt)"
 echo "kernel_cmdline=\"rd.luks.uuid=$MD0UUID root=UUID=$MD0CRYPTUUID rootfstype=btrfs\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
-# Configure /etc/kernel/commandline
+## Configure /etc/kernel/commandline
 PARAMETERS="quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt root=UUID=$MD0CRYPTUUID rootfstype=btrfs"
 #### If on nvidia set kernel parameter nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
@@ -556,14 +547,13 @@ pacman -Qq "usbguard" &&
     systemctl enable usbguard.service
 
 # Setup /boot & /efi
-mkinitcpio -P
+dracut
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
     bootctl --boot-path=/boot --esp-path=/efi --no-variables install
 else
     bootctl --boot-path=/boot --esp-path=/efi install
 fi
-dracut --uefi
 
 # Remove repo
 rm -rf /git

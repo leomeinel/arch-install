@@ -18,7 +18,6 @@ cups
 devtools
 dnsmasq
 dolphin
-dracut
 duf
 dust
 edk2-ovmf

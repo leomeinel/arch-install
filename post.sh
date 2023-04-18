@@ -292,9 +292,6 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 ## END sed
 
 # Install packages
-# FIXME: This can't be tested in a VM
-[ -d /sys/class/bluetooth ] &&
-    echo "mkinitcpio-bluetooth" >>~/pkgs-post.txt
 paru -S --noprogressbar --noconfirm --needed - <~/pkgs-post.txt
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
@@ -350,19 +347,6 @@ doas su -c 'rm -rf ~/.local/share/applications/*' "$VIRTUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
 
-# Configure /etc/mkinitcpio.conf
-pacman -Qq mkinitcpio-bluetooth &&
-    {
-        ## START sed
-        FILE=/etc/mkinitcpio.conf
-        STRING0="^HOOKS=.*"
-        grep -q "$STRING0" "$FILE" || sed_exit
-        STRING1="encrypt"
-        grep -q "$STRING1" "$FILE" || sed_exit
-        doas sed -i "/$STRING0/s/$STRING1/bluetooth $STRING1/" "$FILE"
-        ## END sed
-    }
-
 # Enable systemd services
 pacman -Qq "iptables" &&
     {
@@ -377,14 +361,13 @@ pacman -Qq "usbguard-notifier" &&
     systemctl enable --user usbguard-notifier.service
 
 # Setup /boot & /efi
-doas mkinitcpio -P
+doas dracut
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
     bootctl --boot-path=/boot --esp-path=/efi --no-variables update
 else
     bootctl --boot-path=/boot --esp-path=/efi update
 fi
-doas dracut --uefi
 
 # Remove repo
 rm -rf ~/git
