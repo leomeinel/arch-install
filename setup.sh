@@ -306,7 +306,7 @@ MD0CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md0_crypt)"
 echo "kernel_cmdline=\"rd.luks.uuid=$MD0UUID root=UUID=$MD0CRYPTUUID rootfstype=btrfs\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
 ## Configure /etc/kernel/commandline
-PARAMETERS="quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt root=UUID=$MD0CRYPTUUID rootfstype=btrfs"
+PARAMETERS="quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0"
 #### If on nvidia set kernel parameter nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
     PARAMETERS="${PARAMETERS} nvidia_drm.modeset=1"
