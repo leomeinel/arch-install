@@ -297,13 +297,23 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/AutoEnable=true/" "$FILE"
 ### END sed
 ## Configure /etc/dracut.conf.d/modules.conf
-echo "add_dracutmodules+=\" btrfs \"" >/etc/dracut.conf.d/modules.conf
+{
+    echo "add_dracutmodules+=\" lvm btrfs mdadm_udev crypt \""
+    echo "filesystems+=\" btrfs \""
+} >/etc/dracut.conf.d/modules.conf
 ## If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
     echo "force_drivers+=\" nvidia nvidia_modeset nvidia_uvm nvidia_drm \"" >/etc/dracut.conf.d/modules.conf
 ## Configure /etc/dracut.conf.d/cmdline.conf
+DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK1P2UUID="$(blkid -s UUID -o value $DISK1P2)"
+DISK2="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /.efi.bak) | tr -d "[:space:]")"
+DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK2P2UUID="$(blkid -s UUID -o value $DISK2P2)"
+LV0UUID="$(blkid -s UUID -o value /dev/vg0/lv0)"
 MD0CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md0_crypt)"
-echo "kernel_cmdline=\"rd.luks.uuid=$MD0UUID root=UUID=$MD0CRYPTUUID rootfstype=btrfs\"" >/etc/dracut.conf.d/cmdline.conf
+echo "kernel_cmdline=\"rd.luks.uuid=luks-$MD0CRYPTUUID rd.luks rd.lvm rd.lvm.vg=vg0 rd.lvm.lv=vg0/lv0 rd.lvm.lv=vg0/lv1 root=UUID=$LV0UUID rootfstype=btrfs rd.luks.allow-discards=$DISK1P2UUID rd.luks.allow-discards=$DISK2P2UUID\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
 ## Configure /etc/kernel/commandline
 PARAMETERS="quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0"
@@ -552,7 +562,6 @@ pacman -Qq "usbguard" &&
 
 # Setup /boot & /efi
 dracut --regenerate-all --force
-DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
     bootctl --esp-path=/efi --no-variables install
 else

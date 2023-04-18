@@ -111,27 +111,36 @@ cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
 echo -e "\e[31mUS keymap will be used when booting from\e[0m /dev/md/md0"
 cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks2 /dev/md/md0
-cryptsetup open --type luks2 /dev/md/md0 md0_crypt
+cryptsetup open --type luks2 --perf-no_read_workqueue --perf-no_write_workqueue --persistent /dev/md/md0 md0_crypt
+
+# Configure lvm
+pvcreate /dev/mapper/md0_crypt
+vgcreate vg0 /dev/mapper/md0_crypt
+lvcreate -l 40%FREE vg0 -n lv0
+lvcreate -l 100%FREE vg0 -n lv1
 
 # Format efi
 mkfs.fat -n EFI -F32 "$DISK1P1"
 mkfs.fat -n EFI -F32 "$DISK2P1"
 
 # Configure btrfs
-mkfs.btrfs -L MDCRYPT /dev/mapper/md0_crypt
-mount /dev/mapper/md0_crypt /mnt
+mkfs.btrfs -L LV0 /dev/vg0/lv0
+mount /dev/vg0/lv0 /mnt
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@var_cache
 btrfs subvolume create /mnt/@var_games
 btrfs subvolume create /mnt/@var_lib_libvirt
 btrfs subvolume create /mnt/@var_lib_mysql
 btrfs subvolume create /mnt/@var_log
-btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@snapshots
+umount /mnt
+mkfs.btrfs -L LV1 /dev/vg0/lv1
+mount /dev/vg0/lv1 /mnt
+btrfs subvolume create /mnt/@home
+umount /mnt
 
 # Mount volumes
-umount /mnt
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md0_crypt /mnt
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/vg0/lv0 /mnt
 mkdir /mnt/efi
 mkdir /mnt/.efi.bak
 mkdir /mnt/boot
@@ -148,13 +157,13 @@ mkdir /mnt/var &&
     }
 mkdir /mnt/home
 mkdir /mnt/.snapshots
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md0_crypt /mnt/var/cache
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md0_crypt /mnt/var/games
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md0_crypt /mnt/var/lib/libvirt
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md0_crypt /mnt/var/lib/mysql
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md0_crypt /mnt/var/log
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md0_crypt /mnt/home
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md0_crypt /mnt/.snapshots
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/vg0/lv0 /mnt/var/cache
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/vg0/lv0 /mnt/var/games
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/vg0/lv0 /mnt/var/lib/libvirt
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/vg0/lv0 /mnt/var/lib/mysql
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/vg0/lv0 /mnt/var/log
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/vg0/lv0 /mnt/.snapshots
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/vg0/lv1 /mnt/home
 mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
 mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
 chmod 775 /mnt/var/games
