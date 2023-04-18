@@ -195,9 +195,9 @@ chmod 777 /dot-files.sh
 
 # Configure /etc
 ## Configure /etc/crypttab
-MD0UUID="$(blkid -s UUID -o value /dev/md/md1)"
+MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 {
-    echo "md1_crypt UUID=$MD0UUID none luks,key-slot=0"
+    echo "md0_crypt UUID=$MD0UUID none luks,key-slot=0"
 } >/etc/crypttab
 ## Configure /etc/localtime, /etc/vconsole.conf, /etc/hostname & /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
@@ -311,11 +311,11 @@ STRING="^HOOKS=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/" "$FILE"
 # Configure /etc/dracut.conf.d/cmdline.conf
-MD0CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md1_crypt)"
+MD0CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md0_crypt)"
 echo "kernel_cmdline=\"rd.luks.uuid=$MD0UUID root=UUID=$MD0CRYPTUUID rootfstype=btrfs\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
 # Configure /etc/kernel/commandline
-PARAMETERS="quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md1_crypt root=UUID=$MD0CRYPTUUID rootfstype=btrfs"
+PARAMETERS="quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt root=UUID=$MD0CRYPTUUID rootfstype=btrfs"
 #### If on nvidia set kernel parameter nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
     PARAMETERS="${PARAMETERS} nvidia_drm.modeset=1"
