@@ -298,7 +298,7 @@ sed -i "s/$STRING/AutoEnable=true/" "$FILE"
 ### END sed
 ## Configure /etc/dracut.conf.d/modules.conf
 {
-    echo "add_dracutmodules+=\" lvm btrfs mdadm_udev crypt \""
+    echo "add_dracutmodules+=\" lvm btrfs mdraid crypt \""
     echo "filesystems+=\" btrfs \""
 } >/etc/dracut.conf.d/modules.conf
 ## If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
