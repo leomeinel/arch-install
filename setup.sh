@@ -566,7 +566,7 @@ if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; 
 else
     bootctl --esp-path=/efi install
 fi
-dracut --uefi
+dracut --regenerate-all --uefi
 
 # Remove repo
 rm -rf /git
