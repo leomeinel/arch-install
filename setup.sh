@@ -12,7 +12,6 @@
 KEYMAP="de-latin1"
 MIRRORCOUNTRIES="NL,DE,DK,FR"
 TIMEZONE="Europe/Amsterdam"
-GRUBRESOLUTION="2560x1440"
 # https://www.rfc-editor.org/rfc/rfc1178.html
 ## Network devices: elements
 ## Servers: colors
@@ -114,13 +113,13 @@ pacman -Qq "nvidia-dkms" &&
             echo 'Target = nvidia-dkms'
             echo ''
             echo '[Action]'
-            echo 'Description = Updating NVIDIA mkinitcpio...'
-            echo 'Depends = mkinitcpio'
+            echo 'Description = Updating NVIDIA initcpio...'
+            echo 'Depends = dracut'
             echo 'When = PostTransaction'
             echo 'NeedsTargets'
-            echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/90-nvidia-gen-mkinitcpio.sh'"
+            echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/90-dracut-nvidia.sh'"
             echo ''
-        } >/etc/pacman.d/hooks/90-nvidia-gen-mkinitcpio.hook
+        } >/etc/pacman.d/hooks/90-dracut-nvidia.hook
         {
             echo '#!/bin/sh'
             echo ''
@@ -130,11 +129,11 @@ pacman -Qq "nvidia-dkms" &&
             echo '        linux) exit 0'
             echo '    esac'
             echo 'done'
-            echo '/usr/bin/mkinitcpio -P'
+            echo '/usr/bin/dracut --regenerate-all --force'
             echo ''
-        } >/etc/pacman.d/hooks/scripts/90-nvidia-gen-mkinitcpio.sh
+        } >/etc/pacman.d/hooks/scripts/90-dracut-nvidia.sh
         #### START sed
-        FILE=/etc/pacman.d/hooks/95-upgrade-grub.hook
+        FILE=/etc/pacman.d/hooks/96-systemd-boot-sign.hook
         STRING="^Target = linux-zen"
         grep -q "$STRING" "$FILE" || sed_exit
         sed -i "/$STRING/a Target = nvidia-dkms" "$FILE"
@@ -197,10 +196,8 @@ chmod 777 /dot-files.sh
 # Configure /etc
 ## Configure /etc/crypttab
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
-MD1UUID="$(blkid -s UUID -o value /dev/md/md1)"
 {
-    echo "md0_crypt UUID=$MD0UUID /etc/luks/keys/md0_crypt.key luks,key-slot=1"
-    echo "md1_crypt UUID=$MD1UUID none luks,key-slot=0"
+    echo "md0_crypt UUID=$MD0UUID none initramfs,luks,key-slot=0"
 } >/etc/crypttab
 ## Configure /etc/localtime, /etc/vconsole.conf, /etc/hostname & /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
@@ -225,15 +222,6 @@ echo "$HOSTNAME" >/etc/hostname
 git clone https://github.com/leomeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
-### START sed
-FILE=/etc/cryptboot.conf
-STRING="^EFI_ID_GRUB=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|EFI_ID_GRUB=\"grub-arch-main\"|" "$FILE"
-STRING="^EFI_PATH_GRUB=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|EFI_PATH_GRUB=\"EFI/grub-arch-main/grubx64.efi\"|" "$FILE"
-### END sed
 ## Configure /etc/ssh/sshd_config
 {
     echo ""
@@ -301,12 +289,6 @@ STRING="^hosts: mymachines"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/hosts: mymachines mdns_minimal [NOTFOUND=return]/" "$FILE"
 ### END sed
-## Configure /etc/luks/keys
-mkdir -p /etc/luks/keys
-dd bs=1024 count=4 if=/dev/urandom of=/etc/luks/keys/md0_crypt.key iflag=fullblock
-chmod 000 /etc/luks/keys/md0_crypt.key
-echo "Enter passphrase for /dev/md/md0"
-cryptsetup -v luksAddKey /dev/disk/by-uuid/"$MD0UUID" /etc/luks/keys/md0_crypt.key
 ## Configure /etc/bluetooth/main.conf
 ### START sed
 FILE=/etc/bluetooth/main.conf
@@ -314,70 +296,30 @@ STRING="^#AutoEnable=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/AutoEnable=true/" "$FILE"
 ### END sed
-## Configure /etc/mkinitcpio.conf
-### START sed
-FILE=/etc/mkinitcpio.conf
-STRING="^FILES=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|FILES=(/etc/luks/keys/md0_crypt.key)|" "$FILE"
-STRING="^MODULES=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/MODULES=(btrfs)/" "$FILE"
-#### If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
+## Configure /etc/dracut.conf.d/modules.conf
+{
+    echo "filesystems+=\" btrfs \""
+} >/etc/dracut.conf.d/modules.conf
+## If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
 pacman -Qq "nvidia-dkms" &&
-    sed -i "/$STRING/s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/" "$FILE"
-STRING="^HOOKS=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block mdadm_udev encrypt filesystems fsck)/" "$FILE"
-### END sed
-## Configure /etc/default/grub
-### START sed
-FILE=/etc/default/grub
-STRING="^#GRUB_ENABLE_CRYPTODISK=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/GRUB_ENABLE_CRYPTODISK=y/" "$FILE"
-STRING="^#GRUB_TERMINAL_OUTPUT=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/GRUB_TERMINAL_OUTPUT=\"gfxterm\"/" "$FILE"
-STRING="^GRUB_GFXPAYLOAD_LINUX=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/GRUB_GFXPAYLOAD_LINUX=keep/" "$FILE"
-STRING="^GRUB_GFXMODE=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/GRUB_GFXMODE=""$GRUBRESOLUTION""x32,auto/" "$FILE"
-PARAMETERS="\"quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 cryptdevice=UUID=$MD0UUID:md0_crypt cryptkey=rootfs:\/etc\/luks\/keys\/md0_crypt.key cryptdevice=UUID=$MD1UUID:md1_crypt root=\/dev\/mapper\/md1_crypt\""
-STRING="^GRUB_CMDLINE_LINUX_DEFAULT=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/GRUB_CMDLINE_LINUX_DEFAULT=$PARAMETERS/" "$FILE"
+    echo "force_drivers+=\" nvidia nvidia_modeset nvidia_uvm nvidia_drm \"" >>/etc/dracut.conf.d/modules.conf
+## Configure /etc/dracut.conf.d/cmdline.conf
+DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK1P2UUID="$(blkid -s UUID -o value $DISK1P2)"
+PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.md.waitclean=1 rd.lvm.lv=vg0/lv1 rd.luks.allow-discards=$DISK1P2UUID rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP quiet loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0"
 #### If on nvidia set kernel parameter nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
-    sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE"
+    PARAMETERS="${PARAMETERS} nvidia_drm.modeset=1"
 #### If on intel set kernel parameter intel_iommu=on
 pacman -Qq "intel-ucode" &&
-    sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE"
-STRING="^GRUB_CMDLINE_LINUX=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/GRUB_CMDLINE_LINUX=$PARAMETERS/" "$FILE"
-#### If on nvidia set kernel parameter nvidia_drm.modeset=1
-pacman -Qq "nvidia-dkms" &&
-    sed -i "/$STRING/s/\"$/ nvidia_drm.modeset=1\"/" "$FILE"
-pacman -Qq "intel-ucode" &&
-    #### If on intel set kernel parameter intel_iommu=on
-    sed -i "/$STRING/s/\"$/ intel_iommu=on\"/" "$FILE"
-STRING="^#GRUB_DISABLE_SUBMENU=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/GRUB_DISABLE_SUBMENU=y/" "$FILE"
-STRING="^GRUB_DEFAULT=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/GRUB_DEFAULT=0/" "$FILE"
-STRING="^#GRUB_SAVEDEFAULT=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/GRUB_SAVEDEFAULT=false/" "$FILE"
-### END sed
+    PARAMETERS="${PARAMETERS} intel_iommu=on"
+echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
+chmod 644 /etc/dracut.conf.d/*.conf
 
 # Setup /usr
 rsync -rq /git/arch-install/usr/ /usr
-cp /git/cryptboot/grub-install /usr/local/bin/
+cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
 ## Configure /usr/share/gruvbox/gruvbox.yml
@@ -386,7 +328,7 @@ chmod 644 /usr/share/gruvbox/gruvbox.yml
 ## Configure /usr/local/bin
 chmod 755 /usr/local/bin/cryptboot
 chmod 755 /usr/local/bin/cryptboot-efikeys
-chmod 755 /usr/local/bin/grub-install
+chmod 755 /usr/local/bin/systemd-boot-sign
 ln -s "$(which nvim)" /usr/local/bin/edit
 ln -s "$(which nvim)" /usr/local/bin/vedit
 ln -s "$(which nvim)" /usr/local/bin/vi
@@ -570,6 +512,10 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 ## Configure /var/games
 chown :games /var/games
 
+# Setup /efi
+rsync -rq /git/arch-install/efi/ /efi
+chmod 644 /efi/loader/loader.conf
+
 # Enable systemd services
 pacman -Qq "apparmor" &&
     {
@@ -595,25 +541,23 @@ pacman -Qq "reflector" &&
         systemctl enable reflector
         systemctl enable reflector.timer
     }
-pacman -Qq "usbguard" &&
-    systemctl enable usbguard.service
-
-# Setup /boot & /efi
-mkinitcpio -P
-DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
-if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-main" --modules="tpm" --disable-shim-lock --removable
-else
-    grub-install --target=x86_64-efi --boot-directory=/boot --efi-directory=/efi --bootloader-id="grub-arch-main" --modules="tpm" --disable-shim-lock
-fi
-grub-mkconfig -o /boot/grub/grub.cfg
-
-# Enable systemd services later that cause problems with `grub-install`
 pacman -Qq "snapper" &&
     {
         systemctl enable snapper-cleanup.timer
         systemctl enable snapper-timeline.timer
     }
+pacman -Qq "systemd" &&
+    systemctl enable systemd-boot-update.service
+pacman -Qq "usbguard" &&
+    systemctl enable usbguard.service
+
+# Setup /boot & /efi
+if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
+    bootctl --esp-path=/efi --no-variables install
+else
+    bootctl --esp-path=/efi install
+fi
+dracut --regenerate-all
 
 # Remove repo
 rm -rf /git

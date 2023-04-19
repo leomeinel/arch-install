@@ -37,8 +37,6 @@ glow
 go
 gradle
 grex
-grub
-grub-btrfs
 gutenprint
 gwenview
 htop
@@ -51,8 +49,8 @@ hwinfo
 hyperfine
 inetutils
 jdk-openjdk
-jdk8-openjdk
 jdk17-openjdk
+jdk8-openjdk
 jpegoptim
 jq
 kaccounts-providers
@@ -130,6 +128,7 @@ sddm
 sddm-kcm
 signal-desktop
 simple-scan
+snap-pac
 snapper
 spectacle
 sshfs

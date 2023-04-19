@@ -7,7 +7,6 @@ libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
 sddm-nordic-theme-git
-snap-pac-grub
 snapper-gui-git
 trilium-bin
 usbguard-notifier

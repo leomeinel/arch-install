@@ -8,7 +8,7 @@ Target = usr/local/bin/*
 Target = usr/share/applications/*.desktop
 
 [Action]
-Description = Configure symlinks in /usr/local/bin based on firecfg.config...
+Description = Configuring symlinks in /usr/local/bin...
 When = PostTransaction
 Depends = firejail
 Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/70-firejail.sh'
