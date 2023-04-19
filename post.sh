@@ -226,10 +226,10 @@ YES)
     doas cryptboot-efikeys create
     doas cryptboot-efikeys enroll
     doas cryptboot systemd-boot-sign
-    {
+    doas sh -c "{
         echo "uefi_secureboot_cert=\"/etc/secureboot/keys/db.crt\""
         echo "uefi_secureboot_key=\"/etc/secureboot/keys/db.key\""
-    } >/etc/dracut.conf.d/secureboot.conf
+    } >/etc/dracut.conf.d/secureboot.conf"
     ;;
 *)
     {
@@ -245,10 +245,10 @@ YES)
         echo '    fi'
         echo '    doas mount /efi'
         echo '    doas cryptboot systemd-boot-sign'
-        echo '    {'
+        echo '    doas sh -c "{'
         echo '        echo "uefi_secureboot_cert=\"/etc/secureboot/keys/db.crt\""'
         echo '        echo "uefi_secureboot_key=\"/etc/secureboot/keys/db.key\""'
-        echo '    } >/etc/dracut.conf.d/secureboot.conf'
+        echo '    } >/etc/dracut.conf.d/secureboot.conf"'
         echo '    ;;'
         echo '*)'
         echo '    echo "ERROR: User has not transferred keys to $EFI_KEYS_DIR"'
@@ -369,13 +369,13 @@ pacman -Qq "usbguard-notifier" &&
     systemctl enable --user usbguard-notifier.service
 
 # Setup /boot & /efi
-doas dracut --regenerate-all --force
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
     bootctl --esp-path=/efi --no-variables update
 else
     bootctl --esp-path=/efi update
 fi
+doas dracut --regenerate-all --force
 
 # Remove repo
 rm -rf ~/git
