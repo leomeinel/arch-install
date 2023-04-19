@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-# File: prepare-disks-before-v3.sh
+# File: 0-erase-disks-before-v3.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2023 Leopold Meinel & contributors
@@ -8,6 +8,9 @@
 # URL: https://www.gnu.org/licenses/gpl-3.0-standalone.html
 # -----
 ###
+
+# Fail on error
+set -eu
 
 # Detect & close old crypt volumes
 if lsblk -rno TYPE | grep -q "crypt"; then
