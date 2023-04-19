@@ -307,7 +307,7 @@ pacman -Qq "nvidia-dkms" &&
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 DISK1P2UUID="$(blkid -s UUID -o value $DISK1P2)"
-echo "kernel_cmdline=\"rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootfsflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@,subvol=@ rd.md.waitclean=1 rd.lvm.lv=vg0/lv1 rd.luks.allow-discards=$DISK1P2UUID\"" >/etc/dracut.conf.d/cmdline.conf
+echo "kernel_cmdline=\"rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootfsflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256 rd.md.waitclean=1 rd.lvm.lv=vg0/lv1 rd.luks.allow-discards=$DISK1P2UUID\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
 ## Configure /etc/kernel/commandline
 PARAMETERS="quiet loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0"
