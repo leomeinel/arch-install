@@ -103,10 +103,10 @@ DISK2P1="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -
 DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 
 # Configure raid1
-mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1P2" "$DISK2P2"
+mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any --name=md0 /dev/md/md0 "$DISK1P2" "$DISK2P2"
 ## FIXME: This is a hack to fix dracut not auto-assembling the array
-mdadm --stop /dev/md/md0
-mdadm -AU homehost /dev/md/md0 "$DISK1P2" "$DISK2P2"
+#mdadm --stop /dev/md/md0
+#mdadm -AU homehost /dev/md/md0 "$DISK1P2" "$DISK2P2"
 
 # Configure encryption
 ## root
