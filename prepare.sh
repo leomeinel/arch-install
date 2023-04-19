@@ -68,6 +68,7 @@ DISK1P1="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 
 # Configure encryption
+## NOTE: md0_crypt will be used for convenience, even tho it might be confusing
 ## root
 cryptsetup open --type plain -d /dev/urandom "$DISK1P2" to_be_wiped
 cryptsetup close to_be_wiped
