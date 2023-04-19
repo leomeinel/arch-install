@@ -1,6 +1,7 @@
 base
 base-devel
 btrfs-progs
+dracut
 git
 iptables
 lib32-mesa
@@ -11,6 +12,7 @@ linux-lts
 linux-lts-headers
 linux-zen
 linux-zen-headers
+lvm2
 mesa
 neovim
 opendoas

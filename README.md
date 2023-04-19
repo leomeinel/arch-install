@@ -36,14 +36,6 @@ reboot
 
 :information_source: | Set variables after `prepare.sh` using `nvim /git/arch-install/setup.sh` and `nvim ~/post.sh`.
 
-### _Low GRUBRESOLUTION for VM_
-
-:bulb: | _For a VM set a low GRUBRESOLUTION._
-
-:bulb: | _Expect inconveniences otherwise._
-
-:bulb: | _"1280x720" should be reasonable._
-
 ## Post-installation (tty)
 
 :warning: | If using virt-manager skip ¹.

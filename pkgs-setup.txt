@@ -29,15 +29,13 @@ firejail
 fwupd
 git-delta
 glow
-grub
-grub-btrfs
 gwenview
 htop
 hwinfo
 hyperfine
 jdk-openjdk
-jdk8-openjdk
 jdk17-openjdk
+jdk8-openjdk
 jpegoptim
 kaccounts-providers
 kalendar
