@@ -313,7 +313,7 @@ DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -
 DISK2P2UUID="$(blkid -s UUID -o value $DISK2P2)"
 LV0UUID="$(blkid -s UUID -o value /dev/vg0/lv0)"
 MD0CRYPTUUID="$(blkid -s UUID -o value /dev/mapper/md0_crypt)"
-echo "kernel_cmdline=\"rd.luks.uuid=luks-$MD0CRYPTUUID rd.luks rd.lvm rd.lvm.vg=vg0 rd.lvm.lv=vg0/lv0 rd.lvm.lv=vg0/lv1 root=UUID=$LV0UUID rootfstype=btrfs rd.luks.allow-discards=$DISK1P2UUID rd.luks.allow-discards=$DISK2P2UUID\"" >/etc/dracut.conf.d/cmdline.conf
+echo "kernel_cmdline=\"rd.lvm=1 rd.dm=1 rd.md=1 rd.luks=1 rd.luks.uuid=luks-$MD0CRYPTUUID rd.lvm.vg=vg0 rd.lvm.lv=vg0/lv0 rd.lvm.lv=vg0/lv1 root=UUID=$LV0UUID rootfstype=btrfs rd.luks.allow-discards=$DISK1P2UUID rd.luks.allow-discards=$DISK2P2UUID\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
 ## Configure /etc/kernel/commandline
 PARAMETERS="quiet loglevel=3 audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0"
