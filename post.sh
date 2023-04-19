@@ -10,7 +10,6 @@
 ###
 
 KEYMAP="de-latin1"
-KEYLAYOUT="de"
 
 # Fail on error
 set -e
@@ -24,24 +23,17 @@ sed_exit() {
 
 # Configure dot-files (setup)
 SYSUSER="<INSERT_SYSUSER>"
-VIRTUSER="<INSERT_VIRTUSER>"
+DOCKUSER="<INSERT_DOCKUSER>"
 HOMEUSER="<INSERT_HOMEUSER>"
-GUESTUSER="<INSERT_GUESTUSER>"
-/dot-files.sh setup
-doas su -lc '/dot-files.sh setup' "$VIRTUSER"
-doas su -lc '/dot-files.sh setup' "$HOMEUSER"
-doas su -lc '/dot-files.sh setup' "$GUESTUSER"
-doas su -lc '/dot-files.sh setup-root' root
+/dot-files.sh
+doas su -lc '/dot-files.sh' "$DOCKUSER"
+doas su -lc '/dot-files.sh' "$HOMEUSER"
 
 # Configure clock
 doas timedatectl set-ntp true
 
 # Configure $KEYMAP
 doas localectl --no-convert set-keymap "$KEYMAP"
-doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
-
-# Set default java
-doas archlinux-java set java-17-openjdk
 
 # Configure iptables
 # FIXME: Replace with nftables
@@ -109,24 +101,11 @@ doas iptables -A INPUT -p tcp -m state --state NEW -m tcpmss ! --mss 536:65535 -
 doas iptables -A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
 ### Drop ICMP
 doas iptables -A INPUT -p icmp -j DROP
-### Allow SMTP
-doas iptables -A INPUT -p tcp --dport 25 -j ACCEPT
-doas iptables -A INPUT -p tcp --dport 587 -j ACCEPT
-### Allow POP & POPS
-doas iptables -A INPUT -p tcp --dport 110 -j ACCEPT
-doas iptables -A INPUT -p tcp --dport 995 -j ACCEPT
-### Allow IMAP & IMAPS
-doas iptables -A INPUT -p tcp --dport 143 -j ACCEPT
-doas iptables -A INPUT -p tcp --dport 993 -j ACCEPT
-### Allow default ktorrent ports (Forward them if not using UPnP)
-doas iptables -A INPUT -p tcp --dport 6881 -j ACCEPT
-doas iptables -A INPUT -p udp --dport 7881 -j ACCEPT
-doas iptables -A INPUT -p udp --dport 8881 -j ACCEPT
-### Allow mDNS
-doas iptables -A INPUT -p udp --dport 5353 -j ACCEPT
-### Allow http & https (for wget)
+### Allow http & https
 doas iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 doas iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+### Allow ssh
+doas iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 ### Allow established connections
 doas iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 ### Set default policies for chains
@@ -183,24 +162,11 @@ doas ip6tables -A INPUT -p tcp -m state --state NEW -m tcpmss ! --mss 536:65535 
 doas ip6tables -A INPUT -s ::1/128 ! -i lo -j DROP
 ### Drop ICMP
 doas ip6tables -A INPUT -p icmp -j DROP
-### Allow SMTP
-doas ip6tables -A INPUT -p tcp --dport 25 -j ACCEPT
-doas ip6tables -A INPUT -p tcp --dport 587 -j ACCEPT
-### Allow POP & POPS
-doas ip6tables -A INPUT -p tcp --dport 110 -j ACCEPT
-doas ip6tables -A INPUT -p tcp --dport 995 -j ACCEPT
-### Allow IMAP & IMAPS
-doas ip6tables -A INPUT -p tcp --dport 143 -j ACCEPT
-doas ip6tables -A INPUT -p tcp --dport 993 -j ACCEPT
-### Allow default ktorrent ports (Forward them if not using UPnP)
-doas ip6tables -A INPUT -p tcp --dport 6881 -j ACCEPT
-doas ip6tables -A INPUT -p udp --dport 7881 -j ACCEPT
-doas ip6tables -A INPUT -p udp --dport 8881 -j ACCEPT
-### Allow mDNS
-doas ip6tables -A INPUT -p udp --dport 5353 -j ACCEPT
-### Allow http & https (for wget)
+### Allow http & https
 doas ip6tables -A INPUT -p tcp --dport 80 -j ACCEPT
 doas ip6tables -A INPUT -p tcp --dport 443 -j ACCEPT
+### Allow ssh
+doas ip6tables -A INPUT -p tcp --dport 22 -j ACCEPT
 ### Allow established connections
 doas ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 ### Set default policies for chains
@@ -307,12 +273,6 @@ paru -Scc
 # Clean firecfg
 doas firecfg --clean
 
-# Configure dot-files (vscodium)
-/dot-files.sh vscodium
-doas su -lc '/dot-files.sh vscodium' "$VIRTUSER"
-doas su -lc '/dot-files.sh vscodium' "$HOMEUSER"
-doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
-
 # Configure firejail
 ## START sed
 FILE=/etc/firejail/firecfg.config
@@ -347,13 +307,12 @@ STRING="^vscodium$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#vscodium #arch-install/" "$FILE"
 ## END sed
-doas firecfg --add-users root "$SYSUSER" "$VIRTUSER" "$HOMEUSER" "$GUESTUSER"
+doas firecfg --add-users root "$SYSUSER" "$DOCKUSER" "$HOMEUSER"
 doas apparmor_parser -r /etc/apparmor.d/firejail-default
 doas firecfg
 rm -rf ~/.local/share/applications/*
-doas su -c 'rm -rf ~/.local/share/applications/*' "$VIRTUSER"
+doas su -c 'rm -rf ~/.local/share/applications/*' "$DOCKUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
-doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
 
 # Enable systemd services
 pacman -Qq "iptables" &&
@@ -361,12 +320,6 @@ pacman -Qq "iptables" &&
         doas systemctl enable ip6tables
         doas systemctl enable iptables
     }
-pacman -Qq "sddm" &&
-    doas systemctl enable sddm
-
-# Enable systemd user services
-pacman -Qq "usbguard-notifier" &&
-    systemctl enable --user usbguard-notifier.service
 
 # Remove repo
 rm -rf ~/git
