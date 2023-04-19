@@ -560,13 +560,12 @@ pacman -Qq "usbguard" &&
     systemctl enable usbguard.service
 
 # Setup /boot & /efi
-dracut --regenerate-all --force
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
     bootctl --esp-path=/efi --no-variables install
 else
     bootctl --esp-path=/efi install
 fi
-dracut --regenerate-all --force
+dracut --uefi
 
 # Remove repo
 rm -rf /git
