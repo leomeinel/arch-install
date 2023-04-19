@@ -2,17 +2,15 @@
 Operation = Install
 Operation = Upgrade
 Type = Package
-Target = grub
 Target = linux
 Target = linux-lts
 Target = linux-zen
 
 [Action]
 NeedsTargets
-Depends = grub
 Depends = linux
 Depends = linux-lts
 Depends = linux-zen
-Description = Updating grub...
+Description = Signing kernel for secure boot...
 When = PostTransaction
-Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/95-upgrade-grub.sh'
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/96-systemd-boot-sign.sh'

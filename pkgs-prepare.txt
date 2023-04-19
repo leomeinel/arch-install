@@ -4,6 +4,7 @@ btrfs-progs
 docker
 docker-compose
 docker-scan
+dracut
 git
 iptables
 linux
@@ -11,6 +12,7 @@ linux-firmware
 linux-headers
 linux-lts
 linux-lts-headers
+lvm2
 mdadm
 neovim
 opendoas

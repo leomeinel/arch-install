@@ -13,8 +13,6 @@ exa
 fd
 firejail
 fwupd
-grub
-grub-btrfs
 htop
 hwinfo
 hyperfine
@@ -40,6 +38,7 @@ procs
 ripgrep
 sbsigntools
 screen
+snap-pac
 snapper
 sshfs
 starship

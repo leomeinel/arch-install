@@ -67,33 +67,21 @@ esac
 # Detect & close old crypt volumes
 if lsblk -rno TYPE | grep -q "crypt"; then
     OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
-    OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
     cryptsetup close "$OLD_CRYPT_0"
-    cryptsetup close "$OLD_CRYPT_1"
 fi
 
 # Detect & erase old crypt/raid1 volumes
 if lsblk -rno TYPE | grep -q "raid1"; then
     DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
     DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-    DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
-    DISK2P3="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
     OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
-    OLD_RAID_1="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '2p' | tr -d "[:space:]")"
     if cryptsetup isLuks "$OLD_RAID_0"; then
         cryptsetup erase "$OLD_RAID_0"
     fi
-    if cryptsetup isLuks "$OLD_RAID_1"; then
-        cryptsetup erase "$OLD_RAID_1"
-    fi
     sgdisk -Z "$OLD_RAID_0"
-    sgdisk -Z "$OLD_RAID_1"
     mdadm --stop "$OLD_RAID_0"
-    mdadm --stop "$OLD_RAID_1"
     mdadm --zero-superblock "$DISK1P2"
     mdadm --zero-superblock "$DISK2P2"
-    mdadm --zero-superblock "$DISK1P3"
-    mdadm --zero-superblock "$DISK2P3"
 fi
 
 # Load $KEYMAP & set time
@@ -105,58 +93,56 @@ sgdisk -Z "$DISK1"
 sgdisk -Z "$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
-sgdisk -n 0:0:+1G -t 1:fd00 "$DISK1"
-sgdisk -n 0:0:+1G -t 1:fd00 "$DISK2"
-sgdisk -n 0:0:0 -t 1:fd00 "$DISK1"
-sgdisk -n 0:0:0 -t 1:fd00 "$DISK2"
+sgdisk -n 0:0:0 -t 2:fd00 "$DISK1"
+sgdisk -n 0:0:0 -t 2:fd00 "$DISK2"
 
 # Detect partitions & set variables accordingly
 DISK1P1="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
 DISK2P1="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
 DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-DISK2P3="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
 
 # Configure raid1
-mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md0 "$DISK1P2" "$DISK2P2"
-mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any /dev/md/md1 "$DISK1P3" "$DISK2P3"
+mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any --name=md0 /dev/md/md0 "$DISK1P2" "$DISK2P2"
+## FIXME: This is a hack to fix dracut not auto-assembling the array
+#mdadm --stop /dev/md/md0
+#mdadm -AU homehost /dev/md/md0 "$DISK1P2" "$DISK2P2"
 
 # Configure encryption
-## boot
+## root
 cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
 cryptsetup close to_be_wiped
-echo -e "\e[31mUS keymap will be used when booting from\e[0m /dev/md/md0"
-cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks1 /dev/md/md0
-cryptsetup open --type luks1 /dev/md/md0 md0_crypt
-## root
-cryptsetup open --type plain -d /dev/urandom /dev/md/md1 to_be_wiped
-cryptsetup close to_be_wiped
-cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks2 /dev/md/md1
-cryptsetup open --type luks2 /dev/md/md1 md1_crypt
+cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks2 /dev/md/md0
+cryptsetup open --type luks2 --perf-no_read_workqueue --perf-no_write_workqueue --persistent /dev/md/md0 md0_crypt
+
+# Configure lvm
+pvcreate /dev/mapper/md0_crypt
+vgcreate vg0 /dev/mapper/md0_crypt
+lvcreate -l 40%FREE vg0 -n lv0
+lvcreate -l 100%FREE vg0 -n lv1
 
 # Format efi
 mkfs.fat -n EFI -F32 "$DISK1P1"
 mkfs.fat -n EFI -F32 "$DISK2P1"
 
-# Format boot
-mkfs.ext4 -L BOOT /dev/mapper/md0_crypt
-
 # Configure btrfs
-mkfs.btrfs -L MDCRYPT /dev/mapper/md1_crypt
-mount /dev/mapper/md1_crypt /mnt
+mkfs.btrfs -L LV0 /dev/mapper/vg0-lv0
+mount /dev/mapper/vg0-lv0 /mnt
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@var_cache
 btrfs subvolume create /mnt/@var_lib_docker
 btrfs subvolume create /mnt/@var_lib_libvirt
 btrfs subvolume create /mnt/@var_lib_mysql
 btrfs subvolume create /mnt/@var_log
-btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@snapshots
+umount /mnt
+mkfs.btrfs -L LV1 /dev/mapper/vg0-lv1
+mount /dev/mapper/vg0-lv1 /mnt
+btrfs subvolume create /mnt/@home
+umount /mnt
 
 # Mount volumes
-umount /mnt
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/md1_crypt /mnt
+mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv0 /mnt
 mkdir /mnt/efi
 mkdir /mnt/.efi.bak
 mkdir /mnt/boot
@@ -173,16 +159,15 @@ mkdir /mnt/var &&
     }
 mkdir /mnt/home
 mkdir /mnt/.snapshots
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/md1_crypt /mnt/var/cache
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/md1_crypt /mnt/var/lib/docker
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/md1_crypt /mnt/var/lib/libvirt
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/md1_crypt /mnt/var/lib/mysql
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/md1_crypt /mnt/var/log
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/md1_crypt /mnt/home
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/md1_crypt /mnt/.snapshots
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/vg0-lv0 /mnt/var/cache
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/vg0-lv0 /mnt/var/lib/docker
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/vg0-lv0 /mnt/var/lib/libvirt
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/vg0-lv0 /mnt/var/lib/mysql
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/vg0-lv0 /mnt/var/log
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/vg0-lv0 /mnt/.snapshots
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv1 /mnt/home
 mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
 mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
-mount -o noexec,nodev,nosuid /dev/mapper/md0_crypt /mnt/boot
 
 # Set SSD state to "frozen" after sleep
 mkdir -p /mnt/usr/lib/systemd/system-sleep
