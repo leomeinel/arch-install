@@ -316,7 +316,7 @@ LV0UUID="$(blkid -s UUID -o value /dev/mapper/vg0-lv0)"
 echo "kernel_cmdline=\"rd.auto=1 rd.lvm=1 rd.dm=1 rd.md=1 rd.luks=1 rd.md.uuid=$MD0UUID rd.md.waitclean=1 rd.luks.uuid=$MD0UUID rd.lvm.vg=vg0 rd.lvm.lv=vg0/lv0 rd.lvm.lv=vg0/lv1 root=UUID=$LV0UUID rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.luks.allow-discards=$DISK1P2UUID rd.luks.allow-discards=$DISK2P2UUID\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
 ## Configure /etc/kernel/commandline
-PARAMETERS="quiet loglevel=3 cryptdevice=UUID=$MD0UUID bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0"
+PARAMETERS="quiet loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0"
 #### If on nvidia set kernel parameter nvidia_drm.modeset=1
 pacman -Qq "nvidia-dkms" &&
     PARAMETERS="${PARAMETERS} nvidia_drm.modeset=1"
@@ -566,7 +566,7 @@ if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; 
 else
     bootctl --esp-path=/efi install
 fi
-dracut --regenerate-all --uefi
+dracut --regenerate-all
 
 # Remove repo
 rm -rf /git
