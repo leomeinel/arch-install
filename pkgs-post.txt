@@ -1,4 +1,5 @@
 arc-kde
+freetube-bin
 gdlauncher-bin
 librewolf-bin
 macchina-bin
