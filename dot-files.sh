@@ -15,17 +15,17 @@ set -e
 # Set up dot-files
 case "$1" in
 setup)
-    git clone -b games https://github.com/leomeinel/dot-files.git ~/dot-files
+    git clone https://github.com/leomeinel/dot-files.git ~/dot-files
     chmod +x ~/dot-files/setup.sh
     ~/dot-files/setup.sh
     ;;
 setup-root)
-    git clone -b games https://github.com/leomeinel/dot-files.git ~/dot-files
+    git clone https://github.com/leomeinel/dot-files.git ~/dot-files
     chmod +x ~/dot-files/setup-root.sh
     ~/dot-files/setup-root.sh
     ;;
 vscodium)
-    git clone -b games https://github.com/leomeinel/dot-files.git ~/dot-files
+    git clone https://github.com/leomeinel/dot-files.git ~/dot-files
     chmod +x ~/dot-files/exts-code.sh
     ~/dot-files/exts-code.sh
     ;;
