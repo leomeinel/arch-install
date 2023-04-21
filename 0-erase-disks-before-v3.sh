@@ -12,34 +12,28 @@
 # Fail on error
 set -eu
 
-# Detect & close old crypt volumes
-if lsblk -rno TYPE | grep -q "crypt"; then
-    OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
-    OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
+# Detect, close & erase old crypt volumes
+if lsblk -rno TYPE "$DISK1" | grep -q "crypt"; then
+    OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME $DISK1 | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
+    OLD_CRYPT_1="$(lsblk -Mrno TYPE,NAME $DISK1 | grep "crypt" | sed 's/crypt//' | sed -n '2p' | tr -d "[:space:]")"
+    OLD_DISK1P2="$(lsblk -rnpo TYPE,NAME $DISK1 | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+    OLD_DISK1P3="$(lsblk -rnpo TYPE,NAME $DISK1 | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
+    ## Close old crypt volumes
     cryptsetup close "$OLD_CRYPT_0"
     cryptsetup close "$OLD_CRYPT_1"
-fi
-
-# Detect & erase old crypt/raid1 volumes
-if lsblk -rno TYPE | grep -q "raid1"; then
-    DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-    DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-    DISK1P3="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
-    DISK2P3="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '3p' | tr -d "[:space:]")"
-    OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
-    OLD_RAID_1="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '2p' | tr -d "[:space:]")"
-    if cryptsetup isLuks "$OLD_RAID_0"; then
-        cryptsetup erase "$OLD_RAID_0"
+    ## Erase old crypt volumes
+    if cryptsetup isLuks "$OLD_DISK1P2"; then
+        cryptsetup erase "$OLD_DISK1P2"
+        sgdisk -Z "$OLD_DISK1P2"
+    else
+        echo "ERROR: Can't erase old crypt volume"
+        exit 1
     fi
-    if cryptsetup isLuks "$OLD_RAID_1"; then
-        cryptsetup erase "$OLD_RAID_1"
+    if cryptsetup isLuks "$OLD_DISK1P3"; then
+        cryptsetup erase "$OLD_DISK1P3"
+        sgdisk -Z "$OLD_DISK1P3"
+    else
+        echo "ERROR: Can't erase old crypt volume"
+        exit 1
     fi
-    sgdisk -Z "$OLD_RAID_0"
-    sgdisk -Z "$OLD_RAID_1"
-    mdadm --stop "$OLD_RAID_0"
-    mdadm --stop "$OLD_RAID_1"
-    mdadm --zero-superblock "$DISK1P2"
-    mdadm --zero-superblock "$DISK2P2"
-    mdadm --zero-superblock "$DISK1P3"
-    mdadm --zero-superblock "$DISK2P3"
 fi
