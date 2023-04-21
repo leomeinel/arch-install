@@ -9,13 +9,9 @@
 # -----
 ###
 
-KEYMAP="de-latin1"
-MIRRORCOUNTRIES="NL,DE,DK,FR"
-# Customize disk allocation
-# Strings are sorted by their time of execution.
-# x% free means x% of what is left
-#           /        /usr      /var      /home
-DISK_ALLOCATION=("5%FREE" "10%FREE" "50%FREE" "100%FREE")
+# Source config
+SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
+source "$SCRIPT_DIR/install.conf"
 
 # Fail on error
 set -eu
@@ -260,7 +256,6 @@ sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE"
 ## END sed
 
 # Prepare /mnt/git/arch-install
-TO_MOVE="$(dirname -- "$(readlink -f -- "$0")")"
 mkdir /mnt/git
-mv "$TO_MOVE" /mnt/git/
+mv "$SCRIPT_DIR" /mnt/git/
 chmod +x /mnt/git/arch-install/setup.sh

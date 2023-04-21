@@ -9,8 +9,9 @@
 # -----
 ###
 
-KEYMAP="de-latin1"
-KEYLAYOUT="de"
+# Source config
+SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
+source "$SCRIPT_DIR/install.conf"
 
 # Fail on error
 set -e
@@ -23,10 +24,6 @@ sed_exit() {
 }
 
 # Configure dot-files (setup)
-SYSUSER="<INSERT_SYSUSER>"
-VIRTUSER="<INSERT_VIRTUSER>"
-HOMEUSER="<INSERT_HOMEUSER>"
-GUESTUSER="<INSERT_GUESTUSER>"
 /dot-files.sh setup
 doas su -lc '/dot-files.sh setup' "$VIRTUSER"
 doas su -lc '/dot-files.sh setup' "$HOMEUSER"
