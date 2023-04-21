@@ -8,9 +8,11 @@ Meant for systems that mainly run steam and other games.
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
-:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/games/virt-manager.md) for virt-manager.
+:information_source: | I recommend disks with at least 512GB (change allocation in prepare.sh otherwise).
 
-:warning: | All data on the disk will be wiped!
+:warning: | All data on both disks will be wiped!
+
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/games/virt-manager.md) for virt-manager.
 
 ## Pre-installation
 

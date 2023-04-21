@@ -143,7 +143,7 @@ chmod 775 /mnt/var/games
 mkdir -p /mnt/usr/lib/systemd/system-sleep
 DISK1UUID="$(blkid -s UUID -o value "$DISK1")"
 {
-    echo 'if [ "$1" = "post" ]; then'
+    echo 'if [[ "$1" = "post" ]]; then'
     echo '    sleep 1'
     echo '    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK1UUID"'; then'
     echo '        logger "$0: SSD freeze command executed successfully"'
