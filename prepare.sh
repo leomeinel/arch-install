@@ -11,6 +11,11 @@
 
 KEYMAP="de-latin1"
 MIRRORCOUNTRIES="NL,DE,DK,FR"
+# Customize disk allocation
+# Strings are sorted by their time of execution.
+# x% free means x% of what is left
+#           /        /usr      /var      /home
+DISK_ALLOCATION=("5%FREE" "10%FREE" "50%FREE" "100%FREE")
 
 # Fail on error
 set -eu
@@ -115,10 +120,10 @@ cryptsetup open --type luks2 --perf-no_read_workqueue --perf-no_write_workqueue 
 # Configure lvm
 pvcreate /dev/mapper/md0_crypt
 vgcreate vg0 /dev/mapper/md0_crypt
-lvcreate -l 5%FREE vg0 -n lv0
-lvcreate -l 10%FREE vg0 -n lv1
-lvcreate -l 20%FREE vg0 -n lv2
-lvcreate -l 100%FREE vg0 -n lv3
+lvcreate -l ${DISK_ALLOCATION[0]} vg0 -n lv0
+lvcreate -l ${DISK_ALLOCATION[1]} vg0 -n lv1
+lvcreate -l ${DISK_ALLOCATION[2]} vg0 -n lv2
+lvcreate -l ${DISK_ALLOCATION[3]} vg0 -n lv3
 
 # Format efi
 mkfs.fat -n EFI -F32 "$DISK1P1"
