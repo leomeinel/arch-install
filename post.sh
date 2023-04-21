@@ -356,16 +356,16 @@ doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
 
 # Enable systemd services
-pacman -Qq "iptables" &&
+pacman -Qq "iptables" >/dev/null 2>&1 &&
     {
         doas systemctl enable ip6tables
         doas systemctl enable iptables
     }
-pacman -Qq "sddm" &&
+pacman -Qq "sddm" >/dev/null 2>&1 &&
     doas systemctl enable sddm
 
 # Enable systemd user services
-pacman -Qq "usbguard-notifier" &&
+pacman -Qq "usbguard-notifier" >/dev/null 2>&1 &&
     systemctl enable --user usbguard-notifier.service
 
 # Remove repo

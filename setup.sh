@@ -99,7 +99,7 @@ chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
     echo ''
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
 ### Configure hooks for nvidia in /etc/pacman.d/hooks/
-pacman -Qq "nvidia-dkms" &&
+pacman -Qq "nvidia-dkms" >/dev/null 2>&1 &&
     {
         {
             echo '[Trigger]'
@@ -309,7 +309,7 @@ sed -i "s/$STRING/AutoEnable=true/" "$FILE"
     echo "filesystems+=\" btrfs \""
 } >/etc/dracut.conf.d/modules.conf
 ## If on nvidia add kernel modules: nvidia nvidia_modeset nvidia_uvm nvidia_drm
-pacman -Qq "nvidia-dkms" &&
+pacman -Qq "nvidia-dkms" >/dev/null 2>&1 &&
     echo "force_drivers+=\" nvidia nvidia_modeset nvidia_uvm nvidia_drm \"" >>/etc/dracut.conf.d/modules.conf
 ## Configure /etc/dracut.conf.d/cmdline.conf
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
@@ -317,10 +317,10 @@ DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -
 DISK1P2UUID="$(blkid -s UUID -o value $DISK1P2)"
 PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.md.waitclean=1 rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.luks.allow-discards=$DISK1P2UUID rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP quiet loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0"
 #### If on nvidia set kernel parameter nvidia_drm.modeset=1
-pacman -Qq "nvidia-dkms" &&
+pacman -Qq "nvidia-dkms" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} nvidia_drm.modeset=1"
 #### If on intel set kernel parameter intel_iommu=on
-pacman -Qq "intel-ucode" &&
+pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
@@ -525,38 +525,38 @@ rsync -rq /git/arch-install/efi/ /efi
 chmod 644 /efi/loader/loader.conf
 
 # Enable systemd services
-pacman -Qq "apparmor" &&
+pacman -Qq "apparmor" >/dev/null 2>&1 &&
     {
         systemctl enable apparmor.service
         systemctl enable auditd.service
     }
-pacman -Qq "avahi" &&
+pacman -Qq "avahi" >/dev/null 2>&1 &&
     systemctl enable avahi-daemon
-pacman -Qq "bluez" &&
+pacman -Qq "bluez" >/dev/null 2>&1 &&
     systemctl enable bluetooth
-pacman -Qq "cups" &&
+pacman -Qq "cups" >/dev/null 2>&1 &&
     systemctl enable cups.service
-pacman -Qq "util-linux" &&
+pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
-pacman -Qq "libvirt" &&
+pacman -Qq "libvirt" >/dev/null 2>&1 &&
     systemctl enable libvirtd
-pacman -Qq "networkmanager" &&
+pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager
-pacman -Qq "power-profiles-daemon" &&
+pacman -Qq "power-profiles-daemon" >/dev/null 2>&1 &&
     systemctl enable power-profiles-daemon
-pacman -Qq "reflector" &&
+pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
         systemctl enable reflector
         systemctl enable reflector.timer
     }
-pacman -Qq "snapper" &&
+pacman -Qq "snapper" >/dev/null 2>&1 &&
     {
         systemctl enable snapper-cleanup.timer
         systemctl enable snapper-timeline.timer
     }
-pacman -Qq "systemd" &&
+pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
-pacman -Qq "usbguard" &&
+pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 
 # Setup /boot & /efi

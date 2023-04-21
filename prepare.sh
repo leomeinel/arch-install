@@ -37,14 +37,14 @@ for ((i = 0; i < DISKS_LENGTH; i++)); do
         }
     DISKS=("${DISKS[@]}")
 done
-[ "${#DISKS[@]}" -ne 2 ] &&
+[[ "${#DISKS[@]}" -ne 2 ]] &&
     {
         echo "ERROR: There are not exactly 2 disks attached!"
         exit 1
     }
 SIZE1="$(lsblk -drno SIZE "${DISKS[0]}" | tr -d "[:space:]")"
 SIZE2="$(lsblk -drno SIZE "${DISKS[1]}" | tr -d "[:space:]")"
-if [ "$SIZE1" = "$SIZE2" ]; then
+if [[ "$SIZE1" = "$SIZE2" ]]; then
     DISK1="${DISKS[0]}"
     DISK2="${DISKS[1]}"
 else
@@ -183,7 +183,7 @@ mkdir -p /mnt/usr/lib/systemd/system-sleep
 DISK1UUID="$(blkid -s UUID -o value "$DISK1")"
 DISK2UUID="$(blkid -s UUID -o value "$DISK2")"
 {
-    echo 'if [ "$1" = "post" ]; then'
+    echo 'if [[ "$1" = "post" ]]; then'
     echo '    sleep 1'
     echo '    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK1UUID"'; then'
     echo '        logger "$0: SSD freeze command executed successfully"'
