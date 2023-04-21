@@ -315,7 +315,7 @@ doas su -c 'rm -rf ~/.local/share/applications/*' "$DOCKUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
 
 # Enable systemd services
-pacman -Qq "iptables" &&
+pacman -Qq "iptables" >/dev/null 2>&1 &&
     {
         doas systemctl enable ip6tables
         doas systemctl enable iptables

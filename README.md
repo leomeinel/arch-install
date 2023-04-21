@@ -10,9 +10,11 @@ Meant for servers that are mainly hosting docker.
 
 :information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
 
-:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/server/virt-manager.md) for virt-manager.
+:information_source: | I recommend disks with at least 512GB (change allocation in prepare.sh otherwise).
 
 :warning: | All data on both disks will be wiped!
+
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/server/virt-manager.md) for virt-manager.
 
 ## Pre-installation
 

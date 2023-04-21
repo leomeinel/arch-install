@@ -222,7 +222,7 @@ DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -
 DISK1P2UUID="$(blkid -s UUID -o value $DISK1P2)"
 PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.md.waitclean=1 rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.luks.allow-discards=$DISK1P2UUID rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP quiet loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
 #### If on intel set kernel parameter intel_iommu=on
-pacman -Qq "intel-ucode" &&
+pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
@@ -441,39 +441,39 @@ rsync -rq /git/arch-install/efi/ /efi
 chmod 644 /efi/loader/loader.conf
 
 # Enable systemd services
-pacman -Qq "apparmor" &&
+pacman -Qq "apparmor" >/dev/null 2>&1 &&
     {
         systemctl enable apparmor.service
         systemctl enable auditd.service
     }
-pacman -Qq "containerd" &&
+pacman -Qq "containerd" >/dev/null 2>&1 &&
     systemctl enable containerd.service
-pacman -Qq "cronie" &&
+pacman -Qq "cronie" >/dev/null 2>&1 &&
     systemctl enable cronie.service
-pacman -Qq "docker" &&
+pacman -Qq "docker" >/dev/null 2>&1 &&
     systemctl enable docker.service
-pacman -Qq "openssh" &&
+pacman -Qq "openssh" >/dev/null 2>&1 &&
     systemctl enable sshd.service
-pacman -Qq "systemd" &&
+pacman -Qq "systemd" >/dev/null 2>&1 &&
     {
         systemctl enable systemd-resolved.service
         systemctl enable systemd-networkd.service
     }
-pacman -Qq "util-linux" &&
+pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
-pacman -Qq "reflector" &&
+pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
         systemctl enable reflector
         systemctl enable reflector.timer
     }
-pacman -Qq "snapper" &&
+pacman -Qq "snapper" >/dev/null 2>&1 &&
     {
         systemctl enable snapper-cleanup.timer
         systemctl enable snapper-timeline.timer
     }
-pacman -Qq "systemd" &&
+pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
-pacman -Qq "usbguard" &&
+pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 
 # Setup /boot & /efi
