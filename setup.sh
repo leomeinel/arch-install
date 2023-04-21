@@ -229,6 +229,14 @@ chmod 644 /etc/cryptboot.conf
     echo "PasswordAuthentication no"
     echo "AuthenticationMethods publickey"
     echo "PermitRootLogin no"
+    echo "AllowTcpForwarding no"
+    echo "ClientAliveCountMax 2"
+    echo "LogLevel VERBOSE"
+    echo "MaxAuthTries 3"
+    echo "MaxSessions 2"
+    echo "Port 9122"
+    echo "TCPKeepAlive no"
+    echo "AllowAgentForwarding no"
 } >>/etc/ssh/sshd_config
 ## Configure /etc/xdg/user-dirs.defaults
 ### START sed
