@@ -167,7 +167,7 @@ mkdir /mnt/efi
 mkdir /mnt/.efi.bak
 mkdir /mnt/boot
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/vg0-lv0 /mnt/.snapshots
-mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv1 /mnt/usr
+mount -o nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv1 /mnt/usr
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv2 /mnt/var/cache
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/vg0-lv2 /mnt/var/games
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/vg0-lv2 /mnt/var/lib/libvirt
