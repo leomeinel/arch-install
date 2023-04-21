@@ -10,7 +10,7 @@ Meant for servers that are mainly hosting docker.
 
 :information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
 
-:information_source: | I recommend disks with at least 512GB (change allocation in prepare.sh otherwise).
+:information_source: | I recommend disks with at least 512GB (change $DISK_ALLOCATION in install.conf otherwise).
 
 :warning: | All data on both disks will be wiped!
 
