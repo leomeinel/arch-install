@@ -80,7 +80,7 @@ pvcreate /dev/mapper/md0_crypt
 vgcreate vg0 /dev/mapper/md0_crypt
 lvcreate -l 5%FREE vg0 -n lv0
 lvcreate -l 10%FREE vg0 -n lv1
-lvcreate -l 50%FREE vg0 -n lv2
+lvcreate -l 20%FREE vg0 -n lv2
 lvcreate -l 100%FREE vg0 -n lv3
 
 # Format efi
