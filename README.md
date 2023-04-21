@@ -8,7 +8,7 @@ Meant for systems that mainly run steam and other games.
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
-:information_source: | I recommend disks with at least 512GB (change allocation in prepare.sh otherwise).
+:information_source: | I recommend a disk with at least 512GB (change $DISK_ALLOCATION in install.conf otherwise).
 
 :warning: | All data on both disks will be wiped!
 
