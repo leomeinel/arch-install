@@ -374,3 +374,4 @@ doas rm -f /root/.bash_history
 rm -f ~/.bash_history
 rm -f ~/pkgs-post.txt
 rm -f ~/post.sh
+rm -f ~/install.conf
