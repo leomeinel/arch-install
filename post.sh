@@ -24,7 +24,6 @@ sed_exit() {
 }
 
 # Configure dot-files (setup)
-
 /dot-files.sh
 doas su -lc '/dot-files.sh' "$DOCKUSER"
 doas su -lc '/dot-files.sh' "$HOMEUSER"
