@@ -9,19 +9,9 @@
 # -----
 ###
 
-KEYMAP="de-latin1"
-MIRRORCOUNTRIES="NL,DE,DK,FR"
-TIMEZONE="Europe/Amsterdam"
-# https://www.rfc-editor.org/rfc/rfc1178.html
-## Network devices: elements
-## Servers: colors
-## Clients: flowers
-HOSTNAME="cyan"
-# https://www.rfc-editor.org/rfc/rfc8375.html
-DOMAIN="home.arpa"
-SYSUSER="systux"
-DOCKUSER="dock"
-HOMEUSER="leo"
+# Source config
+SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
+source "$SCRIPT_DIR/install.conf"
 
 # Fail on error
 set -eu
@@ -141,7 +131,7 @@ pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup
 # Configure $SYSUSER
 ## Run sysuser.sh
 chmod +x /git/arch-install/sysuser.sh
-su -c '/git/arch-install/sysuser.sh '"$SYSUSER $DOCKUSER $HOMEUSER"'' "$SYSUSER"
+su -c '/git/arch-install/sysuser.sh' "$SYSUSER"
 cp /git/arch-install/dot-files.sh /
 chmod 777 /dot-files.sh
 

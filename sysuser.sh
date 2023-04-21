@@ -15,7 +15,7 @@ set -eu
 # Set up post.sh
 cp /git/arch-install/pkgs-post.txt ~/
 cp /git/arch-install/post.sh ~/
-sed -i 's/<INSERT_SYSUSER>/'"$1"'/;s/<INSERT_DOCKUSER>/'"$2"'/;s/<INSERT_HOMEUSER>/'"$3"'/' ~/post.sh
+cp /git/arch-install/install.conf ~/
 chmod +x ~/post.sh
 
 # Remove repo

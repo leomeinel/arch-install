@@ -9,7 +9,9 @@
 # -----
 ###
 
-KEYMAP="de-latin1"
+# Source config
+SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
+source "$SCRIPT_DIR/install.conf"
 
 # Fail on error
 set -e
@@ -22,12 +24,10 @@ sed_exit() {
 }
 
 # Configure dot-files (setup)
-SYSUSER="<INSERT_SYSUSER>"
-DOCKUSER="<INSERT_DOCKUSER>"
-HOMEUSER="<INSERT_HOMEUSER>"
 /dot-files.sh
 doas su -lc '/dot-files.sh' "$DOCKUSER"
 doas su -lc '/dot-files.sh' "$HOMEUSER"
+doas su -lc '/dot-files.sh' root
 
 # Configure clock
 doas timedatectl set-ntp true
