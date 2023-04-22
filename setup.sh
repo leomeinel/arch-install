@@ -133,9 +133,9 @@ chmod 755 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
 ## Configure /etc/greetd
-chown greeter:greeter /etc/greetd
-chown greeter:greeter /etc/greetd/config.toml
-chown greeter:greeter /etc/greetd/greetd.toml
+chown greeter:root /etc/greetd
+chown greeter:root /etc/greetd/config.toml
+chown greeter:root /etc/greetd/greetd.toml
 chmod 755 /etc/greetd
 chmod 644 /etc/greetd/*.toml
 ## Configure /etc/systemd/zram-generator.conf
@@ -501,8 +501,8 @@ chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :wheel /home/.snapshots
 ## Configure /usr/share/greetd
-chown greeter:greeter /usr/share/greetd
-chown greeter:greeter /usr/share/greetd/background
+chown greeter:root /usr/share/greetd
+chown greeter:root /usr/share/greetd/background
 chmod 755 /usr/share/greetd
 chmod 644 /usr/share/greetd/background
 
