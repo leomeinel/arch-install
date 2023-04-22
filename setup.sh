@@ -132,12 +132,6 @@ chmod 755 /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
-## Configure /etc/greetd
-chown greeter:root /etc/greetd
-chown greeter:root /etc/greetd/config.toml
-chown greeter:root /etc/greetd/greetd.toml
-chmod 755 /etc/greetd
-chmod 644 /etc/greetd/*.toml
 ## Configure /etc/systemd/zram-generator.conf
 chmod 644 /etc/systemd/zram-generator.conf
 ## Configure /etc/sysctl.d
@@ -316,6 +310,12 @@ pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
+## Configure /etc/greetd
+chown greeter:root /etc/greetd
+chown greeter:root /etc/greetd/config.toml
+chown greeter:root /etc/greetd/greetd.toml
+chmod 755 /etc/greetd
+chmod 644 /etc/greetd/*.toml
 
 # Setup /usr
 rsync -rq /git/arch-install/usr/ /usr
