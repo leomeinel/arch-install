@@ -130,6 +130,7 @@ wget
 wireplumber
 wl-clipboard
 xdg-dbus-proxy
+xdg-desktop-portal-wlr
 xdg-utils
 yq
 zram-generator
