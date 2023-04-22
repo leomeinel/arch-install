@@ -19,10 +19,10 @@ setup)
     chmod +x ~/dot-files/setup.sh
     ~/dot-files/setup.sh
     ;;
-setup-root)
+setup-min)
     git clone https://github.com/leomeinel/dot-files.git ~/dot-files
-    chmod +x ~/dot-files/setup-root.sh
-    ~/dot-files/setup-root.sh
+    chmod +x ~/dot-files/setup-min.sh
+    ~/dot-files/setup-min.sh
     ;;
 vscodium)
     git clone https://github.com/leomeinel/dot-files.git ~/dot-files
