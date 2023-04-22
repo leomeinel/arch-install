@@ -1,0 +1,3 @@
+[default_session]
+command = "cage -s -- regreet --config /etc/regreet/config.toml"
+user = "greeter"
