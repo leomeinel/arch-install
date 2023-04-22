@@ -115,10 +115,6 @@ doas iptables -A INPUT -p tcp --dport 995 -j ACCEPT
 ### Allow IMAP & IMAPS
 doas iptables -A INPUT -p tcp --dport 143 -j ACCEPT
 doas iptables -A INPUT -p tcp --dport 993 -j ACCEPT
-### Allow default ktorrent ports (Forward them if not using UPnP)
-doas iptables -A INPUT -p tcp --dport 6881 -j ACCEPT
-doas iptables -A INPUT -p udp --dport 7881 -j ACCEPT
-doas iptables -A INPUT -p udp --dport 8881 -j ACCEPT
 ### Allow mDNS
 doas iptables -A INPUT -p udp --dport 5353 -j ACCEPT
 ### Allow http & https (for wget)
@@ -189,10 +185,6 @@ doas ip6tables -A INPUT -p tcp --dport 995 -j ACCEPT
 ### Allow IMAP & IMAPS
 doas ip6tables -A INPUT -p tcp --dport 143 -j ACCEPT
 doas ip6tables -A INPUT -p tcp --dport 993 -j ACCEPT
-### Allow default ktorrent ports (Forward them if not using UPnP)
-doas ip6tables -A INPUT -p tcp --dport 6881 -j ACCEPT
-doas ip6tables -A INPUT -p udp --dport 7881 -j ACCEPT
-doas ip6tables -A INPUT -p udp --dport 8881 -j ACCEPT
 ### Allow mDNS
 doas ip6tables -A INPUT -p udp --dport 5353 -j ACCEPT
 ### Allow http & https (for wget)
@@ -297,6 +289,11 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 ## END sed
 
 # Install packages
+if pacman -Qq "nvidia-dkms" >/dev/null 2>&1; then
+    echo "hyprland-nvidia" >>~/pkgs-post.txt
+else
+    echo "hyprland" >>~/pkgs-post.txt
+fi
 paru -S --noprogressbar --noconfirm --needed - <~/pkgs-post.txt
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
@@ -325,9 +322,6 @@ doas sed -i "s/$STRING/#codium #arch-install/" "$FILE"
 STRING="^dnsmasq$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#dnsmasq #arch-install/" "$FILE"
-STRING="^ktorrent$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#ktorrent #arch-install/" "$FILE"
 STRING="^nextcloud-desktop$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#nextcloud-desktop #arch-install/" "$FILE"
@@ -337,9 +331,6 @@ doas sed -i "s/$STRING/#nextcloud #arch-install/" "$FILE"
 STRING="^signal-desktop$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#signal-desktop #arch-install/" "$FILE"
-STRING="^spectacle$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#spectacle #arch-install/" "$FILE"
 STRING="^vscodium$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#vscodium #arch-install/" "$FILE"
@@ -358,8 +349,8 @@ pacman -Qq "iptables" >/dev/null 2>&1 &&
         doas systemctl enable ip6tables
         doas systemctl enable iptables
     }
-pacman -Qq "sddm" >/dev/null 2>&1 &&
-    doas systemctl enable sddm
+pacman -Qq "greetd" >/dev/null 2>&1 &&
+    doas systemctl enable greetd.service
 
 # Enable systemd user services
 pacman -Qq "usbguard-notifier" >/dev/null 2>&1 &&

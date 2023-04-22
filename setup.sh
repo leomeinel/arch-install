@@ -132,9 +132,12 @@ chmod 755 /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
-## Configure /etc/sddm.conf.d/kde_settings.conf
-chmod 755 /etc/sddm.conf.d
-chmod 644 /etc/sddm.conf.d/kde_settings.conf
+## Configure /etc/greetd
+chown greeter:greeter /etc/greetd
+chown greeter:greeter /etc/greetd/config.toml
+chown greeter:greeter /etc/greetd/greetd.toml
+chmod 755 /etc/greetd
+chmod 644 /etc/greetd/*.toml
 ## Configure /etc/systemd/zram-generator.conf
 chmod 644 /etc/systemd/zram-generator.conf
 ## Configure /etc/sysctl.d
@@ -497,13 +500,11 @@ chown :wheel /var/log/.snapshots
 chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :wheel /home/.snapshots
-## Configure /usr/share/wallpapers/Custom/content
-mkdir -p /usr/share/wallpapers/Custom/content
-git clone https://github.com/leomeinel/wallpapers.git /git/wallpapers
-cp /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
-chmod 755 /usr/share/wallpapers/Custom
-chmod 755 /usr/share/wallpapers/Custom/content
-chmod 644 /usr/share/wallpapers/Custom/content/*
+## Configure /usr/share/greetd
+chown greeter:greeter /usr/share/greetd
+chown greeter:greeter /usr/share/greetd/background
+chmod 755 /usr/share/greetd
+chmod 644 /usr/share/greetd/background
 
 # Configure /var
 ## Configure /var/games
@@ -531,8 +532,6 @@ pacman -Qq "libvirt" >/dev/null 2>&1 &&
     systemctl enable libvirtd
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager
-pacman -Qq "power-profiles-daemon" >/dev/null 2>&1 &&
-    systemctl enable power-profiles-daemon
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
         systemctl enable reflector
