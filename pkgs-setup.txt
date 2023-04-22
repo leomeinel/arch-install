@@ -13,7 +13,7 @@ bluedevil
 bluez
 bluez-utils
 brightnessctl
-cache
+cage
 celluloid
 cups
 dbus
@@ -40,7 +40,6 @@ glow
 go
 gradle
 greetd
-greetd-regreet
 grex
 grim
 gsettings-desktop-schemas

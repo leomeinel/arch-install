@@ -5,6 +5,7 @@ gdlauncher-bin
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
+regreet-git
 snapper-gui-git
 trilium-bin
 usbguard-notifier
