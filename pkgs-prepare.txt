@@ -4,6 +4,7 @@ btrfs-progs
 dracut
 git
 iptables
+lib32-mesa
 linux
 linux-firmware
 linux-headers
@@ -12,7 +13,6 @@ linux-lts-headers
 linux-zen
 linux-zen-headers
 lvm2
-mdadm
 mesa
 neovim
 opendoas

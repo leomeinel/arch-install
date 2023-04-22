@@ -31,18 +31,14 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
-groupadd -r libvirt
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel "$SYSUSER"
-useradd -ms /bin/bash -G libvirt "$VIRTUSER"
 useradd -ms /bin/bash "$HOMEUSER"
 useradd -ms /bin/bash "$GUESTUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
 passwd "$SYSUSER"
-echo "Enter password for $VIRTUSER"
-passwd "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
@@ -82,7 +78,6 @@ chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $SYSUSER"
-    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $VIRTUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $HOMEUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
@@ -168,6 +163,12 @@ STRING="^#CacheDir"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/CacheDir/" "$FILE"
 ### END sed
+{
+    echo ""
+    echo "# Custom"
+    echo "[multilib]"
+    echo "Include = /etc/pacman.d/mirrorlist"
+} >>/etc/pacman.conf
 pacman-key --init
 ## Update mirrors
 reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
@@ -184,7 +185,9 @@ chmod 777 /dot-files.sh
 
 # Configure /etc
 ## Configure /etc/crypttab
-MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
+DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+MD0UUID="$(blkid -s UUID -o value $DISK1P2)"
 {
     echo "md0_crypt UUID=$MD0UUID none initramfs,luks,key-slot=0"
 } >/etc/crypttab
@@ -249,8 +252,6 @@ STRING="^VIDEOS=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
 ### END sed
-## Configure /etc/mdadm.conf
-mdadm --detail --scan >>/etc/mdadm.conf
 ## Configure /etc/usbguard/usbguard-daemon.conf & /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
@@ -301,8 +302,6 @@ sed -i "s/$STRING/AutoEnable=true/" "$FILE"
 pacman -Qq "nvidia-dkms" >/dev/null 2>&1 &&
     echo "force_drivers+=\" nvidia nvidia_modeset nvidia_uvm nvidia_drm \"" >>/etc/dracut.conf.d/modules.conf
 ## Configure /etc/dracut.conf.d/cmdline.conf
-DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
-DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 DISK1P2UUID="$(blkid -s UUID -o value $DISK1P2)"
 PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.md.waitclean=1 rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.luks.allow-discards=$DISK1P2UUID rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP quiet loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0"
 #### If on nvidia set kernel parameter nvidia_drm.modeset=1
@@ -523,12 +522,8 @@ pacman -Qq "avahi" >/dev/null 2>&1 &&
     systemctl enable avahi-daemon
 pacman -Qq "bluez" >/dev/null 2>&1 &&
     systemctl enable bluetooth
-pacman -Qq "cups" >/dev/null 2>&1 &&
-    systemctl enable cups.service
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
-pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    systemctl enable libvirtd
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager
 pacman -Qq "power-profiles-daemon" >/dev/null 2>&1 &&
