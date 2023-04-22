@@ -1,4 +1,3 @@
-arc-kde
 aspnet-targeting-pack-bin
 dotnet-sdk-bin
 freetube-bin
@@ -6,12 +5,12 @@ gdlauncher-bin
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
-sddm-nordic-theme-git
 snapper-gui-git
 trilium-bin
 usbguard-notifier
 vscodium-bin
 vscodium-bin-marketplace
 waterfox-g-bin
+xdg-desktop-portal-hyprland
 xdg-ninja-git
 xxd-standalone
