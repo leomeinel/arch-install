@@ -12,19 +12,6 @@
 # Fail on error
 set -eu
 
-# Configure ~/.config/autostart/apparmor-notify.desktop
-mkdir -p ~/.config/autostart
-{
-    echo "[Desktop Entry]"
-    echo "Type=Application"
-    echo "Name=AppArmor Notify"
-    echo "Comment=Receive on screen notifications of AppArmor denials"
-    echo "TryExec=aa-notify"
-    echo "Exec=aa-notify -p -s 1 -w 60 -f /var/log/audit/audit.log"
-    echo "StartupNotify=false"
-    echo "NoDisplay=true"
-} >~/.config/autostart/apparmor-notify.desktop
-
 # Set up post.sh
 cp /git/arch-install/pkgs-post.txt ~/
 cp /git/arch-install/post.sh ~/
