@@ -33,10 +33,10 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 groupadd -r audit
 groupadd -r libvirt
 groupadd -r usbguard
-useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel "$SYSUSER"
-useradd -ms /bin/bash -G libvirt "$VIRTUSER"
-useradd -ms /bin/bash "$HOMEUSER"
-useradd -ms /bin/bash "$GUESTUSER"
+useradd -ms /bin/bash -G video,adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel "$SYSUSER"
+useradd -ms /bin/bash -G video,libvirt "$VIRTUSER"
+useradd -ms /bin/bash -G video "$HOMEUSER"
+useradd -ms /bin/bash -G video "$GUESTUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
