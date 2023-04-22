@@ -13,6 +13,6 @@
 set -e
 
 # Set up dot-files
-git clone -b server https://github.com/leomeinel/dot-files.git ~/dot-files
-chmod +x ~/dot-files/setup.sh
-~/dot-files/setup.sh
+git clone https://github.com/leomeinel/dot-files.git ~/dot-files
+chmod +x ~/dot-files/setup-min.sh
+~/dot-files/setup-min.sh
