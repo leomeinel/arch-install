@@ -311,9 +311,7 @@ pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
 ## Configure /etc/greetd
-chown greeter:root /etc/greetd
-chown greeter:root /etc/greetd/config.toml
-chown greeter:root /etc/greetd/custom.toml
+chown -R greeter:root /etc/greetd
 chmod 755 /etc/greetd
 chmod 644 /etc/greetd/*.toml
 
@@ -501,10 +499,9 @@ chmod 750 /home/.snapshots
 chmod a+rx /home/.snapshots
 chown :wheel /home/.snapshots
 ## Configure /usr/share/greetd
-chown greeter:root /usr/share/greetd
-chown greeter:root /usr/share/greetd/background
+chown -R greeter:root /usr/share/greetd
 chmod 755 /usr/share/greetd
-chmod 644 /usr/share/greetd/background
+chmod 644 /usr/share/greetd/*
 
 # Configure /var
 ## Configure /var/games
