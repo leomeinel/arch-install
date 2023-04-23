@@ -3,6 +3,7 @@ dotnet-sdk-bin
 eww-wayland
 freetube-bin
 gdlauncher-bin
+hyprpicker-git 
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
