@@ -72,8 +72,8 @@ sed -i "s/$STRING/nl_NL.UTF-8 UTF-8/" "$FILE"
 chmod 644 /etc/locale.conf
 locale-gen
 ## Configure /etc/doas.conf
-chown -c root:root /etc/doas.conf
-chmod -c 0400 /etc/doas.conf
+chown root:root /etc/doas.conf
+chmod 0400 /etc/doas.conf
 ## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/50-mac-random.conf
 chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
