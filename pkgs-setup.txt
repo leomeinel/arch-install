@@ -147,6 +147,7 @@ usbguard
 usbutils
 viewnior
 virt-manager
+waybar
 webp-pixbuf-loader
 wget
 wireplumber
