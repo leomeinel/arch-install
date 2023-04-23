@@ -219,11 +219,6 @@ lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>/root/arch-install/pkgs-prepare.txt
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
     echo "amd-ucode" >>/root/arch-install/pkgs-prepare.txt
-lshw -C display | grep "vendor:" | grep -q "NVIDIA Corporation" &&
-    {
-        echo "egl-wayland"
-        echo "nvidia-dkms"
-    } >>/root/arch-install/pkgs-prepare.txt
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
     {
         echo "libva-mesa-driver"
