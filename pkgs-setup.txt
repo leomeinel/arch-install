@@ -121,6 +121,7 @@ snap-pac
 snapper
 sshfs
 starship
+sway
 swaybg
 swayidle
 swaylock
