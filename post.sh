@@ -344,8 +344,8 @@ doas su -c 'rm -rf ~/.local/share/applications/*' "$HOMEUSER"
 doas su -c 'rm -rf ~/.local/share/applications/*' "$GUESTUSER"
 
 # Enable systemd services
-pacman -Qq "greetd" >/dev/null 2>&1 &&
-    doas systemctl enable greetd.service
+#pacman -Qq "greetd" >/dev/null 2>&1 &&
+#    doas systemctl enable greetd.service
 pacman -Qq "iptables" >/dev/null 2>&1 &&
     {
         doas systemctl enable ip6tables
