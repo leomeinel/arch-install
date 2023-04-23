@@ -112,6 +112,8 @@ python-pip
 python-psutil
 qemu-desktop
 qt5-imageformats
+qt5ct
+qt6ct
 quilt
 ripgrep
 rustup
