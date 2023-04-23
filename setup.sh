@@ -33,10 +33,10 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 groupadd -r audit
 groupadd -r libvirt
 groupadd -r usbguard
-useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel "$SYSUSER"
-useradd -ms /bin/bash -G libvirt "$VIRTUSER"
-useradd -ms /bin/bash "$HOMEUSER"
-useradd -ms /bin/bash "$GUESTUSER"
+useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
+useradd -ms /bin/bash -G libvirt,video "$VIRTUSER"
+useradd -ms /bin/bash -G video "$HOMEUSER"
+useradd -ms /bin/bash -G video "$GUESTUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
@@ -50,7 +50,7 @@ passwd "$GUESTUSER"
 
 # Setup /etc
 rsync -rq /git/arch-install/etc/ /etc
-## Configure locale in /etc/locale.gen & /etc/locale.conf
+## Configure locale in /etc/locale.gen /etc/locale.conf
 ### START sed
 FILE=/etc/locale.gen
 STRING="^#de_DE.UTF-8 UTF-8"
@@ -91,9 +91,6 @@ chmod 755 /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
-## Configure /etc/sddm.conf.d/kde_settings.conf
-chmod 755 /etc/sddm.conf.d
-chmod 644 /etc/sddm.conf.d/kde_settings.conf
 ## Configure /etc/systemd/zram-generator.conf
 chmod 644 /etc/systemd/zram-generator.conf
 ## Configure /etc/sysctl.d
@@ -101,7 +98,7 @@ chmod 755 /etc/sysctl.d
 chmod 644 /etc/sysctl.d/*
 ## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
-## Configure /etc/pacman.conf , /etc/makepkg.conf & /etc/xdg/reflector/reflector.conf
+## Configure /etc/pacman.conf /etc/makepkg.conf /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
     echo "--country $MIRRORCOUNTRIES"
@@ -147,7 +144,7 @@ MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 {
     echo "md0_crypt UUID=$MD0UUID none initramfs,luks,key-slot=0"
 } >/etc/crypttab
-## Configure /etc/localtime, /etc/vconsole.conf, /etc/hostname & /etc/hosts
+## Configure /etc/localtime /etc/vconsole.conf /etc/hostname /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
 echo "KEYMAP=$KEYMAP" >/etc/vconsole.conf
@@ -210,10 +207,10 @@ sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
 ### END sed
 ## Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
-## Configure /etc/usbguard/usbguard-daemon.conf & /etc/usbguard/rules.conf
+## Configure /etc/usbguard/usbguard-daemon.conf /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
-## Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su & /etc/pam.d/su-l
+## Configure /etc/pam.d/system-login /etc/security/faillock.conf /etc/pam.d/su /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
 ### START sed
 FILE=/etc/security/faillock.conf
@@ -484,8 +481,6 @@ pacman -Qq "libvirt" >/dev/null 2>&1 &&
     systemctl enable libvirtd
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager
-pacman -Qq "power-profiles-daemon" >/dev/null 2>&1 &&
-    systemctl enable power-profiles-daemon
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
         systemctl enable reflector
