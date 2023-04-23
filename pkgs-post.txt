@@ -1,12 +1,15 @@
 aspnet-targeting-pack-bin
 dotnet-sdk-bin
+eww-wayland
 freetube-bin
 gdlauncher-bin
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
 regreet-git
+rofi-lbonn-wayland
 snapper-gui-git
+swaylock-effects
 trilium-bin
 usbguard-notifier
 vscodium-bin
