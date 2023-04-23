@@ -18,4 +18,5 @@ neovim
 opendoas
 reflector
 rsync
+seatd
 wireless-regdb
