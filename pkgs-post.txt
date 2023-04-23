@@ -10,6 +10,7 @@ nerd-fonts-noto-sans-mono-extended
 snapper-gui-git
 swaync
 trilium-bin
+ttf-hasklig
 usbguard-notifier
 vscodium-bin
 vscodium-bin-marketplace
