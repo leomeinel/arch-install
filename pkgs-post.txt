@@ -4,6 +4,7 @@ eww-wayland
 freetube-bin
 gdlauncher-bin
 hyprpicker-git 
+kvantum-theme-arc
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
