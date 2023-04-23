@@ -1,12 +1,11 @@
-arc-kde
 aspnet-targeting-pack-bin
 dotnet-sdk-bin
 freetube-bin
 gdlauncher-bin
+kvantum-theme-arc
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
-sddm-nordic-theme-git
 snapper-gui-git
 trilium-bin
 usbguard-notifier
