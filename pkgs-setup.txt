@@ -81,6 +81,7 @@ mariadb
 mtools
 mupdf
 mupdf-tools
+network-manager-applet
 networkmanager
 nextcloud-client
 noto-fonts

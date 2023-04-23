@@ -6,6 +6,7 @@ kvantum-theme-arc
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
+nerd-fonts-noto-sans-mono-extended
 snapper-gui-git
 swaync
 trilium-bin
