@@ -1,28 +1,5 @@
-[background]
-# Path to background image
-path = "/usr/share/greetd/background"
-# How the background image covers the screen if the aspect ratio doesn't match
-fit = "Cover"
+vt = 1
 
-[GTK]
-# Whether to use the dark theme
-application_prefer_dark_theme = true
-
-# Cursor theme name
-cursor_theme_name = "Adwaita"
-
-# Font name and size
-font_name = "JetBrains Mono Nerd Font 10"
-
-# Icon theme name
-icon_theme_name = "Papirus-Dark"
-
-# GTK theme name
-theme_name = "Arc-Dark"
-
-[commands]
-# The command used to reboot the system
-reboot = ["systemctl", "reboot"]
-
-# The command used to shut down the system
-poweroff = ["systemctl", "poweroff"]
+[default_session]
+command = "cage -s -- regreet --config /etc/regreet/custom.toml"
+user = "greeter"

@@ -313,7 +313,7 @@ chmod 644 /etc/dracut.conf.d/*.conf
 ## Configure /etc/greetd
 chown greeter:root /etc/greetd
 chown greeter:root /etc/greetd/config.toml
-chown greeter:root /etc/greetd/greetd.toml
+chown greeter:root /etc/greetd/custom.toml
 chmod 755 /etc/greetd
 chmod 644 /etc/greetd/*.toml
 
