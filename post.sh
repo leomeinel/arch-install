@@ -290,9 +290,15 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 
 # Install packages
 if pacman -Qq "nvidia-dkms" >/dev/null 2>&1; then
-    echo "hyprland-nvidia" >>~/pkgs-post.txt
+    {
+        echo "hyprland-nvidia"
+        echo "waybar-hyprland-nvidia"
+    } >>~/pkgs-post.txt
 else
-    echo "hyprland" >>~/pkgs-post.txt
+    {
+        echo "hyprland"
+        echo "waybar-hyprland"
+    } >>~/pkgs-post.txt
 fi
 paru -S --noprogressbar --noconfirm --needed - <~/pkgs-post.txt
 paru --noprogressbar --noconfirm -Syu
