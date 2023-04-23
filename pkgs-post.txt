@@ -7,7 +7,7 @@ libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
 regreet-git
-rofi-lbonn-wayland
+rofi-lbonn-wayland-git
 snapper-gui-git
 swaylock-effects
 trilium-bin
