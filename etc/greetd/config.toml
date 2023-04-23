@@ -1,5 +1,5 @@
 vt = 1
 
 [default_session]
-command = "cage -s -- regreet --config /etc/regreet/custom.toml"
+command = "cage -s -- regreet --config /etc/greetd/custom.toml"
 user = "greeter"
