@@ -20,7 +20,6 @@ dbus
 devtools
 dnsmasq
 duf
-dunst
 dust
 edk2-ovmf
 efibootmgr
@@ -35,6 +34,7 @@ fwupd
 gimp
 git-delta
 glow
+gnome-keyring
 go
 gradle
 grex
@@ -56,6 +56,7 @@ jdk17-openjdk
 jdk8-openjdk
 jpegoptim
 jq
+kanshi
 libavif
 libheif
 libjxl
@@ -63,6 +64,7 @@ libopenraw
 libreoffice-extension-texmaths
 libreoffice-still
 librsvg
+libsecret
 libvirt
 libwmf
 lldb
@@ -99,7 +101,7 @@ pipewire-alsa
 pipewire-jack
 pipewire-pulse
 playerctl
-polkit
+polkit-gnome
 postgresql
 postgresql-libs
 procs
