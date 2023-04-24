@@ -324,6 +324,37 @@ sed -i "s/$STRING7/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
 grep -q "$STRING8" "$FILE0" || sed_exit
 sed -i "s/$STRING8/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
 ##### END sed
+### Remove & unmount snapshots (Prepare snapshot dirs 1)
+#### /
+umount /.snapshots
+rm -rf /.snapshots
+#### /usr
+umount /usr/.snapshots
+rm -rf /usr/.snapshots
+#### /var
+umount /var/.snapshots
+rm -rf /var/.snapshots
+##### /var/lib
+umount /var/lib/.snapshots
+rm -rf /var/lib/.snapshots
+###### /var/lib/libvirt
+umount /var/lib/libvirt/.snapshots
+rm -rf /var/lib/libvirt/.snapshots
+###### /var/lib/mysql
+umount /var/lib/mysql/.snapshots
+rm -rf /var/lib/mysql/.snapshots
+##### /var/cache
+umount /var/cache/.snapshots
+rm -rf /var/cache/.snapshots
+##### /var/games
+umount /var/games/.snapshots
+rm -rf /var/games/.snapshots
+##### /var/log
+umount /var/log/.snapshots
+rm -rf /var/log/.snapshots
+#### /home
+umount /home/.snapshots
+rm -rf /home/.snapshots
 ####### START sed
 STRING0="^TIMELINE_LIMIT_HOURLY=.*"
 STRING1="^TIMELINE_LIMIT_DAILY=.*"
@@ -437,37 +468,6 @@ grep -q "$STRING1" "$FILE1" || sed_exit
 sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"2\"/" "$FILE1"
 ####### END sed
 snapper --no-dbus -c home create-config -t home /home
-### Remove & unmount snapshots (Prepare snapshot dirs 1)
-#### /
-umount /.snapshots
-rm -rf /.snapshots
-#### /usr
-umount /usr/.snapshots
-rm -rf /usr/.snapshots
-#### /var
-umount /var/.snapshots
-rm -rf /var/.snapshots
-##### /var/lib
-umount /var/lib/.snapshots
-rm -rf /var/lib/.snapshots
-###### /var/lib/libvirt
-umount /var/lib/libvirt/.snapshots
-rm -rf /var/lib/libvirt/.snapshots
-###### /var/lib/mysql
-umount /var/lib/mysql/.snapshots
-rm -rf /var/lib/mysql/.snapshots
-##### /var/cache
-umount /var/cache/.snapshots
-rm -rf /var/cache/.snapshots
-##### /var/games
-umount /var/games/.snapshots
-rm -rf /var/games/.snapshots
-##### /var/log
-umount /var/log/.snapshots
-rm -rf /var/log/.snapshots
-#### /home
-umount /home/.snapshots
-rm -rf /home/.snapshots
 ### Replace subvolumes for snapshots (Prepare snapshot dirs 2)
 #### /
 btrfs subvolume delete /.snapshots
