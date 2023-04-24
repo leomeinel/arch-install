@@ -126,33 +126,43 @@ mkfs.fat -n EFI -F32 "$DISK1P1"
 mkfs.fat -n EFI -F32 "$DISK2P1"
 
 # Configure btrfs
+## /
 mkfs.btrfs -L ROOT /dev/mapper/vg0-lv0
 mount /dev/mapper/vg0-lv0 /mnt
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@snapshots
 umount /mnt
+## /usr
 mkfs.btrfs -L USR /dev/mapper/vg0-lv1
 mount /dev/mapper/vg0-lv1 /mnt
 btrfs subvolume create /mnt/@usr
 btrfs subvolume create /mnt/@usr_snapshots
 umount /mnt
+## /var
 mkfs.btrfs -L VAR /dev/mapper/vg0-lv2
 mount /dev/mapper/vg0-lv2 /mnt
 btrfs subvolume create /mnt/@var
 btrfs subvolume create /mnt/@var_snapshots
+### /var/lib
 btrfs subvolume create /mnt/@var_lib
 btrfs subvolume create /mnt/@var_lib_snapshots
+#### /var/lib/libvirt
 btrfs subvolume create /mnt/@var_lib_libvirt
 btrfs subvolume create /mnt/@var_lib_libvirt_snapshots
+#### /var/lib/mysql
 btrfs subvolume create /mnt/@var_lib_mysql
 btrfs subvolume create /mnt/@var_lib_mysql_snapshots
+### /var/cache
 btrfs subvolume create /mnt/@var_cache
 btrfs subvolume create /mnt/@var_cache_snapshots
+### /var/games
 btrfs subvolume create /mnt/@var_games
 btrfs subvolume create /mnt/@var_games_snapshots
+### /var/log
 btrfs subvolume create /mnt/@var_log
 btrfs subvolume create /mnt/@var_log_snapshots
 umount /mnt
+## /home
 mkfs.btrfs -L HOME /dev/mapper/vg0-lv3
 mount /dev/mapper/vg0-lv3 /mnt
 btrfs subvolume create /mnt/@home
