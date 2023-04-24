@@ -9,5 +9,9 @@
 # -----
 ###
 
-swaymsg exit &&
-    pkill -u $UID
+#TODO!
+# Stop ssh-agent if it is started
+[[ -n "$SSH_AUTH_SOCK" ]] &&
+    eval "$(ssh-agent -k)"
+
+swaymsg exit
