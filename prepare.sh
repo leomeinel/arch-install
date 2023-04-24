@@ -134,50 +134,90 @@ umount /mnt
 mkfs.btrfs -L USR /dev/mapper/vg0-lv1
 mount /dev/mapper/vg0-lv1 /mnt
 btrfs subvolume create /mnt/@usr
+btrfs subvolume create /mnt/@usr_snapshots
 umount /mnt
 mkfs.btrfs -L VAR /dev/mapper/vg0-lv2
 mount /dev/mapper/vg0-lv2 /mnt
-btrfs subvolume create /mnt/@var_cache
-btrfs subvolume create /mnt/@var_games
+btrfs subvolume create /mnt/@var
+btrfs subvolume create /mnt/@var_snapshots
+btrfs subvolume create /mnt/@var_lib
+btrfs subvolume create /mnt/@var_lib_snapshots
 btrfs subvolume create /mnt/@var_lib_libvirt
+btrfs subvolume create /mnt/@var_lib_libvirt_snapshots
 btrfs subvolume create /mnt/@var_lib_mysql
+btrfs subvolume create /mnt/@var_lib_mysql_snapshots
+btrfs subvolume create /mnt/@var_cache
+btrfs subvolume create /mnt/@var_cache_snapshots
+btrfs subvolume create /mnt/@var_games
+btrfs subvolume create /mnt/@var_games_snapshots
 btrfs subvolume create /mnt/@var_log
+btrfs subvolume create /mnt/@var_log_snapshots
 umount /mnt
 mkfs.btrfs -L HOME /dev/mapper/vg0-lv3
 mount /dev/mapper/vg0-lv3 /mnt
 btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@home_snapshots
 umount /mnt
 
 # Mount volumes
+## /
 mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv0 /mnt
 mkdir /mnt/.snapshots
-mkdir /mnt/usr
-mkdir /mnt/var &&
-    {
-        mkdir /mnt/var/cache
-        mkdir /mnt/var/games
-        mkdir /mnt/var/lib &&
-            {
-                mkdir /mnt/var/lib/libvirt
-                mkdir /mnt/var/lib/mysql
-            }
-        mkdir /mnt/var/log
-    }
-mkdir /mnt/home
-mkdir /mnt/efi
-mkdir /mnt/.efi.bak
-mkdir /mnt/boot
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/vg0-lv0 /mnt/.snapshots
+## /usr
+mkdir /mnt/usr
 mount -o nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv1 /mnt/usr
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv2 /mnt/var/cache
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/vg0-lv2 /mnt/var/games
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/vg0-lv2 /mnt/var/lib/libvirt
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/vg0-lv2 /mnt/var/lib/mysql
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/vg0-lv2 /mnt/var/log
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv3 /mnt/home
-mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
-mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
+mkdir /mnt/usr/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/vg0-lv1 /mnt/usr/.snapshots
+## /var
+mkdir /mnt/var
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv2 /mnt/var
+mkdir /mnt/var/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/vg0-lv2 /mnt/var/.snapshots
+### /var/lib
+mkdir /mnt/var/lib
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=258 /dev/mapper/vg0-lv2 /mnt/var/lib
+mkdir /mnt/var/lib/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=259 /dev/mapper/vg0-lv2 /mnt/var/lib/.snapshots
+#### /var/lib/libvirt
+mkdir /mnt/var/lib/libvirt
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/vg0-lv2 /mnt/var/lib/libvirt
+mkdir /mnt/var/lib/libvirt/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/vg0-lv2 /mnt/var/lib/libvirt/.snapshots
+#### /var/lib/mysql
+mkdir /mnt/var/lib/mysql
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/vg0-lv2 /mnt/var/lib/mysql
+mkdir /mnt/var/lib/mysql/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/vg0-lv2 /mnt/var/lib/mysql/.snapshots
+### /var/cache
+        mkdir /mnt/var/cache
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/vg0-lv2 /mnt/var/cache
+mkdir /mnt/var/cache/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/vg0-lv2 /mnt/var/cache/.snapshots
+### /var/games
+        mkdir /mnt/var/games
 chmod 775 /mnt/var/games
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=266 /dev/mapper/vg0-lv2 /mnt/var/games
+chmod 775 /mnt/var/games
+mkdir /mnt/var/games/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=267 /dev/mapper/vg0-lv2 /mnt/var/games/.snapshots
+### /var/log
+        mkdir /mnt/var/log
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=268 /dev/mapper/vg0-lv2 /mnt/var/log
+mkdir /mnt/var/log/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=269 /dev/mapper/vg0-lv2 /mnt/var/log/.snapshots
+## /home
+mkdir /mnt/home
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv3 /mnt/home
+mkdir /mnt/home/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=257 /dev/mapper/vg0-lv3 /mnt/home/.snapshots
+## /efi
+mkdir /mnt/efi
+mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
+mkdir /mnt/.efi.bak
+mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
+## /boot
+mkdir /mnt/boot
 
 # Set SSD state to "frozen" after sleep
 mkdir -p /mnt/usr/lib/systemd/system-sleep
