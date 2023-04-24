@@ -190,19 +190,19 @@ mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=as
 mkdir /mnt/var/lib/mysql/.snapshots
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/vg0-lv2 /mnt/var/lib/mysql/.snapshots
 ### /var/cache
-        mkdir /mnt/var/cache
+mkdir /mnt/var/cache
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/vg0-lv2 /mnt/var/cache
 mkdir /mnt/var/cache/.snapshots
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/vg0-lv2 /mnt/var/cache/.snapshots
 ### /var/games
-        mkdir /mnt/var/games
+mkdir /mnt/var/games
 chmod 775 /mnt/var/games
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=266 /dev/mapper/vg0-lv2 /mnt/var/games
 chmod 775 /mnt/var/games
 mkdir /mnt/var/games/.snapshots
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=267 /dev/mapper/vg0-lv2 /mnt/var/games/.snapshots
 ### /var/log
-        mkdir /mnt/var/log
+mkdir /mnt/var/log
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=268 /dev/mapper/vg0-lv2 /mnt/var/log
 mkdir /mnt/var/log/.snapshots
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=269 /dev/mapper/vg0-lv2 /mnt/var/log/.snapshots
@@ -220,25 +220,31 @@ mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
 mkdir /mnt/boot
 
 # Set SSD state to "frozen" after sleep
+for link in /dev/disk/by-id/*; do
+    if [[ $(readlink -f "$link") = "$DISK1" ]]; then
+        DISK1ID="$link"
+    fi
+    if [[ $(readlink -f "$link") = "$DISK2" ]]; then
+        DISK2ID="$link"
+    fi
+done
 mkdir -p /mnt/usr/lib/systemd/system-sleep
-DISK1UUID="$(blkid -s UUID -o value "$DISK1")"
-DISK2UUID="$(blkid -s UUID -o value "$DISK2")"
 {
     echo 'if [[ "$1" = "post" ]]; then'
     echo '    sleep 1'
-    echo '    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK1UUID"'; then'
+    echo '    if hdparm --security-freeze '"$DISK1ID"'; then'
     echo '        logger "$0: SSD freeze command executed successfully"'
     echo '    else'
     echo '        logger "$0: SSD freeze command failed"'
     echo '    fi'
-    echo '    if hdparm --security-freeze /dev/disk/by-uuid/'"$DISK2UUID"'; then'
+    echo '    if hdparm --security-freeze '"$DISK2ID"'; then'
     echo '        logger "$0: SSD freeze command executed successfully"'
     echo '    else'
     echo '        logger "$0: SSD freeze command failed"'
     echo '    fi'
     echo 'fi'
 } >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
-chmod 744 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+chmod 755 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 
 # Install packages
 ## START sed
