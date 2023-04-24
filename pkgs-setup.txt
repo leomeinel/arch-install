@@ -128,7 +128,6 @@ starship
 sway
 swaybg
 swayidle
-swaylock
 system-config-printer
 thunar
 thunar-archive-plugin

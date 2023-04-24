@@ -9,6 +9,7 @@ macchina-bin
 nerd-fonts-noto-sans-mono-extended
 nwg-bar-bin
 snapper-gui-git
+swaylock-effects
 swaync
 trilium-bin
 ttf-hasklig
