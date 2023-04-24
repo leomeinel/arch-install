@@ -157,5 +157,6 @@ wofi
 xdg-dbus-proxy
 xdg-user-dirs
 xdg-utils
+xorg-xwayland
 yq
 zram-generator
