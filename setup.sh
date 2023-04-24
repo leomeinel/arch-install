@@ -281,6 +281,7 @@ ln -s "$(which nvim)" /usr/local/bin/vedit
 ln -s "$(which nvim)" /usr/local/bin/vi
 ln -s "$(which nvim)" /usr/local/bin/vim
 chmod 755 /usr/local/bin/ex
+chmod 755 /usr/local/bin/sway-logout
 chmod 755 /usr/local/bin/view
 chmod 755 /usr/local/bin/vimdiff
 chmod 755 /usr/local/bin/edit
