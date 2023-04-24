@@ -94,6 +94,7 @@ p7zip
 pacman-contrib
 pam-u2f
 papirus-icon-theme
+pavucontrol
 pdftk
 perl-image-exiftool
 perl-rename
