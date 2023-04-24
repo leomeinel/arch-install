@@ -7,6 +7,7 @@ libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
 nerd-fonts-noto-sans-mono-extended
+nwg-bar-bin
 snapper-gui-git
 swaync
 trilium-bin
