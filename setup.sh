@@ -473,31 +473,31 @@ rm -rf /home/.snapshots
 btrfs subvolume delete /.snapshots
 mkdir -p /.snapshots
 #### /usr
-btrfs subvolume delete /@usr/.snapshots
+btrfs subvolume delete /usr/.snapshots
 mkdir -p /usr/.snapshots
 #### /var
-btrfs subvolume delete /@var/.snapshots
+btrfs subvolume delete /var/.snapshots
 mkdir -p /var/.snapshots
 ##### /var/lib
-btrfs subvolume delete /@var_lib/.snapshots
+btrfs subvolume delete /var/lib/.snapshots
 mkdir -p /var/lib/.snapshots
 ###### /var/lib/libvirt
-btrfs subvolume delete /@var_lib_libvirt/.snapshots
+btrfs subvolume delete /var/lib/libvirt/.snapshots
 mkdir -p /var/lib/libvirt/.snapshots
 ###### /var/lib/mysql
-btrfs subvolume delete /@var_lib_mysql/.snapshots
+btrfs subvolume delete /var/lib/mysql/.snapshots
 mkdir -p /var/lib/mysql/.snapshots
 ##### /var/cache
-btrfs subvolume delete /@var_cache/.snapshots
+btrfs subvolume delete /var/cache/.snapshots
 mkdir -p /var/cache/.snapshots
 ##### /var/games
-btrfs subvolume delete /@var_games/.snapshots
+btrfs subvolume delete /var/games/.snapshots
 mkdir -p /var/games/.snapshots
 ##### /var/log
-btrfs subvolume delete /@var_log/.snapshots
+btrfs subvolume delete /var/log/.snapshots
 mkdir -p /var/log/.snapshots
 #### /home
-btrfs subvolume delete /@home/.snapshots
+btrfs subvolume delete /home/.snapshots
 mkdir -p /home/.snapshots
 #### Mount /etc/fstab
 mount -a
