@@ -2,6 +2,8 @@ apparmor
 arch-audit
 bash-completion
 bat
+bc
+dbus
 cronie
 dnsmasq
 duf
@@ -13,6 +15,8 @@ exa
 fd
 firejail
 fwupd
+git-delta
+glow
 htop
 hwinfo
 hyperfine
@@ -26,6 +30,7 @@ lsof
 lzop
 man-db
 mtools
+noto-fonts
 ntfs-3g
 openbsd-netcat
 openssh
@@ -35,6 +40,7 @@ pacman-contrib
 pam-u2f
 perl-rename
 procs
+quilt
 ripgrep
 sbsigntools
 screen
@@ -42,6 +48,7 @@ snap-pac
 snapper
 sshfs
 starship
+tokei
 tpm2-tools
 tree
 unarchiver

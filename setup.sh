@@ -32,9 +32,9 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
 groupadd -r usbguard
-useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel "$SYSUSER"
-useradd -ms /bin/bash -G docker "$DOCKUSER"
-useradd -ms /bin/bash "$HOMEUSER"
+useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
+useradd -ms /bin/bash -G docker,video "$DOCKUSER"
+useradd -ms /bin/bash -G video "$HOMEUSER"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
@@ -46,7 +46,7 @@ passwd "$HOMEUSER"
 
 # Setup /etc
 rsync -rq /git/arch-install/etc/ /etc
-## Configure locale in /etc/locale.gen & /etc/locale.conf
+## Configure locale in /etc/locale.gen /etc/locale.conf
 ### START sed
 FILE=/etc/locale.gen
 STRING="^#de_DE.UTF-8 UTF-8"
@@ -68,8 +68,8 @@ sed -i "s/$STRING/nl_NL.UTF-8 UTF-8/" "$FILE"
 chmod 644 /etc/locale.conf
 locale-gen
 ## Configure /etc/doas.conf
-chown -c root:root /etc/doas.conf
-chmod -c 0400 /etc/doas.conf
+chown root:root /etc/doas.conf
+chmod 0400 /etc/doas.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
     echo '#!/bin/sh'
@@ -96,6 +96,7 @@ chmod 644 /etc/systemd/system/systemd-networkd-wait-online.service.d/override.co
 ## Configure /etc/systemd/network/10-en.network
 chmod 644 /etc/systemd/network/10-en.network
 ## Configure /etc/pacman.conf , /etc/makepkg.conf & /etc/xdg/reflector/reflector.conf
+## Configure /etc/pacman.conf /etc/makepkg.conf /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
     echo "--country $MIRRORCOUNTRIES"
@@ -141,7 +142,7 @@ MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 {
     echo "md0_crypt UUID=$MD0UUID none initramfs,luks,key-slot=0"
 } >/etc/crypttab
-## Configure /etc/localtime, /etc/vconsole.conf, /etc/hostname & /etc/hosts
+## Configure /etc/localtime /etc/vconsole.conf /etc/hostname /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
 echo "KEYMAP=$KEYMAP" >/etc/vconsole.conf
@@ -182,10 +183,10 @@ chmod 644 /etc/cryptboot.conf
 } >>/etc/ssh/sshd_config
 ## Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
-## Configure /etc/usbguard/usbguard-daemon.conf & /etc/usbguard/rules.conf
+## Configure /etc/usbguard/usbguard-daemon.conf /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
-## Configure /etc/pam.d/system-login, /etc/security/faillock.conf, /etc/pam.d/su & /etc/pam.d/su-l
+## Configure /etc/pam.d/system-login /etc/security/faillock.conf /etc/pam.d/su /etc/pam.d/su-l
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
 ### START sed
 FILE=/etc/security/faillock.conf
@@ -210,7 +211,7 @@ sed -i "s/$STRING/log_group = audit/" "$FILE"
 DISK1="$(lsblk -npo PKNAME $(findmnt -no SOURCE --target /efi) | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 DISK1P2UUID="$(blkid -s UUID -o value $DISK1P2)"
-PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.md.waitclean=1 rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.luks.allow-discards=$DISK1P2UUID rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP quiet loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
+PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.luks.allow-discards=$DISK1P2UUID rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP loglevel=5 rd.info rd.shell bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
 #### If on intel set kernel parameter intel_iommu=on
 pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
@@ -240,190 +241,266 @@ chmod 755 /usr/local/bin/vim
 
 # Configure /usr
 ## Configure /usr/share/snapper/config-templates/default & configure snapper configs
-umount /.snapshots
-rm -rf /.snapshots
-cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/root
-cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_docker
-cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_libvirt
-cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_lib_mysql
-cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/var_log
-cp /usr/share/snapper/config-templates/default /usr/share/snapper/config-templates/home
-### START sed
+### Setup configs
+#### /usr/share/snapper/config-templates/default
+##### START sed
 STRING0="^ALLOW_GROUPS=.*"
 STRING1="^SPACE_LIMIT=.*"
-STRING2="^NUMBER_LIMIT=.*"
-STRING3="^NUMBER_LIMIT_IMPORTANT=.*"
-STRING4="^TIMELINE_CREATE=.*"
-STRING5="^TIMELINE_CLEANUP=.*"
-STRING6="^TIMELINE_LIMIT_HOURLY=.*"
-STRING7="^TIMELINE_LIMIT_DAILY=.*"
-STRING8="^TIMELINE_LIMIT_MONTHLY=.*"
-STRING9="^TIMELINE_LIMIT_YEARLY=.*"
-###
-FILE=/usr/share/snapper/config-templates/root
-grep -q "$STRING0" "$FILE" || sed_exit
-sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
-grep -q "$STRING1" "$FILE" || sed_exit
-sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
-grep -q "$STRING2" "$FILE" || sed_exit
-sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
-grep -q "$STRING3" "$FILE" || sed_exit
-sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
-grep -q "$STRING4" "$FILE" || sed_exit
-sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
-grep -q "$STRING5" "$FILE" || sed_exit
-sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
-grep -q "$STRING6" "$FILE" || sed_exit
-sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE"
-grep -q "$STRING7" "$FILE" || sed_exit
-sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"4\"/" "$FILE"
-grep -q "$STRING8" "$FILE" || sed_exit
-sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
-grep -q "$STRING9" "$FILE" || sed_exit
-sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
-###
-FILE="/usr/share/snapper/config-templates/var_lib_docker"
-grep -q "$STRING0" "$FILE" || sed_exit
-sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
-grep -q "$STRING1" "$FILE" || sed_exit
-sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
-grep -q "$STRING2" "$FILE" || sed_exit
-sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
-grep -q "$STRING3" "$FILE" || sed_exit
-sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
-grep -q "$STRING4" "$FILE" || sed_exit
-sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
-grep -q "$STRING5" "$FILE" || sed_exit
-sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
-grep -q "$STRING6" "$FILE" || sed_exit
-sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"4\"/" "$FILE"
-grep -q "$STRING7" "$FILE" || sed_exit
-sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"4\"/" "$FILE"
-grep -q "$STRING8" "$FILE" || sed_exit
-sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
-grep -q "$STRING9" "$FILE" || sed_exit
-sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
-###
-FILE=/usr/share/snapper/config-templates/var_lib_libvirt
-grep -q "$STRING0" "$FILE" || sed_exit
-sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
-grep -q "$STRING1" "$FILE" || sed_exit
-sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
-grep -q "$STRING2" "$FILE" || sed_exit
-sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
-grep -q "$STRING3" "$FILE" || sed_exit
-sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
-grep -q "$STRING4" "$FILE" || sed_exit
-sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
-grep -q "$STRING5" "$FILE" || sed_exit
-sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
-grep -q "$STRING6" "$FILE" || sed_exit
-sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE"
-grep -q "$STRING7" "$FILE" || sed_exit
-sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"5\"/" "$FILE"
-grep -q "$STRING8" "$FILE" || sed_exit
-sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
-grep -q "$STRING9" "$FILE" || sed_exit
-sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
-###
-FILE=/usr/share/snapper/config-templates/var_lib_mysql
-grep -q "$STRING0" "$FILE" || sed_exit
-sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
-grep -q "$STRING1" "$FILE" || sed_exit
-sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
-grep -q "$STRING2" "$FILE" || sed_exit
-sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
-grep -q "$STRING3" "$FILE" || sed_exit
-sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
-grep -q "$STRING4" "$FILE" || sed_exit
-sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
-grep -q "$STRING5" "$FILE" || sed_exit
-sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
-grep -q "$STRING6" "$FILE" || sed_exit
-sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE"
-grep -q "$STRING7" "$FILE" || sed_exit
-sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"5\"/" "$FILE"
-grep -q "$STRING8" "$FILE" || sed_exit
-sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
-grep -q "$STRING9" "$FILE" || sed_exit
-sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
-###
-FILE=/usr/share/snapper/config-templates/var_log
-grep -q "$STRING0" "$FILE" || sed_exit
-sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
-grep -q "$STRING1" "$FILE" || sed_exit
-sed -i "s/$STRING1/SPACE_LIMIT=\"0.1\"/" "$FILE"
-grep -q "$STRING2" "$FILE" || sed_exit
-sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
-grep -q "$STRING3" "$FILE" || sed_exit
-sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
-grep -q "$STRING4" "$FILE" || sed_exit
-sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
-grep -q "$STRING5" "$FILE" || sed_exit
-sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
-grep -q "$STRING6" "$FILE" || sed_exit
-sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE"
-grep -q "$STRING7" "$FILE" || sed_exit
-sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE"
-grep -q "$STRING8" "$FILE" || sed_exit
-sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
-grep -q "$STRING9" "$FILE" || sed_exit
-sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
-###
-FILE=/usr/share/snapper/config-templates/home
-grep -q "$STRING0" "$FILE" || sed_exit
-sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
-grep -q "$STRING1" "$FILE" || sed_exit
-sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE"
-grep -q "$STRING2" "$FILE" || sed_exit
-sed -i "s/$STRING2/NUMBER_LIMIT=\"5\"/" "$FILE"
-grep -q "$STRING3" "$FILE" || sed_exit
-sed -i "s/$STRING3/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
-grep -q "$STRING4" "$FILE" || sed_exit
-sed -i "s/$STRING4/TIMELINE_CREATE=\"yes\"/" "$FILE"
-grep -q "$STRING5" "$FILE" || sed_exit
-sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
-grep -q "$STRING6" "$FILE" || sed_exit
-sed -i "s/$STRING6/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE"
-grep -q "$STRING7" "$FILE" || sed_exit
-sed -i "s/$STRING7/TIMELINE_LIMIT_DAILY=\"5\"/" "$FILE"
-grep -q "$STRING8" "$FILE" || sed_exit
-sed -i "s/$STRING8/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
-grep -q "$STRING9" "$FILE" || sed_exit
-sed -i "s/$STRING9/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
-### END sed
-chmod 644 /usr/share/snapper/config-templates/root
-chmod 644 /usr/share/snapper/config-templates/var_lib_docker
-chmod 644 /usr/share/snapper/config-templates/var_lib_libvirt
-chmod 644 /usr/share/snapper/config-templates/var_lib_mysql
-chmod 644 /usr/share/snapper/config-templates/var_log
-chmod 644 /usr/share/snapper/config-templates/home
+STRING2="^FREE_LIMIT=.*"
+STRING3="^NUMBER_LIMIT=.*"
+STRING4="^NUMBER_LIMIT_IMPORTANT=.*"
+STRING5="^TIMELINE_CREATE=.*"
+STRING6="^TIMELINE_CLEANUP=.*"
+STRING7="^TIMELINE_LIMIT_MONTHLY=.*"
+STRING8="^TIMELINE_LIMIT_YEARLY=.*"
+#####
+FILE0=/usr/share/snapper/config-templates/default
+grep -q "$STRING0" "$FILE0" || sed_exit
+sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE0"
+grep -q "$STRING1" "$FILE0" || sed_exit
+sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE0"
+grep -q "$STRING3" "$FILE0" || sed_exit
+sed -i "s/$STRING1/FREE_LIMIT=\"0.4\"/" "$FILE0"
+grep -q "$STRING3" "$FILE0" || sed_exit
+sed -i "s/$STRING3/NUMBER_LIMIT=\"5\"/" "$FILE0"
+grep -q "$STRING4" "$FILE0" || sed_exit
+sed -i "s/$STRING4/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE0"
+grep -q "$STRING5" "$FILE0" || sed_exit
+sed -i "s/$STRING5/TIMELINE_CREATE=\"yes\"/" "$FILE0"
+grep -q "$STRING6" "$FILE0" || sed_exit
+sed -i "s/$STRING6/TIMELINE_CLEANUP=\"yes\"/" "$FILE0"
+grep -q "$STRING7" "$FILE0" || sed_exit
+sed -i "s/$STRING7/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE0"
+grep -q "$STRING8" "$FILE0" || sed_exit
+sed -i "s/$STRING8/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE0"
+##### END sed
+### Remove & unmount snapshots (Prepare snapshot dirs 1)
+#### /
+umount /.snapshots
+rm -rf /.snapshots
+#### /usr
+umount /usr/.snapshots
+rm -rf /usr/.snapshots
+#### /var
+umount /var/.snapshots
+rm -rf /var/.snapshots
+##### /var/lib
+umount /var/lib/.snapshots
+rm -rf /var/lib/.snapshots
+###### /var/lib/docker
+umount /var/lib/docker/.snapshots
+rm -rf /var/lib/docker/.snapshots
+###### /var/lib/libvirt
+umount /var/lib/libvirt/.snapshots
+rm -rf /var/lib/libvirt/.snapshots
+###### /var/lib/mysql
+umount /var/lib/mysql/.snapshots
+rm -rf /var/lib/mysql/.snapshots
+##### /var/cache
+umount /var/cache/.snapshots
+rm -rf /var/cache/.snapshots
+##### /var/games
+umount /var/games/.snapshots
+rm -rf /var/games/.snapshots
+##### /var/log
+umount /var/log/.snapshots
+rm -rf /var/log/.snapshots
+#### /home
+umount /home/.snapshots
+rm -rf /home/.snapshots
+####### START sed
+STRING0="^TIMELINE_LIMIT_HOURLY=.*"
+STRING1="^TIMELINE_LIMIT_DAILY=.*"
+#### /
+FILE1=/usr/share/snapper/config-templates/root
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
+#######
 snapper --no-dbus -c root create-config -t root /
+#### /usr
+FILE1=/usr/share/snapper/config-templates/usr
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
+#######
+snapper --no-dbus -c usr create-config -t usr /usr
+#### /var
+FILE1=/usr/share/snapper/config-templates/var
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"2\"/" "$FILE1"
+#######
+snapper --no-dbus -c var create-config -t var /var
+##### /var/lib
+FILE1=/usr/share/snapper/config-templates/var_lib
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"2\"/" "$FILE1"
+#######
+snapper --no-dbus -c var_lib create-config -t var_lib /var/lib
+###### /var/lib/docker
+FILE1=/usr/share/snapper/config-templates/var_lib_docker
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
+#######
 snapper --no-dbus -c var_lib_docker create-config -t var_lib_docker /var/lib/docker
+###### /var/lib/libvirt
+FILE1=/usr/share/snapper/config-templates/var_lib_libvirt
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
+#######
 snapper --no-dbus -c var_lib_libvirt create-config -t var_lib_libvirt /var/lib/libvirt
+###### /var/lib/mysql
+FILE1=/usr/share/snapper/config-templates/var_lib_mysql
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
+#######
 snapper --no-dbus -c var_lib_mysql create-config -t var_lib_mysql /var/lib/mysql
+##### /var/cache
+FILE1=/usr/share/snapper/config-templates/var_cache
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
+#######
+snapper --no-dbus -c var_cache create-config -t var_cache /var/cache
+##### /var/games
+FILE1=/usr/share/snapper/config-templates/var_games
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
+#######
+snapper --no-dbus -c var_games create-config -t var_games /var/games
+##### /var/log
+FILE1=/usr/share/snapper/config-templates/var_log
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
+#######
 snapper --no-dbus -c var_log create-config -t var_log /var/log
+#### /home
+FILE1=/usr/share/snapper/config-templates/home
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"3\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"2\"/" "$FILE1"
+####### END sed
 snapper --no-dbus -c home create-config -t home /home
+### Replace subvolumes for snapshots (Prepare snapshot dirs 2)
+#### /
 btrfs subvolume delete /.snapshots
 mkdir -p /.snapshots
+#### /usr
+btrfs subvolume delete /usr/.snapshots
+mkdir -p /usr/.snapshots
+#### /var
+btrfs subvolume delete /var/.snapshots
+mkdir -p /var/.snapshots
+##### /var/lib
+btrfs subvolume delete /var/lib/.snapshots
+mkdir -p /var/lib/.snapshots
+###### /var/lib/docker
+btrfs subvolume delete /var/lib/docker/.snapshots
+mkdir -p /var/lib/docker/.snapshots
+###### /var/lib/libvirt
+btrfs subvolume delete /var/lib/libvirt/.snapshots
+mkdir -p /var/lib/libvirt/.snapshots
+###### /var/lib/mysql
+btrfs subvolume delete /var/lib/mysql/.snapshots
+mkdir -p /var/lib/mysql/.snapshots
+##### /var/cache
+btrfs subvolume delete /var/cache/.snapshots
+mkdir -p /var/cache/.snapshots
+##### /var/games
+btrfs subvolume delete /var/games/.snapshots
+mkdir -p /var/games/.snapshots
+##### /var/log
+btrfs subvolume delete /var/log/.snapshots
+mkdir -p /var/log/.snapshots
+#### /home
+btrfs subvolume delete /home/.snapshots
+mkdir -p /home/.snapshots
+#### Mount /etc/fstab
 mount -a
-chmod 750 /.snapshots
-chmod a+rx /.snapshots
+### Set correct permissions on snapshots (Prepare snapshot dirs 3)
+#### /
+chmod 755 /.snapshots
 chown :wheel /.snapshots
-chmod 750 /var/lib/docker/.snapshots
-chmod a+rx /var/lib/docker/.snapshots
+#### /usr
+chmod 755 /usr/.snapshots
+chown :wheel /usr/.snapshots
+#### /var
+chmod 755 /var/.snapshots
+chown :wheel /var/.snapshots
+##### /var/lib
+chmod 755 /var/lib/.snapshots
+chown :wheel /var/lib/.snapshots
+###### /var/lib/docker
+chmod 755 /var/lib/docker/.snapshots
 chown :wheel /var/lib/docker/.snapshots
-chmod 750 /var/lib/libvirt/.snapshots
-chmod a+rx /var/lib/libvirt/.snapshots
+###### /var/lib/libvirt
+chmod 755 /var/lib/libvirt/.snapshots
 chown :wheel /var/lib/libvirt/.snapshots
-chmod 750 /var/lib/mysql/.snapshots
-chmod a+rx /var/lib/mysql/.snapshots
+###### /var/lib/mysql
+chmod 755 /var/lib/mysql/.snapshots
 chown :wheel /var/lib/mysql/.snapshots
-chmod 750 /var/log/.snapshots
-chmod a+rx /var/log/.snapshots
+##### /var/cache
+chmod 755 /var/cache/.snapshots
+chown :wheel /var/cache/.snapshots
+##### /var/games
+chmod 755 /var/games/.snapshots
+chown :wheel /var/games/.snapshots
+##### /var/log
+chmod 755 /var/log/.snapshots
 chown :wheel /var/log/.snapshots
-chmod 750 /home/.snapshots
-chmod a+rx /home/.snapshots
+#### /home
+chmod 755 /home/.snapshots
 chown :wheel /home/.snapshots
 
 # Setup /efi
