@@ -232,7 +232,6 @@ ln -s "$(which nvim)" /usr/local/bin/vedit
 ln -s "$(which nvim)" /usr/local/bin/vi
 ln -s "$(which nvim)" /usr/local/bin/vim
 chmod 755 /usr/local/bin/ex
-chmod 755 /usr/local/bin/sway-logout
 chmod 755 /usr/local/bin/view
 chmod 755 /usr/local/bin/vimdiff
 chmod 755 /usr/local/bin/edit
@@ -291,6 +290,9 @@ rm -rf /var/lib/.snapshots
 ###### /var/lib/docker
 umount /var/lib/docker/.snapshots
 rm -rf /var/lib/docker/.snapshots
+###### /var/lib/libvirt
+umount /var/lib/libvirt/.snapshots
+rm -rf /var/lib/libvirt/.snapshots
 ###### /var/lib/mysql
 umount /var/lib/mysql/.snapshots
 rm -rf /var/lib/mysql/.snapshots
@@ -364,6 +366,17 @@ grep -q "$STRING1" "$FILE1" || sed_exit
 sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
 #######
 snapper --no-dbus -c var_lib_docker create-config -t var_lib_docker /var/lib/docker
+###### /var/lib/libvirt
+FILE1=/usr/share/snapper/config-templates/var_lib_libvirt
+cp "$FILE0" "$FILE1"
+chmod 644 "$FILE1"
+#######
+grep -q "$STRING0" "$FILE1" || sed_exit
+sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE1"
+grep -q "$STRING1" "$FILE1" || sed_exit
+sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
+#######
+snapper --no-dbus -c var_lib_libvirt create-config -t var_lib_libvirt /var/lib/libvirt
 ###### /var/lib/mysql
 FILE1=/usr/share/snapper/config-templates/var_lib_mysql
 cp "$FILE0" "$FILE1"
@@ -435,6 +448,9 @@ mkdir -p /var/lib/.snapshots
 ###### /var/lib/docker
 btrfs subvolume delete /var/lib/docker/.snapshots
 mkdir -p /var/lib/docker/.snapshots
+###### /var/lib/libvirt
+btrfs subvolume delete /var/lib/libvirt/.snapshots
+mkdir -p /var/lib/libvirt/.snapshots
 ###### /var/lib/mysql
 btrfs subvolume delete /var/lib/mysql/.snapshots
 mkdir -p /var/lib/mysql/.snapshots
@@ -468,6 +484,9 @@ chown :wheel /var/lib/.snapshots
 ###### /var/lib/docker
 chmod 755 /var/lib/docker/.snapshots
 chown :wheel /var/lib/docker/.snapshots
+###### /var/lib/libvirt
+chmod 755 /var/lib/libvirt/.snapshots
+chown :wheel /var/lib/libvirt/.snapshots
 ###### /var/lib/mysql
 chmod 755 /var/lib/mysql/.snapshots
 chown :wheel /var/lib/mysql/.snapshots
