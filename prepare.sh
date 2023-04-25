@@ -149,6 +149,9 @@ btrfs subvolume create /mnt/@var_lib_snapshots
 #### /var/lib/docker
 btrfs subvolume create /mnt/@var_lib_docker
 btrfs subvolume create /mnt/@var_lib_docker_snapshots
+#### /var/lib/libvirt
+btrfs subvolume create /mnt/@var_lib_libvirt
+btrfs subvolume create /mnt/@var_lib_libvirt_snapshots
 #### /var/lib/mysql
 btrfs subvolume create /mnt/@var_lib_mysql
 btrfs subvolume create /mnt/@var_lib_mysql_snapshots
@@ -194,28 +197,33 @@ mkdir /mnt/var/lib/docker
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=260 /dev/mapper/vg0-lv2 /mnt/var/lib/docker
 mkdir /mnt/var/lib/docker/.snapshots
 mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=261 /dev/mapper/vg0-lv2 /mnt/var/lib/docker/.snapshots
+#### /var/lib/libvirt
+mkdir /mnt/var/lib/libvirt
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/vg0-lv2 /mnt/var/lib/libvirt
+mkdir /mnt/var/lib/libvirt/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/vg0-lv2 /mnt/var/lib/libvirt/.snapshots
 #### /var/lib/mysql
 mkdir /mnt/var/lib/mysql
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=262 /dev/mapper/vg0-lv2 /mnt/var/lib/mysql
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/vg0-lv2 /mnt/var/lib/mysql
 mkdir /mnt/var/lib/mysql/.snapshots
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=263 /dev/mapper/vg0-lv2 /mnt/var/lib/mysql/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/vg0-lv2 /mnt/var/lib/mysql/.snapshots
 ### /var/cache
 mkdir /mnt/var/cache
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=264 /dev/mapper/vg0-lv2 /mnt/var/cache
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=266 /dev/mapper/vg0-lv2 /mnt/var/cache
 mkdir /mnt/var/cache/.snapshots
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=265 /dev/mapper/vg0-lv2 /mnt/var/cache/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=267 /dev/mapper/vg0-lv2 /mnt/var/cache/.snapshots
 ### /var/games
 mkdir /mnt/var/games
 chmod 775 /mnt/var/games
-mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=266 /dev/mapper/vg0-lv2 /mnt/var/games
+mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=268 /dev/mapper/vg0-lv2 /mnt/var/games
 chmod 775 /mnt/var/games
 mkdir /mnt/var/games/.snapshots
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=267 /dev/mapper/vg0-lv2 /mnt/var/games/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=269 /dev/mapper/vg0-lv2 /mnt/var/games/.snapshots
 ### /var/log
 mkdir /mnt/var/log
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=268 /dev/mapper/vg0-lv2 /mnt/var/log
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=270 /dev/mapper/vg0-lv2 /mnt/var/log
 mkdir /mnt/var/log/.snapshots
-mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=269 /dev/mapper/vg0-lv2 /mnt/var/log/.snapshots
+mount -o noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=271 /dev/mapper/vg0-lv2 /mnt/var/log/.snapshots
 ## /home
 mkdir /mnt/home
 mount -o nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvolid=256 /dev/mapper/vg0-lv3 /mnt/home
