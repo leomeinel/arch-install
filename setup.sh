@@ -557,6 +557,8 @@ pacman -Qq "avahi" >/dev/null 2>&1 &&
     systemctl enable avahi-daemon
 pacman -Qq "bluez" >/dev/null 2>&1 &&
     systemctl enable bluetooth
+pacman -Qq "cups" >/dev/null 2>&1 &&
+    systemctl enable cups.service
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
