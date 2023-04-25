@@ -267,7 +267,7 @@ sed -i "s/$STRING/Color/" "$FILE"
 STRING="^#ParallelDownloads =.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
-STRING="^#NoProgressBar"c
+STRING="^#NoProgressBar"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/NoProgressBar/" "$FILE"
 ## END sed
