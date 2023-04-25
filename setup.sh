@@ -164,7 +164,7 @@ echo "$HOSTNAME" >/etc/hostname
     echo "OverrideESPMountPoint=/efi"
 } >>/etc/fwupd/uefi_capsule.conf
 ## Configure /etc/cryptboot.conf
-git clone -b server https://github.com/leomeinel/cryptboot.git /git/cryptboot
+git clone https://github.com/leomeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 ## Configure /etc/ssh/sshd_config
