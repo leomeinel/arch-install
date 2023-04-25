@@ -14,7 +14,7 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
 source "$SCRIPT_DIR/install.conf"
 
 # Fail on error
-set -eu
+set -e
 
 # Define functions
 sed_exit() {
