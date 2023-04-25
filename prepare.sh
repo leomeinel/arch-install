@@ -231,10 +231,10 @@ mkdir /mnt/boot
 
 # Set SSD state to "frozen" after sleep
 for link in /dev/disk/by-id/*; do
-    if [[ $(readlink -f "$link") = "$DISK1" ]]; then
+    if [[ "$(readlink -f "$link")" = "$DISK1" ]]; then
         DISK1ID="$link"
     fi
-    if [[ $(readlink -f "$link") = "$DISK2" ]]; then
+    if [[ "$(readlink -f "$link")" = "$DISK2" ]]; then
         DISK2ID="$link"
     fi
 done
