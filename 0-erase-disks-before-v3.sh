@@ -12,6 +12,22 @@
 # Fail on error
 set -eu
 
+# Unmount everything from /mnt
+mountpoint -q /mnt &&
+    umount -AR /mnt
+
+# Prompt user for disk
+# I will use this on an external SSD, therefore USB volumes will be valid
+lsblk -drnpo SIZE,NAME -I 259,8,254
+read -rp "Which disk do you want to erase? (Type '/dev/sdX' fex.): " choice
+if lsblk -drnpo SIZE,NAME -I 259,8,254 $choice; then
+    echo "Erasing $choice..."
+    DISK1="$choice"
+else
+    echo "ERROR: Drive not suitable for installation"
+    exit 1
+fi
+
 # Detect, close & erase old crypt volumes
 if lsblk -rno TYPE "$DISK1" | grep -q "crypt"; then
     OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME $DISK1 | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
