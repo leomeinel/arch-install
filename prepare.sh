@@ -14,7 +14,7 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
 source "$SCRIPT_DIR/install.conf"
 
 # Fail on error
-set -eu
+set -e
 
 # Define functions
 sed_exit() {
@@ -195,18 +195,20 @@ for link in /dev/disk/by-id/*; do
         DISK1ID="$link"
     fi
 done
-mkdir -p /mnt/usr/lib/systemd/system-sleep
-{
-    echo 'if [[ "$1" = "post" ]]; then'
-    echo '    sleep 1'
-    echo '    if hdparm --security-freeze '"$DISK1ID"'; then'
-    echo '        logger "$0: SSD freeze command executed successfully"'
-    echo '    else'
-    echo '        logger "$0: SSD freeze command failed"'
-    echo '    fi'
-    echo 'fi'
-} >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
-chmod 755 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+if [[ -n "$DISK1ID" ]]; then
+    mkdir -p /mnt/usr/lib/systemd/system-sleep
+    {
+        echo 'if [[ "$1" = "post" ]]; then'
+        echo '    sleep 1'
+        echo '    if hdparm --security-freeze '"$DISK1ID"'; then'
+        echo '        logger "$0: SSD freeze command executed successfully"'
+        echo '    else'
+        echo '        logger "$0: SSD freeze command failed"'
+        echo '    fi'
+        echo 'fi'
+    } >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+    chmod 755 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+fi
 
 # Install packages
 ## START sed
