@@ -238,23 +238,25 @@ for link in /dev/disk/by-id/*; do
         DISK2ID="$link"
     fi
 done
-mkdir -p /mnt/usr/lib/systemd/system-sleep
-{
-    echo 'if [[ "$1" = "post" ]]; then'
-    echo '    sleep 1'
-    echo '    if hdparm --security-freeze '"$DISK1ID"'; then'
-    echo '        logger "$0: SSD freeze command executed successfully"'
-    echo '    else'
-    echo '        logger "$0: SSD freeze command failed"'
-    echo '    fi'
-    echo '    if hdparm --security-freeze '"$DISK2ID"'; then'
-    echo '        logger "$0: SSD freeze command executed successfully"'
-    echo '    else'
-    echo '        logger "$0: SSD freeze command failed"'
-    echo '    fi'
-    echo 'fi'
-} >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
-chmod 755 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+if [[ -n "$DISK1ID" ]] && [[ -n "$DISK2ID" ]]; then
+    mkdir -p /mnt/usr/lib/systemd/system-sleep
+    {
+        echo 'if [[ "$1" = "post" ]]; then'
+        echo '    sleep 1'
+        echo '    if hdparm --security-freeze '"$DISK1ID"'; then'
+        echo '        logger "$0: SSD freeze command executed successfully"'
+        echo '    else'
+        echo '        logger "$0: SSD freeze command failed"'
+        echo '    fi'
+        echo '    if hdparm --security-freeze '"$DISK2ID"'; then'
+        echo '        logger "$0: SSD freeze command executed successfully"'
+        echo '    else'
+        echo '        logger "$0: SSD freeze command failed"'
+        echo '    fi'
+        echo 'fi'
+    } >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+    chmod 755 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+fi
 
 # Install packages
 ## START sed
@@ -265,7 +267,7 @@ sed -i "s/$STRING/Color/" "$FILE"
 STRING="^#ParallelDownloads =.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
-STRING="^#NoProgressBar"
+STRING="^#NoProgressBar"c
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/NoProgressBar/" "$FILE"
 ## END sed
