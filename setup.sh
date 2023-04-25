@@ -306,23 +306,23 @@ STRING8="^TIMELINE_LIMIT_YEARLY=.*"
 #####
 FILE0=/usr/share/snapper/config-templates/default
 grep -q "$STRING0" "$FILE0" || sed_exit
-sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE"
+sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE0"
 grep -q "$STRING1" "$FILE0" || sed_exit
-sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE"
+sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE0"
 grep -q "$STRING3" "$FILE0" || sed_exit
-sed -i "s/$STRING1/FREE_LIMIT=\"0.4\"/" "$FILE"
+sed -i "s/$STRING1/FREE_LIMIT=\"0.4\"/" "$FILE0"
 grep -q "$STRING3" "$FILE0" || sed_exit
-sed -i "s/$STRING3/NUMBER_LIMIT=\"5\"/" "$FILE"
+sed -i "s/$STRING3/NUMBER_LIMIT=\"5\"/" "$FILE0"
 grep -q "$STRING4" "$FILE0" || sed_exit
-sed -i "s/$STRING4/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE"
+sed -i "s/$STRING4/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE0"
 grep -q "$STRING5" "$FILE0" || sed_exit
-sed -i "s/$STRING5/TIMELINE_CREATE=\"yes\"/" "$FILE"
+sed -i "s/$STRING5/TIMELINE_CREATE=\"yes\"/" "$FILE0"
 grep -q "$STRING6" "$FILE0" || sed_exit
-sed -i "s/$STRING6/TIMELINE_CLEANUP=\"yes\"/" "$FILE"
+sed -i "s/$STRING6/TIMELINE_CLEANUP=\"yes\"/" "$FILE0"
 grep -q "$STRING7" "$FILE0" || sed_exit
-sed -i "s/$STRING7/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE"
+sed -i "s/$STRING7/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE0"
 grep -q "$STRING8" "$FILE0" || sed_exit
-sed -i "s/$STRING8/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE"
+sed -i "s/$STRING8/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE0"
 ##### END sed
 ### Remove & unmount snapshots (Prepare snapshot dirs 1)
 #### /
