@@ -309,8 +309,8 @@ grep -q "$STRING0" "$FILE0" || sed_exit
 sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE0"
 grep -q "$STRING1" "$FILE0" || sed_exit
 sed -i "s/$STRING1/SPACE_LIMIT=\"0.2\"/" "$FILE0"
-grep -q "$STRING3" "$FILE0" || sed_exit
-sed -i "s/$STRING1/FREE_LIMIT=\"0.4\"/" "$FILE0"
+grep -q "$STRING2" "$FILE0" || sed_exit
+sed -i "s/$STRING2/FREE_LIMIT=\"0.4\"/" "$FILE0"
 grep -q "$STRING3" "$FILE0" || sed_exit
 sed -i "s/$STRING3/NUMBER_LIMIT=\"5\"/" "$FILE0"
 grep -q "$STRING4" "$FILE0" || sed_exit
