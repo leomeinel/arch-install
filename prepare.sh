@@ -170,10 +170,10 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     esac
 done
 ## Mount subvolumes
-OPTIONS0="noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/mnt/@"
-OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/mnt/@"
-OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/mnt/@"
-OPTIONS3="noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/mnt/@"
+OPTIONS0="noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
+OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
+OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
+OPTIONS3="noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 mount_subs0() {
     echo "DEBUG2: $1 $2 $3 $4"
     mkdir "/mnt$1"
@@ -204,7 +204,6 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[$i]}" in
     "/")
         echo "DEBUG A1: /"
-        echo "DEBUG A10: mount -o "$OPTIONS0" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}""
         mount -o "$OPTIONS0" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}"
         mkdir "/mnt${SUBVOLUMES[$i]}.snapshots"
         mount -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots"
