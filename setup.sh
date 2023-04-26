@@ -27,7 +27,7 @@ sed_exit() {
 ## Configure passwords
 {
     echo "#%PAM-1.0"
-    echo "password required pam_pwquality.so sha512 rounds=9999999 shadowretry=3 minlen=10 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
+    echo "password required pam_pwquality.so sha512 rounds=9999999 shadowretry=3 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
     echo "password required pam_unix.so use_authtok sha512 shadow"
 } >/etc/pam.d/passwd
 {
@@ -49,6 +49,19 @@ useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel
 useradd -ms /bin/bash -G libvirt,video "$VIRTUSER"
 useradd -ms /bin/bash -G video "$HOMEUSER"
 useradd -ms /bin/bash -G video "$GUESTUSER"
+echo "#################################################################"
+echo "#                      _    _           _   _                   #"
+echo "#                     / \  | | ___ _ __| |_| |                  #"
+echo "#                    / _ \ | |/ _ \ '__| __| |                  #"
+echo "#                   / ___ \| |  __/ |  | |_|_|                  #"
+echo "#                  /_/   \_\_|\___|_|   \__(_)                  #"
+echo "#                                                               #"
+echo "#       It is mandatory to choose a password matching the       #"
+echo "#                       following specs:                        #"
+echo "#                    At least 12 characters,                    #"
+echo "#            at least 1 digit, 1 uppercace character,           #"
+echo "#          1 lowercace character and 1 other character.         #"
+echo "#################################################################"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
