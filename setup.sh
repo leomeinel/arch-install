@@ -325,213 +325,65 @@ grep -q "$STRING8" "$FILE0" || sed_exit
 sed -i "s/$STRING8/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE0"
 ##### END sed
 ### Remove & unmount snapshots (Prepare snapshot dirs 1)
-#### /
-umount /.snapshots
-rm -rf /.snapshots
-#### /usr
-umount /usr/.snapshots
-rm -rf /usr/.snapshots
-#### /var
-umount /var/.snapshots
-rm -rf /var/.snapshots
-##### /var/lib
-umount /var/lib/.snapshots
-rm -rf /var/lib/.snapshots
-###### /var/lib/libvirt
-umount /var/lib/libvirt/.snapshots
-rm -rf /var/lib/libvirt/.snapshots
-###### /var/lib/mysql
-umount /var/lib/mysql/.snapshots
-rm -rf /var/lib/mysql/.snapshots
-##### /var/cache
-umount /var/cache/.snapshots
-rm -rf /var/cache/.snapshots
-##### /var/games
-umount /var/games/.snapshots
-rm -rf /var/games/.snapshots
-##### /var/log
-umount /var/log/.snapshots
-rm -rf /var/log/.snapshots
-#### /home
-umount /home/.snapshots
-rm -rf /home/.snapshots
+for subvolume in "${SUBVOLUMES[@]}"; do
+    umount "$subvolume".snapshots
+    rm -rf "$subvolume".snapshots
+done
 ####### START sed
 STRING0="^TIMELINE_LIMIT_HOURLY=.*"
 STRING1="^TIMELINE_LIMIT_DAILY=.*"
-#### /
-FILE1=/usr/share/snapper/config-templates/root
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
 #######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
-#######
-snapper --no-dbus -c root create-config -t root /
-#### /usr
-FILE1=/usr/share/snapper/config-templates/usr
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
-#######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
-#######
-snapper --no-dbus -c usr create-config -t usr /usr
-#### /var
-FILE1=/usr/share/snapper/config-templates/var
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
-#######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"2\"/" "$FILE1"
-#######
-snapper --no-dbus -c var create-config -t var /var
-##### /var/lib
-FILE1=/usr/share/snapper/config-templates/var_lib
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
-#######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"2\"/" "$FILE1"
-#######
-snapper --no-dbus -c var_lib create-config -t var_lib /var/lib
-###### /var/lib/libvirt
-FILE1=/usr/share/snapper/config-templates/var_lib_libvirt
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
-#######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
-#######
-snapper --no-dbus -c var_lib_libvirt create-config -t var_lib_libvirt /var/lib/libvirt
-###### /var/lib/mysql
-FILE1=/usr/share/snapper/config-templates/var_lib_mysql
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
-#######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"2\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
-#######
-snapper --no-dbus -c var_lib_mysql create-config -t var_lib_mysql /var/lib/mysql
-##### /var/cache
-FILE1=/usr/share/snapper/config-templates/var_cache
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
-#######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
-#######
-snapper --no-dbus -c var_cache create-config -t var_cache /var/cache
-##### /var/games
-FILE1=/usr/share/snapper/config-templates/var_games
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
-#######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
-#######
-snapper --no-dbus -c var_games create-config -t var_games /var/games
-##### /var/log
-FILE1=/usr/share/snapper/config-templates/var_log
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
-#######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"1\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"1\"/" "$FILE1"
-#######
-snapper --no-dbus -c var_log create-config -t var_log /var/log
-#### /home
-FILE1=/usr/share/snapper/config-templates/home
-cp "$FILE0" "$FILE1"
-chmod 644 "$FILE1"
-#######
-grep -q "$STRING0" "$FILE1" || sed_exit
-sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"3\"/" "$FILE1"
-grep -q "$STRING1" "$FILE1" || sed_exit
-sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"2\"/" "$FILE1"
-####### END sed
-snapper --no-dbus -c home create-config -t home /home
+SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
+[[ "$SUBVOLUMES_LENGTH" -ne ${#CONFIGS[@]} ]] &&
+    {
+        echo "ERROR: SUBVOLUMES and CONFIGS aren't the same length!"
+        exit 1
+    }
+for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
+    #### Copy template
+    FILE1="/usr/share/snapper/config-templates/${CONFIGS[$i]}"
+    cp "$FILE0" "$FILE1"
+    chmod 644 "$FILE1"
+    #### Set variables for configs
+    case "${CONFIGS[$i]}" in
+    "var_lib_docker" | "var_cache" | "var_games" | "var_log")
+        HOURLY=1
+        DAILY=1
+        ;;
+    "var" | "var_lib")
+        HOURLY=2
+        DAILY=2
+        ;;
+    "home")
+        HOURLY=3
+        DAILY=2
+        ;;
+    *)
+        HOURLY=2
+        DAILY=1
+        ;;
+    esac
+    #######
+    grep -q "$STRING0" "$FILE1" || sed_exit
+    sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"$HOURLY\"/" "$FILE1"
+    grep -q "$STRING1" "$FILE1" || sed_exit
+    sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"$DAILY\"/" "$FILE1"
+    ####### END sed
+    #### Create config
+    snapper --no-dbus -c "${CONFIGS[$i]}" create-config -t "${CONFIGS[$i]}" "${SUBVOLUMES[$i]}"
+done
 ### Replace subvolumes for snapshots (Prepare snapshot dirs 2)
-#### /
-btrfs subvolume delete /.snapshots
-mkdir -p /.snapshots
-#### /usr
-btrfs subvolume delete /usr/.snapshots
-mkdir -p /usr/.snapshots
-#### /var
-btrfs subvolume delete /var/.snapshots
-mkdir -p /var/.snapshots
-##### /var/lib
-btrfs subvolume delete /var/lib/.snapshots
-mkdir -p /var/lib/.snapshots
-###### /var/lib/libvirt
-btrfs subvolume delete /var/lib/libvirt/.snapshots
-mkdir -p /var/lib/libvirt/.snapshots
-###### /var/lib/mysql
-btrfs subvolume delete /var/lib/mysql/.snapshots
-mkdir -p /var/lib/mysql/.snapshots
-##### /var/cache
-btrfs subvolume delete /var/cache/.snapshots
-mkdir -p /var/cache/.snapshots
-##### /var/games
-btrfs subvolume delete /var/games/.snapshots
-mkdir -p /var/games/.snapshots
-##### /var/log
-btrfs subvolume delete /var/log/.snapshots
-mkdir -p /var/log/.snapshots
-#### /home
-btrfs subvolume delete /home/.snapshots
-mkdir -p /home/.snapshots
+for subvolume in "${SUBVOLUMES[@]}"; do
+    btrfs subvolume delete "$subvolume".snapshots
+    mkdir -p "$subvolume".snapshots
+done
 #### Mount /etc/fstab
 mount -a
 ### Set correct permissions on snapshots (Prepare snapshot dirs 3)
-#### /
-chmod 755 /.snapshots
-chown :wheel /.snapshots
-#### /usr
-chmod 755 /usr/.snapshots
-chown :wheel /usr/.snapshots
-#### /var
-chmod 755 /var/.snapshots
-chown :wheel /var/.snapshots
-##### /var/lib
-chmod 755 /var/lib/.snapshots
-chown :wheel /var/lib/.snapshots
-###### /var/lib/libvirt
-chmod 755 /var/lib/libvirt/.snapshots
-chown :wheel /var/lib/libvirt/.snapshots
-###### /var/lib/mysql
-chmod 755 /var/lib/mysql/.snapshots
-chown :wheel /var/lib/mysql/.snapshots
-##### /var/cache
-chmod 755 /var/cache/.snapshots
-chown :wheel /var/cache/.snapshots
-##### /var/games
-chmod 755 /var/games/.snapshots
-chown :wheel /var/games/.snapshots
-##### /var/log
-chmod 755 /var/log/.snapshots
-chown :wheel /var/log/.snapshots
-#### /home
-chmod 755 /home/.snapshots
-chown :wheel /home/.snapshots
+for subvolume in "${SUBVOLUMES[@]}"; do
+    chmod 755 "$subvolume".snapshots
+    chown :wheel "$subvolume".snapshots
+done
 ## Configure /usr/share/wallpapers/Custom/content
 mkdir -p /usr/share/wallpapers/Custom/content
 git clone https://github.com/leomeinel/wallpapers.git /git/wallpapers
