@@ -263,6 +263,12 @@ pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
+## Harden system
+{
+    echo ""
+    echo "# Custom"
+    echo "* hard core 0"
+} >>/etc/security/limits.conf
 
 # Setup /usr
 rsync -rq /git/arch-install/usr/ /usr
