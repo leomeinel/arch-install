@@ -175,7 +175,6 @@ OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@
 OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS3="noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 mount_subs0() {
-    echo "DEBUG2: $1 $2 $3 $4"
     mkdir "/mnt$1"
     mount -o "$3$2" "$4" "/mnt$1"
     mkdir "/mnt$1.snapshots"
@@ -184,15 +183,11 @@ mount_subs0() {
 }
 mount_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
-        echo "DEBUG3: $1 $2 $3 | ${SUBVOLUMES[$a]} ${CONFIGS[$a]}"
         if [[ "${SUBVOLUMES[$a]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$a]}"; then
-            echo "DEBUG3: yes"
             mkdir "/mnt${SUBVOLUMES[$a]}"
             if grep -nq "^$1/lib/" <<<"${SUBVOLUMES[$a]}"; then
-                echo "DEBUG3: lib"
                 mount -o "$OPTIONS3${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
             else
-                echo "DEBUG3: nolib"
                 mount -o "$2${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
             fi
             mkdir "/mnt${SUBVOLUMES[$a]}.snapshots"
@@ -203,21 +198,17 @@ mount_subs1() {
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[$i]}" in
     "/")
-        echo "DEBUG A1: /"
         mount -o "$OPTIONS0" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}"
         mkdir "/mnt${SUBVOLUMES[$i]}.snapshots"
         mount -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots"
         ;;
     "/usr/")
-        echo "DEBUG B1: /usr/"
         mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS1" "/dev/mapper/vg0-lv1"
         ;;
     "/var/")
-        echo "DEBUG C1: /var/"
         mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "/dev/mapper/vg0-lv2"
         ;;
     "/home/")
-        echo "DEBUG D1: /home/"
         mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "/dev/mapper/vg0-lv3"
         ;;
     esac
