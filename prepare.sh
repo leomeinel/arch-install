@@ -134,7 +134,6 @@ SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
         exit 1
     }
 create_subs0() {
-    echo "DEBUG0: $1 $2 $3 $4"
     mkfs.btrfs -L "$3" "$4"
     mount "$4" /mnt
     btrfs subvolume create "/mnt/@$2"
@@ -144,9 +143,7 @@ create_subs0() {
 }
 create_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
-        echo "DEBUG1: $1 | ${SUBVOLUMES[$a]} ${CONFIGS[$a]}"
         if [[ "${SUBVOLUMES[$a]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$a]}"; then
-            echo "DEBUG1: yes"
             btrfs subvolume create "/mnt/@${CONFIGS[$a]}"
             btrfs subvolume create "/mnt/@${CONFIGS[$a]}_snapshots"
         fi
@@ -155,7 +152,6 @@ create_subs1() {
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[$i]}" in
     "/")
-        echo "DEBUG A0: /"
         mkfs.btrfs -L ROOT /dev/mapper/vg0-lv0
         mount /dev/mapper/vg0-lv0 /mnt
         btrfs subvolume create /mnt/@
@@ -163,15 +159,12 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
         umount /mnt
         ;;
     "/usr/")
-        echo "DEBUG B0: /usr/"
         create_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "USR" "/dev/mapper/vg0-lv1"
         ;;
     "/var/")
-        echo "DEBUG C0: /var/"
         create_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "VAR" "/dev/mapper/vg0-lv2"
         ;;
     "/home/")
-        echo "DEBUG D0: /home/"
         create_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "HOME" "/dev/mapper/vg0-lv3"
         ;;
     esac
@@ -212,8 +205,10 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     "/")
         echo "DEBUG A1: /"
         mount -o "$OPTIONS0" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}"
+        echo "DEBUG A10: mount -o "$OPTIONS0" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}""
         mkdir "/mnt${SUBVOLUMES[$i]}.snapshots"
         mount -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots"
+        echo "mount -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots""
         ;;
     "/usr/")
         echo "DEBUG B1: /usr/"
