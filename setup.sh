@@ -346,11 +346,11 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     chmod 644 "$FILE1"
     #### Set variables for configs
     case "${CONFIGS[$i]}" in
-    "var_lib_docker" | "var_cache" | "var_games" | "var_log")
+    "var_cache" | "var_games" | "var_log")
         HOURLY=1
         DAILY=1
         ;;
-    "var" | "var_lib")
+    "var" | "var_lib" | "var_lib_docker")
         HOURLY=2
         DAILY=2
         ;;
