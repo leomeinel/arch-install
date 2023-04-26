@@ -24,6 +24,18 @@ sed_exit() {
 }
 
 # Add groups & users
+## Configure passwords
+{
+    echo "#%PAM-1.0"
+    echo "password required pam_pwquality.so sha512 rounds=9999999 shadowretry=3 minlen=10 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
+    echo "password required pam_unix.so use_authtok sha512 shadow"
+} >/etc/pam.d/passwd1000000
+{
+    echo ""
+    echo "# Custom"
+    echo "SHA_CRYPT_MIN_ROUNDS 9999999"
+    echo "SHA_CRYPT_MAX_ROUNDS 9999999"
+} >>/etc/login.defs
 ## START sed
 FILE=/etc/default/useradd
 STRING="^SHELL=.*"
@@ -264,6 +276,7 @@ pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
 ## Harden system
+### Disable coredump
 {
     echo ""
     echo "# Custom"
