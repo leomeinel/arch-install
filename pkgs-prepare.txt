@@ -1,6 +1,9 @@
 base
 base-devel
 btrfs-progs
+docker
+docker-compose
+docker-scan
 dracut
 git
 iptables
@@ -9,13 +12,9 @@ linux-firmware
 linux-headers
 linux-lts
 linux-lts-headers
-linux-zen
-linux-zen-headers
 lvm2
 mdadm
-mesa
 neovim
 opendoas
 reflector
 rsync
-wireless-regdb
