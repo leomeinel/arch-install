@@ -30,16 +30,14 @@ sed_exit() {
     echo "password required pam_pwquality.so sha512 rounds=9999999 shadowretry=3 minlen=10 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
     echo "password required pam_unix.so use_authtok sha512 shadow"
 } >/etc/pam.d/passwd
-sleep 10
-cat /etc/pam.d/passwd
 {
     echo ""
     echo "# Custom"
     echo "SHA_CRYPT_MIN_ROUNDS 9999999"
     echo "SHA_CRYPT_MAX_ROUNDS 9999999"
 } >>/etc/login.defs
-sleep 10
-cat /etc/login.defs
+#echo "Waiting 30 seconds for PAM to sync configs."
+#sleep 30
 ## START sed
 FILE=/etc/default/useradd
 STRING="^SHELL=.*"
