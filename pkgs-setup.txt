@@ -70,6 +70,7 @@ libwmf
 lldb
 llvm
 logrotate
+logwatch
 lrzip
 lshw
 lsof
