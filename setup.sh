@@ -282,6 +282,11 @@ chmod 644 /etc/dracut.conf.d/*.conf
     echo "# Custom"
     echo "* hard core 0"
 } >>/etc/security/limits.conf
+### Disable unneeded protocols
+echo "install dccp /bin/true" >/etc/modprobe.d/disable-dccp.conf
+echo "install sctp /bin/true" >/etc/modprobe.d/disable-sctp.conf
+echo "install rds /bin/true" >/etc/modprobe.d/disable-rds.conf
+echo "install tipc /bin/true" >/etc/modprobe.d/disable-tipc.conf
 
 # Setup /usr
 rsync -rq /git/arch-install/usr/ /usr
