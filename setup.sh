@@ -29,7 +29,7 @@ sed_exit() {
     echo "#%PAM-1.0"
     echo "password required pam_pwquality.so sha512 rounds=9999999 shadowretry=3 minlen=10 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
     echo "password required pam_unix.so use_authtok sha512 shadow"
-} >/etc/pam.d/passwd1000000
+} >/etc/pam.d/passwd
 {
     echo ""
     echo "# Custom"
