@@ -143,7 +143,7 @@ create_subs0() {
 }
 create_subs1() {
     for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
-        if [[ "${SUBVOLUMES[$i]}" -ne "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$i]}"; then
+        if [[ "${SUBVOLUMES[$i]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$i]}"; then
             btrfs subvolume create "/mnt/@${CONFIGS[$i]}"
             btrfs subvolume create "/mnt/@${CONFIGS[$i]}_snapshots"
         fi
@@ -183,7 +183,7 @@ mount_subs0() {
 }
 mount_subs1() {
     for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
-        if [[ "${SUBVOLUMES[$i]}" -ne "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$i]}"; then
+        if [[ "${SUBVOLUMES[$i]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$i]}"; then
             mkdir "/mnt${SUBVOLUMES[$i]}"
             if grep -nq "^$1/lib/" <<<"${SUBVOLUMES[$i]}"; then
                 mount -o "$OPTIONS3${CONFIGS[$i]}" "$3" "/mnt${SUBVOLUMES[$i]}"
