@@ -130,6 +130,7 @@ starship
 sway
 swaybg
 swayidle
+sysstat
 system-config-printer
 thunar
 thunar-archive-plugin

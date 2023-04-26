@@ -469,6 +469,8 @@ pacman -Qq "snapper" >/dev/null 2>&1 &&
         systemctl enable snapper-cleanup.timer
         systemctl enable snapper-timeline.timer
     }
+pacman -Qq "sysstat" >/dev/null 2>&1 &&
+    systemctl enable sysstat
 pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
