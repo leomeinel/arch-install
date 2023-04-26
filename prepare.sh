@@ -116,10 +116,10 @@ cryptsetup open --type luks2 --perf-no_read_workqueue --perf-no_write_workqueue 
 # Configure lvm
 pvcreate /dev/mapper/md0_crypt
 vgcreate vg0 /dev/mapper/md0_crypt
-lvcreate -l ${DISK_ALLOCATION[0]} vg0 -n lv0
-lvcreate -l ${DISK_ALLOCATION[1]} vg0 -n lv1
-lvcreate -l ${DISK_ALLOCATION[2]} vg0 -n lv2
-lvcreate -l ${DISK_ALLOCATION[3]} vg0 -n lv3
+lvcreate -l "${DISK_ALLOCATION[0]}" vg0 -n lv0
+lvcreate -l "${DISK_ALLOCATION[1]}" vg0 -n lv1
+lvcreate -l "${DISK_ALLOCATION[2]}" vg0 -n lv2
+lvcreate -l "${DISK_ALLOCATION[3]}" vg0 -n lv3
 
 # Format efi
 mkfs.fat -n EFI -F32 "$DISK1P1"
@@ -271,7 +271,7 @@ STRING="^#NoProgressBar"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/NoProgressBar/" "$FILE"
 ## END sed
-reflector --save /etc/pacman.d/mirrorlist --country $MIRRORCOUNTRIES --protocol https --latest 20 --sort rate
+reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>/root/arch-install/pkgs-prepare.txt
