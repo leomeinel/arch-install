@@ -115,6 +115,7 @@ qt5ct
 qt6ct
 quilt
 ripgrep
+rkhunter
 rustup
 sbsigntools
 screen
