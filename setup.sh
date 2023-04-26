@@ -36,8 +36,6 @@ sed_exit() {
     echo "SHA_CRYPT_MIN_ROUNDS 9999999"
     echo "SHA_CRYPT_MAX_ROUNDS 9999999"
 } >>/etc/login.defs
-#echo "Waiting 30 seconds for PAM to sync configs."
-#sleep 30
 ## START sed
 FILE=/etc/default/useradd
 STRING="^SHELL=.*"
