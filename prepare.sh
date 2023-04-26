@@ -134,6 +134,7 @@ SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
         exit 1
     }
 create_subs0() {
+    echo "DEBUG0: $1 $2 $3 $4"
     mkfs.btrfs -L "$3" "$4"
     mount "$4" /mnt
     btrfs subvolume create "/mnt/@$2"
@@ -143,6 +144,7 @@ create_subs0() {
 }
 create_subs1() {
     for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
+        echo "DEBUG1: $1 | ${SUBVOLUMES[$i]} ${CONFIGS[$i]}"
         if [[ "${SUBVOLUMES[$i]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$i]}"; then
             btrfs subvolume create "/mnt/@${CONFIGS[$i]}"
             btrfs subvolume create "/mnt/@${CONFIGS[$i]}_snapshots"
@@ -175,6 +177,7 @@ OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/m
 OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/mnt/@"
 OPTIONS3="noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/mnt/@"
 mount_subs0() {
+    echo "DEBUG2: $1 $2 $3 $4"
     mkdir "/mnt$1"
     mount -o "$3$2" "$4" "/mnt$1"
     mkdir "/mnt$1.snapshots"
@@ -183,6 +186,7 @@ mount_subs0() {
 }
 mount_subs1() {
     for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
+        echo "DEBUG3: $1 $2 $3 | ${SUBVOLUMES[$i]} ${CONFIGS[$i]}"
         if [[ "${SUBVOLUMES[$i]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$i]}"; then
             mkdir "/mnt${SUBVOLUMES[$i]}"
             if grep -nq "^$1/lib/" <<<"${SUBVOLUMES[$i]}"; then
@@ -198,17 +202,21 @@ mount_subs1() {
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[$i]}" in
     "/")
+        echo "DEBUG a: /"
         mount -o "$OPTIONS0" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}"
         mkdir "/mnt${SUBVOLUMES[$i]}.snapshots"
         mount -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots"
         ;;
     "/usr/")
+        echo "DEBUG b: /usr/"
         mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS1" "/dev/mapper/vg0-lv1"
         ;;
     "/var/")
+        echo "DEBUG c: /var/"
         mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "/dev/mapper/vg0-lv2"
         ;;
     "/home/")
+        echo "DEBUG d: /home/"
         mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "/dev/mapper/vg0-lv3"
         ;;
     esac
