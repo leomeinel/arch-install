@@ -143,12 +143,12 @@ create_subs0() {
     umount /mnt
 }
 create_subs1() {
-    for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
-        echo "DEBUG1: $1 | ${SUBVOLUMES[$i]} ${CONFIGS[$i]}"
-        if [[ "${SUBVOLUMES[$i]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$i]}"; then
+    for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
+        echo "DEBUG1: $1 | ${SUBVOLUMES[$a]} ${CONFIGS[$a]}"
+        if [[ "${SUBVOLUMES[$a]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$a]}"; then
             echo "DEBUG1: yes"
-            btrfs subvolume create "/mnt/@${CONFIGS[$i]}"
-            btrfs subvolume create "/mnt/@${CONFIGS[$i]}_snapshots"
+            btrfs subvolume create "/mnt/@${CONFIGS[$a]}"
+            btrfs subvolume create "/mnt/@${CONFIGS[$a]}_snapshots"
         fi
     done
 }
@@ -190,20 +190,20 @@ mount_subs0() {
     mount_subs1 "$1" "$3" "$4"
 }
 mount_subs1() {
-    for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
-        echo "DEBUG3: $1 $2 $3 | ${SUBVOLUMES[$i]} ${CONFIGS[$i]}"
-        if [[ "${SUBVOLUMES[$i]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$i]}"; then
+    for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
+        echo "DEBUG3: $1 $2 $3 | ${SUBVOLUMES[$a]} ${CONFIGS[$a]}"
+        if [[ "${SUBVOLUMES[$a]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$a]}"; then
             echo "DEBUG3: yes"
-            mkdir "/mnt${SUBVOLUMES[$i]}"
-            if grep -nq "^$1/lib/" <<<"${SUBVOLUMES[$i]}"; then
+            mkdir "/mnt${SUBVOLUMES[$a]}"
+            if grep -nq "^$1/lib/" <<<"${SUBVOLUMES[$a]}"; then
                 echo "DEBUG3: lib"
-                mount -o "$OPTIONS3${CONFIGS[$i]}" "$3" "/mnt${SUBVOLUMES[$i]}"
+                mount -o "$OPTIONS3${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
             else
                 echo "DEBUG3: nolib"
-                mount -o "$2${CONFIGS[$i]}" "$3" "/mnt${SUBVOLUMES[$i]}"
+                mount -o "$2${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
             fi
-            mkdir "/mnt${SUBVOLUMES[$i]}.snapshots"
-            mount -o "$OPTIONS3${CONFIGS[$i]}_snapshots" "$3" "/mnt${SUBVOLUMES[$i]}.snapshots"
+            mkdir "/mnt${SUBVOLUMES[$a]}.snapshots"
+            mount -o "$OPTIONS3${CONFIGS[$a]}_snapshots" "$3" "/mnt${SUBVOLUMES[$a]}.snapshots"
         fi
     done
 }
