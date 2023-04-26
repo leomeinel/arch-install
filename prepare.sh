@@ -185,7 +185,7 @@ mount_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
         if [[ "${SUBVOLUMES[$a]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$a]}"; then
             mkdir "/mnt${SUBVOLUMES[$a]}"
-            if grep -nq "^$1/lib/" <<<"${SUBVOLUMES[$a]}"; then
+            if grep -nq "^${1}lib/" <<<"${SUBVOLUMES[$a]}"; then
                 mount -o "$OPTIONS3${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
             else
                 mount -o "$2${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
