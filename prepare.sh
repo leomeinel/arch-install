@@ -179,7 +179,7 @@ mount_subs0() {
     mkdir "/mnt$1"
     mount -o "$3$2" "$4" "/mnt$1"
     mkdir "/mnt$1.snapshots"
-    mount -o "$OPTIONS3${2}_snapshots" "$3" "/mnt${SUBVOLUMES[$i]}.snapshots"
+    mount -o "$OPTIONS3${2}_snapshots" "$4" "/mnt${SUBVOLUMES[$i]}.snapshots"
     mount_subs1 "$1" "$3" "$4"
 }
 mount_subs1() {
@@ -207,7 +207,6 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
         mount -o "$OPTIONS0" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}"
         mkdir "/mnt${SUBVOLUMES[$i]}.snapshots"
         mount -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots"
-        echo "mount -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots""
         ;;
     "/usr/")
         echo "DEBUG B1: /usr/"
