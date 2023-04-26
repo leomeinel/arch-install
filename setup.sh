@@ -194,6 +194,7 @@ chmod 644 /etc/cryptboot.conf
     echo "Port 9122"
     echo "TCPKeepAlive no"
     echo "AllowAgentForwarding no"
+    echo "Banner /etc/issue.net"
 } >>/etc/ssh/sshd_config
 ## Configure /etc/xdg/user-dirs.defaults
 ### START sed
@@ -282,11 +283,25 @@ chmod 644 /etc/dracut.conf.d/*.conf
     echo "# Custom"
     echo "* hard core 0"
 } >>/etc/security/limits.conf
-### Disable unneeded protocols
-echo "install dccp /bin/true" >/etc/modprobe.d/disable-dccp.conf
-echo "install sctp /bin/true" >/etc/modprobe.d/disable-sctp.conf
-echo "install rds /bin/true" >/etc/modprobe.d/disable-rds.conf
-echo "install tipc /bin/true" >/etc/modprobe.d/disable-tipc.conf
+### chmod & touch files
+FILES_600=("/etc/at.deny" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts")
+FILES_644=("/etc/hosts.allow" "/etc/hosts.deny" "/etc/hosts.equiv" "/etc/issue" "/etc/issue.net" "/etc/motd" "/etc/shosts.equiv")
+DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly")
+for file in "${FILES_600[@]}"; do
+    [[ ! -f "$file" ]] &&
+        touch "$file"
+    chmod 600 "$file"
+done
+for file in "${FILES_644[@]}"; do
+    [[ ! -f "$file" ]] &&
+        touch "$file"
+    chmod 644 "$file"
+done
+for dir in "${DIRS_700[@]}"; do
+    [[ ! -f "$dir" ]] &&
+        mkdir -p "$dir"
+    chmod 700 "$dir"
+done
 
 # Setup /usr
 rsync -rq /git/arch-install/usr/ /usr
