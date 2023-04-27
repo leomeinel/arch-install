@@ -167,7 +167,7 @@ chmod 777 /dot-files.sh
 ## Configure /etc/crypttab
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 {
-    echo "md0_crypt UUID=$MD0UUID none initramfs,luks,key-slot=0"
+    echo "md0_crypt UUID=$MD0UUID none luks,key-slot=0"
 } >/etc/crypttab
 ## Configure /etc/localtime /etc/vconsole.conf /etc/hostname /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
