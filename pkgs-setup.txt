@@ -53,6 +53,7 @@ librsvg
 libsecret
 libwmf
 logrotate
+logwatch
 lrzip
 lshw
 lsof
@@ -93,6 +94,7 @@ qt5ct
 qt6ct
 quilt
 ripgrep
+rkhunter
 sbsigntools
 screen
 signal-desktop
@@ -106,6 +108,7 @@ steam
 sway
 swaybg
 swayidle
+sysstat
 system-config-printer
 thunar
 thunar-archive-plugin

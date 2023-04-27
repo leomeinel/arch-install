@@ -4,6 +4,7 @@ btrfs-progs
 dracut
 git
 iptables
+libpwquality
 lib32-mesa
 linux
 linux-firmware
