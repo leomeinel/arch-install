@@ -24,6 +24,7 @@ inetutils
 jpegoptim
 jq
 logrotate
+logwatch
 lrzip
 lshw
 lsof
@@ -42,12 +43,14 @@ perl-rename
 procs
 quilt
 ripgrep
+rkhunter
 sbsigntools
 screen
 snap-pac
 snapper
 sshfs
 starship
+sysstat
 tokei
 tpm2-tools
 tree
