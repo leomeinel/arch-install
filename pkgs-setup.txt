@@ -70,6 +70,7 @@ libwmf
 lldb
 llvm
 logrotate
+logwatch
 lrzip
 lshw
 lsof
@@ -115,6 +116,7 @@ qt5ct
 qt6ct
 quilt
 ripgrep
+rkhunter
 rustup
 sbsigntools
 screen
@@ -128,6 +130,7 @@ starship
 sway
 swaybg
 swayidle
+sysstat
 system-config-printer
 thunar
 thunar-archive-plugin

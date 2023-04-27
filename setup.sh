@@ -24,6 +24,18 @@ sed_exit() {
 }
 
 # Add groups & users
+## Configure passwords
+{
+    echo "#%PAM-1.0"
+    echo "password required pam_pwquality.so sha512 rounds=9999999 shadowretry=3 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
+    echo "password required pam_unix.so use_authtok sha512 shadow"
+} >/etc/pam.d/passwd
+{
+    echo ""
+    echo "# Custom"
+    echo "SHA_CRYPT_MIN_ROUNDS 9999999"
+    echo "SHA_CRYPT_MAX_ROUNDS 9999999"
+} >>/etc/login.defs
 ## START sed
 FILE=/etc/default/useradd
 STRING="^SHELL=.*"
@@ -37,6 +49,19 @@ useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel
 useradd -ms /bin/bash -G libvirt,video "$VIRTUSER"
 useradd -ms /bin/bash -G video "$HOMEUSER"
 useradd -ms /bin/bash -G video "$GUESTUSER"
+echo "#################################################################"
+echo "#                      _    _           _   _                   #"
+echo "#                     / \  | | ___ _ __| |_| |                  #"
+echo "#                    / _ \ | |/ _ \ '__| __| |                  #"
+echo "#                   / ___ \| |  __/ |  | |_|_|                  #"
+echo "#                  /_/   \_\_|\___|_|   \__(_)                  #"
+echo "#                                                               #"
+echo "#       It is mandatory to choose a password matching the       #"
+echo "#                       following specs:                        #"
+echo "#                    At least 12 characters,                    #"
+echo "#           at least 1 digit, 1 uppercace character,            #"
+echo "#         1 lowercace character and 1 other character.          #"
+echo "#################################################################"
 echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
@@ -142,7 +167,7 @@ chmod 777 /dot-files.sh
 ## Configure /etc/crypttab
 MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 {
-    echo "md0_crypt UUID=$MD0UUID none initramfs,luks,key-slot=0"
+    echo "md0_crypt UUID=$MD0UUID none luks,key-slot=0"
 } >/etc/crypttab
 ## Configure /etc/localtime /etc/vconsole.conf /etc/hostname /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
@@ -182,6 +207,7 @@ chmod 644 /etc/cryptboot.conf
     echo "Port 9122"
     echo "TCPKeepAlive no"
     echo "AllowAgentForwarding no"
+    echo "Banner /etc/issue.net"
 } >>/etc/ssh/sshd_config
 ## Configure /etc/xdg/user-dirs.defaults
 ### START sed
@@ -263,6 +289,32 @@ pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
 chmod 644 /etc/dracut.conf.d/*.conf
+## Harden system
+### Disable coredump
+{
+    echo ""
+    echo "# Custom"
+    echo "* hard core 0"
+} >>/etc/security/limits.conf
+### chmod & touch files
+FILES_600=("/etc/at.deny" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts")
+FILES_644=("/etc/hosts.allow" "/etc/hosts.deny" "/etc/hosts.equiv" "/etc/issue" "/etc/issue.net" "/etc/motd" "/etc/shosts.equiv")
+DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly")
+for file in "${FILES_600[@]}"; do
+    [[ ! -f "$file" ]] &&
+        touch "$file"
+    chmod 600 "$file"
+done
+for file in "${FILES_644[@]}"; do
+    [[ ! -f "$file" ]] &&
+        touch "$file"
+    chmod 644 "$file"
+done
+for dir in "${DIRS_700[@]}"; do
+    [[ ! -f "$dir" ]] &&
+        mkdir -p "$dir"
+    chmod 700 "$dir"
+done
 
 # Setup /usr
 rsync -rq /git/arch-install/usr/ /usr
@@ -416,6 +468,8 @@ pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     systemctl enable libvirtd
+pacman -Qq "logwatch" >/dev/null 2>&1 &&
+    systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager
 pacman -Qq "reflector" >/dev/null 2>&1 &&
@@ -428,6 +482,8 @@ pacman -Qq "snapper" >/dev/null 2>&1 &&
         systemctl enable snapper-cleanup.timer
         systemctl enable snapper-timeline.timer
     }
+pacman -Qq "sysstat" >/dev/null 2>&1 &&
+    systemctl enable sysstat
 pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
 pacman -Qq "usbguard" >/dev/null 2>&1 &&

@@ -4,6 +4,7 @@ btrfs-progs
 dracut
 git
 iptables
+libpwquality
 linux
 linux-firmware
 linux-headers
