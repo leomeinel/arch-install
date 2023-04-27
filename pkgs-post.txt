@@ -1,3 +1,4 @@
+aide
 aspnet-targeting-pack-bin
 dotnet-sdk-bin
 freetube-bin
