@@ -469,7 +469,7 @@ pacman -Qq "util-linux" >/dev/null 2>&1 &&
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     systemctl enable libvirtd
 pacman -Qq "logwatch" >/dev/null 2>&1 &&
-    systemctl enable libvirtd logwatch.timer
+    systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager
 pacman -Qq "reflector" >/dev/null 2>&1 &&
