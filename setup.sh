@@ -465,8 +465,6 @@ pacman -Qq "cups" >/dev/null 2>&1 &&
     systemctl enable cups.service
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
-pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    systemctl enable libvirtd
 pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
