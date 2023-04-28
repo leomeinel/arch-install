@@ -167,7 +167,7 @@ pacman -Qq "pipewire" >/dev/null 2>&1 &&
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2'
 pacman -Qq "steam" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nttf-liberation\nlib32-mesa'
+    DEPENDENCIES+=$'\nlib32-mesa\nttf-liberation'
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
 pacman -Syu --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
