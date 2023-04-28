@@ -72,6 +72,7 @@ lshw
 lsof
 lxappearance
 lzop
+mailcap
 man-db
 mariadb
 mtools
