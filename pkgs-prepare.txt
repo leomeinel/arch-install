@@ -3,7 +3,6 @@ base-devel
 btrfs-progs
 docker
 docker-compose
-docker-scan
 dracut
 git
 iptables
