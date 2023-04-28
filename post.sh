@@ -289,8 +289,6 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 
 # Install packages
 paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
-pacman -Qq "dotnet-sdk-bin" >/dev/null 2>&1 &&
-    paru -S --noprogressbar --noconfirm --needed --asdeps aspnet-targeting-pack-bin
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
 
