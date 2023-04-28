@@ -154,7 +154,7 @@ pacman-key --init
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 
 # Install packages
-pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
+pacman -Syu --noprogressbar --noconfirm --needed --assume-installed "pipewire-jack" - <"$SCRIPT_DIR/pkgs-setup.txt"
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'cups-pk-helper'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
