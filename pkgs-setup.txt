@@ -106,7 +106,6 @@ thunderbird
 tpm2-tools
 tree
 ttf-font-awesome
-ttf-liberation
 ttf-nerd-fonts-symbols-2048-em-mono
 unarchiver
 unrar
