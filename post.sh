@@ -289,7 +289,7 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 ## END sed
 
 # Install packages
-paru -S --noprogressbar --noconfirm --needed - <~/pkgs-post.txt
+paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
 paru --noprogressbar --noconfirm -Syu
 paru -Scc
 
@@ -356,6 +356,6 @@ rm -rf ~/git
 doas rm -f /dot-files.sh
 doas rm -f /root/.bash_history
 rm -f ~/.bash_history
-rm -f ~/pkgs-post.txt
-rm -f ~/post.sh
-rm -f ~/install.conf
+rm -f "$SCRIPT_DIR/pkgs-post.txt"
+rm -f "$SCRIPT_DIR/post.sh"
+rm -f "$SCRIPT_DIR/install.conf"
