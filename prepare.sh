@@ -267,10 +267,10 @@ sed -i "s/$STRING/NoProgressBar/" "$FILE"
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
-    echo "intel-ucode" >>/root/arch-install/pkgs-prepare.txt
+    echo "intel-ucode" >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
-    echo "amd-ucode" >>/root/arch-install/pkgs-prepare.txt
-pacstrap /mnt - </root/arch-install/pkgs-prepare.txt
+    echo "amd-ucode" >>"$SCRIPT_DIR/pkgs-prepare.txt"
+pacstrap /mnt - <"$SCRIPT_DIR/pkgs-prepare.txt"
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab

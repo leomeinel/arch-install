@@ -5,7 +5,6 @@ bat
 bc
 dbus
 cronie
-dnsmasq
 duf
 dust
 efibootmgr

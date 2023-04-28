@@ -14,7 +14,7 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
 source "$SCRIPT_DIR/install.conf"
 
 # Fail on error
-set -eu
+set -e
 
 # Define functions
 sed_exit() {
@@ -70,7 +70,7 @@ echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
 
 # Setup /etc
-rsync -rq /git/arch-install/etc/ /etc
+rsync -rq "$SCRIPT_DIR/etc/" /etc
 ## Configure locale in /etc/locale.gen /etc/locale.conf
 ### START sed
 FILE=/etc/locale.gen
@@ -152,13 +152,18 @@ pacman-key --init
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 
 # Install packages
-pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup.txt
+pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
+pacman -Qq "apparmor" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\npython-notify2'
+pacman -Qq "docker" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ndocker-scan'
+pacman -Syu --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
 
 # Configure $SYSUSER
 ## Run sysuser.sh
-chmod +x /git/arch-install/sysuser.sh
-su -c '/git/arch-install/sysuser.sh' "$SYSUSER"
-cp /git/arch-install/dot-files.sh /
+chmod +x "$SCRIPT_DIR/sysuser.sh"
+su -c "$SCRIPT_DIR/sysuser.sh" "$SYSUSER"
+cp "$SCRIPT_DIR/dot-files.sh" /
 chmod 777 /dot-files.sh
 
 # Configure /etc
@@ -271,7 +276,7 @@ for dir in "${DIRS_700[@]}"; do
 done
 
 # Setup /usr
-rsync -rq /git/arch-install/usr/ /usr
+rsync -rq "$SCRIPT_DIR/usr/" /usr
 cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
@@ -392,7 +397,7 @@ done
 chown :games /var/games
 
 # Setup /efi
-rsync -rq /git/arch-install/efi/ /efi
+rsync -rq "$SCRIPT_DIR/efi/" /efi
 chmod 644 /efi/loader/loader.conf
 
 # Enable systemd services
