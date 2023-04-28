@@ -14,10 +14,8 @@ bluez-utils
 brightnessctl
 celluloid
 cups
-cups-pk-helper
 dbus
 devtools
-dnsmasq
 duf
 dust
 efibootmgr
@@ -35,7 +33,6 @@ grex
 grim
 gsettings-desktop-schemas
 gutenprint
-gvfs
 htop
 hwinfo
 hyperfine
@@ -59,7 +56,6 @@ lshw
 lsof
 lxappearance
 lzop
-mailcap
 man-db
 mtools
 mupdf
@@ -81,13 +77,8 @@ pavucontrol
 pdftk
 perl-rename
 pipewire
-pipewire-alsa
-pipewire-jack
-pipewire-pulse
-playerctl
 polkit-gnome
 procs
-python-notify2
 python-pip
 python-psutil
 qt5ct
@@ -111,16 +102,11 @@ swayidle
 sysstat
 system-config-printer
 thunar
-thunar-archive-plugin
-thunar-media-tags-plugin
-thunar-volman
 thunderbird
 tpm2-tools
 tree
 ttf-font-awesome
-ttf-liberation
 ttf-nerd-fonts-symbols-2048-em-mono
-tumbler
 unarchiver
 unrar
 unzip
@@ -136,6 +122,5 @@ wofi
 xdg-dbus-proxy
 xdg-user-dirs
 xdg-utils
-xorg-xwayland
 yq
 zram-generator

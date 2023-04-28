@@ -12,10 +12,13 @@
 # Fail on error
 set -eu
 
+# Set variables
+SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
+
 # Set up post.sh
-cp /git/arch-install/pkgs-post.txt ~/
-cp /git/arch-install/post.sh ~/
-cp /git/arch-install/install.conf ~/
+cp "$SCRIPT_DIR/pkgs-post.txt" ~/
+cp "$SCRIPT_DIR/post.sh" ~/
+cp "$SCRIPT_DIR/install.conf" ~/
 chmod +x ~/post.sh
 
 # Remove repo
