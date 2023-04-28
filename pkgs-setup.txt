@@ -95,6 +95,7 @@ pdftk
 perl-image-exiftool
 perl-rename
 pipewire
+pipewire-jack
 polkit-gnome
 postgresql
 procs
