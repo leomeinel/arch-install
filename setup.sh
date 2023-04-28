@@ -154,7 +154,8 @@ pacman-key --init
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 
 # Install packages
-pacman -Syu --noprogressbar --noconfirm --needed --assume-installed "jack2" - <"$SCRIPT_DIR/pkgs-setup.txt"
+pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
+## Install optional dependencies
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'cups-pk-helper'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
@@ -163,13 +164,14 @@ pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
 pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nmailcap'
-pacman -Qq "pipewire" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\npipewire-alsa\npipewire-jack\npipewire-pulse'
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2'
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
 pacman -Syu --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
+## Reinstall pipewire plugins as dependencies
+pacman -Qq "pipewire" >/dev/null 2>&1 &&
+    pacman -Syu --noprogressbar --noconfirm --asdeps pipewire-alsa pipewire-jack pipewire-pulse
 
 # Configure $SYSUSER
 ## Run sysuser.sh
