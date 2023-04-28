@@ -153,11 +153,15 @@ reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protoco
 
 # Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
+## Install optional dependencies
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2'
 pacman -Qq "docker" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndocker-scan'
 pacman -Syu --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
+## Reinstall pipewire plugins as dependencies
+pacman -Qq "pipewire" >/dev/null 2>&1 &&
+    pacman -Syu --noprogressbar --noconfirm --asdeps pipewire-alsa pipewire-jack pipewire-pulse
 
 # Configure $SYSUSER
 ## Run sysuser.sh
