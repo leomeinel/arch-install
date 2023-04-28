@@ -14,7 +14,7 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
 source "$SCRIPT_DIR/install.conf"
 
 # Fail on error
-set -eu
+set -e
 
 # Define functions
 sed_exit() {
@@ -155,6 +155,21 @@ reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protoco
 
 # Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
+pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
+    DEPENDENCIES=" cups-pk-helper"
+pacman -Qq "libvirt" >/dev/null 2>&1 &&
+    DEPENDENCIES="$DEPENDENCIES dnsmasq"
+pacman -Qq "thunar" >/dev/null 2>&1 &&
+    DEPENDENCIES="$DEPENDENCIES gvfs thunar-archive-plugin thunar-media-tags-plugin thunar-volman tumbler"
+pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
+    DEPENDENCIES="$DEPENDENCIES mailcap"
+pacman -Qq "pipewire" >/dev/null 2>&1 &&
+    DEPENDENCIES="$DEPENDENCIES pipewire-alsa pipewire-jack pipewire-pulse"
+pacman -Qq "apparmor" >/dev/null 2>&1 &&
+    DEPENDENCIES="$DEPENDENCIES python-notify2"
+pacman -Qq "wlroots" >/dev/null 2>&1 &&
+    DEPENDENCIES="$DEPENDENCIES xorg-xwayland"
+pacman -Syu --noprogressbar --noconfirm --needed --asdeps "$DEPENDENCIES"
 
 # Configure $SYSUSER
 ## Run sysuser.sh
