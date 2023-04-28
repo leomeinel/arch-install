@@ -74,7 +74,7 @@ echo "Enter password for $GUESTUSER"
 passwd "$GUESTUSER"
 
 # Setup /etc
-rsync -rq /git/arch-install/etc/ /etc
+rsync -rq "$SCRIPT_DIR/etc/" /etc
 ## Configure locale in /etc/locale.gen /etc/locale.conf
 ### START sed
 FILE=/etc/locale.gen
@@ -154,13 +154,13 @@ pacman-key --init
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 
 # Install packages
-pacman -Syu --noprogressbar --noconfirm --needed - </git/arch-install/pkgs-setup.txt
+pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
 
 # Configure $SYSUSER
 ## Run sysuser.sh
-chmod +x /git/arch-install/sysuser.sh
-su -c '/git/arch-install/sysuser.sh' "$SYSUSER"
-cp /git/arch-install/dot-files.sh /
+chmod +x "$SCRIPT_DIR/sysuser.sh"
+su -c "$SCRIPT_DIR/sysuser.sh" "$SYSUSER"
+cp "$SCRIPT_DIR/dot-files.sh" /
 chmod 777 /dot-files.sh
 
 # Configure /etc
@@ -317,7 +317,7 @@ for dir in "${DIRS_700[@]}"; do
 done
 
 # Setup /usr
-rsync -rq /git/arch-install/usr/ /usr
+rsync -rq "$SCRIPT_DIR/usr/" /usr
 cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
@@ -449,7 +449,7 @@ chmod 644 /usr/share/wallpapers/Custom/content/*
 chown :games /var/games
 
 # Setup /efi
-rsync -rq /git/arch-install/efi/ /efi
+rsync -rq "$SCRIPT_DIR/efi/" /efi
 chmod 644 /efi/loader/loader.conf
 
 # Enable systemd services
