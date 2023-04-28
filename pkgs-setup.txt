@@ -39,7 +39,9 @@ grim
 gsettings-desktop-schemas
 gutenprint
 htop
+hunspell
 hunspell-de
+hunspell-en_us
 hunspell-fr
 hunspell-nl
 hwinfo
