@@ -267,23 +267,23 @@ sed -i "s/$STRING/NoProgressBar/" "$FILE"
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
-    echo "intel-ucode" >>/root/arch-install/pkgs-prepare.txt
+    echo "intel-ucode" >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
-    echo "amd-ucode" >>/root/arch-install/pkgs-prepare.txt
+    echo "amd-ucode" >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
     {
         echo "libva-mesa-driver"
         echo "mesa-vdpau"
         echo "vulkan-radeon"
         echo "xf86-video-amdgpu"
-    } >>/root/arch-install/pkgs-prepare.txt
+    } >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
     {
         echo "intel-media-driver"
         echo "vulkan-intel"
         echo "xf86-video-intel"
-    } >>/root/arch-install/pkgs-prepare.txt
-pacstrap /mnt - </root/arch-install/pkgs-prepare.txt
+    } >>"$SCRIPT_DIR"/pkgs-prepare.txt
+pacstrap /mnt - <"$SCRIPT_DIR/pkgs-prepare.txt"
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab
