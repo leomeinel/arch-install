@@ -1,0 +1,13 @@
+[Trigger]
+Type = Path
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Target = usr/lib/modules/*/pkgbase
+Target = usr/src/*/dkms.conf
+
+[Action]
+Description = Removing unified EFI kernel images...
+When = PreTransaction
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/60-dracut-uefi-remove.sh'
+NeedsTargets
