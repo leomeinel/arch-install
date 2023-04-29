@@ -4,6 +4,9 @@ Operation = Install
 Operation = Upgrade
 Target = usr/lib/modules/*/pkgbase
 Target = usr/src/*/dkms.conf
+Target = usr/lib/dracut/*
+Target = usr/lib/systemd/systemd
+Target = usr/lib/systemd/boot/efi/*.efi.stub
 
 [Trigger]
 Type = Packages
@@ -13,7 +16,6 @@ Target = dracut
 Target = systemd
 Target = amd-ucode
 Target = intel-ucode
-Target = dracut-hook-uefi
 Target = plymouth
 Target = cryptsetup
 Target = device-mapper
