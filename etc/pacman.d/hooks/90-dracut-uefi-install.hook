@@ -8,19 +8,6 @@ Target = usr/lib/dracut/*
 Target = usr/lib/systemd/systemd
 Target = usr/lib/systemd/boot/efi/*.efi.stub
 
-[Trigger]
-Type = Packages
-Operation = Install
-Operation = Upgrade
-Target = dracut
-Target = systemd
-Target = amd-ucode
-Target = intel-ucode
-Target = plymouth
-Target = cryptsetup
-Target = device-mapper
-Target = lvm2
-
 [Action]
 Description = Generating unified EFI kernel images...
 When = PostTransaction
