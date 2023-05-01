@@ -43,12 +43,10 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
-groupadd -r libvirt
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
-useradd -ms /bin/bash -G libvirt,video "$VIRTUSER"
+useradd -ms /bin/bash -G docker,video "$DOCKUSER"
 useradd -ms /bin/bash -G video "$HOMEUSER"
-useradd -ms /bin/bash -G video "$GUESTUSER"
 echo "#################################################################"
 echo "#                      _    _           _   _                   #"
 echo "#                     / \  | | ___ _ __| |_| |                  #"
@@ -66,12 +64,10 @@ echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
 passwd "$SYSUSER"
-echo "Enter password for $VIRTUSER"
-passwd "$VIRTUSER"
+echo "Enter password for $DOCKUSER"
+passwd "$DOCKUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
-echo "Enter password for $GUESTUSER"
-passwd "$GUESTUSER"
 
 # Setup /etc
 rsync -rq "$SCRIPT_DIR/etc/" /etc
@@ -99,17 +95,14 @@ locale-gen
 ## Configure /etc/doas.conf
 chown root:root /etc/doas.conf
 chmod 0400 /etc/doas.conf
-## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/50-mac-random.conf
-chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
     echo '#!/bin/sh'
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $SYSUSER"
-    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $VIRTUSER"
+    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $DOCKUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $HOMEUSER"
-    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
 chmod 755 /etc/pacman.d/hooks
@@ -123,6 +116,11 @@ chmod 755 /etc/sysctl.d
 chmod 644 /etc/sysctl.d/*
 ## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
+## Configure /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
+chmod 644 /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
+## Configure /etc/systemd/network/10-en.network
+chmod 644 /etc/systemd/network/10-en.network
+## Configure /etc/pacman.conf , /etc/makepkg.conf & /etc/xdg/reflector/reflector.conf
 ## Configure /etc/pacman.conf /etc/makepkg.conf /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
@@ -156,22 +154,11 @@ reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protoco
 # Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
 ## Install optional dependencies
-pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'cups-pk-helper'
-pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ndnsmasq'
-pacman -Qq "thunar" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
-pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nmailcap'
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2'
-pacman -Qq "wlroots" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nxorg-xwayland'
+pacman -Qq "docker" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ndocker-scan'
 pacman -Syu --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
-## Reinstall pipewire plugins as dependencies
-pacman -Qq "pipewire" >/dev/null 2>&1 &&
-    pacman -Syu --noprogressbar --noconfirm --asdeps pipewire-alsa pipewire-jack pipewire-pulse
 
 # Configure $SYSUSER
 ## Run sysuser.sh
@@ -206,7 +193,7 @@ echo "$HOSTNAME" >/etc/hostname
     echo "OverrideESPMountPoint=/efi"
 } >>/etc/fwupd/uefi_capsule.conf
 ## Configure /etc/cryptboot.conf
-git clone https://github.com/leomeinel/cryptboot.git /git/cryptboot
+git clone -b server https://github.com/leomeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
 chmod 644 /etc/cryptboot.conf
 ## Configure /etc/ssh/sshd_config
@@ -226,28 +213,6 @@ chmod 644 /etc/cryptboot.conf
     echo "AllowAgentForwarding no"
     echo "Banner /etc/issue.net"
 } >>/etc/ssh/sshd_config
-## Configure /etc/xdg/user-dirs.defaults
-### START sed
-FILE=/etc/xdg/user-dirs.defaults
-STRING="^TEMPLATES=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|TEMPLATES=Documents/Templates|" "$FILE"
-STRING="^PUBLICSHARE=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|PUBLICSHARE=Documents/Public|" "$FILE"
-STRING="^DESKTOP=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|DESKTOP=Desktop|" "$FILE"
-STRING="^MUSIC=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|MUSIC=Documents/Music|" "$FILE"
-STRING="^PICTURES=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|PICTURES=Documents/Pictures|" "$FILE"
-STRING="^VIDEOS=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
-### END sed
 ## Configure /etc/mdadm.conf
 mdadm --detail --scan >>/etc/mdadm.conf
 ## Configure /etc/usbguard/usbguard-daemon.conf /etc/usbguard/rules.conf
@@ -269,28 +234,6 @@ FILE=/etc/audit/auditd.conf
 STRING="^log_group.*=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/log_group = audit/" "$FILE"
-### END sed
-## mDNS
-### Configure /etc/systemd/resolved.conf
-### START sed
-FILE=/etc/systemd/resolved.conf
-STRING="^#MulticastDNS=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/MulticastDNS=no/" "$FILE"
-### END sed
-### Configure /etc/nsswitch.conf
-### START sed
-FILE=/etc/nsswitch.conf
-STRING="^hosts: mymachines"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/hosts: mymachines mdns_minimal [NOTFOUND=return]/" "$FILE"
-### END sed
-## Configure /etc/bluetooth/main.conf
-### START sed
-FILE=/etc/bluetooth/main.conf
-STRING="^#AutoEnable=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/AutoEnable=true/" "$FILE"
 ### END sed
 ## Configure /etc/dracut.conf.d/modules.conf
 {
@@ -338,9 +281,6 @@ rsync -rq "$SCRIPT_DIR/usr/" /usr
 cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
-## Configure /usr/share/gruvbox/gruvbox.yml
-chmod 755 /usr/share/gruvbox
-chmod 644 /usr/share/gruvbox/gruvbox.yml
 ## Configure /usr/local/bin
 chmod 755 /usr/local/bin/cryptboot
 chmod 755 /usr/local/bin/cryptboot-efikeys
@@ -350,7 +290,6 @@ ln -s "$(which nvim)" /usr/local/bin/vedit
 ln -s "$(which nvim)" /usr/local/bin/vi
 ln -s "$(which nvim)" /usr/local/bin/vim
 chmod 755 /usr/local/bin/ex
-chmod 755 /usr/local/bin/sway-logout
 chmod 755 /usr/local/bin/view
 chmod 755 /usr/local/bin/vimdiff
 chmod 755 /usr/local/bin/edit
@@ -453,13 +392,6 @@ for subvolume in "${SUBVOLUMES[@]}"; do
     chmod 755 "$subvolume".snapshots
     chown :wheel "$subvolume".snapshots
 done
-## Configure /usr/share/wallpapers/Custom/content
-mkdir -p /usr/share/wallpapers/Custom/content
-git clone https://github.com/leomeinel/wallpapers.git /git/wallpapers
-cp /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
-chmod 755 /usr/share/wallpapers/Custom
-chmod 755 /usr/share/wallpapers/Custom/content
-chmod 644 /usr/share/wallpapers/Custom/content/*
 
 # Configure /var
 ## Configure /var/games
@@ -475,20 +407,23 @@ pacman -Qq "apparmor" >/dev/null 2>&1 &&
         systemctl enable apparmor.service
         systemctl enable auditd.service
     }
-pacman -Qq "avahi" >/dev/null 2>&1 &&
-    systemctl enable avahi-daemon
-pacman -Qq "bluez" >/dev/null 2>&1 &&
-    systemctl enable bluetooth
-pacman -Qq "cups" >/dev/null 2>&1 &&
-    systemctl enable cups.service
+pacman -Qq "containerd" >/dev/null 2>&1 &&
+    systemctl enable containerd.service
+pacman -Qq "cronie" >/dev/null 2>&1 &&
+    systemctl enable cronie.service
+pacman -Qq "docker" >/dev/null 2>&1 &&
+    systemctl enable docker.service
+pacman -Qq "openssh" >/dev/null 2>&1 &&
+    systemctl enable sshd.service
+pacman -Qq "systemd" >/dev/null 2>&1 &&
+    {
+        systemctl enable systemd-resolved.service
+        systemctl enable systemd-networkd.service
+    }
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
-pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    systemctl enable libvirtd
 pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
-pacman -Qq "networkmanager" >/dev/null 2>&1 &&
-    systemctl enable NetworkManager
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
         systemctl enable reflector
