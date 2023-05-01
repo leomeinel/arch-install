@@ -128,7 +128,7 @@ tokei
 tpm2-tools
 tree
 ttf-font-awesome
-ttf-nerd-fonts-symbols-2048-em-mono
+ttf-nerd-fonts-symbols-mono
 unarchiver
 unrar
 unzip
