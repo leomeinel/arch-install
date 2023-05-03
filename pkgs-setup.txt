@@ -97,6 +97,7 @@ perl-rename
 pipewire
 pipewire-jack
 polkit-gnome
+postfix
 postgresql
 procs
 python-pip
