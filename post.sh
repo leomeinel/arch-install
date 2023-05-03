@@ -23,6 +23,10 @@ sed_exit() {
     exit 1
 }
 
+# Configure $KEYMAP
+doas localectl --no-convert set-keymap "$KEYMAP"
+doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
+
 # Configure dot-files (setup)
 /dot-files.sh setup
 doas su -lc '/dot-files.sh setup' "$HOMEUSER"
@@ -31,10 +35,6 @@ doas su -lc '/dot-files.sh setup-min' root
 
 # Configure clock
 doas timedatectl set-ntp true
-
-# Configure $KEYMAP
-doas localectl --no-convert set-keymap "$KEYMAP"
-doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 
 # Set default java
 doas archlinux-java set java-17-openjdk

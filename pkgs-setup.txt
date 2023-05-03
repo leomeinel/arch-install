@@ -79,6 +79,7 @@ perl-rename
 pipewire
 pipewire-jack
 polkit-gnome
+postfix
 procs
 python-pip
 python-psutil
