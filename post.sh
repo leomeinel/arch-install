@@ -23,6 +23,9 @@ sed_exit() {
     exit 1
 }
 
+# Configure $KEYMAP
+doas localectl --no-convert set-keymap "$KEYMAP"
+
 # Configure dot-files (setup)
 /dot-files.sh
 doas su -lc '/dot-files.sh' "$DOCKUSER"
@@ -31,9 +34,6 @@ doas su -lc '/dot-files.sh' root
 
 # Configure clock
 doas timedatectl set-ntp true
-
-# Configure $KEYMAP
-doas localectl --no-convert set-keymap "$KEYMAP"
 
 # Configure iptables
 # FIXME: Replace with nftables

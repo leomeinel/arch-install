@@ -39,6 +39,7 @@ p7zip
 pacman-contrib
 pam-u2f
 perl-rename
+postfix
 procs
 quilt
 ripgrep
