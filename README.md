@@ -1,6 +1,8 @@
 # arch-install
 
-Arch Linux Installation using mdadm RAID1, LUKS encryption and btrfs.
+My personal Arch Linux install script using mdadm RAID1, LUKS2 encryption, LVM and btrfs.
+
+My personal Arch Linux install script using mdadm RAID1, LUKS2 encryption, LVM and btrfs.
 
 Meant for general purpose systems.
 
