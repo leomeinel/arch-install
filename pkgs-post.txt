@@ -9,7 +9,7 @@ swaylock-effects
 swaync
 trilium-bin
 ttf-hasklig
-usbguard-notifier
+usbguard-notifier-git
 vscodium-bin
 vscodium-bin-marketplace
 waterfox-g-bin
