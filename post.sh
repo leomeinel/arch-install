@@ -278,7 +278,7 @@ grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/FileManager = nvim/" "$FILE"
 STRING="^FileManager = nvim"
 grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "/$STRING/a FileManagerFlags = '"\'"'-c,\"NvimTreeFocus\"'"\'"" "$FILE"
+doas sed -i "/$STRING/a FileManagerFlags = '-cNvimTreeFocus'/" "$FILE"
 STRING="^#Sudo =.*"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/Sudo = doas/" "$FILE"
