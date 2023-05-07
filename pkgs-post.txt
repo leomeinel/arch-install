@@ -1,3 +1,4 @@
+autotiling
 dotnet-sdk-bin
 freetube-bin
 gdlauncher-bin
