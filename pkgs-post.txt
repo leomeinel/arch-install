@@ -1,3 +1,4 @@
+autotiling
 freetube-bin
 gdlauncher-bin
 kvantum-theme-arc
