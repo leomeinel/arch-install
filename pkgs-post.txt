@@ -1,9 +1,7 @@
 autotiling
-dotnet-sdk-bin
 freetube-bin
 gdlauncher-bin
 kvantum-theme-arc
-libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
 nwg-bar-bin
@@ -17,4 +15,3 @@ vscodium-bin
 vscodium-bin-marketplace
 waterfox-g-bin
 xdg-ninja-git
-xxd-standalone
