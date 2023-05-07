@@ -88,6 +88,7 @@ fi
 # Load $KEYMAP & set time
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
+timedatectl set-timezone "$TIMEZONE"
 
 # Erase & partition disks
 sgdisk -Z "$DISK1"
