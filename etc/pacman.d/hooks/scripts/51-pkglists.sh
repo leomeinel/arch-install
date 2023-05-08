@@ -30,4 +30,4 @@
     /usr/bin/pacman -Qd
     /usr/bin/echo '########################'
 } >>/var/log/pkglist-deps.pacman.log
-/usr/bin/chmod 600 /var/log/pkglist-*.log
+/usr/bin/chmod 644 /var/log/pkglist-*.log
