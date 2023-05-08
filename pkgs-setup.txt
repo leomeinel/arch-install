@@ -24,7 +24,6 @@ jpegoptim
 jq
 logrotate
 logwatch
-lollypop
 lrzip
 lshw
 lsof
