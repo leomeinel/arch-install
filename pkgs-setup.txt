@@ -51,6 +51,7 @@ libsecret
 libwmf
 logrotate
 logwatch
+lollypop
 lrzip
 lshw
 lsof
@@ -90,6 +91,7 @@ ripgrep
 rkhunter
 sbsigntools
 screen
+shotwell
 signal-desktop
 simple-scan
 slurp
