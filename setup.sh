@@ -158,6 +158,8 @@ pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
 ## Install optional dependencies
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'cups-pk-helper'
+pacman -Qq "lollypop" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
