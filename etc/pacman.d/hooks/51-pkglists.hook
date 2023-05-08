@@ -1,5 +1,6 @@
 [Trigger]
 Operation = Install
+Operation = Upgrade
 Operation = Remove
 Type = Package
 Target = *
@@ -7,4 +8,4 @@ Target = *
 [Action]
 Description = Generating pkglists...
 When = PostTransaction
-Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/50-pkglists.sh'
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/51-pkglists.sh'

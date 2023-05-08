@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-# File: 50-pkglists.sh
+# File: 51-pkglists.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2023 Leopold Meinel & contributors
