@@ -289,12 +289,18 @@ doas sed -i "s/$STRING/#codium #arch-install/" "$FILE"
 STRING="^dnsmasq$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#dnsmasq #arch-install/" "$FILE"
+STRING="^lollypop$"
+grep -q "$STRING" "$FILE" || sed_exit
+doas sed -i "s/$STRING/#lollypop #arch-install/" "$FILE"
 STRING="^nextcloud-desktop$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#nextcloud-desktop #arch-install/" "$FILE"
 STRING="^nextcloud$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#nextcloud #arch-install/" "$FILE"
+STRING="^shotwell$"
+grep -q "$STRING" "$FILE" || sed_exit
+doas sed -i "s/$STRING/#shotwell #arch-install/" "$FILE"
 STRING="^signal-desktop$"
 grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "s/$STRING/#signal-desktop #arch-install/" "$FILE"
