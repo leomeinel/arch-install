@@ -22,7 +22,7 @@ cp "$SCRIPT_DIR/install.conf" ~/
 chmod +x ~/post.sh
 
 # Create backups directory
-mkdir ~/backups
+mkdir -p ~/backups
 
 # Remove repo
 rm -rf ~/git
