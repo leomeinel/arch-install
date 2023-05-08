@@ -194,8 +194,8 @@ YES)
     doas cryptboot systemd-boot-sign
     source "/etc/cryptboot.conf"
     doas sh -c "{
-        echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/keys/db.crt\""
-        echo "uefi_secureboot_key=\""$EFI_KEYS_DIR"/keys/db.key\""
+        echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/db.crt\""
+        echo "uefi_secureboot_key=\""$EFI_KEYS_DIR"/db.key\""
     } >/etc/dracut.conf.d/secureboot.conf"
     ;;
 *)
