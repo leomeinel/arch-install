@@ -67,6 +67,7 @@ lldb
 llvm
 logrotate
 logwatch
+lollypop
 lrzip
 lshw
 lsof
@@ -111,6 +112,7 @@ rkhunter
 rustup
 sbsigntools
 screen
+shotwell
 signal-desktop
 simple-scan
 slurp
