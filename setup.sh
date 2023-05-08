@@ -189,6 +189,9 @@ MD0UUID="$(blkid -s UUID -o value $DISK1P2)"
 {
     echo "md0_crypt UUID=$MD0UUID none luks,key-slot=0"
 } >/etc/crypttab
+## Create /etc/encryption/keys directory
+mkdir -p /etc/encryption/keys
+chown 700 /etc/encryption/keys
 ## Configure /etc/localtime /etc/vconsole.conf /etc/hostname /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc

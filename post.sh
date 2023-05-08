@@ -214,28 +214,29 @@ YES)
     doas cryptboot-efikeys create
     doas cryptboot-efikeys enroll
     doas cryptboot systemd-boot-sign
+    source "/etc/cryptboot.conf"
     doas sh -c "{
-        echo "uefi_secureboot_cert=\"/etc/secureboot/keys/db.crt\""
-        echo "uefi_secureboot_key=\"/etc/secureboot/keys/db.key\""
+        echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/keys/db.crt\""
+        echo "uefi_secureboot_key=\""$EFI_KEYS_DIR"/keys/db.key\""
     } >/etc/dracut.conf.d/secureboot.conf"
     ;;
 *)
     {
         echo '#!/bin/bash'
         echo ''
-        echo 'EFI_KEYS_DIR="/etc/secureboot/keys"'
         echo 'source "/etc/cryptboot.conf"'
         echo 'read -rp "Have you transferred your keys to $EFI_KEYS_DIR? (Type '"'"'yes'"'"' in capital letters): " choice'
         echo 'case "$choice" in'
         echo 'YES)'
+        echo 'chmod 000 "$EFI_KEYS_DIR"/*'
         echo '    if mountpoint -q /efi; then'
         echo '        doas umount -AR /efi'
         echo '    fi'
         echo '    doas mount /efi'
         echo '    doas cryptboot systemd-boot-sign'
         echo '    doas sh -c "{'
-        echo '        echo "uefi_secureboot_cert=\"/etc/secureboot/keys/db.crt\""'
-        echo '        echo "uefi_secureboot_key=\"/etc/secureboot/keys/db.key\""'
+        echo '        echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/db.crt\""'
+        echo '        echo "uefi_secureboot_key=\""$EFI_KEYS_DIR"/db.key\""'
         echo '    } >/etc/dracut.conf.d/secureboot.conf"'
         echo '    ;;'
         echo '*)'
@@ -244,10 +245,10 @@ YES)
         echo '    ;;'
         echo 'esac'
     } >~/secureboot.sh
+    mkdir -p "$EFI_KEYS_DIR"
+    chmod 700 "$EFI_KEYS_DIR"
     chmod 700 ~/secureboot.sh
     echo "WARNING: User aborted enrolling secureboot keys"
-    EFI_KEYS_DIR="/etc/secureboot/keys"
-    source "/etc/cryptboot.conf"
     echo "         Deploy your own keys in $EFI_KEYS_DIR and run ~/secureboot.sh to sign your bootloader"
     ;;
 esac
