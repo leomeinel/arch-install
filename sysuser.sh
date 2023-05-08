@@ -21,5 +21,8 @@ cp "$SCRIPT_DIR/post.sh" ~/
 cp "$SCRIPT_DIR/install.conf" ~/
 chmod +x ~/post.sh
 
+# Create backups directory
+mkdir -p ~/backups
+
 # Remove repo
 rm -rf ~/git

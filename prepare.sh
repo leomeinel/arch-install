@@ -176,22 +176,22 @@ OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@
 OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS3="noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 mount_subs0() {
-    mkdir "/mnt$1"
+    mkdir -p "/mnt$1"
     mount -o "$3$2" "$4" "/mnt$1"
-    mkdir "/mnt$1.snapshots"
+    mkdir -p "/mnt$1.snapshots"
     mount -o "$OPTIONS3${2}_snapshots" "$4" "/mnt${SUBVOLUMES[$i]}.snapshots"
     mount_subs1 "$1" "$3" "$4"
 }
 mount_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
         if [[ "${SUBVOLUMES[$a]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$a]}"; then
-            mkdir "/mnt${SUBVOLUMES[$a]}"
+            mkdir -p "/mnt${SUBVOLUMES[$a]}"
             if grep -nq "^${1}lib/" <<<"${SUBVOLUMES[$a]}"; then
                 mount -o "$OPTIONS3${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
             else
                 mount -o "$2${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
             fi
-            mkdir "/mnt${SUBVOLUMES[$a]}.snapshots"
+            mkdir -p "/mnt${SUBVOLUMES[$a]}.snapshots"
             mount -o "$OPTIONS3${CONFIGS[$a]}_snapshots" "$3" "/mnt${SUBVOLUMES[$a]}.snapshots"
         fi
     done
@@ -200,7 +200,7 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[$i]}" in
     "/")
         mount -o "$OPTIONS0" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}"
-        mkdir "/mnt${SUBVOLUMES[$i]}.snapshots"
+        mkdir -p "/mnt${SUBVOLUMES[$i]}.snapshots"
         mount -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots"
         ;;
     "/usr/")
@@ -216,12 +216,12 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
 done
 chmod 775 /mnt/var/games
 ## /efi
-mkdir /mnt/efi
+mkdir -p /mnt/efi
 mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
-mkdir /mnt/.efi.bak
+mkdir -p /mnt/.efi.bak
 mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
 ## /boot
-mkdir /mnt/boot
+mkdir -p /mnt/boot
 
 # Set SSD state to "frozen" after sleep
 for link in /dev/disk/by-id/*; do
@@ -293,6 +293,6 @@ sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE"
 ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
 # Prepare /mnt/git/arch-install
-mkdir /mnt/git
+mkdir -p /mnt/git
 mv "$SCRIPT_DIR" /mnt/git/
 chmod +x /mnt/git/arch-install/setup.sh
