@@ -27,7 +27,7 @@ mkdir -p ~/backups
 # Configure anacron user jobs
 mkdir -p ~/.anacron/{etc,spool,etc/cron.daily,etc/cron.weekly,etc/cron.monthly}
 {
-    echo '# .anacron/etc/anacrontab: configuration file for anacron'
+    echo '# .anacron/etc/anacrontab: user configuration file for anacron'
     echo ''
     echo '# See anacron(8) and anacrontab(5) for details.'
     echo ''
