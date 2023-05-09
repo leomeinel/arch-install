@@ -164,6 +164,8 @@ pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
+pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ntransmission-cli'
 pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nmailcap'
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
