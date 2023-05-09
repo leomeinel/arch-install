@@ -163,6 +163,8 @@ pacman -Qq "lollypop" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
+pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ntransmission-cli'
 pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nmailcap'
 pacman -Qq "apparmor" >/dev/null 2>&1 &&

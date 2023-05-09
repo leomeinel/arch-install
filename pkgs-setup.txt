@@ -108,6 +108,7 @@ system-config-printer
 thunar
 thunderbird
 tpm2-tools
+transmission-gtk
 tree
 ttf-font-awesome
 ttf-nerd-fonts-symbols-mono

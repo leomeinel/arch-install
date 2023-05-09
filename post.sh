@@ -119,6 +119,8 @@ doas iptables -A INPUT -p udp --dport 5353 -j ACCEPT
 ### Allow http & https (for wget)
 doas iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 doas iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+### Allow Transmission
+doas iptables -A INPUT -p udp --dport 51413 -j ACCEPT
 ### Allow established connections
 doas iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 ### Set default policies for chains
@@ -189,6 +191,8 @@ doas ip6tables -A INPUT -p udp --dport 5353 -j ACCEPT
 ### Allow http & https (for wget)
 doas ip6tables -A INPUT -p tcp --dport 80 -j ACCEPT
 doas ip6tables -A INPUT -p tcp --dport 443 -j ACCEPT
+### Allow Transmission
+doas ip6tables -A INPUT -p udp --dport 51413 -j ACCEPT
 ### Allow established connections
 doas ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 ### Set default policies for chains
@@ -304,36 +308,12 @@ doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 # Configure firejail
 ## START sed
 FILE=/etc/firejail/firecfg.config
-STRING="^code-oss$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#code-oss #arch-install/" "$FILE"
-STRING="^code$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#code #arch-install/" "$FILE"
-STRING="^codium$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#codium #arch-install/" "$FILE"
-STRING="^dnsmasq$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#dnsmasq #arch-install/" "$FILE"
-STRING="^lollypop$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#lollypop #arch-install/" "$FILE"
-STRING="^nextcloud-desktop$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#nextcloud-desktop #arch-install/" "$FILE"
-STRING="^nextcloud$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#nextcloud #arch-install/" "$FILE"
-STRING="^shotwell$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#shotwell #arch-install/" "$FILE"
-STRING="^signal-desktop$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#signal-desktop #arch-install/" "$FILE"
-STRING="^vscodium$"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/#vscodium #arch-install/" "$FILE"
+STRINGS=("code-oss" "code" "codium" "dnsmasq" "lollypop" "nextcloud-desktop" "nextcloud" "shotwell" "signal-desktop" "transmission-cli" "transmission-create" "transmission-daemon" "transmission-edit" "transmission-gtk" "transmission-remote" "transmission-show" "vscodium")
+for string in "${STRINGS[@]}"
+do
+    grep -q "$string" "$FILE" || sed_exit
+    doas sed -i "s/^$string$/#$string #arch-install/" "$FILE"
+done
 ## END sed
 doas firecfg --add-users root "$SYSUSER" "$HOMEUSER" "$GUESTUSER"
 doas apparmor_parser -r /etc/apparmor.d/firejail-default
