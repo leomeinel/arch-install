@@ -309,8 +309,7 @@ doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
 ## START sed
 FILE=/etc/firejail/firecfg.config
 STRINGS=("code-oss" "code" "codium" "dnsmasq" "lollypop" "nextcloud-desktop" "nextcloud" "shotwell" "signal-desktop" "transmission-cli" "transmission-create" "transmission-daemon" "transmission-edit" "transmission-gtk" "transmission-remote" "transmission-show" "vscodium")
-for string in "${STRINGS[@]}"
-do
+for string in "${STRINGS[@]}"; do
     grep -q "$string" "$FILE" || sed_exit
     doas sed -i "s/^$string$/#$string #arch-install/" "$FILE"
 done

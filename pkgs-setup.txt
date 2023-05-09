@@ -13,6 +13,7 @@ bluez
 bluez-utils
 brightnessctl
 celluloid
+cronie
 cups
 dbus
 devtools
