@@ -27,7 +27,7 @@ mkdir -p ~/backups
 # Configure anacron user jobs
 mkdir -p ~/.anacron/{etc,spool,etc/cron.daily,etc/cron.weekly,etc/cron.monthly}
 {
-    echo '# /etc/anacrontab: configuration file for anacron'
+    echo '# .anacron/etc/anacrontab: user configuration file for anacron'
     echo ''
     echo '# See anacron(8) and anacrontab(5) for details.'
     echo ''
@@ -43,7 +43,7 @@ mkdir -p ~/.anacron/{etc,spool,etc/cron.daily,etc/cron.weekly,etc/cron.monthly}
     echo '1 5 cron.daily nice run-parts $HOME/.anacron/etc/cron.daily'
     echo '7 25 cron.weekly nice run-parts $HOME/.anacron/etc/cron.weekly'
     echo '@monthly 45 cron.monthly nice run-parts $HOME/.anacron/etc/cron.monthly'
-} >~/.anacron/anacrontab
+} >~/.anacron/etc/anacrontab
 (crontab -l 2>/dev/null; echo '@hourly /usr/bin/anacron -s -t $HOME/.anacron/etc/anacrontab -S $HOME/.anacron/spool')| crontab -
 
 # Remove repo
