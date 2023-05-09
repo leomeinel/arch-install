@@ -120,6 +120,8 @@ doas iptables -A INPUT -p udp --dport 5353 -j ACCEPT
 ### Allow http & https (for wget)
 doas iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 doas iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+### Allow Transmission
+doas iptables -A INPUT -p udp --dport 51413 -j ACCEPT
 ### Allow established connections
 doas iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 ### Set default policies for chains
