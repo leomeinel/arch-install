@@ -74,21 +74,11 @@ rsync -rq "$SCRIPT_DIR/etc/" /etc
 ## Configure locale in /etc/locale.gen /etc/locale.conf
 ### START sed
 FILE=/etc/locale.gen
-STRING="^#de_DE.UTF-8 UTF-8"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/de_DE.UTF-8 UTF-8/" "$FILE"
-STRING="^#en_US.UTF-8 UTF-8"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/en_US.UTF-8 UTF-8/" "$FILE"
-STRING="^#en_DK.UTF-8 UTF-8"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/en_DK.UTF-8 UTF-8/" "$FILE"
-STRING="^#fr_FR.UTF-8 UTF-8"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/fr_FR.UTF-8 UTF-8/" "$FILE"
-STRING="^#nl_NL.UTF-8 UTF-8"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/nl_NL.UTF-8 UTF-8/" "$FILE"
+for string in "${LANGUAGES[@]}"
+do
+    grep -q "$string" "$FILE" || sed_exit
+    sed -i "s/^#$string/$string/" "$FILE"
+done
 ### END sed
 chmod 644 /etc/locale.conf
 locale-gen
