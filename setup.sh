@@ -74,8 +74,7 @@ rsync -rq "$SCRIPT_DIR/etc/" /etc
 ## Configure locale in /etc/locale.gen /etc/locale.conf
 ### START sed
 FILE=/etc/locale.gen
-for string in "${LANGUAGES[@]}"
-do
+for string in "${LANGUAGES[@]}"; do
     grep -q "#$string" "$FILE" || sed_exit
     sed -i "s/^#$string$/$string/" "$FILE"
 done
@@ -250,7 +249,7 @@ chmod 644 /etc/dracut.conf.d/*.conf
     echo "* hard core 0"
 } >>/etc/security/limits.conf
 ### chmod & touch files
-FILES_600=("/etc/at.deny" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts")
+FILES_600=("/etc/at.deny" "/etc/anacrontab" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts")
 FILES_644=("/etc/hosts.allow" "/etc/hosts.deny" "/etc/hosts.equiv" "/etc/issue" "/etc/issue.net" "/etc/motd" "/etc/shosts.equiv")
 DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly")
 for file in "${FILES_600[@]}"; do
