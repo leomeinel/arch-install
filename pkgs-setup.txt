@@ -10,7 +10,6 @@ dust
 efibootmgr
 efitools
 ethtool
-evince
 exa
 fd
 firejail
