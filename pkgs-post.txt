@@ -1,12 +1,12 @@
 autotiling
 dotnet-sdk-bin
 freetube-bin
-gdlauncher-bin
 kvantum-theme-arc
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
 nwg-bar-bin
+prismlauncher-bin
 selectdefaultapplication-fork-git
 snapper-gui-git
 swaylock-effects
