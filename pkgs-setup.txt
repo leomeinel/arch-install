@@ -22,6 +22,7 @@ dust
 efibootmgr
 efitools
 ethtool
+evince
 exa
 fd
 ffmpeg
@@ -60,8 +61,6 @@ lxappearance
 lzop
 man-db
 mtools
-mupdf
-mupdf-tools
 network-manager-applet
 networkmanager
 nextcloud-client
