@@ -1,5 +1,4 @@
 autotiling
-dotnet-sdk-bin
 freetube-bin
 kvantum-theme-arc
 libreoffice-extension-languagetool
