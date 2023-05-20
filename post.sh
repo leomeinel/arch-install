@@ -26,12 +26,6 @@ sed_exit() {
 # Configure $KEYMAP
 doas localectl --no-convert set-keymap "$KEYMAP"
 
-# Initialize Firefox
-timeout 5 firefox --headless
-doas su -c 'timeout 5 firefox --headless' "$VIRTUSER"
-doas su -c 'timeout 5 firefox --headless' "$HOMEUSER"
-doas su -c 'timeout 5 firefox --headless' "$GUESTUSER"
-
 # Configure dot-files (setup)
 /dot-files.sh
 doas su -lc '/dot-files.sh' "$DOCKUSER"
