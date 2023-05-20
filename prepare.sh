@@ -27,62 +27,32 @@ sed_exit() {
 mountpoint -q /mnt &&
     umount -AR /mnt
 
-# Detect disks
-readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
-DISKS_LENGTH="${#DISKS[@]}"
-for ((i = 0; i < DISKS_LENGTH; i++)); do
-    udevadm info -q property --property=ID_BUS --value "${DISKS[$i]}" | grep -q "usb" &&
-        {
-            unset 'DISKS[$i]'
-            continue
-        }
-    DISKS=("${DISKS[@]}")
-done
-[[ "${#DISKS[@]}" -ne 2 ]] &&
-    {
-        echo "ERROR: There are not exactly 2 disks attached!"
-        exit 1
-    }
-SIZE1="$(lsblk -drno SIZE "${DISKS[0]}" | tr -d "[:space:]")"
-SIZE2="$(lsblk -drno SIZE "${DISKS[1]}" | tr -d "[:space:]")"
-if [[ "$SIZE1" = "$SIZE2" ]]; then
-    DISK1="${DISKS[0]}"
-    DISK2="${DISKS[1]}"
+# Prompt user for disk
+# I will use this on an external SSD, therefore USB volumes will be valid
+lsblk -drnpo SIZE,NAME -I 259,8,254
+read -rp "Which disk do you want to erase? (Type '/dev/sdX' fex.): " choice
+if lsblk -drnpo SIZE,NAME -I 259,8,254 $choice; then
+    echo "Erasing $choice..."
+    DISK1="$choice"
 else
-    echo "ERROR: The attached disks don't have the same size!"
+    echo "ERROR: Drive not suitable for installation"
     exit 1
 fi
 
-# Prompt user
-read -rp "Erase $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
-case "$choice" in
-YES)
-    echo "Erasing $DISK1 and $DISK2..."
-    ;;
-*)
-    echo "ERROR: User aborted erasing $DISK1 and $DISK2"
-    exit 1
-    ;;
-esac
-
-# Detect & close old crypt volumes
-if lsblk -rno TYPE | grep -q "crypt"; then
-    OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
+# Detect, close & erase old crypt volumes
+if lsblk -rno TYPE "$DISK1" | grep -q "crypt"; then
+    OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME $DISK1 | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
+    OLD_DISK1P2="$(lsblk -rnpo TYPE,NAME $DISK1 | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+    ## Close old crypt volumes
     cryptsetup close "$OLD_CRYPT_0"
-fi
-
-# Detect & erase old crypt/raid1 volumes
-if lsblk -rno TYPE | grep -q "raid1"; then
-    DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-    DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-    OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
-    if cryptsetup isLuks "$OLD_RAID_0"; then
-        cryptsetup erase "$OLD_RAID_0"
+    ## Erase old crypt volumes
+    if cryptsetup isLuks "$OLD_DISK1P2"; then
+        cryptsetup erase "$OLD_DISK1P2"
+        sgdisk -Z "$OLD_DISK1P2"
+    else
+        echo "ERROR: Can't erase old crypt volume"
+        exit 1
     fi
-    sgdisk -Z "$OLD_RAID_0"
-    mdadm --stop "$OLD_RAID_0"
-    mdadm --zero-superblock "$DISK1P2"
-    mdadm --zero-superblock "$DISK2P2"
 fi
 
 # Load $KEYMAP & set time
@@ -92,27 +62,20 @@ timedatectl set-timezone "$TIMEZONE"
 
 # Erase & partition disks
 sgdisk -Z "$DISK1"
-sgdisk -Z "$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
-sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
-sgdisk -n 0:0:0 -t 2:fd00 "$DISK1"
-sgdisk -n 0:0:0 -t 2:fd00 "$DISK2"
+sgdisk -n 0:0:0 -t 2:8300 "$DISK1"
 
 # Detect partitions & set variables accordingly
 DISK1P1="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-DISK2P1="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
-DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-
-# Configure raid1
-mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any --name=md0 /dev/md/md0 "$DISK1P2" "$DISK2P2"
 
 # Configure encryption
+## NOTE: md0_crypt will be used for convenience, even tho it might be confusing
 ## root
-cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
+cryptsetup open --type plain -d /dev/urandom "$DISK1P2" to_be_wiped
 cryptsetup close to_be_wiped
-cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks2 /dev/md/md0
-cryptsetup open --type luks2 --perf-no_read_workqueue --perf-no_write_workqueue --persistent /dev/md/md0 md0_crypt
+cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks2 "$DISK1P2"
+cryptsetup open --type luks2 "$DISK1P2" md0_crypt
 
 # Configure lvm
 pvcreate /dev/mapper/md0_crypt
@@ -124,7 +87,6 @@ lvcreate -l "${DISK_ALLOCATION[3]}" vg0 -n lv3
 
 # Format efi
 mkfs.fat -n EFI -F32 "$DISK1P1"
-mkfs.fat -n EFI -F32 "$DISK2P1"
 
 # Configure mounts
 ## Create subvolumes
@@ -218,8 +180,6 @@ chmod 775 /mnt/var/games
 ## /efi
 mkdir -p /mnt/efi
 mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
-mkdir -p /mnt/.efi.bak
-mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
 ## /boot
 mkdir -p /mnt/boot
 
@@ -228,21 +188,13 @@ for link in /dev/disk/by-id/*; do
     if [[ "$(readlink -f "$link")" = "$DISK1" ]]; then
         DISK1ID="$link"
     fi
-    if [[ "$(readlink -f "$link")" = "$DISK2" ]]; then
-        DISK2ID="$link"
-    fi
 done
-if [[ -n "$DISK1ID" ]] && [[ -n "$DISK2ID" ]]; then
+if [[ -n "$DISK1ID" ]]; then
     mkdir -p /mnt/usr/lib/systemd/system-sleep
     {
         echo 'if [[ "$1" = "post" ]]; then'
         echo '    sleep 1'
         echo '    if hdparm --security-freeze '"$DISK1ID"'; then'
-        echo '        logger "$0: SSD freeze command executed successfully"'
-        echo '    else'
-        echo '        logger "$0: SSD freeze command failed"'
-        echo '    fi'
-        echo '    if hdparm --security-freeze '"$DISK2ID"'; then'
         echo '        logger "$0: SSD freeze command executed successfully"'
         echo '    else'
         echo '        logger "$0: SSD freeze command failed"'
@@ -265,6 +217,12 @@ STRING="^#NoProgressBar"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/NoProgressBar/" "$FILE"
 ## END sed
+{
+    echo ""
+    echo "# Custom"
+    echo "[multilib]"
+    echo "Include = /etc/pacman.d/mirrorlist"
+} >>/etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
@@ -293,14 +251,6 @@ genfstab -U /mnt >>/mnt/etc/fstab
     echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid 0 0'
     echo 'tmpfs /tmp tmpfs rw,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
 } >>/mnt/etc/fstab
-## START sed
-FILE=/mnt/etc/fstab
-STRING0="\/.efi.bak.*vfat"
-grep -q "$STRING0" "$FILE" || sed_exit
-STRING1="rw"
-grep -q "$STRING1" "$FILE" || sed_exit
-sed -i "/$STRING0/s/$STRING1/$STRING1,noauto/" "$FILE"
-## END sed
 
 # Prepare /mnt/git/arch-install
 mkdir -p /mnt/git
