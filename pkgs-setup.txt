@@ -26,6 +26,7 @@ evince
 exa
 fd
 ffmpeg
+firefox
 firejail
 fwupd
 git-delta
