@@ -28,6 +28,7 @@ exa
 fd
 ffmpeg
 filezilla
+firefox
 firejail
 fwupd
 gimp
