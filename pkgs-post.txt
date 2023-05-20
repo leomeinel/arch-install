@@ -15,6 +15,5 @@ ttf-hasklig
 usbguard-notifier-git
 vscodium-bin
 vscodium-bin-marketplace
-waterfox-g-bin
 xdg-ninja-git
 xxd-standalone
