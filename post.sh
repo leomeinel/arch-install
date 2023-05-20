@@ -28,6 +28,7 @@ doas localectl --no-convert set-keymap "$KEYMAP"
 doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 
 # Initialize Firefox
+timeout 5 firefox --headless
 doas su -c 'timeout 5 firefox --headless' "$VIRTUSER"
 doas su -c 'timeout 5 firefox --headless' "$HOMEUSER"
 doas su -c 'timeout 5 firefox --headless' "$GUESTUSER"
