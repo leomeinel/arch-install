@@ -13,7 +13,6 @@ linux-lts-headers
 linux-zen
 linux-zen-headers
 lvm2
-mdadm
 mesa
 neovim
 opendoas
