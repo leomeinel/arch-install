@@ -44,8 +44,8 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
 groupadd -r usbguard
-useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
-useradd -ms /bin/bash -G video "$HOMEUSER"
+useradd -ms /bin/bash -G adm,audit,log,lp,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
+useradd -ms /bin/bash -G lp,video "$HOMEUSER"
 useradd -ms /bin/bash -G video "$GUESTUSER"
 echo "#################################################################"
 echo "#                      _    _           _   _                   #"
