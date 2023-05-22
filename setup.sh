@@ -48,7 +48,7 @@ groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,lp,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
 useradd -ms /bin/bash -G libvirt,lp,video "$VIRTUSER"
 useradd -ms /bin/bash -G lp,video "$HOMEUSER"
-useradd -ms /bin/bash -G lp,video "$GUESTUSER"
+useradd -ms /bin/bash -G video "$GUESTUSER"
 echo "#################################################################"
 echo "#                      _    _           _   _                   #"
 echo "#                     / \  | | ___ _ __| |_| |                  #"
