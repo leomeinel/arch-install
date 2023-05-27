@@ -151,5 +151,6 @@ xdg-dbus-proxy
 xdg-desktop-portal-wlr
 xdg-user-dirs
 xdg-utils
+xournalpp
 yq
 zram-generator
