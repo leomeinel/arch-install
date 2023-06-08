@@ -21,8 +21,8 @@ cp "$SCRIPT_DIR/post.sh" ~/
 cp "$SCRIPT_DIR/install.conf" ~/
 chmod +x ~/post.sh
 
-# Create backups directory
-mkdir -p ~/backups
+# Create backup directory
+mkdir -p ~/backup
 
 # Configure anacron user jobs
 mkdir -p ~/.anacron/{etc,spool,etc/cron.daily,etc/cron.weekly,etc/cron.monthly}
