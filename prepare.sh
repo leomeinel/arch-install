@@ -57,11 +57,11 @@ else
     if [[ "$SIZE1" -gt "$SIZE2" ]]; then
         DISK1="${DISKS[0]}"
         DISK2="${DISKS[1]}"
-        PART_SIZE="$((-(("$SIZE1"-"$SIZE2")/1024)))K"
+        PART_SIZE=$((-("$SIZE1"-"$SIZE2")))
     else
         DISK1="${DISKS[1]}"
         DISK2="${DISKS[0]}"
-        PART_SIZE="$((-(("$SIZE2"-"$SIZE1")/1024)))K"
+        PART_SIZE=$((-("$SIZE2"-"$SIZE1")))
     fi
 fi
 
