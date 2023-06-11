@@ -8,7 +8,7 @@ Meant for general purpose systems.
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
-:information_source: | This script will only work on a system with exactly 2 disks of the same size attached!
+:information_source: | This script will only work on a system with exactly 2 disks attached!
 
 :information_source: | I recommend disks with at least 512GB (change $DISK_ALLOCATION in install.conf otherwise).
 
