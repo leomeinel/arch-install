@@ -43,14 +43,26 @@ done
         echo "ERROR: There are not exactly 2 disks attached!"
         exit 1
     }
-SIZE1="$(lsblk -drno SIZE "${DISKS[0]}" | tr -d "[:space:]")"
-SIZE2="$(lsblk -drno SIZE "${DISKS[1]}" | tr -d "[:space:]")"
-if [[ "$SIZE1" = "$SIZE2" ]]; then
+
+# Set correct size for partition of larger disk
+SIZE1="$(lsblk -drnbo SIZE "${DISKS[0]}" | tr -d "[:space:]")"
+SIZE2="$(lsblk -drnbo SIZE "${DISKS[1]}" | tr -d "[:space:]")"
+if [[ "$SIZE1" -eq "$SIZE2" ]]; then
     DISK1="${DISKS[0]}"
     DISK2="${DISKS[1]}"
+    PART_SIZE=0
 else
-    echo "ERROR: The attached disks don't have the same size!"
-    exit 1
+    echo "WARNING: The attached disks don't have the same size!"
+    echo "         The larger disk will have free space remaining."
+    if [[ "$SIZE1" -gt "$SIZE2" ]]; then
+        DISK1="${DISKS[0]}"
+        DISK2="${DISKS[1]}"
+        PART_SIZE=$((-(("$SIZE1"-"$SIZE2")/1024)))
+    else
+        DISK1="${DISKS[1]}"
+        DISK2="${DISKS[0]}"
+        PART_SIZE=$((-(("$SIZE2"-"$SIZE1")/1024)))
+    fi
 fi
 
 # Prompt user
@@ -95,7 +107,7 @@ sgdisk -Z "$DISK1"
 sgdisk -Z "$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
-sgdisk -n 0:0:0 -t 2:fd00 "$DISK1"
+sgdisk -n 0:0:"${PART_SIZE}K" -t 2:fd00 "$DISK1"
 sgdisk -n 0:0:0 -t 2:fd00 "$DISK2"
 
 # Detect partitions & set variables accordingly
