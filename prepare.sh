@@ -57,11 +57,11 @@ else
     if [[ "$SIZE1" -gt "$SIZE2" ]]; then
         DISK1="${DISKS[0]}"
         DISK2="${DISKS[1]}"
-        PART_SIZE=$((-("$SIZE1"-"$SIZE2")))
+        PART_SIZE="$((-(("$SIZE1"-"$SIZE2")/1024)))K"
     else
         DISK1="${DISKS[1]}"
         DISK2="${DISKS[0]}"
-        PART_SIZE=$((-("$SIZE2"-"$SIZE1")))
+        PART_SIZE="$((-(("$SIZE2"-"$SIZE1")/1024)))K"
     fi
 fi
 
@@ -107,7 +107,7 @@ sgdisk -Z "$DISK1"
 sgdisk -Z "$DISK2"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
-sgdisk -n 0:0:"${PART_SIZE}" -t 2:fd00 "$DISK1"
+sgdisk -n 0:0:"$PART_SIZE" -t 2:fd00 "$DISK1"
 sgdisk -n 0:0:0 -t 2:fd00 "$DISK2"
 
 # Detect partitions & set variables accordingly
