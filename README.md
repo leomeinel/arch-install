@@ -1,20 +1,18 @@
 # arch-install
 
-My personal Arch Linux install script using mdadm RAID1, LUKS2 encryption, LVM and btrfs.
+My personal Arch Linux install script using LUKS2 encryption, LVM and btrfs.
 
-Meant for general purpose systems.
+Meant for systems that mainly run steam and other games.
 
 ## Info
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
-:information_source: | This script will only work on a system with exactly 2 disks attached!
-
-:information_source: | I recommend disks with at least 512GB (change $DISK_ALLOCATION in install.conf otherwise).
+:information_source: | I recommend a disk with at least 512GB (change $DISK_ALLOCATION in install.conf otherwise).
 
 :warning: | All data on both disks will be wiped!
 
-:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/games/virt-manager.md) for virt-manager.
 
 ## Pre-installation
 
@@ -24,7 +22,7 @@ Meant for general purpose systems.
 
 ```sh
 pacman -Sy git
-git clone https://github.com/leomeinel/arch-install.git
+git clone -b games https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt
