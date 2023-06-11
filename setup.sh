@@ -75,8 +75,8 @@ rsync -rq "$SCRIPT_DIR/etc/" /etc
 ### START sed
 FILE=/etc/locale.gen
 for string in "${LANGUAGES[@]}"; do
-    grep -q "#$string" "$FILE" || sed_exit
-    sed -i "s/^#$string$/$string/" "$FILE"
+    grep -q "^#$string" "$FILE" || sed_exit
+    sed -i "s/^#$string/$string/" "$FILE"
 done
 ### END sed
 chmod 644 /etc/locale.conf

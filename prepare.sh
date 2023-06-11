@@ -53,7 +53,7 @@ if [[ "$SIZE1" -eq "$SIZE2" ]]; then
     PART_SIZE=0
 else
     echo "WARNING: The attached disks don't have the same size!"
-    echo "         The larger disk will have free space remaining."
+    echo "         The larger disk will have unpartitioned space remaining."
     if [[ "$SIZE1" -gt "$SIZE2" ]]; then
         DISK1="${DISKS[0]}"
         DISK2="${DISKS[1]}"
