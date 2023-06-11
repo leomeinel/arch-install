@@ -2,7 +2,7 @@
 
 My personal Arch Linux install script using mdadm RAID1, LUKS2 encryption, LVM and btrfs.
 
-Meant for general purpose systems.
+Meant for servers that are mainly hosting docker.
 
 ## Info
 
@@ -14,7 +14,7 @@ Meant for general purpose systems.
 
 :warning: | All data on both disks will be wiped!
 
-:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/server/virt-manager.md) for virt-manager.
 
 ## Pre-installation
 
@@ -24,7 +24,7 @@ Meant for general purpose systems.
 
 ```sh
 pacman -Sy git
-git clone https://github.com/leomeinel/arch-install.git
+git clone -b server https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt
