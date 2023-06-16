@@ -158,7 +158,9 @@ chmod 777 /dot-files.sh
 
 # Configure /etc
 ## Configure /etc/crypttab
-MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
+DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+MD0UUID="$(blkid -s UUID -o value $DISK1P2)"
 {
     echo "md0_crypt UUID=$MD0UUID none luks,key-slot=0"
 } >/etc/crypttab
@@ -232,8 +234,6 @@ sed -i "s/$STRING/log_group = audit/" "$FILE"
     echo "filesystems+=\" btrfs \""
 } >/etc/dracut.conf.d/modules.conf
 ## Configure /etc/dracut.conf.d/cmdline.conf
-DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
-DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 DISK1P2UUID="$(blkid -s UUID -o value "$DISK1P2")"
 PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.luks.allow-discards=$DISK1P2UUID rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP loglevel=5 rd.info rd.shell bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
 #### If on intel set kernel parameter intel_iommu=on
