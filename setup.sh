@@ -178,7 +178,11 @@ chmod 777 /dot-files.sh
 ## Configure /etc/crypttab
 DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-MD0UUID="$(blkid -s UUID -o value $DISK1P2)"
+if lsblk -rno TYPE "$DISK1P2" | grep -q "raid1"; then
+    MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
+else
+    MD0UUID="$(blkid -s UUID -o value $DISK1P2)"
+fi
 {
     echo "md0_crypt UUID=$MD0UUID none luks,key-slot=0"
 } >/etc/crypttab
