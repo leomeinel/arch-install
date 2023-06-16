@@ -100,6 +100,8 @@ chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $HOMEUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
+DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
     {
         {
@@ -207,8 +209,6 @@ chmod 777 /dot-files.sh
 
 # Configure /etc
 ## Configure /etc/crypttab
-DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
-DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 if lsblk -rno TYPE "$DISK1P2" | grep -q "raid1"; then
     MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 else
