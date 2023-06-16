@@ -215,7 +215,7 @@ else
     MD0UUID="$(blkid -s UUID -o value $DISK1P2)"
 fi
 {
-    echo "md0_crypt UUID=$MD0UUID none luks,key-slot=0"
+    echo "md0_crypt UUID=$MD0UUID none luks,discard,key-slot=0"
 } >/etc/crypttab
 ## Create /etc/encryption/keys directory
 mkdir -p /etc/encryption/keys
