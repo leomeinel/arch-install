@@ -92,8 +92,40 @@ chmod 0400 /etc/doas.conf
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $SYSUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $DOCKUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $HOMEUSER"
-    echo ''
 } >/etc/pacman.d/hooks/scripts/70-firejail.sh
+lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
+    {
+        {
+            echo '[Trigger]'
+            echo 'Operation = Install'
+            echo 'Operation = Upgrade'
+            echo 'Operation = Remove'
+            echo 'Type = Path'
+            echo 'Target = usr/lib/modules/*/vmlinuz'
+            echo ''
+            echo '[Action]'
+            echo 'Depends = rsync'
+            echo 'Description = Backing up /efi...'
+            echo 'When = PostTransaction'
+            echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/99-efibackup.sh'"
+        } >/etc/pacman.d/hooks/99-efibackup.hook
+        {
+            echo '#!/bin/sh'
+            echo ''
+            echo 'set -e'
+            echo 'if /usr/bin/mountpoint -q /efi; then'
+            echo '    /usr/bin/umount -AR /efi'
+            echo 'fi'
+            echo 'if /usr/bin/mountpoint -q /.efi.bak; then'
+            echo '    /usr/bin/umount -AR /.efi.bak'
+            echo 'fi'
+            echo '/usr/bin/mount /efi'
+            echo '/usr/bin/mount /.efi.bak'
+            echo '/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old'
+            echo '/usr/bin/rsync -aq --delete --mkpath /efi/ /.efi.bak'
+            echo '/usr/bin/umount /.efi.bak'
+        } >/etc/pacman.d/hooks/scripts/99-efibackup.sh
+    }
 chmod 755 /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
@@ -212,7 +244,8 @@ chmod 644 /etc/cryptboot.conf
     echo "Banner /etc/issue.net"
 } >>/etc/ssh/sshd_config
 ## Configure /etc/mdadm.conf
-mdadm --detail --scan >>/etc/mdadm.conf
+lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
+    mdadm --detail --scan >>/etc/mdadm.conf
 ## Configure /etc/usbguard/usbguard-daemon.conf /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
