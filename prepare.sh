@@ -85,16 +85,16 @@ YES)
     fi
     ## Detect & erase old crypt/raid1 volumes
     if lsblk -rno TYPE | grep -q "raid1"; then
-        DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-        DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+        OLD_DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+        OLD_DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
         OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
         if cryptsetup isLuks "$OLD_RAID_0"; then
             cryptsetup erase "$OLD_RAID_0"
         fi
         sgdisk -Z "$OLD_RAID_0"
         mdadm --stop "$OLD_RAID_0"
-        mdadm --zero-superblock "$DISK1P2"
-        mdadm --zero-superblock "$DISK2P2"
+        mdadm --zero-superblock "$OLD_DISK1P2"
+        mdadm --zero-superblock "$OLD_DISK2P2"
     fi
     ;;
 *)
