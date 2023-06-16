@@ -1,6 +1,8 @@
 # arch-install
 
-My personal Arch Linux install script using mdadm RAID1, LUKS2 encryption, LVM and btrfs.
+My personal Arch Linux install script using LUKS2 encryption, LVM and btrfs.
+
+RAID can also be used.
 
 Meant for general purpose systems.
 
@@ -8,11 +10,9 @@ Meant for general purpose systems.
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
-:information_source: | This script will only work on a system with exactly 2 disks attached!
-
 :information_source: | I recommend disks with at least 512GB (change $DISK_ALLOCATION in install.conf otherwise).
 
-:warning: | All data on both disks will be wiped!
+:warning: | All data on selected disks will be wiped!
 
 :exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
 
