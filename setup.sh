@@ -114,7 +114,7 @@ lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
             echo 'Depends = rsync'
             echo 'Description = Backing up /efi...'
             echo 'When = PostTransaction'
-            echo 'Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/99-efibackup.sh''
+            echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/99-efibackup.sh'"
         } >/etc/pacman.d/hooks/99-efibackup.hook
         {
             echo '#!/bin/sh'
