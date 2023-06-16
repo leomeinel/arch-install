@@ -113,9 +113,9 @@ YES)
     if lsblk -rno TYPE "$DISK1" | grep -q "crypt"; then
         OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME "$DISK1" | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
         OLD_DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-        ## Close old crypt volumes
+        ### Close old crypt volumes
         cryptsetup close "$OLD_CRYPT_0"
-        ## Erase old crypt volumes
+        ### Erase old crypt volumes
         if cryptsetup isLuks "$OLD_DISK1P2"; then
             cryptsetup erase "$OLD_DISK1P2"
             sgdisk -Z "$OLD_DISK1P2"
