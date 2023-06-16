@@ -326,6 +326,8 @@ sed -i "s/$STRING/NoProgressBar/" "$FILE"
 ## END sed
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
+[[ -n "$DISK2" ]] &&
+    echo "mdadm" >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
