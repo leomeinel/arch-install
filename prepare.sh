@@ -298,18 +298,17 @@ if [[ -n "$DISK1ID" ]]; then
         echo '        logger "$0: SSD freeze command failed"'
         echo '    fi'
     } >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+    if [[ -n "$DISK2ID" ]]; then
+        {
+            echo '    if hdparm --security-freeze '"$DISK2ID"'; then'
+            echo '        logger "$0: SSD freeze command executed successfully"'
+            echo '    else'
+            echo '        logger "$0: SSD freeze command failed"'
+            echo '    fi'
+        } >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+    fi
+    echo 'fi' >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 fi
-if [[ -n "$DISK2ID" ]]; then
-    mkdir -p /mnt/usr/lib/systemd/system-sleep
-    {
-        echo '    if hdparm --security-freeze '"$DISK2ID"'; then'
-        echo '        logger "$0: SSD freeze command executed successfully"'
-        echo '    else'
-        echo '        logger "$0: SSD freeze command failed"'
-        echo '    fi'
-    } >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
-fi
-echo 'fi' >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 
 # Install packages
 ## START sed
