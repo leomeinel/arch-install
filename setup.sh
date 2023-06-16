@@ -251,6 +251,9 @@ STRING="^VIDEOS=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
 ### END sed
+## Configure /etc/mdadm.conf
+lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
+    mdadm --detail --scan >>/etc/mdadm.conf
 ## Configure /etc/usbguard/usbguard-daemon.conf /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
