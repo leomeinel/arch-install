@@ -34,7 +34,7 @@ mkdir -p ~/.anacron/{etc,spool,etc/cron.daily,etc/cron.weekly,etc/cron.monthly}
     echo 'SHELL=/bin/sh'
     echo 'PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin'
     echo "MAILTO=$(whoami)"
-    echo '# the maximal random delay added to the base delay of the jobs'
+    echo '# the maximum random delay added to the base delay of the jobs'
     echo 'RANDOM_DELAY=45'
     echo '# the jobs will be started during the following hours only'
     echo 'START_HOURS_RANGE=3-22'

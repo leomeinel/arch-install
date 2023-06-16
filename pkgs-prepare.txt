@@ -13,7 +13,6 @@ linux-headers
 linux-lts
 linux-lts-headers
 lvm2
-mdadm
 neovim
 opendoas
 reflector
