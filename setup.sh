@@ -43,10 +43,8 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
-groupadd -r libvirt
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
-useradd -ms /bin/bash -G libvirt,video "$VIRTUSER"
 useradd -ms /bin/bash -G video "$HOMEUSER"
 useradd -ms /bin/bash -G video "$GUESTUSER"
 echo "#################################################################"
@@ -66,8 +64,6 @@ echo "Enter password for root"
 passwd root
 echo "Enter password for $SYSUSER"
 passwd "$SYSUSER"
-echo "Enter password for $VIRTUSER"
-passwd "$VIRTUSER"
 echo "Enter password for $HOMEUSER"
 passwd "$HOMEUSER"
 echo "Enter password for $GUESTUSER"
@@ -96,7 +92,6 @@ chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $SYSUSER"
-    echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $VIRTUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $HOMEUSER"
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $GUESTUSER"
     echo ''
@@ -138,6 +133,12 @@ STRING="^#CacheDir"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/CacheDir/" "$FILE"
 ### END sed
+{
+    echo ""
+    echo "# Custom"
+    echo "[multilib]"
+    echo "Include = /etc/pacman.d/mirrorlist"
+} >>/etc/pacman.conf
 pacman-key --init
 ## Update mirrors
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
@@ -149,8 +150,6 @@ pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'cups-pk-helper'
 pacman -Qq "lollypop" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
-pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ndnsmasq'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
 pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
@@ -159,6 +158,8 @@ pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nmailcap'
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2'
+pacman -Qq "steam" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nlib32-mesa\nttf-liberation'
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
 pacman -Syu --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
@@ -246,8 +247,6 @@ STRING="^VIDEOS=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
 ### END sed
-## Configure /etc/mdadm.conf
-mdadm --detail --scan >>/etc/mdadm.conf
 ## Configure /etc/usbguard/usbguard-daemon.conf /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
@@ -481,8 +480,6 @@ pacman -Qq "cups" >/dev/null 2>&1 &&
     systemctl enable cups.service
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
-pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    systemctl enable libvirtd
 pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
