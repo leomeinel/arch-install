@@ -67,7 +67,7 @@ YES)
             PART_SIZE="$((-(("$SIZE2" - "$SIZE1") / 1024)))K"
         fi
     fi
-    ## Prompt user
+    ## Prompt user for to confirm erasure
     read -rp "Erase $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
     case "$choice" in
     YES)
