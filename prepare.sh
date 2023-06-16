@@ -308,6 +308,7 @@ if [[ -n "$DISK1ID" ]]; then
         } >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
     fi
     echo 'fi' >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
+    chmod 755 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 fi
 
 # Install packages
