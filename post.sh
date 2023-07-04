@@ -244,7 +244,7 @@ YES)
         echo 'read -rp "Have you transferred your keys to $EFI_KEYS_DIR? (Type '"'"'yes'"'"' in capital letters): " choice'
         echo 'case "$choice" in'
         echo 'YES)'
-        echo 'chmod 000 "$EFI_KEYS_DIR"/*'
+        echo '    doas chmod 000 "$EFI_KEYS_DIR"/*'
         echo '    if mountpoint -q /efi; then'
         echo '        doas umount -AR /efi'
         echo '    fi'
@@ -261,8 +261,8 @@ YES)
         echo '    ;;'
         echo 'esac'
     } >~/secureboot.sh
-    mkdir -p "$EFI_KEYS_DIR"
-    chmod 700 "$EFI_KEYS_DIR"
+    doas mkdir -p "$EFI_KEYS_DIR"
+    doas chmod 700 "$EFI_KEYS_DIR"
     chmod 700 ~/secureboot.sh
     echo "WARNING: User aborted enrolling secureboot keys"
     echo "         Deploy your own keys in $EFI_KEYS_DIR and run ~/secureboot.sh to sign your bootloader"
