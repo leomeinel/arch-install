@@ -52,7 +52,7 @@ echo "#                      _    _           _   _                   #"
 echo "#                     / \  | | ___ _ __| |_| |                  #"
 echo "#                    / _ \ | |/ _ \ '__| __| |                  #"
 echo "#                   / ___ \| |  __/ |  | |_|_|                  #"
-echo "#                  /_/   \_\_|\___|_|   \__(_)                  #"
+echo "#                  /_/   \_\_|\___|_|   \__(_)                  #Sort services and dependencies alphabetically and add additional checksMer"
 echo "#                                                               #"
 echo "#       It is mandatory to choose a password matching the       #"
 echo "#                       following specs:                        #"
@@ -182,8 +182,6 @@ pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
 ## Install optional dependencies
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2'
-pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ndnsmasq'
 pacman -Qq "lollypop" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
 pacman -Qq "steam" >/dev/null 2>&1 &&
