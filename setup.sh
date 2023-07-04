@@ -455,7 +455,7 @@ pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
-        systemctl enable reflector
+        systemctl enable reflector.service
         systemctl enable reflector.timer
     }
 pacman -Qq "snapper" >/dev/null 2>&1 &&
@@ -464,7 +464,7 @@ pacman -Qq "snapper" >/dev/null 2>&1 &&
         systemctl enable snapper-timeline.timer
     }
 pacman -Qq "sysstat" >/dev/null 2>&1 &&
-    systemctl enable sysstat
+    systemctl enable sysstat.service
 pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
