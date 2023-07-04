@@ -187,6 +187,8 @@ pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
+pacman -Qq "tlp" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nsmartmontools'
 pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntransmission-cli'
 pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
@@ -538,6 +540,12 @@ pacman -Qq "sysstat" >/dev/null 2>&1 &&
     systemctl enable sysstat
 pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
+pacman -Qq "tlp" >/dev/null 2>&1 &&
+    {
+        systemctl enable tlp.service
+        systemctl mask systemd-rfkill.service
+        systemctl mask systemd-rfkill.socket
+    }
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 
