@@ -197,10 +197,10 @@ pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2'
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
-pacman -Syu --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
+pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
 ## Reinstall pipewire plugins as dependencies
 pacman -Qq "pipewire" >/dev/null 2>&1 &&
-    pacman -Syu --noprogressbar --noconfirm --asdeps pipewire-alsa pipewire-jack pipewire-pulse
+    pacman -S --noprogressbar --noconfirm --asdeps pipewire-alsa pipewire-jack pipewire-pulse
 
 # Configure $SYSUSER
 ## Run sysuser.sh
