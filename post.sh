@@ -307,7 +307,7 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 
 # Install packages
 paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
-paru --noprogressbar --noconfirm -Syu
+paru -Syu --noprogressbar --noconfirm
 paru -Scc
 
 # Clean firecfg
