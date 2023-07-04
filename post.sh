@@ -182,6 +182,7 @@ doas chmod 644 /etc/iptables/*.rules
 # Prompt user
 # This prompt prevents unwanted overrides of already enrolled keys
 echo "INFO: To deploy your own keys, don't confirm the next prompt"
+source "/etc/cryptboot.conf"
 read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
 case "$choice" in
 YES)
@@ -192,7 +193,6 @@ YES)
     doas cryptboot-efikeys create
     doas cryptboot-efikeys enroll
     doas cryptboot systemd-boot-sign
-    source "/etc/cryptboot.conf"
     doas sh -c "{
         echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/db.crt\""
         echo "uefi_secureboot_key=\""$EFI_KEYS_DIR"/db.key\""
@@ -211,6 +211,7 @@ YES)
         echo '        doas umount -AR /efi'
         echo '    fi'
         echo '    doas mount /efi'
+        echo '    doas cryptboot-efikeys enroll'
         echo '    doas cryptboot systemd-boot-sign'
         echo '    doas sh -c "{'
         echo '        echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/db.crt\""'
