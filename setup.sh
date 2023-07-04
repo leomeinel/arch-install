@@ -179,12 +179,14 @@ reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protoco
 # Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
 ## Install optional dependencies
-pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'cups-pk-helper'
-pacman -Qq "lollypop" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
+pacman -Qq "apparmor" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\npython-notify2'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
+pacman -Qq "lollypop" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
+pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'cups-pk-helper'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
 pacman -Qq "tlp" >/dev/null 2>&1 &&
@@ -193,8 +195,6 @@ pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntransmission-cli'
 pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nmailcap'
-pacman -Qq "apparmor" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\npython-notify2'
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
 pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
@@ -518,8 +518,6 @@ pacman -Qq "cronie" >/dev/null 2>&1 &&
     systemctl enable cronie.service
 pacman -Qq "cups" >/dev/null 2>&1 &&
     systemctl enable cups.service
-pacman -Qq "util-linux" >/dev/null 2>&1 &&
-    systemctl enable fstrim.timer
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     systemctl enable libvirtd.service
 pacman -Qq "logwatch" >/dev/null 2>&1 &&
@@ -540,16 +538,21 @@ pacman -Qq "sysstat" >/dev/null 2>&1 &&
     systemctl enable sysstat.service
 pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
+pacman -Qq "tlp-rdw" >/dev/null 2>&1 && pacman -Qq "networkmanager" >/dev/null 2>&1 &&
+    systemctl enable NetworkManager-dispatcher.service
 pacman -Qq "tlp" >/dev/null 2>&1 &&
     {
         systemctl enable tlp.service
-        systemctl mask systemd-rfkill.service
-        systemctl mask systemd-rfkill.socket
+        pacman -Qq "systemd" >/dev/null 2>&1 &&
+        {
+            systemctl mask systemd-rfkill.service
+            systemctl mask systemd-rfkill.socket
+        }
     }
-pacman -Qq "tlp-rdw" >/dev/null 2>&1 &&
-    systemctl enable NetworkManager-dispatcher.service
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
+pacman -Qq "util-linux" >/dev/null 2>&1 &&
+    systemctl enable fstrim.timer
 
 # Setup /boot & /efi
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
