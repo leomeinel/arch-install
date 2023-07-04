@@ -511,9 +511,9 @@ pacman -Qq "apparmor" >/dev/null 2>&1 &&
         systemctl enable auditd.service
     }
 pacman -Qq "avahi" >/dev/null 2>&1 &&
-    systemctl enable avahi-daemon
+    systemctl enable avahi-daemon.service
 pacman -Qq "bluez" >/dev/null 2>&1 &&
-    systemctl enable bluetooth
+    systemctl enable bluetooth.service
 pacman -Qq "cronie" >/dev/null 2>&1 &&
     systemctl enable cronie.service
 pacman -Qq "cups" >/dev/null 2>&1 &&
@@ -521,14 +521,14 @@ pacman -Qq "cups" >/dev/null 2>&1 &&
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    systemctl enable libvirtd
+    systemctl enable libvirtd.service
 pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
-    systemctl enable NetworkManager
+    systemctl enable NetworkManager.service
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
-        systemctl enable reflector
+        systemctl enable reflector.service
         systemctl enable reflector.timer
     }
 pacman -Qq "snapper" >/dev/null 2>&1 &&
@@ -537,7 +537,7 @@ pacman -Qq "snapper" >/dev/null 2>&1 &&
         systemctl enable snapper-timeline.timer
     }
 pacman -Qq "sysstat" >/dev/null 2>&1 &&
-    systemctl enable sysstat
+    systemctl enable sysstat.service
 pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
 pacman -Qq "tlp" >/dev/null 2>&1 &&
@@ -546,6 +546,8 @@ pacman -Qq "tlp" >/dev/null 2>&1 &&
         systemctl mask systemd-rfkill.service
         systemctl mask systemd-rfkill.socket
     }
+pacman -Qq "tlp-rdw" >/dev/null 2>&1 &&
+    systemctl enable NetworkManager-dispatcher.service
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 
