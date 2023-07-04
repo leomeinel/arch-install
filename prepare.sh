@@ -328,11 +328,6 @@ reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protoco
 pacman -Sy --noprogressbar --noconfirm --needed lshw
 [[ -n "$DISK2" ]] &&
     echo "mdadm" >>"$SCRIPT_DIR/pkgs-prepare.txt"
-[[ -d "/proc/acpi/button/lid" ]] &&
-    {
-        echo "tlp"
-        echo "tlp-rdw"
-    } >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
