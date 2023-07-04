@@ -331,9 +331,14 @@ sed -i "s/$STRING/NoProgressBar/" "$FILE"
     echo "Include = /etc/pacman.d/mirrorlist"
 } >>/etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
-pacman -Sy --noprogressbar --noconfirm archlinux-keyring lshw
+pacman -Sy --noprogressbar --noconfirm --needed lshw
 [[ -n "$DISK2" ]] &&
     echo "mdadm" >>"$SCRIPT_DIR/pkgs-prepare.txt"
+[[ -d "/proc/acpi/button/lid" ]] &&
+    {
+        echo "tlp"
+        echo "tlp-rdw"
+    } >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&

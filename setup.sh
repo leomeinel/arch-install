@@ -186,6 +186,8 @@ pacman -Qq "lollypop" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
+pacman -Qq "tlp" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nsmartmontools'
 pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntransmission-cli'
 pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
@@ -196,10 +198,10 @@ pacman -Qq "steam" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nlib32-mesa\nttf-liberation'
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
-pacman -Syu --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
+pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
 ## Reinstall pipewire plugins as dependencies
 pacman -Qq "pipewire" >/dev/null 2>&1 &&
-    pacman -Syu --noprogressbar --noconfirm --asdeps pipewire-alsa pipewire-jack pipewire-pulse
+    pacman -S --noprogressbar --noconfirm --asdeps pipewire-alsa pipewire-jack pipewire-pulse
 
 # Configure $SYSUSER
 ## Run sysuser.sh
@@ -510,9 +512,9 @@ pacman -Qq "apparmor" >/dev/null 2>&1 &&
         systemctl enable auditd.service
     }
 pacman -Qq "avahi" >/dev/null 2>&1 &&
-    systemctl enable avahi-daemon
+    systemctl enable avahi-daemon.service
 pacman -Qq "bluez" >/dev/null 2>&1 &&
-    systemctl enable bluetooth
+    systemctl enable bluetooth.service
 pacman -Qq "cronie" >/dev/null 2>&1 &&
     systemctl enable cronie.service
 pacman -Qq "cups" >/dev/null 2>&1 &&
@@ -522,10 +524,10 @@ pacman -Qq "util-linux" >/dev/null 2>&1 &&
 pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
-    systemctl enable NetworkManager
+    systemctl enable NetworkManager.service
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
-        systemctl enable reflector
+        systemctl enable reflector.service
         systemctl enable reflector.timer
     }
 pacman -Qq "snapper" >/dev/null 2>&1 &&
@@ -534,9 +536,17 @@ pacman -Qq "snapper" >/dev/null 2>&1 &&
         systemctl enable snapper-timeline.timer
     }
 pacman -Qq "sysstat" >/dev/null 2>&1 &&
-    systemctl enable sysstat
+    systemctl enable sysstat.service
 pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
+pacman -Qq "tlp" >/dev/null 2>&1 &&
+    {
+        systemctl enable tlp.service
+        systemctl mask systemd-rfkill.service
+        systemctl mask systemd-rfkill.socket
+    }
+pacman -Qq "tlp-rdw" >/dev/null 2>&1 &&
+    systemctl enable NetworkManager-dispatcher.service
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 
