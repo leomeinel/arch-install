@@ -467,14 +467,6 @@ pacman -Qq "sysstat" >/dev/null 2>&1 &&
     systemctl enable sysstat.service
 pacman -Qq "systemd" >/dev/null 2>&1 &&
     systemctl enable systemd-boot-update.service
-pacman -Qq "tlp" >/dev/null 2>&1 &&
-    {
-        systemctl enable tlp.service
-        systemctl mask systemd-rfkill.service
-        systemctl mask systemd-rfkill.socket
-    }
-pacman -Qq "tlp-rdw" >/dev/null 2>&1 &&
-    systemctl enable NetworkManager-dispatcher.service
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 
