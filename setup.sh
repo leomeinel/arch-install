@@ -442,17 +442,10 @@ pacman -Qq "cronie" >/dev/null 2>&1 &&
     systemctl enable cronie.service
 pacman -Qq "docker" >/dev/null 2>&1 &&
     systemctl enable docker.service
-pacman -Qq "openssh" >/dev/null 2>&1 &&
-    systemctl enable sshd.service
-pacman -Qq "systemd" >/dev/null 2>&1 &&
-    {
-        systemctl enable systemd-resolved.service
-        systemctl enable systemd-networkd.service
-    }
-pacman -Qq "util-linux" >/dev/null 2>&1 &&
-    systemctl enable fstrim.timer
 pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
+pacman -Qq "openssh" >/dev/null 2>&1 &&
+    systemctl enable sshd.service
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
         systemctl enable reflector.service
@@ -466,9 +459,15 @@ pacman -Qq "snapper" >/dev/null 2>&1 &&
 pacman -Qq "sysstat" >/dev/null 2>&1 &&
     systemctl enable sysstat.service
 pacman -Qq "systemd" >/dev/null 2>&1 &&
-    systemctl enable systemd-boot-update.service
+    {
+        systemctl enable systemd-resolved.service
+        systemctl enable systemd-networkd.service
+        systemctl enable systemd-boot-update.service
+    }
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
+pacman -Qq "util-linux" >/dev/null 2>&1 &&
+    systemctl enable fstrim.timer
 
 # Setup /boot & /efi
 if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
