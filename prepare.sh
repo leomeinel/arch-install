@@ -42,10 +42,26 @@ YES)
             }
         DISKS=("${DISKS[@]}")
     done
-    [[ "${#DISKS[@]}" -ne 2 ]] &&
+    [[ "${#DISKS[@]}" -lt 2 ]] &&
         {
-            echo "ERROR: There are not exactly 2 disks attached!"
+            echo "ERROR: There are less than 2 disks attached!"
             exit 1
+        }
+    [[ "${#DISKS[@]}" -gt 2 ]] &&
+        {
+            echo "WARNING: There are more than 2 disks attached!"
+            echo "         Select 2 disks from the list below."
+            lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
+            ### Prompt user to select 2 RAID members
+            read -rp "Which disk should be the first RAID member? (Type '/dev/sdX' fex.): " choice0
+            read -rp "Which disk should be the second RAID member? (Type '/dev/sdY' fex.): " choice1
+            if [[ "$(tr -d "[:space:]" <<<"$choice0")" != "$(tr -d "[:space:]" <<<"$choice1")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "$choice0" "$choice1"; then
+                echo "Preparing $choice0 and $choice1..."
+                DISKS=("$choice0" "$choice1")
+            else
+                echo "ERROR: Drives not suitable for installation"
+                exit 1
+            fi
         }
     ## Set size for partition of larger disk
     SIZE1="$(lsblk -drnbo SIZE "${DISKS[0]}" | tr -d "[:space:]")"
