@@ -89,7 +89,7 @@ YES)
         echo "Erasing $DISK1 and $DISK2..."
         ;;
     *)
-        echo "ERROR: User aborted erasing $DISK1 and $DISK2!"
+        echo "ERROR: User aborted erasing ${DISK1} and ${DISK2}!"
         exit 1
         ;;
     esac
