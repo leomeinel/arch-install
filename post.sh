@@ -255,7 +255,7 @@ YES)
         echo '    } >/etc/dracut.conf.d/secureboot.conf"'
         echo '    ;;'
         echo '*)'
-        echo '    echo "ERROR: User has not transferred keys to $EFI_KEYS_DIR"'
+        echo '    echo "ERROR: User has not transferred keys to ${EFI_KEYS_DIR}!"'
         echo '    exit 1'
         echo '    ;;'
         echo 'esac'
