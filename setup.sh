@@ -543,10 +543,10 @@ pacman -Qq "tlp" >/dev/null 2>&1 &&
     {
         systemctl enable tlp.service
         pacman -Qq "systemd" >/dev/null 2>&1 &&
-        {
-            systemctl mask systemd-rfkill.service
-            systemctl mask systemd-rfkill.socket
-        }
+            {
+                systemctl mask systemd-rfkill.service
+                systemctl mask systemd-rfkill.socket
+            }
     }
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
