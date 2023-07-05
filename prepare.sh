@@ -100,9 +100,9 @@ YES)
 *)
     ## Prompt user for disk
     ## NOTE: USB will be valid to allow external SSDs
-    lsblk -drnpo SIZE,NAME -I 259,8,254
+    lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
     read -rp "Which disk do you want to erase? (Type '/dev/sdX' fex.): " choice
-    if lsblk -drnpo SIZE,NAME -I 259,8,254 "$choice"; then
+    if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "$choice"; then
         echo "Erasing $choice..."
         DISK1="$choice"
     else
