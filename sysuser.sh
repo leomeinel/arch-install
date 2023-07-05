@@ -44,7 +44,10 @@ mkdir -p ~/.anacron/{etc,spool,etc/cron.daily,etc/cron.weekly,etc/cron.monthly}
     echo '7 25 cron.weekly nice run-parts $HOME/.anacron/etc/cron.weekly'
     echo '@monthly 45 cron.monthly nice run-parts $HOME/.anacron/etc/cron.monthly'
 } >~/.anacron/etc/anacrontab
-(crontab -l 2>/dev/null; echo '@hourly /usr/bin/anacron -s -t $HOME/.anacron/etc/anacrontab -S $HOME/.anacron/spool')| crontab -
+(
+    crontab -l 2>/dev/null
+    echo '@hourly /usr/bin/anacron -s -t $HOME/.anacron/etc/anacrontab -S $HOME/.anacron/spool'
+) | crontab -
 
 # Remove repo
 rm -rf ~/git
