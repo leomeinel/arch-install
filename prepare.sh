@@ -42,10 +42,25 @@ YES)
             }
         DISKS=("${DISKS[@]}")
     done
-    [[ "${#DISKS[@]}" -ne 2 ]] &&
+    [[ "${#DISKS[@]}" -lt 2 ]] &&
         {
-            echo "ERROR: There are not exactly 2 disks attached!"
+            echo "ERROR: There are less than 2 disks attached!"
             exit 1
+        }
+    [[ "${#DISKS[@]}" -gt 2 ]] &&
+        {
+            echo "WARNING: There are more than 2 disks attached!"
+            lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
+            ### Prompt user to select 2 RAID members
+            read -rp "Which disk should be the first RAID member? (Type '/dev/sdX' fex.): " choice0
+            read -rp "Which disk should be the second RAID member? (Type '/dev/sdY' fex.): " choice1
+            if [[ "$(tr -d "[:space:]" <<<"$choice0")" != "$(tr -d "[:space:]" <<<"$choice1")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "$choice0" "$choice1"; then
+                echo "Using $choice0 and $choice1 for installation."
+                DISKS=("$choice0" "$choice1")
+            else
+                echo "ERROR: Drives not suitable for installation!"
+                exit 1
+            fi
         }
     ## Set size for partition of larger disk
     SIZE1="$(lsblk -drnbo SIZE "${DISKS[0]}" | tr -d "[:space:]")"
@@ -67,14 +82,14 @@ YES)
             PART_SIZE="$((-(("$SIZE2" - "$SIZE1") / 1024)))K"
         fi
     fi
-    ## Prompt user for to confirm erasure
+    ## Prompt user to confirm erasure
     read -rp "Erase $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
     case "$choice" in
     YES)
         echo "Erasing $DISK1 and $DISK2..."
         ;;
     *)
-        echo "ERROR: User aborted erasing $DISK1 and $DISK2"
+        echo "ERROR: User aborted erasing $DISK1 and $DISK2!"
         exit 1
         ;;
     esac
@@ -100,13 +115,13 @@ YES)
 *)
     ## Prompt user for disk
     ## NOTE: USB will be valid to allow external SSDs
-    lsblk -drnpo SIZE,NAME -I 259,8,254
+    lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
     read -rp "Which disk do you want to erase? (Type '/dev/sdX' fex.): " choice
-    if lsblk -drnpo SIZE,NAME -I 259,8,254 "$choice"; then
+    if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "$choice"; then
         echo "Erasing $choice..."
         DISK1="$choice"
     else
-        echo "ERROR: Drive not suitable for installation"
+        echo "ERROR: Drive not suitable for installation!"
         exit 1
     fi
     ## Detect, close & erase old crypt volumes
@@ -120,7 +135,7 @@ YES)
             cryptsetup erase "$OLD_DISK1P2"
             sgdisk -Z "$OLD_DISK1P2"
         else
-            echo "ERROR: Can't erase old crypt volume"
+            echo "ERROR: Can't erase old crypt volume!"
             exit 1
         fi
     fi
