@@ -186,7 +186,7 @@ pacman -Qq "libvirt" >/dev/null 2>&1 &&
 pacman -Qq "lollypop" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'cups-pk-helper'
+    DEPENDENCIES+=$'\ncups-pk-helper'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
 pacman -Qq "tlp" >/dev/null 2>&1 &&
