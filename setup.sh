@@ -187,7 +187,7 @@ pacman -Qq "lollypop" >/dev/null 2>&1 &&
 pacman -Qq "steam" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nlib32-mesa\nttf-liberation'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'cups-pk-helper'
+    DEPENDENCIES+=$'\ncups-pk-helper'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
 pacman -Qq "tlp" >/dev/null 2>&1 &&
