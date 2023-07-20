@@ -4,6 +4,7 @@ bash-completion
 bat
 bc
 dbus
+dosfstools
 cronie
 duf
 dust
