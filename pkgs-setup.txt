@@ -18,6 +18,7 @@ cronie
 cups
 dbus
 devtools
+dosfstools
 duf
 dust
 efibootmgr
