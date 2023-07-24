@@ -139,6 +139,38 @@ chmod 755 /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts
 chmod 644 /etc/pacman.d/hooks/*.hook
 chmod 744 /etc/pacman.d/hooks/scripts/*.sh
+## Configure /etc/snap-pac.ini
+{
+    echo ""
+    echo "# Custom"
+    echo "[root]"
+    echo "snapshot = True"
+    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
+    echo ""
+    echo "[usr]"
+    echo "snapshot = True"
+    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
+    echo ""
+    echo "[var]"
+    echo "snapshot = True"
+    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
+    echo ""
+    echo "[var_lib]"
+    echo "snapshot = True"
+    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
+    echo ""
+    echo "[var_lib_docker]"
+    echo "snapshot = True"
+    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
+    echo ""
+    echo "[var_lib_libvirt]"
+    echo "snapshot = True"
+    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
+    echo ""
+    echo "[var_lib_mysql]"
+    echo "snapshot = True"
+    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
+} >>/etc/snap-pac.ini
 ## Configure /etc/systemd/zram-generator.conf
 chmod 644 /etc/systemd/zram-generator.conf
 ## Configure /etc/sysctl.d
