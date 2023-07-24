@@ -272,7 +272,6 @@ esac
 
 # Install paru-bin
 source ~/.bash_profile
-rustup update
 git clone https://aur.archlinux.org/paru-bin.git ~/git/paru-bin
 cd ~/git/paru-bin
 makepkg -sri --noprogressbar --noconfirm --needed
