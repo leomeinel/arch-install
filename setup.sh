@@ -514,8 +514,6 @@ pacman -Qq "avahi" >/dev/null 2>&1 &&
     systemctl enable avahi-daemon.service
 pacman -Qq "bluez" >/dev/null 2>&1 &&
     systemctl enable bluetooth.service
-pacman -Qq "cronie" >/dev/null 2>&1 &&
-    systemctl enable cronie.service
 pacman -Qq "cups" >/dev/null 2>&1 &&
     systemctl enable cups.service
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
