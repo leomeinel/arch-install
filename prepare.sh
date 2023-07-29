@@ -346,7 +346,7 @@ sed -i "s/$STRING/NoProgressBar/" "$FILE"
     echo "Include = /etc/pacman.d/mirrorlist"
 } >>/etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
-pacman -Sy --noprogressbar --noconfirm --needed lshw
+pacman -S --noprogressbar --noconfirm --needed lshw
 [[ -n "$DISK2" ]] &&
     echo "mdadm" >>"$SCRIPT_DIR/pkgs-prepare.txt"
 [[ -d "/proc/acpi/button/lid" ]] &&
