@@ -243,23 +243,19 @@ OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@
 OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS3="noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 mount_subs0() {
-    mkdir -p "/mnt$1"
-    mount -o "$3$2" "$4" "/mnt$1"
-    mkdir -p "/mnt$1.snapshots"
-    mount -o "$OPTIONS3${2}_snapshots" "$4" "/mnt${SUBVOLUMES[$i]}.snapshots"
+    mount --mkdir -o "$3$2" "$4" "/mnt$1"
+    mount --mkdir -o "$OPTIONS3${2}_snapshots" "$4" "/mnt$1.snapshots"
     mount_subs1 "$1" "$3" "$4"
 }
 mount_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
         if [[ "${SUBVOLUMES[$a]}" != "$1" ]] && grep -nq "^$1" <<<"${SUBVOLUMES[$a]}"; then
-            mkdir -p "/mnt${SUBVOLUMES[$a]}"
             if grep -nq "^${1}lib/" <<<"${SUBVOLUMES[$a]}"; then
-                mount -o "$OPTIONS3${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
+                mount --mkdir -o "$OPTIONS3${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
             else
-                mount -o "$2${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
+                mount --mkdir -o "$2${CONFIGS[$a]}" "$3" "/mnt${SUBVOLUMES[$a]}"
             fi
-            mkdir -p "/mnt${SUBVOLUMES[$a]}.snapshots"
-            mount -o "$OPTIONS3${CONFIGS[$a]}_snapshots" "$3" "/mnt${SUBVOLUMES[$a]}.snapshots"
+            mount --mkdir -o "$OPTIONS3${CONFIGS[$a]}_snapshots" "$3" "/mnt${SUBVOLUMES[$a]}.snapshots"
         fi
     done
 }
@@ -267,8 +263,7 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[$i]}" in
     "/")
         mount -o "$OPTIONS0" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}"
-        mkdir -p "/mnt${SUBVOLUMES[$i]}.snapshots"
-        mount -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots"
+        mount --mkdir -o "${OPTIONS3}snapshots" /dev/mapper/vg0-lv0 "/mnt${SUBVOLUMES[$i]}.snapshots"
         ;;
     "/usr/")
         mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS1" "/dev/mapper/vg0-lv1"
@@ -283,13 +278,9 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
 done
 chmod 775 /mnt/var/games
 ## /efi
-mkdir -p /mnt/efi
-mount -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
+mount --mkdir -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
 [[ -n "$DISK2" ]] &&
-    {
-        mkdir -p /mnt/.efi.bak
-        mount -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
-    }
+    mount --mkdir -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
 ## /boot
 mkdir -p /mnt/boot
 
@@ -365,7 +356,8 @@ lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
         echo "vulkan-intel"
         echo "xf86-video-intel"
     } >>"$SCRIPT_DIR"/pkgs-prepare.txt
-pacstrap /mnt - <"$SCRIPT_DIR/pkgs-prepare.txt"
+pacman -Syy
+pacstrap -K /mnt - <"$SCRIPT_DIR/pkgs-prepare.txt"
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab
