@@ -16,6 +16,7 @@ firejail
 fwupd
 git-delta
 glow
+gptfdisk
 htop
 hwinfo
 hyperfine
