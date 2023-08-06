@@ -36,6 +36,7 @@ git-delta
 glow
 gnome-keyring
 go
+gptfdisk
 gradle
 grex
 grim
