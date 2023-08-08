@@ -5,13 +5,11 @@ Operation = Remove
 Type = Package
 Target = linux
 Target = linux-lts
-Target = linux-zen
 
 [Action]
 NeedsTargets
 Depends = linux
 Depends = linux-lts
-Depends = linux-zen
 Description = Signing kernel for secure boot...
 When = PostTransaction
 Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/96-systemd-boot-sign.sh'
