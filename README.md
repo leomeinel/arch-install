@@ -23,6 +23,7 @@ Meant for servers that are mainly hosting docker.
 ## Installation
 
 ```sh
+pacman -Sy
 pacman -S git
 git clone -b server https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
