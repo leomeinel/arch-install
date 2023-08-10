@@ -23,6 +23,7 @@ Meant for general purpose systems.
 ## Installation
 
 ```sh
+pacman -Sy
 pacman -S git
 git clone https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
