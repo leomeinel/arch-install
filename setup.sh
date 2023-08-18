@@ -222,6 +222,9 @@ fi
 ## Create /etc/encryption/keys directory
 mkdir -p /etc/encryption/keys
 chmod 700 /etc/encryption/keys
+## Create /etc/access/keys directory
+mkdir -p /etc/access/keys
+chmod 700 /etc/access/keys
 ## Configure /etc/localtime /etc/vconsole.conf /etc/hostname /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
