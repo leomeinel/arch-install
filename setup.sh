@@ -1,4 +1,4 @@
-#!/bin/bash
+!/bin/bash
 ###
 # File: setup.sh
 # Author: Leopold Meinel (leo@meinel.dev)
@@ -186,7 +186,7 @@ pacman -Qq "libvirt" >/dev/null 2>&1 &&
 pacman -Qq "lollypop" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
 pacman -Qq "r" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nblas-openblas\ngcc-fortran'
+    DEPENDENCIES+=$'\nblas-openblas\ngcc-fortran\ntk'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ncups-pk-helper'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
