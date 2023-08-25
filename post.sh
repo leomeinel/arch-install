@@ -307,6 +307,9 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 
 # Install packages
 paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
+pacman -Qq "r" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nr-languageserver'
+paru -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
 paru -Syu --noprogressbar --noconfirm
 paru -Scc
 
