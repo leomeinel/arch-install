@@ -6,6 +6,7 @@ librewolf-bin
 macchina-bin
 nwg-bar-bin
 prismlauncher-bin
+radian
 selectdefaultapplication-fork-git
 snapper-gui-git
 swaylock-effects

@@ -5,6 +5,7 @@ apparmor
 arc-gtk-theme
 arch-audit
 ark
+autopep8
 bash-completion
 bat
 bc
@@ -104,7 +105,17 @@ polkit-gnome
 postfix
 postgresql
 procs
+pyenv
 python
+python-aiounittest
+python-case
+python-pipenv
+python-pylint-venv
+python-pytest-asyncio
+python-pytest-black
+python-pytest-flake8
+python-pytest-pylint
+python-pytest-virtualenv
 qemu-desktop
 qt5ct
 qt6ct
@@ -154,5 +165,6 @@ xdg-desktop-portal-wlr
 xdg-user-dirs
 xdg-utils
 xournalpp
+yapf
 yq
 zram-generator
