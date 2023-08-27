@@ -104,8 +104,7 @@ polkit-gnome
 postfix
 postgresql
 procs
-python-pip
-python-psutil
+python
 qemu-desktop
 qt5ct
 qt6ct
