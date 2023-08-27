@@ -308,8 +308,7 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 # Install packages
 paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
 pacman -Qq "r" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nradian'
-paru -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
+    paru -S --noprogressbar --noconfirm --needed radian
 paru -Syu --noprogressbar --noconfirm
 paru -Scc
 
