@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 ###
 # File: setup.sh
 # Author: Leopold Meinel (leo@meinel.dev)
