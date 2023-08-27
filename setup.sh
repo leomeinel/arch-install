@@ -185,6 +185,8 @@ pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
 pacman -Qq "lollypop" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt\nyoutube-dl'
+pacman -Qq "python" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nautopep8\nflake8\nmpdecimal\npyenv\npython-aiounittest\npython-black\npython-case\npython-pip\npython-pipenv\npython-psutil\npython-pylint\npython-pylint-venv\npython-pytest\npython-pytest-asyncio\npython-pytest-black\npython-pytest-flake8\npython-pytest-pylint\npython-pytest-virtualenv\npython-setuptools\npython-virtualenv\nsqlite\nyapf'
 pacman -Qq "r" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nblas-openblas\ngcc-fortran\ntk'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
