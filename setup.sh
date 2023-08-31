@@ -322,6 +322,17 @@ STRING="^#MulticastDNS=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/MulticastDNS=no/" "$FILE"
 ### END sed
+## Lid switching
+### Configure /etc/systemd/logind.conf
+### START sed
+FILE=/etc/systemd/logind.conf
+STRING="^#HandleLidSwitch=.*"
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/HandleLidSwitch=suspend/" "$FILE"
+STRING="^#HandleLidSwitchDocked=.*"
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/HandleLidSwitchDocked=ignore/" "$FILE"
+### END sed
 ### Configure /etc/nsswitch.conf
 ### START sed
 FILE=/etc/nsswitch.conf
