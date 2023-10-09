@@ -26,15 +26,14 @@ sed_exit() {
 # Add groups & users
 ## Configure passwords
 {
-    echo "#%PAM-1.0"
-    echo "password required pam_pwquality.so sha512 rounds=9999999 shadowretry=3 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
-    echo "password required pam_unix.so use_authtok sha512 shadow"
+    echo "# passwd defaults from arch-install"
+    echo "password required pam_pwquality.so yescrypt rounds=11 shadowretry=3 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
+    echo "password required pam_unix.so use_authtok yescrypt rounds=11 shadow"
 } >/etc/pam.d/passwd
 {
     echo ""
     echo "# Custom"
-    echo "SHA_CRYPT_MIN_ROUNDS 9999999"
-    echo "SHA_CRYPT_MAX_ROUNDS 9999999"
+    echo "YESCRYPT_COST_FACTOR 11"
 } >>/etc/login.defs
 ## START sed
 FILE=/etc/default/useradd
