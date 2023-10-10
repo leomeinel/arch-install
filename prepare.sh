@@ -280,9 +280,9 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
 done
 chmod 775 /mnt/var/games
 ## /efi
-mount --mkdir -o noexec,nodev,nosuid "$DISK1P1" /mnt/efi
+mount --mkdir -o noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077 "$DISK1P1" /mnt/efi
 [[ -n "$DISK2" ]] &&
-    mount --mkdir -o noexec,nodev,nosuid "$DISK2P1" /mnt/.efi.bak
+    mount --mkdir -o noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077 "$DISK2P1" /mnt/.efi.bak
 ## /boot
 mkdir -p /mnt/boot
 
