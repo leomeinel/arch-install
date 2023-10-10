@@ -179,6 +179,7 @@ reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protoco
 # Install packages
 pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
 ## Install optional dependencies
+DEPENDENCIES=""
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
@@ -190,7 +191,7 @@ pacman -Qq "mpv" >/dev/null 2>&1 &&
 pacman -Qq "python" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nflake8\nmpdecimal\npython-black\npython-pip\npython-psutil\npython-pylint\npython-pytest\npython-setuptools\npython-virtualenv\nsqlite'
 pacman -Qq "r" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nblas-openblas\ngcc-fortran\ntk'
+    DEPENDENCIES+=$'\ngcc-fortran\ntk'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ncups-pk-helper'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
@@ -205,8 +206,12 @@ pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
 pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
 ## Reinstall pipewire plugins as dependencies
+DEPENDENCIES=""
 pacman -Qq "pipewire" >/dev/null 2>&1 &&
-    pacman -S --noprogressbar --noconfirm --asdeps pipewire-alsa pipewire-jack pipewire-pulse
+    DEPENDENCIES+=$'\npipewire-alsa\npipewire-jack\npipewire-pulse'
+pacman -Qq "r" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nblas-openblas'
+pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES"
 
 # Configure $SYSUSER
 ## Run sysuser.sh
