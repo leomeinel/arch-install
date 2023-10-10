@@ -124,6 +124,8 @@ YES)
         echo "ERROR: Drive not suitable for installation!"
         exit 1
     fi
+    ## Deactivate all vgs
+    vgchange -an
     ## Detect, close & erase old crypt volumes
     if lsblk -rno TYPE "$DISK1" | grep -q "crypt"; then
         OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME "$DISK1" | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
