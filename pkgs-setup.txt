@@ -9,6 +9,7 @@ autopep8
 bash-completion
 bat
 bc
+blas-openblas
 bleachbit
 blueman
 bluez
