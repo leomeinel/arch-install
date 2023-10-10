@@ -604,11 +604,7 @@ pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
 
 # Setup /boot & /efi
-if udevadm info -q property --property=ID_BUS --value "$DISK1" | grep -q "usb"; then
-    bootctl --esp-path=/efi --no-variables install
-else
-    bootctl --esp-path=/efi install
-fi
+bootctl --esp-path=/efi --no-variables install
 dracut --regenerate-all
 
 # Remove repo
