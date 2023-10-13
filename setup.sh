@@ -378,6 +378,10 @@ sed -i "s/$STRING/AutoEnable=true/" "$FILE"
     echo "snapshot = True"
     echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
     echo ""
+    echo "[var_lib_flatpak]"
+    echo "snapshot = True"
+    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
+    echo ""
     echo "[var_lib_libvirt]"
     echo "snapshot = True"
     echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'

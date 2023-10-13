@@ -33,6 +33,7 @@ ffmpeg
 filezilla
 firefox
 firejail
+flatpak
 fwupd
 gimp
 git-delta
