@@ -170,3 +170,4 @@ xournalpp
 yapf
 yq
 zram-generator
+zenity
