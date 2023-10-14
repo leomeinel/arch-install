@@ -21,12 +21,9 @@ doas firecfg --clean
 
 # Configure dot-files (vscodium)
 ~/dot-files/exts-code.sh
-doas su -lc '~/dot-files/exts-code.sh
-' "$VIRTUSER"
-doas su -lc '~/dot-files/exts-code.sh
-' "$HOMEUSER"
-doas su -lc '~/dot-files/exts-code.sh
-' "$GUESTUSER"
+doas su -lc '~/dot-files/exts-code.sh' "$VIRTUSER"
+doas su -lc '~/dot-files/exts-code.sh' "$HOMEUSER"
+doas su -lc '~/dot-files/exts-code.sh' "$GUESTUSER"
 
 # Configure firejail
 ## START sed
