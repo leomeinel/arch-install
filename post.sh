@@ -313,6 +313,13 @@ paru -Scc
 [[ -n $(which flatpak) ]] >/dev/null 2>&1 &&
     flatpak update --system -y --noninteractive
 
+# Prepare dot-files (vscodium)
+/dot-files.sh vscodium
+doas su -lc '/dot-files.sh vscodium' "$VIRTUSER"
+doas su -lc '/dot-files.sh vscodium' "$HOMEUSER"
+doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
+chmod +x ~/post-gui.sh
+
 # Enable systemd services
 pacman -Qq "iptables" >/dev/null 2>&1 &&
     {
@@ -322,7 +329,7 @@ pacman -Qq "iptables" >/dev/null 2>&1 &&
 
 # Enable systemd user services
 pacman -Qq "usbguard-notifier" >/dev/null 2>&1 &&
-    systemctl enable --user usbguard-notifier.service
+    systemctl enable --user usbguard-notifier.services
 
 # Remove repo
 rm -rf ~/git
