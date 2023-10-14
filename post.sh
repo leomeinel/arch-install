@@ -328,7 +328,7 @@ pacman -Qq "usbguard-notifier" >/dev/null 2>&1 &&
 rm -rf ~/git
 
 # Remove scripts
-
+doas rm -f /dot-files.sh
 doas rm -f /root/.bash_history
 rm -f ~/.bash_history
 rm -f "$SCRIPT_DIR/pkgs-post.txt"
