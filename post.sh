@@ -329,7 +329,7 @@ pacman -Qq "iptables" >/dev/null 2>&1 &&
 
 # Enable systemd user services
 pacman -Qq "usbguard-notifier" >/dev/null 2>&1 &&
-    systemctl enable --user usbguard-notifier.services
+    systemctl enable --user usbguard-notifier.service
 
 # Remove repo
 rm -rf ~/git
