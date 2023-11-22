@@ -1,0 +1,3 @@
+com.github.zadam.trilium
+io.freetubeapp.FreeTube
+org.prismlauncher.PrismLauncher
