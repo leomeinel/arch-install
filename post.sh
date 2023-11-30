@@ -180,59 +180,6 @@ doas sh -c 'iptables-save > /etc/iptables/iptables.rules'
 doas sh -c 'ip6tables-save > /etc/iptables/ip6tables.rules'
 doas chmod 644 /etc/iptables/*.rules
 
-# Configure secureboot
-# Prompt user
-# This prompt prevents unwanted overrides of already enrolled keys
-echo "INFO: To deploy your own keys, don't confirm the next prompt"
-source "/etc/cryptboot.conf"
-read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
-case "$choice" in
-YES)
-    if mountpoint -q /efi; then
-        doas umount -AR /efi
-    fi
-    doas mount /efi
-    doas cryptboot-efikeys create
-    doas cryptboot-efikeys enroll
-    doas cryptboot systemd-boot-sign
-    doas sh -c "{
-        echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/db.crt\""
-        echo "uefi_secureboot_key=\""$EFI_KEYS_DIR"/db.key\""
-    } >/etc/dracut.conf.d/secureboot.conf"
-    ;;
-*)
-    {
-        echo '#!/bin/bash'
-        echo ''
-        echo 'source "/etc/cryptboot.conf"'
-        echo 'read -rp "Have you transferred your keys to $EFI_KEYS_DIR? (Type '"'"'yes'"'"' in capital letters): " choice'
-        echo 'case "$choice" in'
-        echo 'YES)'
-        echo '    doas chmod 000 "$EFI_KEYS_DIR"/*'
-        echo '    if mountpoint -q /efi; then'
-        echo '        doas umount -AR /efi'
-        echo '    fi'
-        echo '    doas mount /efi'
-        echo '    doas cryptboot systemd-boot-sign'
-        echo '    doas sh -c "{'
-        echo '        echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/db.crt\""'
-        echo '        echo "uefi_secureboot_key=\""$EFI_KEYS_DIR"/db.key\""'
-        echo '    } >/etc/dracut.conf.d/secureboot.conf"'
-        echo '    ;;'
-        echo '*)'
-        echo '    echo "ERROR: User has not transferred keys to ${EFI_KEYS_DIR}!"'
-        echo '    exit 1'
-        echo '    ;;'
-        echo 'esac'
-    } >~/secureboot.sh
-    doas mkdir -p "$EFI_KEYS_DIR"
-    doas chmod 700 "$EFI_KEYS_DIR"
-    chmod 700 ~/secureboot.sh
-    echo "WARNING: User aborted enrolling secureboot keys"
-    echo "         Deploy your own keys in $EFI_KEYS_DIR and run ~/secureboot.sh to sign your bootloader"
-    ;;
-esac
-
 # Install paru-bin
 source ~/.bash_profile
 git clone https://aur.archlinux.org/paru-bin.git ~/git/paru-bin

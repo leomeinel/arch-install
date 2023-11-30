@@ -93,19 +93,11 @@ YES)
         exit 1
         ;;
     esac
-    ## Detect & close old crypt volumes
-    if lsblk -rno TYPE | grep -q "crypt"; then
-        OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
-        cryptsetup close "$OLD_CRYPT_0"
-    fi
-    ## Detect & erase old crypt/raid1 volumes
+    ## Detect & erase old raid1 volumes
     if lsblk -rno TYPE | grep -q "raid1"; then
         OLD_DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
         OLD_DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
         OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
-        if cryptsetup isLuks "$OLD_RAID_0"; then
-            cryptsetup erase "$OLD_RAID_0"
-        fi
         sgdisk -Z "$OLD_RAID_0"
         mdadm --stop "$OLD_RAID_0"
         mdadm --zero-superblock "$OLD_DISK1P2"
@@ -126,21 +118,9 @@ YES)
     fi
     ## Deactivate all vgs
     vgchange -an
-    ## Detect, close & erase old crypt volumes
-    if lsblk -rno TYPE "$DISK1" | grep -q "crypt"; then
-        OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME "$DISK1" | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
-        OLD_DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-        ### Close old crypt volumes
-        cryptsetup close "$OLD_CRYPT_0"
-        ### Erase old crypt volumes
-        if cryptsetup isLuks "$OLD_DISK1P2"; then
-            cryptsetup erase "$OLD_DISK1P2"
-            sgdisk -Z "$OLD_DISK1P2"
-        else
-            echo "ERROR: Can't erase old crypt volume!"
-            exit 1
-        fi
-    fi
+    ## Detect, close & erase old volumes
+    OLD_DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+    sgdisk -Z "$OLD_DISK1P2"
     ;;
 esac
 
@@ -161,7 +141,7 @@ else
     sgdisk -n 0:0:0 -t 2:8300 "$DISK1"
 fi
 
-# Configure raid and encryption
+# Configure raid
 DISK1P1="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 if [[ -n "$DISK2" ]]; then
@@ -169,22 +149,20 @@ if [[ -n "$DISK2" ]]; then
     DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
     ## Configure raid1
     mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any --name=md0 /dev/md/md0 "$DISK1P2" "$DISK2P2"
-    ## Configure encryption
+    ## Configure lvm
     cryptsetup open --type plain -d /dev/urandom /dev/md/md0 to_be_wiped
     cryptsetup close to_be_wiped
-    cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks2 /dev/md/md0
-    cryptsetup open --type luks2 --perf-no_read_workqueue --perf-no_write_workqueue --persistent /dev/md/md0 md0_crypt
+    pvcreate /dev/md/md0
+    vgcreate vg0 /dev/md/md0
 else
-    ## Configure encryption
+    ## Configure lvm
     cryptsetup open --type plain -d /dev/urandom "$DISK1P2" to_be_wiped
     cryptsetup close to_be_wiped
-    cryptsetup -y -v -h sha512 -s 512 luksFormat --type luks2 "$DISK1P2"
-    cryptsetup open --type luks2 "$DISK1P2" md0_crypt
+    pvcreate "$DISK1P2"
+    vgcreate vg0 "$DISK1P2"
 fi
 
 # Configure lvm
-pvcreate /dev/mapper/md0_crypt
-vgcreate vg0 /dev/mapper/md0_crypt
 lvcreate -l "${DISK_ALLOCATION[0]}" vg0 -n lv0
 lvcreate -l "${DISK_ALLOCATION[1]}" vg0 -n lv1
 lvcreate -l "${DISK_ALLOCATION[2]}" vg0 -n lv2

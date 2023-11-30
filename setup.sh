@@ -219,15 +219,6 @@ cp "$SCRIPT_DIR/dot-files.sh" /
 chmod 777 /dot-files.sh
 
 # Configure /etc
-## Configure /etc/crypttab
-if lsblk -rno TYPE "$DISK1P2" | grep -q "raid1"; then
-    MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
-else
-    MD0UUID="$(blkid -s UUID -o value $DISK1P2)"
-fi
-{
-    echo "md0_crypt UUID=$MD0UUID none luks,discard,key-slot=0"
-} >/etc/crypttab
 ## Create /etc/encryption/keys directory
 mkdir -p /etc/encryption/keys
 chmod 700 /etc/encryption/keys
@@ -253,10 +244,6 @@ echo "$HOSTNAME" >/etc/hostname
     echo "## Set /efi as mountpoint"
     echo "OverrideESPMountPoint=/efi"
 } >>/etc/fwupd/uefi_capsule.conf
-## Configure /etc/cryptboot.conf
-git clone -b server https://github.com/leomeinel/cryptboot.git /git/cryptboot
-cp /git/cryptboot/cryptboot.conf /etc/
-chmod 644 /etc/cryptboot.conf
 ## Configure /etc/mdadm.conf
 lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
     mdadm --detail --scan >>/etc/mdadm.conf
@@ -322,7 +309,7 @@ sed -i "s/$STRING/log_group = audit/" "$FILE"
 } >/etc/dracut.conf.d/modules.conf
 ## Configure /etc/dracut.conf.d/cmdline.conf
 DISK1P2UUID="$(blkid -s UUID -o value "$DISK1P2")"
-PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.luks.allow-discards=$DISK1P2UUID rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
+PARAMETERS="rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
 #### If on intel set kernel parameter intel_iommu=on
 pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
@@ -360,13 +347,7 @@ done
 
 # Setup /usr
 rsync -rq "$SCRIPT_DIR/usr/" /usr
-cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
-cp /git/cryptboot/cryptboot /usr/local/bin/
-cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
 ## Configure /usr/local/bin
-chmod 755 /usr/local/bin/cryptboot
-chmod 755 /usr/local/bin/cryptboot-efikeys
-chmod 755 /usr/local/bin/systemd-boot-sign
 ln -s "$(which nvim)" /usr/local/bin/edit
 ln -s "$(which nvim)" /usr/local/bin/vedit
 ln -s "$(which nvim)" /usr/local/bin/vi
