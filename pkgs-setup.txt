@@ -150,7 +150,6 @@ tree
 ttf-font-awesome
 ttf-nerd-fonts-symbols-mono
 unarchiver
-unrar
 unzip
 usbguard
 usbutils
