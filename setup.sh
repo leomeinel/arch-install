@@ -92,7 +92,7 @@ chmod 0400 /etc/doas.conf
 chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 {
-    echo '#!/bin/sh'
+    echo '#!/usr/bin/env sh'
     echo ''
     echo '/usr/bin/firecfg >/dev/null 2>&1'
     echo "/usr/bin/su -c '/usr/bin/rm -rf ~/.local/share/applications/*' $SYSUSER"
@@ -119,7 +119,7 @@ lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
             echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/99-efibackup.sh'"
         } >/etc/pacman.d/hooks/99-efibackup.hook
         {
-            echo '#!/bin/sh'
+            echo '#!/usr/bin/env sh'
             echo ''
             echo 'set -e'
             echo 'if /usr/bin/mountpoint -q /efi; then'
