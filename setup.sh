@@ -3,7 +3,7 @@
 # File: setup.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
-# Copyright (c) 2023 Leopold Meinel & contributors
+# Copyright (c) 2024 Leopold Meinel & contributors
 # SPDX ID: GPL-3.0-or-later
 # URL: https://www.gnu.org/licenses/gpl-3.0-standalone.html
 # -----
@@ -190,8 +190,6 @@ pacman -Qq "lollypop" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\neasytag\nkid3-qt'
 pacman -Qq "mpv" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nyt-dlp'
-pacman -Qq "python" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nflake8\nmpdecimal\npython-black\npython-pip\npython-psutil\npython-pylint\npython-pytest\npython-setuptools\npython-virtualenv\nsqlite'
 pacman -Qq "r" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngcc-fortran\ntk'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
