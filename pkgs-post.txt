@@ -9,10 +9,11 @@ radian
 rnix-lsp
 selectdefaultapplication-fork-git
 snapper-gui-git
+solo2-cli
 swaylock-effects
 swaync
 ttf-hasklig
-usbguard-notifier-git
+usbguard-notifier
 vscodium-bin
 vscodium-bin-marketplace
-xdg-ninja-git
+xdg-ninja
