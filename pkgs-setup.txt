@@ -32,7 +32,6 @@ fd
 ffmpeg
 filezilla
 firefox
-firejail
 flatpak
 fwupd
 gimp
