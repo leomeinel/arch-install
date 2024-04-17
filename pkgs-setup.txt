@@ -54,7 +54,7 @@ hunspell-nl
 hwinfo
 hyperfine
 inetutils
-jdk-openjdk
+jdk21-openjdk
 jdk17-openjdk
 jdk8-openjdk
 jpegoptim
