@@ -9,7 +9,7 @@ radian
 rnix-lsp
 selectdefaultapplication-fork-git
 snapper-gui-git
-solo2-cli
+solo2-cli-bin
 swaylock-effects
 swaync
 ttf-hasklig
