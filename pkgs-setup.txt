@@ -109,6 +109,7 @@ postgresql
 procs
 qemu-desktop
 qt5ct
+qt5-wayland
 qt6ct
 quilt
 r
