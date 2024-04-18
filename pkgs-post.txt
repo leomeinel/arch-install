@@ -3,7 +3,6 @@ kvantum-theme-arc
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
-nitrokey-app2
 nixpkgs-fmt
 nwg-bar-bin
 radian
