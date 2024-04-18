@@ -351,4 +351,5 @@ doas rm -f /root/.bash_history
 rm -f "$GNUPGHOME"/dirmgr.conf
 rm -f ~/.bash_history
 rm -f "$SCRIPT_DIR/pkgs-post.txt"
+rm -f "$SCRIPT_DIR/pkgs-flatpak.txt"
 rm -f "$SCRIPT_DIR/post.sh"
