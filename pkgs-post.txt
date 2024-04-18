@@ -3,13 +3,13 @@ kvantum-theme-arc
 libreoffice-extension-languagetool
 librewolf-bin
 macchina-bin
+nitrokey-app2
 nixpkgs-fmt
 nwg-bar-bin
 radian
 rnix-lsp
 selectdefaultapplication-fork-git
 snapper-gui-git
-solo2-cli-bin
 swaylock-effects
 swaync
 ttf-hasklig
