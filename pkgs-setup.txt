@@ -107,6 +107,7 @@ polkit-gnome
 postfix
 postgresql
 procs
+python-pynitrokey
 qemu-desktop
 qt5ct
 qt5-wayland
