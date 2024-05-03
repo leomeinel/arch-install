@@ -6,7 +6,6 @@ macchina-bin
 nixpkgs-fmt
 nwg-bar-bin
 radian
-rnix-lsp
 selectdefaultapplication-fork-git
 snapper-gui-git
 swaylock-effects
