@@ -2,6 +2,7 @@ kvantum-theme-arc
 libreoffice-extension-languagetool
 librewolf-bin
 nixpkgs-fmt
+ocrmypdf
 radian
 selectdefaultapplication-fork-git
 snapper-gui-git

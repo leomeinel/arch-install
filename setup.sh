@@ -203,6 +203,14 @@ pacman -Qq "pipewire-jack" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npipewire-jack'
 pacman -Qq "blas-openblas" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nblas-openblas'
+pacman -Qq "tesseract-data-deu" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ntesseract-data-deu'
+pacman -Qq "tesseract-data-eng" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ntesseract-data-eng'
+pacman -Qq "tesseract-data-fra" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ntesseract-data-fra'
+pacman -Qq "tesseract-data-nld" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\ntesseract-data-nld'
 pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES"
 
 # Configure $SYSUSER
