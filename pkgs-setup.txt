@@ -6,6 +6,7 @@ arc-gtk-theme
 arch-audit
 ark
 autopep8
+autotiling
 bash-completion
 bat
 bc
@@ -54,8 +55,8 @@ hunspell-nl
 hwinfo
 hyperfine
 inetutils
-jdk21-openjdk
 jdk17-openjdk
+jdk21-openjdk
 jdk8-openjdk
 jpegoptim
 jq
@@ -81,6 +82,7 @@ lshw
 lsof
 lxappearance
 lzop
+macchina
 man-db
 mariadb
 mtools
@@ -90,6 +92,7 @@ nextcloud-client
 noto-fonts
 nss-mdns
 ntfs-3g
+nwg-bar
 openbsd-netcat
 openssh
 oxipng
@@ -109,8 +112,8 @@ postgresql
 procs
 python-pynitrokey
 qemu-desktop
-qt5ct
 qt5-wayland
+qt5ct
 qt6ct
 quilt
 r
