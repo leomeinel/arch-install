@@ -199,10 +199,10 @@ pacman -Qq "wlroots" >/dev/null 2>&1 &&
 pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
 ## Reinstall packages as dependencies
 DEPENDENCIES=""
-pacman -Qq "pipewire-jack" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\npipewire-jack'
 pacman -Qq "blas-openblas" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nblas-openblas'
+pacman -Qq "pipewire-jack" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\npipewire-jack'
 pacman -Qq "tesseract-data-deu" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-deu'
 pacman -Qq "tesseract-data-eng" >/dev/null 2>&1 &&
