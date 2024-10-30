@@ -248,13 +248,6 @@ echo "$HOSTNAME" >/etc/hostname
     echo "ff02::1  ip6-allnodes"
     echo "ff02::2  ip6-allrouters"
 } >/etc/hosts
-## Configure /etc/fwupd/uefi_capsule.conf
-{
-    echo ""
-    echo "# Custom"
-    echo "## Set /efi as mountpoint"
-    echo "OverrideESPMountPoint=/efi"
-} >>/etc/fwupd/uefi_capsule.conf
 ## Configure /etc/cryptboot.conf
 git clone https://github.com/leomeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
