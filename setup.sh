@@ -180,6 +180,8 @@ pacman -Qq "lollypop" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\nkid3-qt'
 pacman -Qq "mpv" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nyt-dlp'
+pacman -Qq "pipewire" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\npipewire-alsa\npipewire-pulse'
 pacman -Qq "r" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngcc-fortran\ntk'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
@@ -197,9 +199,9 @@ pacman -Qq "wlroots" >/dev/null 2>&1 &&
 pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
 ## Reinstall packages as dependencies
 DEPENDENCIES=""
-pacman -Qq "pipewire" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\npipewire-alsa\npipewire-jack\npipewire-pulse'
-pacman -Qq "r" >/dev/null 2>&1 &&
+pacman -Qq "pipewire-jack" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\npipewire-jack'
+pacman -Qq "blas-openblas" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nblas-openblas'
 pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES"
 
