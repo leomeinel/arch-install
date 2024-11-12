@@ -1,5 +1,4 @@
 kvantum-theme-arc
-libreoffice-extension-languagetool
 librewolf-bin
 nixpkgs-fmt
 ocrmypdf
