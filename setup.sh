@@ -435,6 +435,7 @@ chmod 755 /usr/local/bin/ex
 chmod 755 /usr/local/bin/freetube
 chmod 755 /usr/local/bin/nitrokey-app
 chmod 755 /usr/local/bin/prismlauncher
+chmod 755 /usr/local/bin/rpi-imager
 chmod 755 /usr/local/bin/sway-logout
 chmod 755 /usr/local/bin/trilium
 chmod 755 /usr/local/bin/vedit
