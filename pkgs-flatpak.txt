@@ -1,5 +1,6 @@
 com.github.zadam.trilium
 com.nitrokey.nitrokey-app2
+com.sweethome3d.Sweethome3d
 io.freetubeapp.FreeTube
 org.prismlauncher.PrismLauncher
 org.raspberrypi.rpi-imager
