@@ -55,7 +55,6 @@ hunspell-fr
 hunspell-nl
 hwinfo
 hyperfine
-hyphen
 hyphen-de
 hyphen-en
 hyphen-fr
@@ -93,7 +92,6 @@ man-db
 mariadb
 mtools
 network-manager-applet
-networkmanager
 nextcloud-client
 noto-fonts
 nss-mdns
