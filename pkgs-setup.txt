@@ -17,6 +17,7 @@ blueman
 bluez
 bluez-utils
 brightnessctl
+calibre
 celluloid
 cmake
 cups
