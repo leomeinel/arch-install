@@ -1,3 +1,4 @@
+7zip
 alacritty
 alsa-utils
 android-tools
@@ -101,7 +102,6 @@ nwg-bar
 openbsd-netcat
 openssh
 oxipng
-p7zip
 pacman-contrib
 pam-u2f
 papirus-icon-theme
