@@ -6,6 +6,7 @@ apparmor
 arc-gtk-theme
 arch-audit
 ark
+audacity
 autopep8
 autotiling
 bash-completion
@@ -67,6 +68,7 @@ jdk8-openjdk
 jpegoptim
 jq
 kanshi
+kdenlive
 libavif
 libheif
 libjxl
