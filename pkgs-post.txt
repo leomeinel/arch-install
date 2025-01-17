@@ -2,7 +2,6 @@ kvantum-theme-arc
 librewolf-bin
 ocrmypdf
 radian
-selectdefaultapplication-fork-git
 snapper-gui-git
 swaylock-effects
 ttf-hasklig
