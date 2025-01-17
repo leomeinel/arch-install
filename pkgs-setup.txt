@@ -119,8 +119,7 @@ procs
 python-pynitrokey
 qemu-desktop
 qemu-emulators-full
-qt5-wayland
-qt5ct
+qt6-wayland
 qt6ct
 quilt
 r
