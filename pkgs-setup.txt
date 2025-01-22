@@ -19,6 +19,7 @@ bluez
 bluez-utils
 brightnessctl
 calibre
+cdrtools
 celluloid
 cmake
 cups
@@ -62,7 +63,6 @@ hyphen-en
 hyphen-fr
 hyphen-nl
 inetutils
-obs-studio
 jdk17-openjdk
 jdk21-openjdk
 jdk8-openjdk
@@ -101,6 +101,7 @@ noto-fonts
 nss-mdns
 ntfs-3g
 nwg-bar
+obs-studio
 openbsd-netcat
 openssh
 oxipng
