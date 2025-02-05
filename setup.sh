@@ -92,6 +92,7 @@ chown root:root /etc/doas.conf
 chmod 0400 /etc/doas.conf
 ## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/50-mac-random.conf
 chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
+chmod 644 /etc/NetworkManager/conf.d/51-unmanaged.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
