@@ -150,6 +150,7 @@ tesseract-data-deu
 tesseract-data-eng
 tesseract-data-fra
 tesseract-data-nld
+texlive
 thunar
 thunderbird
 tinyxxd
