@@ -1,5 +1,7 @@
 com.nitrokey.nitrokey-app2
 com.sweethome3d.Sweethome3d
 io.freetubeapp.FreeTube
+io.gitlab.librewolf-community
+one.ablaze.floorp
 org.prismlauncher.PrismLauncher
 org.raspberrypi.rpi-imager

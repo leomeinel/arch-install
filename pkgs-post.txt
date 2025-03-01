@@ -1,5 +1,4 @@
 kvantum-theme-arc
-librewolf-bin
 ocrmypdf
 radian
 snapper-gui-git

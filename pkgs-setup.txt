@@ -36,7 +36,6 @@ eza
 fd
 ffmpeg
 filezilla
-firefox
 flatpak
 fwupd
 gimp

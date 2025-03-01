@@ -441,7 +441,9 @@ ln -s "$(which nvim)" /usr/local/bin/vi
 ln -s "$(which nvim)" /usr/local/bin/vim
 chmod 755 /usr/local/bin/edit
 chmod 755 /usr/local/bin/ex
+chmod 755 /usr/local/bin/floorp
 chmod 755 /usr/local/bin/freetube
+chmod 755 /usr/local/bin/librewolf
 chmod 755 /usr/local/bin/nitrokey-app
 chmod 755 /usr/local/bin/prismlauncher
 chmod 755 /usr/local/bin/rpi-imager
