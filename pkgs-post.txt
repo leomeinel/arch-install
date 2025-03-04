@@ -1,3 +1,4 @@
+cmake-format
 kvantum-theme-arc
 ocrmypdf
 radian
@@ -5,5 +6,4 @@ swaylock-effects
 ttf-hasklig
 usbguard-notifier
 vscodium-bin
-vscodium-bin-marketplace
 xdg-ninja

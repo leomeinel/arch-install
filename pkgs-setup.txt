@@ -63,7 +63,6 @@ hyphen-en
 hyphen-fr
 hyphen-nl
 inetutils
-jdk17-openjdk
 jdk21-openjdk
 jdk8-openjdk
 jpegoptim
@@ -94,6 +93,7 @@ lzop
 macchina
 man-db
 mariadb
+maven
 mtools
 network-manager-applet
 nextcloud-client
@@ -117,7 +117,9 @@ pipewire-jack
 polkit-gnome
 postfix
 postgresql
+prettier
 procs
+python
 python-pynitrokey
 qemu-desktop
 qemu-emulators-full
@@ -127,9 +129,11 @@ quilt
 r
 ripgrep
 rkhunter
+ruff
 rustup
 sbsigntools
 screen
+shfmt
 shotwell
 signal-desktop
 simple-scan
