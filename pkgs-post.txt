@@ -1,7 +1,6 @@
 kvantum-theme-arc
 ocrmypdf
 radian
-snapper-gui-git
 swaylock-effects
 ttf-hasklig
 usbguard-notifier
