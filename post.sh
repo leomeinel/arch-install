@@ -263,6 +263,17 @@ source ~/.bash_profile
 [[ -n $(which flatpak) ]] >/dev/null 2>&1 &&
     xargs -n 1 doas flatpak install --system -y --noninteractive <"$SCRIPT_DIR/pkgs-flatpak.txt"
 
+# Install packages via nix profile
+[[ -n $(which nix) ]] >/dev/null 2>&1 &&
+    {
+        xargs -n 1 nix profile install </pkgs-nix.txt
+        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$VIRTUSER"
+        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$HOMEUSER"
+        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$YOUTUBEUSER"
+        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$GUESTUSER"
+        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' root
+    }
+
 # Install paru-bin
 git clone https://aur.archlinux.org/paru-bin.git ~/git/paru-bin
 cd ~/git/paru-bin
@@ -306,18 +317,16 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 gpgconf --kill all
 sleep 5
 ## AUR packages
-# FIXME: The next line is a temporary fix; see: https://aur.archlinux.org/packages/python-rchitect#comment-998515
-paru -S --noprogressbar --noconfirm --needed python-pip
 paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
 paru -Syu --noprogressbar --noconfirm
 paru -Scc
 
-# Prepare dot-files (vscodium)
-/dot-files.sh vscodium
-doas su -lc '/dot-files.sh vscodium' "$VIRTUSER"
-doas su -lc '/dot-files.sh vscodium' "$HOMEUSER"
-doas su -lc '/dot-files.sh vscodium' "$YOUTUBEUSER"
-doas su -lc '/dot-files.sh vscodium' "$GUESTUSER"
+# Prepare dot-files (codium)
+/dot-files.sh codium
+doas su -lc '/dot-files.sh codium' "$VIRTUSER"
+doas su -lc '/dot-files.sh codium' "$HOMEUSER"
+doas su -lc '/dot-files.sh codium' "$YOUTUBEUSER"
+doas su -lc '/dot-files.sh codium' "$GUESTUSER"
 chmod +x ~/post-gui.sh
 
 # Enable systemd services
@@ -325,7 +334,7 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
     systemctl enable nftables.service
 
 # Enable systemd user services
-pacman -Qq "usbguard-notifier" >/dev/null 2>&1 &&
+[[ -n $(which usbguard-notifier) ]] >/dev/null 2>&1 &&
     systemctl enable --user usbguard-notifier.service
 
 # Remove repo
@@ -333,6 +342,7 @@ rm -rf ~/git
 
 # Remove scripts
 doas rm -f /dot-files.sh
+doas rm -f /pkgs-nix.txt
 doas rm -f /root/.bash_history
 rm -f "$GNUPGHOME"/dirmgr.conf
 rm -f ~/.bash_history

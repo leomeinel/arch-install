@@ -44,11 +44,11 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 groupadd -r audit
 groupadd -r libvirt
 groupadd -r usbguard
-useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
-useradd -ms /bin/bash -G libvirt,video "$VIRTUSER"
-useradd -ms /bin/bash -G video "$HOMEUSER"
-useradd -ms /bin/bash -G libvirt,video "$YOUTUBEUSER"
-useradd -ms /bin/bash -G video "$GUESTUSER"
+useradd -ms /bin/bash -G adm,audit,log,nix-users,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
+useradd -ms /bin/bash -G libvirt,nix-users,video "$VIRTUSER"
+useradd -ms /bin/bash -G nix-users,video "$HOMEUSER"
+useradd -ms /bin/bash -G libvirt,nix-users,video "$YOUTUBEUSER"
+useradd -ms /bin/bash -G nix-users,video "$GUESTUSER"
 echo "#################################################################"
 echo "#                      _    _           _   _                   #"
 echo "#                     / \  | | ___ _ __| |_| |                  #"
@@ -93,6 +93,8 @@ chmod 0400 /etc/doas.conf
 ## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/50-mac-random.conf
 chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
 chmod 644 /etc/NetworkManager/conf.d/51-unmanaged.conf
+## Configure /etc/nix/nix.conf
+chmod 644 /etc/nix/nix.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
@@ -228,6 +230,8 @@ chmod +x "$SCRIPT_DIR/sysuser.sh"
 su -c "$SCRIPT_DIR/sysuser.sh" "$SYSUSER"
 cp "$SCRIPT_DIR/dot-files.sh" /
 chmod 777 /dot-files.sh
+cp "$SCRIPT_DIR/pkgs-nix.txt" /
+chmod 644 /pkgs-nix.txt
 
 # Configure /etc
 ## Configure /etc/crypttab
@@ -590,6 +594,8 @@ pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager.service
+pacman -Qq "nix" >/dev/null 2>&1 &&
+    systemctl enable nix-daemon.service
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
         systemctl enable reflector.service

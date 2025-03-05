@@ -3,7 +3,7 @@
 # File: dot-files.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
-# Copyright (c) 2023 Leopold Meinel & contributors
+# Copyright (c) 2025 Leopold Meinel & contributors
 # SPDX ID: GPL-3.0-or-later
 # URL: https://www.gnu.org/licenses/gpl-3.0-standalone.html
 # -----
@@ -24,7 +24,7 @@ setup-min)
     chmod +x ~/dot-files/setup-min.sh
     ~/dot-files/setup-min.sh
     ;;
-vscodium)
+codium)
     git clone https://github.com/leomeinel/dot-files.git ~/dot-files
     chmod +x ~/dot-files/exts-code.sh
     ;;
