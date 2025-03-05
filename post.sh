@@ -264,7 +264,6 @@ source ~/.bash_profile
         xargs -n 1 nix profile install </pkgs-nix.txt
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$VIRTUSER"
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$HOMEUSER"
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$YOUTUBEUSER"
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$GUESTUSER"
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' root
     }
