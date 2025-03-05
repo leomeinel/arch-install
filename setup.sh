@@ -42,6 +42,8 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
+groupadd -r nix-users
+groupadd -r nixbld
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,nix-users,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
 useradd -ms /bin/bash -G nix-users,video "$VIRTUSER"
@@ -376,6 +378,7 @@ ln -s "$(which nvim)" /usr/local/bin/vi
 ln -s "$(which nvim)" /usr/local/bin/vim
 chmod 755 /usr/local/bin/edit
 chmod 755 /usr/local/bin/ex
+chmod 755 /usr/local/bin/upgrade-packages
 chmod 755 /usr/local/bin/vedit
 chmod 755 /usr/local/bin/vi
 chmod 755 /usr/local/bin/view
