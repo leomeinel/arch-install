@@ -1,4 +1,5 @@
 nixpkgs#cmake-format
+nixpkgs#nixd
 nixpkgs#nixfmt-rfc-style
 nixpkgs#ocrmypdf
 nixpkgs#python312Packages.radian
