@@ -91,7 +91,6 @@ pipewire
 pipewire-jack
 polkit-gnome
 postfix
-postgresql
 prettier
 procs
 python
