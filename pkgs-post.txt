@@ -1,3 +1,4 @@
 kvantum-theme-arc
 swaylock-effects
+rimpy-bin
 ttf-hasklig
