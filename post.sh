@@ -31,7 +31,6 @@ doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 /dot-files.sh setup
 doas su -lc '/dot-files.sh setup' "$VIRTUSER"
 doas su -lc '/dot-files.sh setup' "$HOMEUSER"
-doas su -lc '/dot-files.sh setup' "$YOUTUBEUSER"
 doas su -lc '/dot-files.sh setup' "$GUESTUSER"
 doas su -lc '/dot-files.sh setup-min' root
 
@@ -125,8 +124,6 @@ doas nft 'add rule ip filter input_prerouting tcp dport 80 counter accept'
 doas nft 'add rule ip filter input_prerouting tcp dport 443 counter accept'
 ### Allow Transmission
 doas nft 'add rule ip filter input_prerouting udp dport 51413 counter accept'
-### Allow custom wireguard
-doas nft 'add rule ip filter input_prerouting udp dport 62990 counter accept'
 ### Allow interface virbr0 (forward)
 doas nft 'add rule ip filter forward iifname "virbr0" counter accept'
 doas nft 'add rule ip filter forward oifname "virbr0" counter accept'
@@ -193,8 +190,6 @@ doas nft 'add rule ip6 filter input_prerouting tcp dport 80 counter accept'
 doas nft 'add rule ip6 filter input_prerouting tcp dport 443 counter accept'
 ### Allow Transmission
 doas nft 'add rule ip6 filter input_prerouting udp dport 51413 counter accept'
-### Allow custom wireguard
-doas nft 'add rule ip6 filter input_prerouting udp dport 62990 counter accept'
 ### Allow interface virbr0 (forward)
 doas nft 'add rule ip6 filter forward iifname "virbr0" counter accept'
 doas nft 'add rule ip6 filter forward oifname "virbr0" counter accept'
@@ -325,7 +320,6 @@ paru -Scc
 /dot-files.sh codium
 doas su -lc '/dot-files.sh codium' "$VIRTUSER"
 doas su -lc '/dot-files.sh codium' "$HOMEUSER"
-doas su -lc '/dot-files.sh codium' "$YOUTUBEUSER"
 doas su -lc '/dot-files.sh codium' "$GUESTUSER"
 chmod +x ~/post-gui.sh
 
