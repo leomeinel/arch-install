@@ -44,6 +44,7 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 groupadd -r audit
 groupadd -r libvirt
 groupadd -r nix-users
+groupadd -r nixbld
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,nix-users,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
 useradd -ms /bin/bash -G libvirt,nix-users,video "$VIRTUSER"
@@ -451,6 +452,7 @@ chmod 755 /usr/local/bin/prismlauncher
 chmod 755 /usr/local/bin/protontricks
 chmod 755 /usr/local/bin/steam
 chmod 755 /usr/local/bin/sway-logout
+chmod 755 /usr/local/bin/upgrade-packages
 chmod 755 /usr/local/bin/trilium
 chmod 755 /usr/local/bin/vedit
 chmod 755 /usr/local/bin/vi
