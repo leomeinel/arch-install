@@ -25,21 +25,15 @@ sed_exit() {
 
 # Configure $KEYMAP
 doas localectl --no-convert set-keymap "$KEYMAP"
-doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 
 # Configure dot-files (setup)
-/dot-files.sh setup
-doas su -lc '/dot-files.sh setup' "$VIRTUSER"
-doas su -lc '/dot-files.sh setup' "$HOMEUSER"
-doas su -lc '/dot-files.sh setup' "$YOUTUBEUSER"
-doas su -lc '/dot-files.sh setup' "$GUESTUSER"
-doas su -lc '/dot-files.sh setup-min' root
+/dot-files.sh
+doas su -lc '/dot-files.sh' "$VIRTUSER"
+doas su -lc '/dot-files.sh' "$HOMEUSER"
+doas su -lc '/dot-files.sh' root
 
 # Configure clock
 doas timedatectl set-ntp true
-
-# Set default java
-doas archlinux-java set java-21-openjdk
 
 # Configure nftables
 # References
@@ -96,40 +90,11 @@ doas nft 'add rule ip filter input ip protocol tcp ct state new tcp option maxse
 doas nft 'add rule ip filter input iifname != "lo" ip saddr 127.0.0.0/8 counter drop'
 ### Drop ICMP
 doas nft 'add rule ip filter input ip protocol icmp counter drop'
-### Drop excessive TCP RST packets
-doas nft 'add chain ip filter input_prerouting'
-doas nft 'add rule ip filter input tcp flags rst limit rate 2/second burst 2 packets counter jump input_prerouting'
-doas nft 'add rule ip filter input tcp flags rst counter drop'
-### Drop SYN-FLOOD packets
-doas nft 'add rule ip filter input ip protocol tcp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
-doas nft 'add rule ip filter input ip protocol tcp ct state new counter drop'
-### Rate-limit UDP packets
-doas nft 'add rule ip filter input ip protocol udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
-doas nft 'add rule ip filter input ip protocol udp ct state new counter drop'
-### Allow interface virbr0 (input_prerouting)
-doas nft 'add rule ip filter input_prerouting iifname "virbr0" udp dport 53 counter accept'
-doas nft 'add rule ip filter input_prerouting iifname "virbr0" udp dport 67 counter accept'
-### Allow SMTP
-doas nft 'add rule ip filter input_prerouting tcp dport 25 counter accept'
-doas nft 'add rule ip filter input_prerouting tcp dport 587 counter accept'
-### Allow POP & POPS
-doas nft 'add rule ip filter input_prerouting tcp dport 110 counter accept'
-doas nft 'add rule ip filter input_prerouting tcp dport 995 counter accept'
-### Allow IMAP & IMAPS
-doas nft 'add rule ip filter input_prerouting tcp dport 143 counter accept'
-doas nft 'add rule ip filter input_prerouting tcp dport 993 counter accept'
-### Allow mDNS
-doas nft 'add rule ip filter input_prerouting udp dport 5353 counter accept'
-### Allow http & https (for wget)
-doas nft 'add rule ip filter input_prerouting tcp dport 80 counter accept'
-doas nft 'add rule ip filter input_prerouting tcp dport 443 counter accept'
-### Allow Transmission
-doas nft 'add rule ip filter input_prerouting udp dport 51413 counter accept'
-### Allow custom wireguard
-doas nft 'add rule ip filter input_prerouting udp dport 62990 counter accept'
-### Allow interface virbr0 (forward)
-doas nft 'add rule ip filter forward iifname "virbr0" counter accept'
-doas nft 'add rule ip filter forward oifname "virbr0" counter accept'
+### Allow SSH
+doas nft 'add rule ip filter input_prerouting ip saddr 192.168.0.0/16 tcp dport 9122 counter accept'
+doas nft 'add rule ip filter input_prerouting ip saddr 127.0.0.0/8 tcp dport 9122 counter accept'
+doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
+# FIXME: Also allow 80,443 on any FORWARD chain for containers
 ## ipv6
 ### Set up new tables
 doas nft 'add table ip6 filter'
@@ -174,30 +139,16 @@ doas nft 'add rule ip6 filter input meta l4proto tcp ct state new counter drop'
 ### Rate-limit UDP packets
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new counter drop'
-### Allow interface virbr0 (input_prerouting)
-doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 53 counter accept'
-doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 67 counter accept'
-### Allow SMTP
-doas nft 'add rule ip6 filter input_prerouting tcp dport 25 counter accept'
-doas nft 'add rule ip6 filter input_prerouting tcp dport 587 counter accept'
-### Allow POP & POPS
-doas nft 'add rule ip6 filter input_prerouting tcp dport 110 counter accept'
-doas nft 'add rule ip6 filter input_prerouting tcp dport 995 counter accept'
-### Allow IMAP & IMAPS
-doas nft 'add rule ip6 filter input_prerouting tcp dport 143 counter accept'
-doas nft 'add rule ip6 filter input_prerouting tcp dport 993 counter accept'
-### Allow mDNS
-doas nft 'add rule ip6 filter input_prerouting udp dport 5353 counter accept'
-### Allow http & https (for wget)
-doas nft 'add rule ip6 filter input_prerouting tcp dport 80 counter accept'
-doas nft 'add rule ip6 filter input_prerouting tcp dport 443 counter accept'
-### Allow Transmission
-doas nft 'add rule ip6 filter input_prerouting udp dport 51413 counter accept'
-### Allow custom wireguard
-doas nft 'add rule ip6 filter input_prerouting udp dport 62990 counter accept'
-### Allow interface virbr0 (forward)
-doas nft 'add rule ip6 filter forward iifname "virbr0" counter accept'
-doas nft 'add rule ip6 filter forward oifname "virbr0" counter accept'
+### Drop SYN packets with suspicious MSS value
+doas nft 'add rule ip6 filter input meta l4proto tcp ct state new tcp option maxseg size != 536-65535 counter drop'
+### Block spoofed packets
+doas nft 'add rule ip6 filter input iifname != "lo" ip6 saddr ::1 counter drop'
+### Drop ICMP
+doas nft 'add rule ip6 filter input meta l4proto icmp counter drop'
+### Allow SSH
+doas nft 'add rule ip6 filter input_prerouting ip6 saddr fe80::/10 tcp dport 9122 counter accept'
+doas nft 'add rule ip6 filter input_prerouting tcp dport 9122 counter drop'
+# FIXME: Also allow 80,443 on any FORWARD chain for containers
 ### Save rules to /etc/nftables.conf
 doas sh -c 'nft -s list ruleset >/etc/nftables.conf'
 
@@ -269,8 +220,6 @@ source ~/.bash_profile
         xargs -n 1 nix profile install </pkgs-nix.txt
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$VIRTUSER"
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$HOMEUSER"
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$YOUTUBEUSER"
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$GUESTUSER"
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' root
     }
 
@@ -308,37 +257,9 @@ grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "/$STRING/a BatchInstall" "$FILE"
 ## END sed
 
-# Install packages
-## FIXME: Hack to avoid gnupg errors
-{
-    echo "disable-ipv6"
-    echo "standard-resolver"
-} >"$GNUPGHOME"/dirmgr.conf
-gpgconf --kill all
-sleep 5
-## AUR packages
-paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
-paru -Syu --noprogressbar --noconfirm
-paru -Scc
-
-# Prepare dot-files (codium)
-/dot-files.sh codium
-doas su -lc '/dot-files.sh codium' "$VIRTUSER"
-doas su -lc '/dot-files.sh codium' "$HOMEUSER"
-doas su -lc '/dot-files.sh codium' "$YOUTUBEUSER"
-doas su -lc '/dot-files.sh codium' "$GUESTUSER"
-chmod +x ~/post-gui.sh
-
 # Enable systemd services
 pacman -Qq "nftables" >/dev/null 2>&1 &&
     systemctl enable nftables.service
-
-# Enable systemd user services
-## Configure symbolic links for systemd services from nix profile
-[[ -n $(which usbguard-notifier) ]] >/dev/null 2>&1 &&
-    ln -s "$XDG_STATE_HOME"/nix/profile/lib/systemd/user/usbguard-notifier.service "$XDG_CONFIG_HOME"/systemd/user/usbguard-notifier.service
-[[ -n $(which usbguard-notifier) ]] >/dev/null 2>&1 &&
-    systemctl enable --user usbguard-notifier.service
 
 # Remove repo
 rm -rf ~/git
@@ -349,6 +270,5 @@ doas rm -f /pkgs-nix.txt
 doas rm -f /root/.bash_history
 rm -f "$GNUPGHOME"/dirmgr.conf
 rm -f ~/.bash_history
-rm -f "$SCRIPT_DIR/pkgs-post.txt"
-rm -f "$SCRIPT_DIR/pkgs-flatpak.txt"
 rm -f "$SCRIPT_DIR/post.sh"
+rm -f "$SCRIPT_DIR/install.conf"

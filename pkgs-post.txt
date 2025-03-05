@@ -1,3 +1,0 @@
-kvantum-theme-arc
-swaylock-effects
-ttf-hasklig
