@@ -220,8 +220,6 @@ source ~/.bash_profile
         xargs -n 1 nix profile install </pkgs-nix.txt
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$VIRTUSER"
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$HOMEUSER"
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$YOUTUBEUSER"
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$GUESTUSER"
         doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' root
     }
 
@@ -259,19 +257,6 @@ grep -q "$STRING" "$FILE" || sed_exit
 doas sed -i "/$STRING/a BatchInstall" "$FILE"
 ## END sed
 
-# Install packages
-## FIXME: Hack to avoid gnupg errors
-{
-    echo "disable-ipv6"
-    echo "standard-resolver"
-} >"$GNUPGHOME"/dirmgr.conf
-gpgconf --kill all
-sleep 5
-## AUR packages
-paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
-paru -Syu --noprogressbar --noconfirm
-paru -Scc
-
 # Enable systemd services
 pacman -Qq "nftables" >/dev/null 2>&1 &&
     systemctl enable nftables.service
@@ -285,6 +270,5 @@ doas rm -f /pkgs-nix.txt
 doas rm -f /root/.bash_history
 rm -f "$GNUPGHOME"/dirmgr.conf
 rm -f ~/.bash_history
-rm -f "$SCRIPT_DIR/pkgs-post.txt"
 rm -f "$SCRIPT_DIR/post.sh"
 rm -f "$SCRIPT_DIR/install.conf"

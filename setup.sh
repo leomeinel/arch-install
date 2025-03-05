@@ -45,7 +45,7 @@ groupadd -r audit
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,nix-users,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
 useradd -ms /bin/bash -G nix-users,video "$VIRTUSER"
-useradd -ms /bin/bash -G nix-usersvideo "$HOMEUSER"
+useradd -ms /bin/bash -G nix-users,video "$HOMEUSER"
 echo "#################################################################"
 echo "#                      _    _           _   _                   #"
 echo "#                     / \  | | ___ _ __| |_| |                  #"
@@ -376,26 +376,6 @@ ln -s "$(which nvim)" /usr/local/bin/vi
 ln -s "$(which nvim)" /usr/local/bin/vim
 chmod 755 /usr/local/bin/edit
 chmod 755 /usr/local/bin/ex
-<<<<<<< HEAD
-chmod 755 /usr/local/bin/floorp
-chmod 755 /usr/local/bin/freetube
-chmod 755 /usr/local/bin/librewolf
-chmod 755 /usr/local/bin/nitrokey-app
-chmod 755 /usr/local/bin/prismlauncher
-chmod 755 /usr/local/bin/rpi-imager
-chmod 755 /usr/local/bin/sway-logout
-chmod 755 /usr/local/bin/sweethome3d
-chmod 755 /usr/local/bin/trilium
-||||||| 0d1c0f3
-chmod 755 /usr/local/bin/freetube
-chmod 755 /usr/local/bin/nitrokey-app
-chmod 755 /usr/local/bin/prismlauncher
-chmod 755 /usr/local/bin/rpi-imager
-chmod 755 /usr/local/bin/sway-logout
-chmod 755 /usr/local/bin/sweethome3d
-chmod 755 /usr/local/bin/trilium
-=======
->>>>>>> server
 chmod 755 /usr/local/bin/vedit
 chmod 755 /usr/local/bin/vi
 chmod 755 /usr/local/bin/view
