@@ -305,7 +305,6 @@ sed -i "s|$STRING|dir = /var/lib/faillock|" "$FILE"
 ### END sed
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
-chmod 644 /etc/pam.d/swaylock
 ## Configure /etc/audit/auditd.conf
 ### START sed
 FILE=/etc/audit/auditd.conf
