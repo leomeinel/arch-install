@@ -9,6 +9,6 @@
 # -----
 ###
 
-exec sudo -u '#1000' paru
-exec flatpak --system update
+sudo -u '#1000' paru
+flatpak --system update
 exec nix profile upgrade --all
