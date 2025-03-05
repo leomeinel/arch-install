@@ -44,7 +44,11 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 groupadd -r audit
 groupadd -r libvirt
 groupadd -r nix-users
+# Source: https://nix.dev/manual/nix/2.17/installation/multi-user#setting-up-the-build-users
 groupadd -r nixbld
+for n in $(seq 1 10); do
+    useradd -c "Nix build user $n" -d /var/empty -g nixbld -G nixbld -M -N -r -s "$(which nologin)" nixbld$n
+done
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,nix-users,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
 useradd -ms /bin/bash -G libvirt,nix-users,video "$VIRTUSER"
