@@ -16,4 +16,3 @@ set -e
 git clone https://github.com/leomeinel/dot-files.git ~/dot-files
 chmod +x ~/dot-files/setup-min.sh
 ~/dot-files/setup-min.sh
-
