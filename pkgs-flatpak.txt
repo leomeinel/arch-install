@@ -2,5 +2,8 @@ com.github.Matoking.protontricks
 com.nitrokey.nitrokey-app2
 com.valvesoftware.Steam
 io.freetubeapp.FreeTube
+io.gitlab.librewolf-community
+one.ablaze.floorp
+org.gtk.Gtk3theme.Arc-Dark
 org.prismlauncher.PrismLauncher
 org.winehq.Wine/x86_64/stable-24.08

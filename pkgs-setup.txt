@@ -33,7 +33,6 @@ evince
 eza
 fd
 ffmpeg
-firefox
 flatpak
 fwupd
 git-delta
@@ -48,7 +47,6 @@ htop
 hwinfo
 hyperfine
 inetutils
-jdk17-openjdk
 jdk21-openjdk
 jdk8-openjdk
 jpegoptim
@@ -75,6 +73,7 @@ man-db
 mtools
 network-manager-applet
 nextcloud-client
+nix
 noto-fonts
 nss-mdns
 ntfs-3g
@@ -92,7 +91,9 @@ pipewire
 pipewire-jack
 polkit-gnome
 postfix
+prettier
 procs
+python
 python-pynitrokey
 qemu-desktop
 qemu-emulators-full
@@ -101,8 +102,10 @@ qt6ct
 quilt
 ripgrep
 rkhunter
+ruff
 sbsigntools
 screen
+shfmt
 shotwell
 signal-desktop
 simple-scan

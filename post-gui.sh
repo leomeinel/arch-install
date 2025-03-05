@@ -16,7 +16,7 @@ source "$SCRIPT_DIR/install.conf"
 # Fail on error
 set -e
 
-# Configure dot-files (vscodium)
+# Configure dot-files (codium)
 ~/dot-files/exts-code.sh
 doas su -lc '~/dot-files/exts-code.sh' "$VIRTUSER"
 doas su -lc '~/dot-files/exts-code.sh' "$HOMEUSER"

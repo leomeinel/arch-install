@@ -1,0 +1,8 @@
+nixpkgs#cmake-format
+nixpkgs#nixfmt-rfc-style
+nixpkgs#ocrmypdf
+nixpkgs#python312Packages.radian
+nixpkgs#swaylock-effects
+nixpkgs#usbguard-notifier
+nixpkgs#vscodium
+nixpkgs#xdg-ninja
