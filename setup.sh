@@ -43,6 +43,7 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
 groupadd -r libvirt
+groupadd -r nix-users
 groupadd -r usbguard
 useradd -ms /bin/bash -G adm,audit,log,nix-users,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
 useradd -ms /bin/bash -G libvirt,nix-users,video "$VIRTUSER"
