@@ -334,6 +334,9 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
     systemctl enable nftables.service
 
 # Enable systemd user services
+## Configure symbolic links for systemd services from nix profile
+[[ -n $(which usbguard-notifier) ]] >/dev/null 2>&1 &&
+    ln -s "$XDG_STATE_HOME"/nix/profile/lib/systemd/user/usbguard-notifier.service "$XDG_CONFIG_HOME"/systemd/user/usbguard-notifier.service
 [[ -n $(which usbguard-notifier) ]] >/dev/null 2>&1 &&
     systemctl enable --user usbguard-notifier.service
 
