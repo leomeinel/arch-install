@@ -1,8 +1,1 @@
-nixpkgs#cmake-format
-nixpkgs#nixd
-nixpkgs#nixfmt-rfc-style
-nixpkgs#ocrmypdf
-nixpkgs#python312Packages.radian
-nixpkgs#usbguard-notifier
-nixpkgs#vscodium
-nixpkgs#xdg-ninja
+nixpkgs#home-manager
