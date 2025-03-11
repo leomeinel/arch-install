@@ -33,11 +33,11 @@ source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
 # Configure dot-files (setup)
 /dot-files.sh
-doas su -lc '/dot-files.sh' "$VIRTUSER"
-doas su -lc '/dot-files.sh' "$HOMEUSER"
-doas su -lc '/dot-files.sh' "$YOUTUBEUSER"
-doas su -lc '/dot-files.sh' "$GUESTUSER"
-doas su -lc '/dot-files.sh' root
+doas machinectl shell "$VIRTUSER"@ /dot-files.sh
+doas machinectl shell "$HOMEUSER"@ /dot-files.sh
+doas machinectl shell "$YOUTUBEUSER"@ /dot-files.sh
+doas machinectl shell "$GUESTUSER"@ /dot-files.sh
+doas machinectl shell root@ /dot-files.sh
 
 # Configure clock
 doas timedatectl set-ntp true
