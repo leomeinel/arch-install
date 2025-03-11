@@ -123,6 +123,8 @@ esac
 # Erase disks
 ## Deactivate all vgs
 vgchange -an || true
+## Stop all mdadm RAIDs
+mdadm --stop --scan || true
 ## Use dd, sgdisk and wipefs to wipe the header and more to make sure that it is erased
 sgdisk -o "$DISK1" || true
 sgdisk -Z "$DISK1" || true
