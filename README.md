@@ -27,7 +27,7 @@ Meant for general purpose systems.
 ```sh
 pacman -Sy
 pacman -S git
-git clone https://github.com/leomeinel/arch-install.git
+git clone -b main https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt
