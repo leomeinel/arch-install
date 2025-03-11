@@ -27,6 +27,10 @@ sed_exit() {
 doas localectl --no-convert set-keymap "$KEYMAP"
 doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 
+# Install nix
+doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file $SCRIPT_DIR/extra-conf/nix/nix.conf"
+source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+
 # Configure dot-files (setup)
 # FIXME: Modify install.conf in ~/.config/dot-files
 /dot-files.sh
@@ -321,6 +325,7 @@ doas rm -f /dot-files.sh
 doas rm -f /root/.bash_history
 rm -f "$GNUPGHOME"/dirmgr.conf
 rm -f ~/.bash_history
+rm -f "$SCRIPT_DIR/nix.conf"
 rm -f "$SCRIPT_DIR/pkgs-post.txt"
 rm -f "$SCRIPT_DIR/pkgs-flatpak.txt"
 rm -f "$SCRIPT_DIR/post.sh"

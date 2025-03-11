@@ -220,9 +220,6 @@ pacman -Qq "tesseract-data-nld" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-nld'
 pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES"
 
-# Install nix
-sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file "$SCRIPT_DIR/extra-conf/nix/nix.conf"
-
 # Configure $SYSUSER
 ## Run sysuser.sh
 chmod +x "$SCRIPT_DIR/sysuser.sh"

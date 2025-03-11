@@ -16,6 +16,7 @@ set -eu
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
 
 # Set up post.sh
+cp "$SCRIPT_DIR/extra-conf/nix/nix.conf" ~/
 cp "$SCRIPT_DIR/pkgs-post.txt" ~/
 cp "$SCRIPT_DIR/pkgs-flatpak.txt" ~/
 cp "$SCRIPT_DIR/post.sh" ~/
