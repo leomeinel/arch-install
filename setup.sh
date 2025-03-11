@@ -241,7 +241,7 @@ done
 # Configure $SYSUSER
 ## Run sysuser.sh
 chmod +x "$SCRIPT_DIR/sysuser.sh"
-su -c "$SCRIPT_DIR/sysuser.sh" "$SYSUSER"
+runuser -u "$SYSUSER" -c "$SCRIPT_DIR/sysuser.sh" 
 cp "$SCRIPT_DIR/dot-files.sh" /
 cp "$SCRIPT_DIR/install.conf" /
 chmod 777 /dot-files.sh
