@@ -308,8 +308,12 @@ doas sed -i "/$STRING/a BatchInstall" "$FILE"
 gpgconf --kill all
 sleep 5
 ## AUR packages
-paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
-paru -Syu --noprogressbar --noconfirm
+for i in {1..5}; do
+    paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt" && break || echo "WARNING: paru failed. Retrying now."
+done
+for i in {1..5}; do
+    paru -Syu --noprogressbar --noconfirm && break || echo "WARNING: paru failed. Retrying now."
+done
 paru -Scc
 
 # Enable systemd services

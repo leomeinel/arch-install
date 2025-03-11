@@ -364,7 +364,9 @@ lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
         echo "vulkan-intel"
         echo "xf86-video-intel"
     } >>"$SCRIPT_DIR"/pkgs-prepare.txt
-pacstrap -K /mnt - <"$SCRIPT_DIR/pkgs-prepare.txt"
+for i in {1..5}; do
+    pacstrap -K /mnt - <"$SCRIPT_DIR/pkgs-prepare.txt" && break || echo "WARNING: pacstrap failed. Retrying now."
+done
 
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab

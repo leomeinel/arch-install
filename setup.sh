@@ -62,18 +62,30 @@ echo "#                    At least 12 characters,                    #"
 echo "#           at least 1 digit, 1 uppercase character,            #"
 echo "#         1 lowercace character and 1 other character.          #"
 echo "#################################################################"
-echo "Enter password for root"
-passwd root
-echo "Enter password for $SYSUSER"
-passwd "$SYSUSER"
-echo "Enter password for $VIRTUSER"
-passwd "$VIRTUSER"
-echo "Enter password for $HOMEUSER"
-passwd "$HOMEUSER"
-echo "Enter password for $YOUTUBEUSER"
-passwd "$YOUTUBEUSER"
-echo "Enter password for $GUESTUSER"
-passwd "$GUESTUSER"
+for i in {1..5}; do
+    echo "Enter password for root"
+    passwd root && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+done
+for i in {1..5}; do
+    echo "Enter password for $SYSUSER"
+    passwd "$SYSUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+done
+for i in {1..5}; do
+    echo "Enter password for $VIRTUSER"
+    passwd "$VIRTUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+done
+for i in {1..5}; do
+    echo "Enter password for $HOMEUSER"
+    passwd "$HOMEUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+done
+for i in {1..5}; do
+    echo "Enter password for $YOUTUBEUSER"
+    passwd "$YOUTUBEUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+done
+for i in {1..5}; do
+    echo "Enter password for $GUESTUSER"
+    passwd "$GUESTUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+done
 
 # Setup /etc
 rsync -rq "$SCRIPT_DIR/etc/" /etc
@@ -174,7 +186,9 @@ pacman-key --init
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 
 # Install packages
-pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt"
+for i in {1..5}; do
+    pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt" && break || echo "WARNING: pacman failed. Retrying now."
+done
 ## Install optional dependencies
 DEPENDENCIES=""
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
@@ -203,7 +217,9 @@ pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nmailcap'
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
-pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES"
+for i in {1..5}; do
+    pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES" && break || echo "WARNING: pacman failed. Retrying now."
+done
 ## Reinstall packages as dependencies
 DEPENDENCIES=""
 pacman -Qq "blas-openblas" >/dev/null 2>&1 &&
@@ -218,7 +234,9 @@ pacman -Qq "tesseract-data-fra" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-fra'
 pacman -Qq "tesseract-data-nld" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-nld'
-pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES"
+for i in {1..5}; do
+    pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES" && break || echo "WARNING: pacman failed. Retrying now."
+done
 
 # Configure $SYSUSER
 ## Run sysuser.sh
