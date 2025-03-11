@@ -14,5 +14,6 @@ set -e
 
 # Run dot-files
 git clone -b main https://github.com/leomeinel/dot-files.git ~/.config/dot-files
+cat /install.conf >>~/.config/dot-files/install.conf
 chmod +x ~/.config/dot-files/setup.sh
 ~/.config/dot-files/setup.sh

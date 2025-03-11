@@ -11,7 +11,7 @@
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
-source "$SCRIPT_DIR/install.conf"
+source /install.conf
 
 # Fail on error
 set -e
@@ -32,7 +32,6 @@ doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-ext
 source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 
 # Configure dot-files (setup)
-# FIXME: Modify install.conf in ~/.config/dot-files
 /dot-files.sh
 doas su -lc '/dot-files.sh' "$VIRTUSER"
 doas su -lc '/dot-files.sh' "$HOMEUSER"
@@ -322,6 +321,7 @@ rm -rf ~/git
 
 # Remove scripts
 doas rm -f /dot-files.sh
+doas rm -f /install.conf
 doas rm -f /root/.bash_history
 rm -f "$GNUPGHOME"/dirmgr.conf
 rm -f ~/.bash_history

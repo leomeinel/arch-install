@@ -225,7 +225,9 @@ pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES"
 chmod +x "$SCRIPT_DIR/sysuser.sh"
 su -c "$SCRIPT_DIR/sysuser.sh" "$SYSUSER"
 cp "$SCRIPT_DIR/dot-files.sh" /
+cp "$SCRIPT_DIR/install.conf" /
 chmod 777 /dot-files.sh
+chmod 666 /install.conf
 
 # Configure /etc
 ## Configure /etc/crypttab
