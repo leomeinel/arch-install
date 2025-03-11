@@ -330,7 +330,7 @@ FILE=/etc/pacman.conf
 STRING="^#Color"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/Color/" "$FILE"
-STRING="^#ParallelDownloads =.*"
+STRING="^ParallelDownloads =.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
 STRING="^#NoProgressBar"
