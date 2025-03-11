@@ -115,12 +115,12 @@ vgchange -an || true
 ## Use dd and sgdisk -o to wipe the header and more to make sure that it is erased
 sgdisk -o "$DISK1" || true
 sgdisk -Z "$DISK1" || true
-dd if=/dev/zero of="$DISK1" bs=1M count=16384
+dd if=/dev/zero of="$DISK1" bs=1M count=16384 status=progress
 
 if [[ -n "$DISK2" ]]; then
     sgdisk -o "$DISK2" || true
     sgdisk -Z "$DISK2" || true
-    dd if=/dev/zero of="$DISK2" bs=1M count=16384
+    dd if=/dev/zero of="$DISK2" bs=1M count=16384 status=progress
 fi
 ## Prompt user if they want to secure wipe the whole disk
 if [[ -n "$DISK2" ]]; then
