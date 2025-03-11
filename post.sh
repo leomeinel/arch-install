@@ -30,18 +30,6 @@ doas sh -c 'echo "permit nopass persist setenv { LANG LC_ALL } :wheel" >/etc/doa
 doas localectl --no-convert set-keymap "$KEYMAP"
 doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 
-# Install nix
-doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file $SCRIPT_DIR/nix.conf"
-source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-
-# Configure dot-files (setup)
-/dot-files.sh
-doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --user -M "$HOMEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --user -M "$YOUTUBEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --user -M "$GUESTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-
 # Configure clock
 doas timedatectl set-ntp true
 
@@ -260,6 +248,18 @@ YES)
     echo "         Deploy your own keys in $EFI_KEYS_DIR and run ~/secureboot.sh to sign your bootloader"
     ;;
 esac
+
+# Install nix
+doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file $SCRIPT_DIR/nix.conf"
+source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
+# Configure dot-files
+/dot-files.sh
+doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
+doas systemd-run -P --wait --user -M "$HOMEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
+doas systemd-run -P --wait --user -M "$YOUTUBEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
+doas systemd-run -P --wait --user -M "$GUESTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
+doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
 
 # Source ~/.bash_profile
 source ~/.bash_profile
