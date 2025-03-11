@@ -93,24 +93,6 @@ YES)
         exit 1
         ;;
     esac
-    ## Detect & close old crypt volumes
-    if lsblk -rno TYPE | grep -q "crypt"; then
-        OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
-        cryptsetup close "$OLD_CRYPT_0"
-    fi
-    ## Detect & erase old crypt/raid1 volumes
-    if lsblk -rno TYPE | grep -q "raid1"; then
-        OLD_DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-        OLD_DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-        OLD_RAID_0="$(lsblk -Mrnpo TYPE,NAME | grep "raid1" | sed 's/raid1//' | sed -n '1p' | tr -d "[:space:]")"
-        if cryptsetup isLuks "$OLD_RAID_0"; then
-            cryptsetup erase "$OLD_RAID_0"
-        fi
-        sgdisk -Z "$OLD_RAID_0"
-        mdadm --stop "$OLD_RAID_0"
-        mdadm --zero-superblock "$OLD_DISK1P2"
-        mdadm --zero-superblock "$OLD_DISK2P2"
-    fi
     ;;
 *)
     ## Prompt user for disk
@@ -124,25 +106,35 @@ YES)
         echo "ERROR: Drive not suitable for installation!"
         exit 1
     fi
-    ## Deactivate all vgs
-    vgchange -an
-    ## Detect, close & erase old crypt volumes
-    if lsblk -rno TYPE "$DISK1" | grep -q "crypt"; then
-        OLD_CRYPT_0="$(lsblk -Mrno TYPE,NAME "$DISK1" | grep "crypt" | sed 's/crypt//' | sed -n '1p' | tr -d "[:space:]")"
-        OLD_DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
-        ### Close old crypt volumes
-        cryptsetup close "$OLD_CRYPT_0"
-        ### Erase old crypt volumes
-        if cryptsetup isLuks "$OLD_DISK1P2"; then
-            cryptsetup erase "$OLD_DISK1P2"
-            sgdisk -Z "$OLD_DISK1P2"
-        else
-            echo "ERROR: Can't erase old crypt volume!"
-            exit 1
-        fi
-    fi
     ;;
 esac
+
+# Erase disks
+## Deactivate all vgs
+vgchange -an || true
+## Use dd and sgdisk -o to wipe the header and more to make sure that it is erased
+sgdisk -o "$DISK1" || true
+sgdisk -Z "$DISK1" || true
+dd if=/dev/zero of="$DISK1" bs=1M count=16384
+
+if [[ -n "$DISK2" ]]; then
+    sgdisk -o "$DISK2" || true
+    sgdisk -Z "$DISK2" || true
+    dd if=/dev/zero of="$DISK2" bs=1M count=16384
+fi
+## Prompt user if they want to secure wipe the whole disk
+if [[ -n "$DISK2" ]]; then
+    read -rp "Secure wipe $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
+    if [[ "$choice" == "YES" ]]; then
+        dd if=/dev/urandom of="$DISK1" bs="$(stat -c "%o" "$DISK1")" status=progress
+        dd if=/dev/urandom of="$DISK2" bs="$(stat -c "%o" "$DISK2")" status=progress
+    fi
+else
+    read -rp "Secure wipe $DISK1? (Type 'yes' in capital letters): " choice
+    if [[ "$choice" == "YES" ]]; then
+        dd if=/dev/urandom of="$DISK1" bs="$(stat -c "%o" "$DISK1")" status=progress
+    fi
+fi
 
 # Load $KEYMAP & set time
 loadkeys "$KEYMAP"
@@ -150,11 +142,9 @@ timedatectl set-ntp true
 timedatectl set-timezone "$TIMEZONE"
 
 # Erase & partition disks
-sgdisk -Z "$DISK1"
 sgdisk -n 0:0:+1G -t 1:ef00 "$DISK1"
 if [[ -n "$DISK2" ]]; then
     sgdisk -n 0:0:"$PART_SIZE" -t 2:fd00 "$DISK1"
-    sgdisk -Z "$DISK2"
     sgdisk -n 0:0:+1G -t 1:ef00 "$DISK2"
     sgdisk -n 0:0:0 -t 2:fd00 "$DISK2"
 else
@@ -171,26 +161,10 @@ if [[ -n "$DISK2" ]]; then
     RAID_DEVICE=/dev/md/md0
     mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any --name=md0 "$RAID_DEVICE" "$DISK1P2" "$DISK2P2"
     ## Configure encryption
-    read -rp "Secure wipe $DISK1 and $DISK2? (Type 'yes' in capital letters): " choice
-    if [[ "$choice" == "YES" ]]; then
-        ## Don't fail on error
-        set +e
-        dd if=/dev/urandom of="$RAID_DEVICE" bs="$(stat -c "%o" "$RAID_DEVICE")" status=progress
-        ## Fail on error
-        set -e
-    fi
     cryptsetup -y -v luksFormat "$RAID_DEVICE"
     cryptsetup open "$RAID_DEVICE" md0_crypt
 else
     ## Configure encryption
-    read -rp "Secure wipe $DISK1? (Type 'yes' in capital letters): " choice
-    if [[ "$choice" == "YES" ]]; then
-        ## Don't fail on error
-        set +e
-        dd if=/dev/urandom of="$DISK1P2" bs="$(stat -c "%o" "$DISK1P2")" status=progress
-        ## Fail on error
-        set -e
-    fi
     cryptsetup -y -v luksFormat "$DISK1P2"
     cryptsetup open "$DISK1P2" md0_crypt
 fi
