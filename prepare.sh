@@ -176,12 +176,21 @@ if [[ -n "$DISK2" ]]; then
     RAID_DEVICE=/dev/md/md0
     mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any --name=md0 "$RAID_DEVICE" "$DISK1P2" "$DISK2P2"
     ## Configure encryption
-    cryptsetup -y -v luksFormat "$RAID_DEVICE"
-    cryptsetup open "$RAID_DEVICE" md0_crypt
+    for i in {1..5}; do
+        cryptsetup -y -v luksFormat "$RAID_DEVICE" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    done
+    for i in {1..5}; do
+        cryptsetup open "$RAID_DEVICE" md0_crypt && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    done
+
 else
     ## Configure encryption
-    cryptsetup -y -v luksFormat "$DISK1P2"
-    cryptsetup open "$DISK1P2" md0_crypt
+    for i in {1..5}; do
+        cryptsetup -y -v luksFormat "$DISK1P2" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    done
+    for i in {1..5}; do
+        cryptsetup open "$DISK1P2" md0_crypt && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    done
 fi
 
 # Configure lvm
