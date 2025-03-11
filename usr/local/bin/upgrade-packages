@@ -9,5 +9,5 @@
 # -----
 ###
 
-sudo -u '#1000' paru
+doas -u 1000 paru
 flatpak --system update
