@@ -28,7 +28,7 @@ doas localectl --no-convert set-keymap "$KEYMAP"
 doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 
 # Install nix
-doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file $SCRIPT_DIR/extra-conf/nix/nix.conf"
+doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file $SCRIPT_DIR/nix.conf"
 source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 
 # Configure dot-files (setup)
