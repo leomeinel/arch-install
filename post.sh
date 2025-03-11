@@ -28,12 +28,13 @@ doas localectl --no-convert set-keymap "$KEYMAP"
 doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
 
 # Configure dot-files (setup)
-/dot-files.sh setup
-doas su -lc '/dot-files.sh setup' "$VIRTUSER"
-doas su -lc '/dot-files.sh setup' "$HOMEUSER"
-doas su -lc '/dot-files.sh setup' "$YOUTUBEUSER"
-doas su -lc '/dot-files.sh setup' "$GUESTUSER"
-doas su -lc '/dot-files.sh setup-min' root
+# FIXME: Modify install.conf in ~/.config/dot-files
+/dot-files.sh
+doas su -lc '/dot-files.sh' "$VIRTUSER"
+doas su -lc '/dot-files.sh' "$HOMEUSER"
+doas su -lc '/dot-files.sh' "$YOUTUBEUSER"
+doas su -lc '/dot-files.sh' "$GUESTUSER"
+doas su -lc '/dot-files.sh' root
 
 # Configure clock
 doas timedatectl set-ntp true
@@ -254,25 +255,12 @@ YES)
     ;;
 esac
 
-# Set default rust if rustup is installed
+# Source ~/.bash_profile
 source ~/.bash_profile
-[[ -n $(which rustup) ]] >/dev/null 2>&1 &&
-    rustup default stable
 
 # Install flatpaks
 [[ -n $(which flatpak) ]] >/dev/null 2>&1 &&
     xargs -n 1 doas flatpak install --system -y --noninteractive <"$SCRIPT_DIR/pkgs-flatpak.txt"
-
-# Install packages via nix profile
-[[ -n $(which nix) ]] >/dev/null 2>&1 &&
-    {
-        xargs -n 1 nix profile install </pkgs-nix.txt
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$VIRTUSER"
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$HOMEUSER"
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$YOUTUBEUSER"
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' "$GUESTUSER"
-        doas su -lc 'xargs -n 1 nix profile install </pkgs-nix.txt' root
-    }
 
 # Install paru-bin
 git clone https://aur.archlinux.org/paru-bin.git ~/git/paru-bin
@@ -321,31 +309,15 @@ paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
 paru -Syu --noprogressbar --noconfirm
 paru -Scc
 
-# Prepare dot-files (codium)
-/dot-files.sh codium
-doas su -lc '/dot-files.sh codium' "$VIRTUSER"
-doas su -lc '/dot-files.sh codium' "$HOMEUSER"
-doas su -lc '/dot-files.sh codium' "$YOUTUBEUSER"
-doas su -lc '/dot-files.sh codium' "$GUESTUSER"
-chmod +x ~/post-gui.sh
-
 # Enable systemd services
 pacman -Qq "nftables" >/dev/null 2>&1 &&
-    systemctl enable nftables.service
-
-# Enable systemd user services
-## Configure symbolic links for systemd services from nix profile
-[[ -n $(which usbguard-notifier) ]] >/dev/null 2>&1 &&
-    ln -s "$XDG_STATE_HOME"/nix/profile/lib/systemd/user/usbguard-notifier.service "$XDG_CONFIG_HOME"/systemd/user/usbguard-notifier.service
-[[ -n $(which usbguard-notifier) ]] >/dev/null 2>&1 &&
-    systemctl enable --user usbguard-notifier.service
+    doas systemctl enable nftables.service
 
 # Remove repo
 rm -rf ~/git
 
 # Remove scripts
 doas rm -f /dot-files.sh
-doas rm -f /pkgs-nix.txt
 doas rm -f /root/.bash_history
 rm -f "$GNUPGHOME"/dirmgr.conf
 rm -f ~/.bash_history

@@ -43,18 +43,12 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 ## END sed
 groupadd -r audit
 groupadd -r libvirt
-groupadd -r nix-users
-# Source: https://nix.dev/manual/nix/2.17/installation/multi-user#setting-up-the-build-users
-groupadd -r nixbld
-for n in $(seq 1 10); do
-    useradd -c "Nix build user $n" -d /var/empty -g nixbld -G nixbld -M -N -r -s "$(which nologin)" nixbld$n
-done
 groupadd -r usbguard
-useradd -ms /bin/bash -G adm,audit,log,nix-users,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
-useradd -ms /bin/bash -G libvirt,nix-users,video "$VIRTUSER"
-useradd -ms /bin/bash -G nix-users,video "$HOMEUSER"
-useradd -ms /bin/bash -G libvirt,nix-users,video "$YOUTUBEUSER"
-useradd -ms /bin/bash -G nix-users,video "$GUESTUSER"
+useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
+useradd -ms /bin/bash -G libvirt,video "$VIRTUSER"
+useradd -ms /bin/bash -G video "$HOMEUSER"
+useradd -ms /bin/bash -G libvirt,video "$YOUTUBEUSER"
+useradd -ms /bin/bash -G video "$GUESTUSER"
 echo "#################################################################"
 echo "#                      _    _           _   _                   #"
 echo "#                     / \  | | ___ _ __| |_| |                  #"
@@ -99,8 +93,6 @@ chmod 0400 /etc/doas.conf
 ## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/50-mac-random.conf
 chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
 chmod 644 /etc/NetworkManager/conf.d/51-unmanaged.conf
-## Configure /etc/nix/nix.conf
-chmod 644 /etc/nix/nix.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
@@ -199,8 +191,6 @@ pacman -Qq "pipewire" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npipewire-alsa\npipewire-pulse'
 pacman -Qq "podman" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nslirp4netns\npodman-compose\nnetavark\naardvark-dns'
-pacman -Qq "r" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ngcc-fortran\ntk'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ncups-pk-helper'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
@@ -230,14 +220,15 @@ pacman -Qq "tesseract-data-nld" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-nld'
 pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES"
 
+# Install nix
+sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file "$SCRIPT_DIR/extra-conf/nix/nix.conf"
+
 # Configure $SYSUSER
 ## Run sysuser.sh
 chmod +x "$SCRIPT_DIR/sysuser.sh"
 su -c "$SCRIPT_DIR/sysuser.sh" "$SYSUSER"
 cp "$SCRIPT_DIR/dot-files.sh" /
 chmod 777 /dot-files.sh
-cp "$SCRIPT_DIR/pkgs-nix.txt" /
-chmod 644 /pkgs-nix.txt
 
 # Configure /etc
 ## Configure /etc/crypttab
@@ -601,8 +592,6 @@ pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager.service
-pacman -Qq "nix" >/dev/null 2>&1 &&
-    systemctl enable nix-daemon.service
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
         systemctl enable reflector.service

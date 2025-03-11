@@ -97,7 +97,6 @@ maven
 mtools
 network-manager-applet
 nextcloud-client
-nix
 noto-fonts
 nss-mdns
 ntfs-3g
@@ -127,7 +126,6 @@ qemu-emulators-full
 qt6-wayland
 qt6ct
 quilt
-r
 ripgrep
 rkhunter
 ruff

@@ -56,11 +56,4 @@ reboot
 doas reboot
 ```
 
-:information_source: | Log into $SYSUSER account on tty1, open alacritty with `SUPER+ENTER` and run:
-
-```sh
-~/post-gui.sh
-doas reboot
-```
-
 :information_source: | ¹Enable `Secure Boot` in [`UEFI Firmware Settings`](https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Before_booting_the_OS).

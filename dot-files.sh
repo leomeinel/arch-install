@@ -12,20 +12,7 @@
 # Fail on error
 set -e
 
-# Set up dot-files
-case "$1" in
-setup)
-    git clone https://github.com/leomeinel/dot-files.git ~/dot-files
-    chmod +x ~/dot-files/setup.sh
-    ~/dot-files/setup.sh
-    ;;
-setup-min)
-    git clone https://github.com/leomeinel/dot-files.git ~/dot-files
-    chmod +x ~/dot-files/setup-min.sh
-    ~/dot-files/setup-min.sh
-    ;;
-codium)
-    git clone https://github.com/leomeinel/dot-files.git ~/dot-files
-    chmod +x ~/dot-files/exts-code.sh
-    ;;
-esac
+# Run dot-files
+git clone -b main https://github.com/leomeinel/dot-files.git ~/.config/dot-files
+chmod +x ~/.config/dot-files/setup.sh
+~/.config/dot-files/setup.sh
