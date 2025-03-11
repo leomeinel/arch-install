@@ -9,5 +9,11 @@
 # -----
 ###
 
-doas -u 1000 paru
-flatpak --system update
+# If current user is root, don't do anything
+if [[ "$UID" -eq 0 ]]; then
+    echo "ERROR: You can't run this script as root!"
+    exit 1
+fi
+
+paru
+doas flatpak --system update
