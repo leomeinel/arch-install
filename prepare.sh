@@ -65,6 +65,7 @@ YES)
     ## Set size for partition of larger disk
     SIZE1="$(lsblk -drnbo SIZE "${DISKS[0]}" | tr -d "[:space:]")"
     SIZE2="$(lsblk -drnbo SIZE "${DISKS[1]}" | tr -d "[:space:]")"
+    ### Check that both drives are over 10GiB
     if [[ "$SIZE1" -lt 10737418240 ]] || [[ "$SIZE2" -lt 10737418240 ]]; then
         echo "ERROR: Drive too small for installation!"
         exit 1
@@ -106,6 +107,7 @@ YES)
     if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "$choice"; then
         echo "Erasing $choice..."
         DISK1="$choice"
+        ### Check that the drive is over 10GiB
         SIZE1="$(lsblk -drnbo SIZE "${DISK1}" | tr -d "[:space:]")"
         if [[ "$SIZE1" -lt 10737418240 ]]; then
             echo "ERROR: Drive too small for installation!"
@@ -124,12 +126,12 @@ vgchange -an || true
 ## Use dd and sgdisk -o to wipe the header and more to make sure that it is erased
 sgdisk -o "$DISK1" || true
 sgdisk -Z "$DISK1" || true
-dd if=/dev/zero of="$DISK1" bs=1M count=8192 status=progress || true
+dd if=/dev/zero of="$DISK1" bs=1M count=8192 status=progress
 
 if [[ -n "$DISK2" ]]; then
     sgdisk -o "$DISK2" || true
     sgdisk -Z "$DISK2" || true
-    dd if=/dev/zero of="$DISK2" bs=1M count=8192 status=progress || true
+    dd if=/dev/zero of="$DISK2" bs=1M count=8192 status=progress
 fi
 ## Prompt user if they want to secure wipe the whole disk
 if [[ -n "$DISK2" ]]; then
