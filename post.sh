@@ -23,6 +23,9 @@ sed_exit() {
     exit 1
 }
 
+# Replace doas.conf with option nopass
+doas sh -c 'echo "permit nopass persist setenv { LANG LC_ALL } :wheel" >/etc/doas.conf'
+
 # Configure $KEYMAP
 doas localectl --no-convert set-keymap "$KEYMAP"
 doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
@@ -333,3 +336,6 @@ rm -f "$SCRIPT_DIR/nix.conf"
 rm -f "$SCRIPT_DIR/pkgs-post.txt"
 rm -f "$SCRIPT_DIR/pkgs-flatpak.txt"
 rm -f "$SCRIPT_DIR/post.sh"
+
+# Replace doas.conf with default
+doas sh -c 'echo "permit persist setenv { LANG LC_ALL } :wheel" >/etc/doas.conf'
