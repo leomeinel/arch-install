@@ -365,7 +365,11 @@ lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
     echo "amd-ucode" >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lscpu | grep "Flags:" | grep -q "hypervisor" &&
-    echo "qemu-guest-agent" >>"$SCRIPT_DIR/pkgs-prepare.txt"
+    {
+        echo "qemu-guest-agent"
+        echo "spice-vdagent"
+        echo "xf86-video-qxl"
+    } >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
     {
         echo "vulkan-radeon"
