@@ -97,14 +97,10 @@ for string in "${LANGUAGES[@]}"; do
     sed -i "s/^#$string/$string/" "$FILE"
 done
 ### END sed
-chmod 644 /etc/locale.conf
 locale-gen
 ## Configure /etc/doas.conf
 chown root:root /etc/doas.conf
 chmod 0400 /etc/doas.conf
-## Configure random MAC address for WiFi in /etc/NetworkManager/conf.d/50-mac-random.conf
-chmod 644 /etc/NetworkManager/conf.d/50-mac-random.conf
-chmod 644 /etc/NetworkManager/conf.d/51-unmanaged.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "$DISK1" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
@@ -141,17 +137,8 @@ lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
             echo '/usr/bin/umount /.efi.bak'
         } >/etc/pacman.d/hooks/scripts/99-efibackup.sh
     }
-chmod 755 /etc/pacman.d/hooks
-chmod 755 /etc/pacman.d/hooks/scripts
-chmod 644 /etc/pacman.d/hooks/*.hook
-chmod 744 /etc/pacman.d/hooks/scripts/*.sh
-## Configure /etc/systemd/zram-generator.conf
-chmod 644 /etc/systemd/zram-generator.conf
+chmod 755 /etc/pacman.d/hooks/scripts/*.sh
 ## Configure /etc/sysctl.d
-chmod 755 /etc/sysctl.d
-chmod 644 /etc/sysctl.d/*
-## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
-chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 ## Configure /etc/pacman.conf /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
@@ -160,7 +147,6 @@ chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
     echo "--latest 20"
     echo "--sort rate"
 } >/etc/xdg/reflector/reflector.conf
-chmod 644 /etc/xdg/reflector/reflector.conf
 {
     echo ''
     echo '# Custom'
@@ -225,12 +211,12 @@ done
 
 # Configure $SYSUSER
 ## Run sysuser.sh
-chmod +x "$SCRIPT_DIR/sysuser.sh"
+chmod 755 "$SCRIPT_DIR/sysuser.sh"
 runuser -u "$SYSUSER" -- "$SCRIPT_DIR/sysuser.sh"
 cp "$SCRIPT_DIR/dot-files.sh" /
 cp "$SCRIPT_DIR/install.conf" /
-chmod 777 /dot-files.sh
-chmod 666 /install.conf
+chmod 755 /dot-files.sh
+chmod 644 /install.conf
 
 # Configure /etc
 ## Configure /etc/crypttab
@@ -242,12 +228,6 @@ fi
 {
     echo "md0_crypt UUID=$MD0UUID none luks,key-slot=0"
 } >/etc/crypttab
-## Create /etc/encryption/keys directory
-mkdir -p /etc/encryption/keys
-chmod 700 /etc/encryption/keys
-## Create /etc/access/keys directory
-mkdir -p /etc/access/keys
-chmod 700 /etc/access/keys
 ## Configure /etc/localtime /etc/vconsole.conf /etc/hostname /etc/hosts
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
@@ -263,7 +243,6 @@ echo "$HOSTNAME" >/etc/hostname
 ## Configure /etc/cryptboot.conf
 git clone https://github.com/leomeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
-chmod 644 /etc/cryptboot.conf
 ## Configure /etc/xdg/user-dirs.defaults
 ### START sed
 FILE=/etc/xdg/user-dirs.defaults
@@ -371,7 +350,6 @@ PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID
 pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
-chmod 644 /etc/dracut.conf.d/*.conf
 ## Harden system
 ### Disable coredump
 {
@@ -384,25 +362,6 @@ chmod 644 /etc/dracut.conf.d/*.conf
 ### Harden Postfix
 postconf -e disable_vrfy_command=yes
 postconf -e inet_interfaces=loopback-only
-### chmod & touch files
-FILES_600=("/etc/at.deny" "/etc/anacrontab" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts" "/etc/audit/rules.d/custom.rules")
-FILES_644=("/etc/hosts.allow" "/etc/hosts.deny" "/etc/hosts.equiv" "/etc/issue" "/etc/issue.net" "/etc/motd" "/etc/shosts.equiv")
-DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly" "/etc/audit/rules.d")
-for file in "${FILES_600[@]}"; do
-    [[ ! -f "$file" ]] &&
-        touch "$file"
-    chmod 600 "$file"
-done
-for file in "${FILES_644[@]}"; do
-    [[ ! -f "$file" ]] &&
-        touch "$file"
-    chmod 644 "$file"
-done
-for dir in "${DIRS_700[@]}"; do
-    [[ ! -f "$dir" ]] &&
-        mkdir -p "$dir"
-    chmod 700 "$dir"
-done
 
 # Setup /usr
 rsync -rq "$SCRIPT_DIR/usr/" /usr
@@ -410,30 +369,30 @@ cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
 ## Configure /usr/local/bin
-chmod 755 /usr/local/bin/cryptboot
-chmod 755 /usr/local/bin/cryptboot-efikeys
-chmod 755 /usr/local/bin/systemd-boot-sign
 ln -s "$(which nvim)" /usr/local/bin/edit
 ln -s "$(which nvim)" /usr/local/bin/vedit
 ln -s "$(which nvim)" /usr/local/bin/vi
 ln -s "$(which nvim)" /usr/local/bin/vim
-chmod 755 /usr/local/bin/edit
-chmod 755 /usr/local/bin/ex
-chmod 755 /usr/local/bin/floorp
-chmod 755 /usr/local/bin/freetube
-chmod 755 /usr/local/bin/librewolf
-chmod 755 /usr/local/bin/nitrokey-app
-chmod 755 /usr/local/bin/prismlauncher
-chmod 755 /usr/local/bin/rpi-imager
-chmod 755 /usr/local/bin/sway-logout
-chmod 755 /usr/local/bin/sweethome3d
-chmod 755 /usr/local/bin/upgrade-packages
-chmod 755 /usr/local/bin/trilium
-chmod 755 /usr/local/bin/vedit
-chmod 755 /usr/local/bin/vi
-chmod 755 /usr/local/bin/view
-chmod 755 /usr/local/bin/vim
-chmod 755 /usr/local/bin/vimdiff
+
+# Create dirs/files and modify perms
+FILES_600=("/etc/at.deny" "/etc/anacrontab" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts" "/etc/audit/rules.d/custom.rules")
+DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly" "/etc/audit/rules.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
+FILES_755=("/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/systemd-boot-sign" "/usr/local/bin/edit" "/usr/local/bin/ex" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/prismlauncher" "/usr/local/bin/rpi-imager" "/usr/local/bin/sway-logout" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-packages" "/usr/local/bin/trilium" "/usr/local/bin/vedit" "/usr/local/bin/vi" "/usr/local/bin/view" "/usr/local/bin/vim" "/usr/local/bin/vimdiff")
+for file in "${FILES_600[@]}"; do
+    [[ ! -f "$file" ]] &&
+        touch "$file"
+    chmod 600 "$file"
+done
+for file in "${FILES_755[@]}"; do
+    [[ ! -f "$file" ]] &&
+        touch "$file"
+    chmod 755 "$file"
+done
+for dir in "${DIRS_700[@]}"; do
+    [[ ! -f "$dir" ]] &&
+        mkdir -p "$dir"
+    chmod 700 "$dir"
+done
 
 # Configure /usr
 ## Configure /usr/share/snapper/config-templates/default & configure snapper configs
@@ -489,7 +448,6 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     #### Copy template
     FILE1="/usr/share/snapper/config-templates/${CONFIGS[$i]}"
     cp "$FILE0" "$FILE1"
-    chmod 644 "$FILE1"
     #### Set variables for configs
     case "${CONFIGS[$i]}" in
     "root" | "usr" | "nix" | "var" | "var_lib" | "var_lib_containers" | "var_lib_flatpak" | "var_lib_mysql")
@@ -545,27 +503,19 @@ done
 mount -a
 ### Set correct permissions on snapshots (Prepare snapshot dirs 3)
 for subvolume in "${SUBVOLUMES[@]}"; do
-    chmod 755 "$subvolume".snapshots
     chown :wheel "$subvolume".snapshots
 done
 ## Configure /usr/share/wallpapers/Custom/content
 mkdir -p /usr/share/wallpapers/Custom/content
 git clone https://github.com/leomeinel/wallpapers.git /git/wallpapers
 cp /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
-chmod 755 /usr/share/wallpapers/Custom
-chmod 755 /usr/share/wallpapers/Custom/content
-chmod 644 /usr/share/wallpapers/Custom/content/*
 
 # Configure /var
 ## Configure /var/games
 chown :games /var/games
 
-# Configure /root
-mkdir -p /root/backup
-
 # Setup /efi
 rsync -rq "$SCRIPT_DIR/efi/" /efi
-chmod 644 /efi/loader/loader.conf
 
 # Enable systemd services
 pacman -Qq "apparmor" >/dev/null 2>&1 &&

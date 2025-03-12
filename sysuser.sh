@@ -20,4 +20,4 @@ cp "$SCRIPT_DIR/extra-conf/nix/nix.conf" ~/
 cp "$SCRIPT_DIR/pkgs-post.txt" ~/
 cp "$SCRIPT_DIR/pkgs-flatpak.txt" ~/
 cp "$SCRIPT_DIR/post.sh" ~/
-chmod +x ~/post.sh
+chmod 755 ~/post.sh

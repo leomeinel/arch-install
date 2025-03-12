@@ -245,7 +245,7 @@ YES)
     } >~/secureboot.sh
     doas mkdir -p "$EFI_KEYS_DIR"
     doas chmod 700 "$EFI_KEYS_DIR"
-    chmod 700 ~/secureboot.sh
+    chmod 755 ~/secureboot.sh
     echo "WARNING: User aborted enrolling secureboot keys"
     echo "         Deploy your own keys in $EFI_KEYS_DIR and run ~/secureboot.sh to sign your bootloader"
     ;;

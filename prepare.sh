@@ -301,7 +301,6 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
         ;;
     esac
 done
-chmod 775 /mnt/var/games
 ## /efi
 OPTIONS4="noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077"
 mount --mkdir -o "$OPTIONS4" "$DISK1P1" /mnt/efi
@@ -407,4 +406,4 @@ ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 # Prepare /mnt/git/arch-install
 mkdir -p /mnt/git
 mv "$SCRIPT_DIR" /mnt/git/
-chmod +x /mnt/git/arch-install/setup.sh
+chmod 755 /mnt/git/arch-install/setup.sh
