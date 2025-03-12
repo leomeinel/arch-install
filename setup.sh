@@ -383,18 +383,6 @@ sed -i "s/$STRING/AutoEnable=true/" "$FILE"
     echo "snapshot = True"
     echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
     echo ""
-    echo "[var_lib_containers]"
-    echo "snapshot = True"
-    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
-    echo ""
-    echo "[var_lib_flatpak]"
-    echo "snapshot = True"
-    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
-    echo ""
-    echo "[var_lib_libvirt]"
-    echo "snapshot = True"
-    echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
-    echo ""
     echo "[var_lib_mysql]"
     echo "snapshot = True"
     echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
@@ -483,9 +471,9 @@ STRING2="^FREE_LIMIT=.*"
 STRING3="^NUMBER_LIMIT=.*"
 STRING4="^NUMBER_LIMIT_IMPORTANT=.*"
 STRING5="^TIMELINE_CREATE=.*"
-STRING6="^TIMELINE_CLEANUP=.*"
-STRING7="^TIMELINE_LIMIT_MONTHLY=.*"
-STRING8="^TIMELINE_LIMIT_YEARLY=.*"
+STRING5="^TIMELINE_CLEANUP=.*"
+STRING6="^TIMELINE_LIMIT_MONTHLY=.*"
+STRING7="^TIMELINE_LIMIT_YEARLY=.*"
 #####
 FILE0=/usr/share/snapper/config-templates/default
 grep -q "$STRING0" "$FILE0" || sed_exit
@@ -499,13 +487,11 @@ sed -i "s/$STRING3/NUMBER_LIMIT=\"5\"/" "$FILE0"
 grep -q "$STRING4" "$FILE0" || sed_exit
 sed -i "s/$STRING4/NUMBER_LIMIT_IMPORTANT=\"5\"/" "$FILE0"
 grep -q "$STRING5" "$FILE0" || sed_exit
-sed -i "s/$STRING5/TIMELINE_CREATE=\"yes\"/" "$FILE0"
+sed -i "s/$STRING5/TIMELINE_CLEANUP=\"yes\"/" "$FILE0"
 grep -q "$STRING6" "$FILE0" || sed_exit
-sed -i "s/$STRING6/TIMELINE_CLEANUP=\"yes\"/" "$FILE0"
+sed -i "s/$STRING6/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE0"
 grep -q "$STRING7" "$FILE0" || sed_exit
-sed -i "s/$STRING7/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE0"
-grep -q "$STRING8" "$FILE0" || sed_exit
-sed -i "s/$STRING8/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE0"
+sed -i "s/$STRING7/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE0"
 ##### END sed
 ### Remove & unmount snapshots (Prepare snapshot dirs 1)
 for subvolume in "${SUBVOLUMES[@]}"; do
@@ -513,8 +499,10 @@ for subvolume in "${SUBVOLUMES[@]}"; do
     rm -rf "$subvolume".snapshots
 done
 ####### START sed
-STRING0="^TIMELINE_LIMIT_HOURLY=.*"
-STRING1="^TIMELINE_LIMIT_DAILY=.*"
+STRING0="^TIMELINE_CREATE=.*"
+STRING1="^TIMELINE_LIMIT_HOURLY=.*"
+STRING2="^TIMELINE_LIMIT_DAILY=.*"
+STRING3="^TIMELINE_LIMIT_WEEKLY=.*"
 #######
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
 [[ "$SUBVOLUMES_LENGTH" -ne ${#CONFIGS[@]} ]] &&
@@ -529,28 +517,46 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     chmod 644 "$FILE1"
     #### Set variables for configs
     case "${CONFIGS[$i]}" in
-    "var_cache" | "var_games" | "var_log")
+    "root" | "usr" | "nix" | "var" | "var_lib" | "var_lib_containers" | "var_lib_flatpak" | "var_lib_mysql")
+        CREATE="yes"
+        HOURLY=2
+        DAILY=1
+        WEEKLY=0
+        ;;
+    "var_lib_libvirt")
+        CREATE="yes"
+        HOURLY=0
+        DAILY=1
+        WEEKLY=0
+        ;;
+    "var_log")
+        CREATE="yes"
         HOURLY=1
         DAILY=1
-        ;;
-    "var" | "var_lib" | "var_lib_containers")
-        HOURLY=2
-        DAILY=2
+        WEEKLY=1
         ;;
     "home")
-        HOURLY=3
+        CREATE="yes"
+        HOURLY=2
         DAILY=2
+        WEEKLY=0
         ;;
     *)
-        HOURLY=2
-        DAILY=1
+        CREATE="no"
+        HOURLY=0
+        DAILY=0
+        WEEKLY=0
         ;;
     esac
     #######
     grep -q "$STRING0" "$FILE1" || sed_exit
-    sed -i "s/$STRING0/TIMELINE_LIMIT_HOURLY=\"$HOURLY\"/" "$FILE1"
+    sed -i "s/$STRING0/TIMELINE_CREATE=\"$CREATE\"/" "$FILE1"
     grep -q "$STRING1" "$FILE1" || sed_exit
-    sed -i "s/$STRING1/TIMELINE_LIMIT_DAILY=\"$DAILY\"/" "$FILE1"
+    sed -i "s/$STRING1/TIMELINE_LIMIT_HOURLY=\"$HOURLY\"/" "$FILE1"
+    grep -q "$STRING2" "$FILE1" || sed_exit
+    sed -i "s/$STRING2/TIMELINE_LIMIT_DAILY=\"$DAILY\"/" "$FILE1"
+    grep -q "$STRING3" "$FILE1" || sed_exit
+    sed -i "s/$STRING3/TIMELINE_LIMIT_WEEKLY=\"$WEEKLY\"/" "$FILE1"
     ####### END sed
     #### Create config
     snapper --no-dbus -c "${CONFIGS[$i]}" create-config -t "${CONFIGS[$i]}" "${SUBVOLUMES[$i]}"

@@ -200,6 +200,7 @@ lvcreate -l "${DISK_ALLOCATION[0]}" vg0 -n lv0
 lvcreate -l "${DISK_ALLOCATION[1]}" vg0 -n lv1
 lvcreate -l "${DISK_ALLOCATION[2]}" vg0 -n lv2
 lvcreate -l "${DISK_ALLOCATION[3]}" vg0 -n lv3
+lvcreate -l "${DISK_ALLOCATION[4]}" vg0 -n lv4
 
 # Format efi
 mkfs.fat -n EFI -F32 "$DISK1P1"
@@ -234,6 +235,7 @@ LV0="/dev/mapper/vg0-lv0"
 LV1="/dev/mapper/vg0-lv1"
 LV2="/dev/mapper/vg0-lv2"
 LV3="/dev/mapper/vg0-lv3"
+LV4="/dev/mapper/vg0-lv4"
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[$i]}" in
     "/")
@@ -246,11 +248,14 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     "/usr/")
         create_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "USR" "$LV1"
         ;;
+    "/nix/")
+        create_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "NIX" "$LV2"
+        ;;
     "/var/")
-        create_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "VAR" "$LV2"
+        create_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "VAR" "$LV3"
         ;;
     "/home/")
-        create_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "HOME" "$LV3"
+        create_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "HOME" "$LV4"
         ;;
     esac
 done
@@ -285,11 +290,14 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     "/usr/")
         mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS1" "$LV1"
         ;;
+    "/nix/")
+        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS1" "$LV2"
+        ;;
     "/var/")
-        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "$LV2"
+        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "$LV3"
         ;;
     "/home/")
-        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "$LV3"
+        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "$LV4"
         ;;
     esac
 done
