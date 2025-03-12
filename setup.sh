@@ -44,7 +44,7 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 groupadd -r audit
 groupadd -r libvirt
 groupadd -r usbguard
-useradd -ms /bin/bash -G adm,audit,log,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
+useradd -ms /bin/bash -G adm,audit,log,proc,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
 useradd -ms /bin/bash -G libvirt,video "$VIRTUSER"
 useradd -ms /bin/bash -G video "$HOMEUSER"
 useradd -ms /bin/bash -G libvirt,video "$YOUTUBEUSER"
@@ -378,6 +378,8 @@ chmod 644 /etc/dracut.conf.d/*.conf
     echo ""
     echo "# Custom"
     echo "* hard core 0"
+    echo "* soft nproc 10000"
+    echo "* hard nproc 20000"
 } >>/etc/security/limits.conf
 ### Harden Postfix
 postconf -e disable_vrfy_command=yes
