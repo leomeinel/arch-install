@@ -262,6 +262,14 @@ source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.s
 doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
 doas systemd-run -P --wait --user -M "$WORKUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
 
+# Remove .bak files
+runuser -u "$GUESTUSER" -- "rm -f ~/*.bak"
+runuser -u "$HOMEUSER" -- "rm -f ~/*.bak"
+runuser -u root -- "rm -f ~/*.bak"
+runuser -u "$SYSUSER" -- "rm -f ~/*.bak"
+runuser -u "$VIRTUSER" -- "rm -f ~/*.bak"
+runuser -u "$WORKUSER" -- "rm -f ~/*.bak"
+
 # Source ~/.bash_profile
 source ~/.bash_profile
 
@@ -298,10 +306,17 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
 # Remove repo
 rm -rf ~/git
 
-# Remove scripts
+# Remove files
 doas rm -f /dot-files.sh
 doas rm -f /install.conf
 doas rm -f /root/.bash_history
+doas rm -rf /root/.gnupg
+doas rm -f /root/.nix-channels
+doas rm -rf /root/.nix-defexpr
+doas rm -rf /root/.nix-profile
+doas rm -f /root/.rhosts
+doas rm -f /root/.rlogin
+doas rm -f /root/.shosts
 rm -f ~/.bash_history
 rm -f "$SCRIPT_DIR/nix.conf"
 rm -f "$SCRIPT_DIR/pkgs-post.txt"
