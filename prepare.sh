@@ -308,6 +308,8 @@ mount --mkdir -o "$OPTIONS4" "$DISK1P1" /mnt/efi
     mount --mkdir -o "$OPTIONS4" "$DISK2P1" /mnt/.efi.bak
 ## /boot
 mkdir -p /mnt/boot
+## Modify perms
+chmod 775 /mnt/var/games
 
 # Set SSD state to "frozen" after sleep
 for link in /dev/disk/by-id/*; do
