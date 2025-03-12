@@ -24,7 +24,9 @@ sed_exit() {
 }
 
 # Replace doas.conf with option nopass
-doas sh -c 'echo "permit nopass persist setenv { LANG LC_ALL } :wheel" >/etc/doas.conf'
+for i in {1..5}; do
+    doas sh -c 'echo "permit nopass persist setenv { LANG LC_ALL } :wheel" >/etc/doas.conf' || echo "WARNING: You have entered an incorrect password. Retrying now."
+done
 
 # Configure $KEYMAP
 doas localectl --no-convert set-keymap "$KEYMAP"
