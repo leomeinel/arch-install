@@ -4,5 +4,4 @@ io.freetubeapp.FreeTube
 io.gitlab.librewolf-community
 one.ablaze.floorp
 org.gtk.Gtk3theme.Arc-Dark
-org.prismlauncher.PrismLauncher
 org.raspberrypi.rpi-imager

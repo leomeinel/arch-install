@@ -169,7 +169,7 @@ pacman -Qq "kdenlive" >/dev/null 2>&1 &&
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
 pacman -Qq "lollypop" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\nkid3-qt'
+    DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\nkid3-common'
 pacman -Qq "mpv" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nyt-dlp'
 pacman -Qq "pipewire" >/dev/null 2>&1 &&

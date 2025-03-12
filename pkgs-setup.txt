@@ -7,7 +7,6 @@ arc-gtk-theme
 arch-audit
 ark
 audacity
-autopep8
 autotiling
 bash-completion
 bat
@@ -181,6 +180,5 @@ xdg-desktop-portal-wlr
 xdg-user-dirs
 xdg-utils
 xournalpp
-yapf
 yq
 zram-generator
