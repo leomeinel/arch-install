@@ -281,8 +281,7 @@ doas sh -c "{
     echo 'Include = /etc/paru.conf.d/*.conf'
 } >>/etc/paru.conf"
 
-# Install packages
-## AUR packages
+# Install AUR packages
 for i in {1..5}; do
     paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt" && break || echo "WARNING: paru failed. Retrying now."
 done
