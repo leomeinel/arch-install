@@ -289,7 +289,7 @@ for i in {1..5}; do
     paru -Syu --noprogressbar --noconfirm && break || echo "WARNING: paru failed. Retrying now."
 done
 paru -Scc
-doas sh -c 'pacman -Qtdq | pacman -Rns -'
+doas sh -c 'pacman -Qtdq | pacman -Rns -' || true
 
 # Enable systemd services
 pacman -Qq "nftables" >/dev/null 2>&1 &&
