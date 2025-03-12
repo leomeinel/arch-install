@@ -272,7 +272,7 @@ doas systemd-run -P --wait --user -M "$WORKUSER"@ /bin/bash -c 'source /nix/var/
 runuser -u "$GUESTUSER" -- "rm -f ~/*.bak"
 runuser -u "$HOMEUSER" -- "rm -f ~/*.bak"
 runuser -u root -- "rm -f ~/*.bak"
-runuser -u "$SYSUSER" -- "rm -f ~/*.bak"
+rm -f ~/*.bak
 runuser -u "$VIRTUSER" -- "rm -f ~/*.bak"
 runuser -u "$WORKUSER" -- "rm -f ~/*.bak"
 
