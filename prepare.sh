@@ -368,7 +368,6 @@ lscpu | grep "Flags:" | grep -q "hypervisor" &&
     {
         echo "qemu-guest-agent"
         echo "spice-vdagent"
-        echo "xf86-video-qxl"
     } >>"$SCRIPT_DIR/pkgs-prepare.txt"
 lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
     {

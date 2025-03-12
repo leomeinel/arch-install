@@ -8,6 +8,6 @@ Go to `Video <...>` and replace content of `XML` tab with the following:
 
 ```
 <video>
-    <model type="qxl" ram="65536" vram="65536" vgamem="16384" heads="1"/>
+  <model type="virtio" heads="1" primary="yes"/>
 </video>
 ```
