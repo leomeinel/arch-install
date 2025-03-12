@@ -1,5 +1,3 @@
-# WARNING: DO NOT USE THIS, THE CURRENT VERSION DOESN'T WORK AT ALL
-
 # arch-install
 
 My personal Arch Linux install script using LUKS2 encryption, LVM and btrfs.
