@@ -343,8 +343,8 @@ if [[ -n "$DISK1ID" ]]; then
 fi
 
 # Install packages
-mkdir -p /etc/pacman.d/conf.d/
-cp "$SCRIPT_DIR/etc/pacman.d/conf.d/*.conf" /etc/pacman.d/conf.d/
+mkdir -p /etc/pacman.conf.d/
+cp "$SCRIPT_DIR/etc/pacman.conf.d/*.conf" /etc/pacman.conf.d/
 {
     echo ''
     echo '# Custom'
