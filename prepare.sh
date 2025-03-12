@@ -124,7 +124,7 @@ esac
 ## Deactivate all vgs
 vgchange -an || true
 ## Stop all mdadm RAIDs
-mdadm --stop --scan || true
+mdadm -Ss || true
 ## Use dd, sgdisk and wipefs to wipe the header and more to make sure that it is erased
 sgdisk -o "$DISK1" || true
 sgdisk -Z "$DISK1" || true
@@ -174,7 +174,7 @@ if [[ -n "$DISK2" ]]; then
     DISK2P2="$(lsblk -rnpo TYPE,NAME "$DISK2" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
     ## Configure raid1
     RAID_DEVICE=/dev/md/md0
-    mdadm --create --verbose --level=1 --metadata=1.2 --raid-devices=2 --homehost=any --name=md0 "$RAID_DEVICE" "$DISK1P2" "$DISK2P2"
+    mdadm -Cv --homehost=any -N md0 -l 1 -n 2 -e default -b internal "$RAID_DEVICE" "$DISK1P2" "$DISK2P2"
     ## Configure encryption
     for i in {1..5}; do
         cryptsetup -y -v luksFormat "$RAID_DEVICE" && break || echo "WARNING: You have entered an incorrect password. Retrying now."

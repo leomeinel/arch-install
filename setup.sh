@@ -270,7 +270,7 @@ sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
 ## Configure /etc/mdadm.conf.d/custom-mdadm.conf
 if lsblk -rno TYPE "$DISK1P2" | grep -q "raid1"; then
     mkdir -p /etc/mdadm.conf.d/
-    mdadm --detail --scan >/etc/mdadm.conf.d/custom-mdadm.conf
+    mdadm -Ds >/etc/mdadm.conf.d/custom-mdadm.conf
 fi
 ## Configure /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
