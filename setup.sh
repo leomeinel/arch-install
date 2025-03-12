@@ -44,11 +44,11 @@ sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
 groupadd -r audit
 groupadd -r libvirt
 groupadd -r usbguard
+useradd -ms /bin/bash -G video "$GUESTUSER"
+useradd -ms /bin/bash -G video "$HOMEUSER"
 useradd -ms /bin/bash -G adm,audit,log,proc,rfkill,sys,systemd-journal,usbguard,wheel,video "$SYSUSER"
 useradd -ms /bin/bash -G libvirt,video "$VIRTUSER"
-useradd -ms /bin/bash -G video "$HOMEUSER"
-useradd -ms /bin/bash -G libvirt,video "$YOUTUBEUSER"
-useradd -ms /bin/bash -G video "$GUESTUSER"
+useradd -ms /bin/bash -G libvirt,video "$WORKUSER"
 echo "#################################################################"
 echo "#                      _    _           _   _                   #"
 echo "#                     / \  | | ___ _ __| |_| |                  #"
@@ -63,6 +63,14 @@ echo "#           at least 1 digit, 1 uppercase character,            #"
 echo "#         1 lowercace character and 1 other character.          #"
 echo "#################################################################"
 for i in {1..5}; do
+    echo "Enter password for $GUESTUSER"
+    passwd "$GUESTUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+done
+for i in {1..5}; do
+    echo "Enter password for $HOMEUSER"
+    passwd "$HOMEUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+done
+for i in {1..5}; do
     echo "Enter password for root"
     passwd root && break || echo "WARNING: You have entered an incorrect password. Retrying now."
 done
@@ -75,16 +83,8 @@ for i in {1..5}; do
     passwd "$VIRTUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
-    echo "Enter password for $HOMEUSER"
-    passwd "$HOMEUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
-done
-for i in {1..5}; do
-    echo "Enter password for $YOUTUBEUSER"
-    passwd "$YOUTUBEUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
-done
-for i in {1..5}; do
-    echo "Enter password for $GUESTUSER"
-    passwd "$GUESTUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    echo "Enter password for $WORKUSER"
+    passwd "$WORKUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 
 # Setup /etc

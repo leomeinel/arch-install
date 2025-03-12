@@ -255,12 +255,12 @@ esac
 doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file $SCRIPT_DIR/nix.conf"
 
 # Configure dot-files
+doas systemd-run -P --wait --user -M "$GUESTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
+doas systemd-run -P --wait --user -M "$HOMEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
+doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
 source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh
 doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --user -M "$HOMEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --user -M "$YOUTUBEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --user -M "$GUESTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
+doas systemd-run -P --wait --user -M "$WORKUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
 
 # Source ~/.bash_profile
 source ~/.bash_profile
