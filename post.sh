@@ -53,7 +53,7 @@ doas archlinux-java set java-21-openjdk
 # https://www.ripe.net/publications/docs/ripe-431
 # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security_guide/sect-security_guide-firewalls-malicious_software_and_spoofed_ip_addresses
 #
-### Flush & delete all chains
+## Flush & delete all chains
 doas nft 'flush ruleset'
 ## ipv4
 ### Set up new tables
@@ -62,7 +62,7 @@ doas nft 'add table ip filter'
 doas nft 'add chain ip filter input { type filter hook input priority 0; policy drop; }'
 doas nft 'add chain ip filter forward { type filter hook forward priority 0; policy drop; }'
 doas nft 'add chain ip filter output { type filter hook output priority 0; policy accept; }'
-### Allow established connections
+### Accept established connections
 doas nft 'add rule ip filter input ct state related,established counter accept'
 ### Accept loopback
 doas nft 'add rule ip filter input iifname "lo" counter accept'
@@ -72,7 +72,7 @@ doas nft 'add rule ip filter input tcp flags != syn / fin,syn,rst,ack ct state n
 doas nft 'add rule ip filter input ct state invalid counter drop'
 doas nft 'add rule ip filter forward ct state invalid counter drop'
 doas nft 'add rule ip filter output ct state invalid counter drop'
-### Block packets with bogus TCP flags
+### Drop packets with bogus TCP flags
 doas nft 'add rule ip filter input tcp flags fin,syn / fin,syn counter drop'
 doas nft 'add rule ip filter input tcp flags syn,rst / syn,rst counter drop'
 doas nft 'add rule ip filter input tcp flags fin,rst / fin,rst counter drop'
@@ -89,7 +89,7 @@ doas nft 'add rule ip filter forward ip frag-off & 0x1fff != 0 counter drop'
 doas nft 'add rule ip filter output ip frag-off & 0x1fff != 0 counter drop'
 ### Drop SYN packets with suspicious MSS value
 doas nft 'add rule ip filter input ip protocol tcp ct state new tcp option maxseg size != 536-65535 counter drop'
-### Block spoofed packets
+### Drop spoofed packets
 doas nft 'add rule ip filter input iifname != "lo" ip saddr 127.0.0.0/8 counter drop'
 ### Drop ICMP
 doas nft 'add rule ip filter input ip protocol icmp counter drop'
@@ -103,28 +103,28 @@ doas nft 'add rule ip filter input ip protocol tcp ct state new counter drop'
 ### Rate-limit UDP packets
 doas nft 'add rule ip filter input ip protocol udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip filter input ip protocol udp ct state new counter drop'
-### Allow interface virbr0 (input_prerouting)
+### Accept interface virbr0 (input_prerouting)
 doas nft 'add rule ip filter input_prerouting iifname "virbr0" udp dport 53 counter accept'
 doas nft 'add rule ip filter input_prerouting iifname "virbr0" udp dport 67 counter accept'
-### Allow SMTP
+### Accept SMTP
 doas nft 'add rule ip filter input_prerouting tcp dport 25 counter accept'
 doas nft 'add rule ip filter input_prerouting tcp dport 587 counter accept'
-### Allow POP & POPS
+### Accept POP & POPS
 doas nft 'add rule ip filter input_prerouting tcp dport 110 counter accept'
 doas nft 'add rule ip filter input_prerouting tcp dport 995 counter accept'
-### Allow IMAP & IMAPS
+### Accept IMAP & IMAPS
 doas nft 'add rule ip filter input_prerouting tcp dport 143 counter accept'
 doas nft 'add rule ip filter input_prerouting tcp dport 993 counter accept'
-### Allow mDNS
+### Accept mDNS
 doas nft 'add rule ip filter input_prerouting udp dport 5353 counter accept'
-### Allow http & https (for wget)
+### Accept http & https (for wget)
 doas nft 'add rule ip filter input_prerouting tcp dport 80 counter accept'
 doas nft 'add rule ip filter input_prerouting tcp dport 443 counter accept'
-### Allow Transmission
+### Accept Transmission
 doas nft 'add rule ip filter input_prerouting udp dport 51413 counter accept'
-### Allow custom wireguard
+### Accept custom wireguard
 doas nft 'add rule ip filter input_prerouting udp dport 62990 counter accept'
-### Allow interface virbr0 (forward)
+### Accept interface virbr0 (forward)
 doas nft 'add rule ip filter forward iifname "virbr0" counter accept'
 doas nft 'add rule ip filter forward oifname "virbr0" counter accept'
 ## ipv6
@@ -134,7 +134,7 @@ doas nft 'add table ip6 filter'
 doas nft 'add chain ip6 filter input { type filter hook input priority 0; policy drop; }'
 doas nft 'add chain ip6 filter forward { type filter hook forward priority 0; policy drop; }'
 doas nft 'add chain ip6 filter output { type filter hook output priority 0; policy accept; }'
-### Allow established connections
+### Accept established connections
 doas nft 'add rule ip6 filter input ct state related,established counter accept'
 ### Accept loopback
 doas nft 'add rule ip6 filter input iifname "lo" counter accept'
@@ -144,7 +144,7 @@ doas nft 'add rule ip6 filter input tcp flags != syn / fin,syn,rst,ack ct state 
 doas nft 'add rule ip6 filter input ct state invalid counter drop'
 doas nft 'add rule ip6 filter forward ct state invalid counter drop'
 doas nft 'add rule ip6 filter output ct state invalid counter drop'
-### Block packets with bogus TCP flags
+### Drop packets with bogus TCP flags
 doas nft 'add rule ip6 filter input tcp flags fin,syn / fin,syn counter drop'
 doas nft 'add rule ip6 filter input tcp flags syn,rst / syn,rst counter drop'
 doas nft 'add rule ip6 filter input tcp flags fin,rst / fin,rst counter drop'
@@ -157,7 +157,7 @@ doas nft 'add rule ip6 filter input tcp flags 0x0 / fin,syn,rst,psh,ack,urg coun
 doas nft 'add rule ip6 filter input tcp flags fin,syn,rst,psh,ack,urg / fin,syn,rst,psh,ack,urg counter drop'
 ### Drop SYN packets with suspicious MSS value
 doas nft 'add rule ip6 filter input meta l4proto tcp ct state new tcp option maxseg size != 536-65535 counter drop'
-### Block spoofed packets
+### Drop spoofed packets
 doas nft 'add rule ip6 filter input iifname != "lo" ip6 saddr ::1 counter drop'
 ### Drop ICMP
 doas nft 'add rule ip6 filter input meta l4proto icmp counter drop'
@@ -171,28 +171,28 @@ doas nft 'add rule ip6 filter input meta l4proto tcp ct state new counter drop'
 ### Rate-limit UDP packets
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new counter drop'
-### Allow interface virbr0 (input_prerouting)
+### Accept interface virbr0 (input_prerouting)
 doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 53 counter accept'
 doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 67 counter accept'
-### Allow SMTP
+### Accept SMTP
 doas nft 'add rule ip6 filter input_prerouting tcp dport 25 counter accept'
 doas nft 'add rule ip6 filter input_prerouting tcp dport 587 counter accept'
-### Allow POP & POPS
+### Accept POP & POPS
 doas nft 'add rule ip6 filter input_prerouting tcp dport 110 counter accept'
 doas nft 'add rule ip6 filter input_prerouting tcp dport 995 counter accept'
-### Allow IMAP & IMAPS
+### Accept IMAP & IMAPS
 doas nft 'add rule ip6 filter input_prerouting tcp dport 143 counter accept'
 doas nft 'add rule ip6 filter input_prerouting tcp dport 993 counter accept'
-### Allow mDNS
+### Accept mDNS
 doas nft 'add rule ip6 filter input_prerouting udp dport 5353 counter accept'
-### Allow http & https (for wget)
+### Accept http & https (for wget)
 doas nft 'add rule ip6 filter input_prerouting tcp dport 80 counter accept'
 doas nft 'add rule ip6 filter input_prerouting tcp dport 443 counter accept'
-### Allow Transmission
+### Accept Transmission
 doas nft 'add rule ip6 filter input_prerouting udp dport 51413 counter accept'
-### Allow custom wireguard
+### Accept custom wireguard
 doas nft 'add rule ip6 filter input_prerouting udp dport 62990 counter accept'
-### Allow interface virbr0 (forward)
+### Accept interface virbr0 (forward)
 doas nft 'add rule ip6 filter forward iifname "virbr0" counter accept'
 doas nft 'add rule ip6 filter forward oifname "virbr0" counter accept'
 ### Save rules to /etc/nftables.conf

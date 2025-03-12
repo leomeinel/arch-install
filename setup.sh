@@ -138,8 +138,13 @@ lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
         } >/etc/pacman.d/hooks/scripts/99-efibackup.sh
     }
 chmod 755 /etc/pacman.d/hooks/scripts/*.sh
-## Configure /etc/sysctl.d
-## Configure /etc/pacman.conf /etc/xdg/reflector/reflector.conf
+## Configure /etc/pacman.conf
+{
+    echo ''
+    echo '# Custom'
+    echo 'Include = /etc/pacman.conf.d/*.conf'
+} >>/etc/pacman.conf
+## Configure /etc/xdg/reflector/reflector.conf and update mirrors
 {
     echo "--save /etc/pacman.d/mirrorlist"
     echo "--country $MIRRORCOUNTRIES"
@@ -147,13 +152,7 @@ chmod 755 /etc/pacman.d/hooks/scripts/*.sh
     echo "--latest 20"
     echo "--sort rate"
 } >/etc/xdg/reflector/reflector.conf
-{
-    echo ''
-    echo '# Custom'
-    echo 'Include = /etc/pacman.conf.d/*.conf'
-} >>/etc/pacman.conf
 pacman-key --init
-## Update mirrors
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 
 # Install packages
@@ -228,11 +227,14 @@ fi
 {
     echo "md0_crypt UUID=$MD0UUID none luks,key-slot=0"
 } >/etc/crypttab
-## Configure /etc/localtime /etc/vconsole.conf /etc/hostname /etc/hosts
+## Configure /etc/localtime
 ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
+## Configure /etc/vconsole.conf
 echo "KEYMAP=$KEYMAP" >/etc/vconsole.conf
+## Configure /etc/hostname
 echo "$HOSTNAME" >/etc/hostname
+## Configure /etc/hosts
 {
     echo "127.0.0.1  localhost"
     echo "127.0.1.1  $HOSTNAME.$DOMAIN	$HOSTNAME"
@@ -241,7 +243,7 @@ echo "$HOSTNAME" >/etc/hostname
     echo "ff02::2  ip6-allrouters"
 } >/etc/hosts
 ## Configure /etc/cryptboot.conf
-git clone https://github.com/leomeinel/cryptboot.git /git/cryptboot
+git clone -b main https://github.com/leomeinel/cryptboot.git /git/cryptboot
 cp /git/cryptboot/cryptboot.conf /etc/
 ## Configure /etc/xdg/user-dirs.defaults
 ### START sed
@@ -265,12 +267,12 @@ STRING="^VIDEOS=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
 ### END sed
-## Configure /etc/mdadm.conf
+## Configure /etc/mdadm.conf.d/custom-mdadm.conf
 if lsblk -rno TYPE "$DISK1P2" | grep -q "raid1"; then
     mkdir -p /etc/mdadm.conf.d/
     mdadm --detail --scan >/etc/mdadm.conf.d/custom-mdadm.conf
 fi
-## Configure /etc/usbguard/usbguard-daemon.conf /etc/usbguard/rules.conf
+## Configure /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
 ## Configure /etc/pam.d
@@ -290,27 +292,25 @@ STRING="^log_group.*=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/log_group = audit/" "$FILE"
 ### END sed
-## mDNS
 ## Configure /etc/libvirt/network.conf
 {
     echo ''
     echo '# Custom'
     echo 'firewall_backend = "nftables"'
 } >>/etc/libvirt/network.conf
-## Lid switching
-### Configure /etc/nsswitch.conf
+## Configure /etc/nsswitch.conf
 ### START sed
 FILE=/etc/nsswitch.conf
 STRING="^hosts: mymachines"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/hosts: mymachines mdns/" "$FILE"
 ### END sed
-### Configure /etc/avahi/avahi-daemon.conf
+## Configure /etc/avahi/avahi-daemon.conf
 FILE=/etc/avahi/avahi-daemon.conf
 STRING="^#domain-name=.*"
 grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/domain-name=$DOMAIN/" "$FILE"
-### Configure /etc/mdns.allow
+## Configure /etc/mdns.allow
 {
     echo ".$DOMAIN"
     echo ".local"
@@ -346,7 +346,7 @@ sed -i "s/$STRING/domain-name=$DOMAIN/" "$FILE"
 ## Configure /etc/dracut.conf.d/cmdline.conf
 DISK1P2UUID="$(blkid -s UUID -o value "$DISK1P2")"
 PARAMETERS="rd.luks.uuid=luks-$MD0UUID rd.lvm.lv=vg0/lv0 rd.md.uuid=$DISK1P2UUID root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.vconsole.unicode rd.vconsole.keymap=$KEYMAP loglevel=3 bgrt_disable audit=1 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
-#### If on intel set kernel parameter intel_iommu=on
+### If on intel set kernel parameter intel_iommu=on
 pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
@@ -365,10 +365,10 @@ postconf -e inet_interfaces=loopback-only
 
 # Setup /usr
 rsync -rq "$SCRIPT_DIR/usr/" /usr
+## Setup /usr/local/bin
 cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
-## Configure /usr/local/bin
 ln -s "$(which nvim)" /usr/local/bin/edit
 ln -s "$(which nvim)" /usr/local/bin/vedit
 ln -s "$(which nvim)" /usr/local/bin/vi
@@ -395,10 +395,8 @@ for dir in "${DIRS_700[@]}"; do
 done
 
 # Configure /usr
-## Configure /usr/share/snapper/config-templates/default & configure snapper configs
-### Setup configs
-#### /usr/share/snapper/config-templates/default
-##### START sed
+## Configure snapper
+### START sed
 STRING0="^ALLOW_GROUPS=.*"
 STRING1="^SPACE_LIMIT=.*"
 STRING2="^FREE_LIMIT=.*"
@@ -408,7 +406,7 @@ STRING5="^TIMELINE_CREATE=.*"
 STRING5="^TIMELINE_CLEANUP=.*"
 STRING6="^TIMELINE_LIMIT_MONTHLY=.*"
 STRING7="^TIMELINE_LIMIT_YEARLY=.*"
-#####
+###
 FILE0=/usr/share/snapper/config-templates/default
 grep -q "$STRING0" "$FILE0" || sed_exit
 sed -i "s/$STRING0/ALLOW_GROUPS=\"wheel\"/" "$FILE0"
@@ -426,18 +424,18 @@ grep -q "$STRING6" "$FILE0" || sed_exit
 sed -i "s/$STRING6/TIMELINE_LIMIT_MONTHLY=\"0\"/" "$FILE0"
 grep -q "$STRING7" "$FILE0" || sed_exit
 sed -i "s/$STRING7/TIMELINE_LIMIT_YEARLY=\"0\"/" "$FILE0"
-##### END sed
+### END sed
 ### Remove & unmount snapshots (Prepare snapshot dirs 1)
 for subvolume in "${SUBVOLUMES[@]}"; do
     umount "$subvolume".snapshots
     rm -rf "$subvolume".snapshots
 done
-####### START sed
+#### START sed
 STRING0="^TIMELINE_CREATE=.*"
 STRING1="^TIMELINE_LIMIT_HOURLY=.*"
 STRING2="^TIMELINE_LIMIT_DAILY=.*"
 STRING3="^TIMELINE_LIMIT_WEEKLY=.*"
-#######
+####
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
 [[ "$SUBVOLUMES_LENGTH" -ne ${#CONFIGS[@]} ]] &&
     {
@@ -481,7 +479,7 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
         WEEKLY=0
         ;;
     esac
-    #######
+    ####
     grep -q "$STRING0" "$FILE1" || sed_exit
     sed -i "s/$STRING0/TIMELINE_CREATE=\"$CREATE\"/" "$FILE1"
     grep -q "$STRING1" "$FILE1" || sed_exit
@@ -490,7 +488,7 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     sed -i "s/$STRING2/TIMELINE_LIMIT_DAILY=\"$DAILY\"/" "$FILE1"
     grep -q "$STRING3" "$FILE1" || sed_exit
     sed -i "s/$STRING3/TIMELINE_LIMIT_WEEKLY=\"$WEEKLY\"/" "$FILE1"
-    ####### END sed
+    #### END sed
     #### Create config
     snapper --no-dbus -c "${CONFIGS[$i]}" create-config -t "${CONFIGS[$i]}" "${SUBVOLUMES[$i]}"
 done
@@ -499,7 +497,7 @@ for subvolume in "${SUBVOLUMES[@]}"; do
     btrfs subvolume delete "$subvolume".snapshots
     mkdir -p "$subvolume".snapshots
 done
-#### Mount /etc/fstab
+### Mount /etc/fstab
 mount -a
 ### Set correct permissions on snapshots (Prepare snapshot dirs 3)
 for subvolume in "${SUBVOLUMES[@]}"; do
