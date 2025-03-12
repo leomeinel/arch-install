@@ -344,7 +344,7 @@ fi
 
 # Install packages
 mkdir -p /etc/pacman.conf.d/
-cp "$SCRIPT_DIR/etc/pacman.conf.d/*.conf" /etc/pacman.conf.d/
+cp "$SCRIPT_DIR"/etc/pacman.conf.d/*.conf /etc/pacman.conf.d/
 {
     echo ''
     echo '# Custom'
