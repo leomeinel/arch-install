@@ -4,7 +4,7 @@ My personal Arch Linux install script using LUKS2 encryption, LVM and btrfs.
 
 RAID can also be used.
 
-Meant for general purpose systems.
+Meant for general purpose systems with a GUI.
 
 ## Info
 
