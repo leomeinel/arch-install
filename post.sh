@@ -282,13 +282,6 @@ doas sh -c "{
 } >>/etc/paru.conf"
 
 # Install packages
-## FIXME: Hack to avoid gnupg errors
-{
-    echo "disable-ipv6"
-    echo "standard-resolver"
-} >"$GNUPGHOME"/dirmgr.conf
-gpgconf --kill all
-sleep 5
 ## AUR packages
 for i in {1..5}; do
     paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt" && break || echo "WARNING: paru failed. Retrying now."
@@ -310,7 +303,6 @@ rm -rf ~/git
 doas rm -f /dot-files.sh
 doas rm -f /install.conf
 doas rm -f /root/.bash_history
-rm -f "$GNUPGHOME"/dirmgr.conf
 rm -f ~/.bash_history
 rm -f "$SCRIPT_DIR/nix.conf"
 rm -f "$SCRIPT_DIR/pkgs-post.txt"
