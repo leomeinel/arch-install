@@ -179,19 +179,43 @@ if [[ -n "$DISK2" ]]; then
     mdadm -Cv --homehost=any -N md0 -l 1 -n 2 -e default -b internal "$RAID_DEVICE" "$DISK1P2" "$DISK2P2"
     ## Configure encryption
     for i in {1..5}; do
-        cryptsetup -y -v luksFormat "$RAID_DEVICE" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+        [[ $i -eq 5 ]] &&
+            {
+                echo "ERROR: Too many retries. Exiting now."
+                exit 1
+            }
+        cryptsetup -y -v luksFormat "$RAID_DEVICE" && break ||
+            echo "WARNING: You have entered an incorrect password. Retrying now."
     done
     for i in {1..5}; do
-        cryptsetup open "$RAID_DEVICE" md0_crypt && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+        [[ $i -eq 5 ]] &&
+            {
+                echo "ERROR: Too many retries. Exiting now."
+                exit 1
+            }
+        cryptsetup open "$RAID_DEVICE" md0_crypt && break ||
+            echo "WARNING: You have entered an incorrect password. Retrying now."
     done
 
 else
     ## Configure encryption
     for i in {1..5}; do
-        cryptsetup -y -v luksFormat "$DISK1P2" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+        [[ $i -eq 5 ]] &&
+            {
+                echo "ERROR: Too many retries. Exiting now."
+                exit 1
+            }
+        cryptsetup -y -v luksFormat "$DISK1P2" && break ||
+            echo "WARNING: You have entered an incorrect password. Retrying now."
     done
     for i in {1..5}; do
-        cryptsetup open "$DISK1P2" md0_crypt && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+        [[ $i -eq 5 ]] &&
+            {
+                echo "ERROR: Too many retries. Exiting now."
+                exit 1
+            }
+        cryptsetup open "$DISK1P2" md0_crypt && break ||
+            echo "WARNING: You have entered an incorrect password. Retrying now."
     done
 fi
 
@@ -385,7 +409,13 @@ lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
         echo "xf86-video-intel"
     } >>"$SCRIPT_DIR"/pkgs-prepare.txt
 for i in {1..5}; do
-    pacstrap -K /mnt - <"$SCRIPT_DIR/pkgs-prepare.txt" && break || echo "WARNING: pacstrap failed. Retrying now."
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
+    pacstrap -K /mnt - <"$SCRIPT_DIR/pkgs-prepare.txt" && break ||
+        echo "WARNING: pacstrap failed. Retrying now."
 done
 
 # Configure /mnt/etc/fstab

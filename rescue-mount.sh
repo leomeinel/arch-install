@@ -102,12 +102,24 @@ if [[ -n "$DISK2" ]]; then
     RAID_DEVICE=/dev/md/md0
     ## Configure encryption
     for i in {1..5}; do
-        cryptsetup open "$RAID_DEVICE" md0_crypt && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+        [[ $i -eq 5 ]] &&
+            {
+                echo "ERROR: Too many retries. Exiting now."
+                exit 1
+            }
+        cryptsetup open "$RAID_DEVICE" md0_crypt && break ||
+            echo "WARNING: You have entered an incorrect password. Retrying now."
     done
 else
     ## Configure encryption
     for i in {1..5}; do
-        cryptsetup open "$DISK1P2" md0_crypt && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+        [[ $i -eq 5 ]] &&
+            {
+                echo "ERROR: Too many retries. Exiting now."
+                exit 1
+            }
+        cryptsetup open "$DISK1P2" md0_crypt && break ||
+            echo "WARNING: You have entered an incorrect password. Retrying now."
     done
 fi
 

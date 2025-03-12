@@ -63,28 +63,64 @@ echo "#           at least 1 digit, 1 uppercase character,            #"
 echo "#         1 lowercace character and 1 other character.          #"
 echo "#################################################################"
 for i in {1..5}; do
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
     echo "Enter password for $GUESTUSER"
-    passwd "$GUESTUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    passwd "$GUESTUSER" && break ||
+        echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
     echo "Enter password for $HOMEUSER"
-    passwd "$HOMEUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    passwd "$HOMEUSER" && break ||
+        echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
     echo "Enter password for root"
-    passwd root && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    passwd root && break ||
+        echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
     echo "Enter password for $SYSUSER"
-    passwd "$SYSUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    passwd "$SYSUSER" && break ||
+        echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
     echo "Enter password for $VIRTUSER"
-    passwd "$VIRTUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    passwd "$VIRTUSER" && break ||
+        echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
     echo "Enter password for $WORKUSER"
-    passwd "$WORKUSER" && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    passwd "$WORKUSER" && break ||
+        echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 
 # Setup /etc
@@ -157,7 +193,13 @@ reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protoco
 
 # Install packages
 for i in {1..5}; do
-    pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt" && break || echo "WARNING: pacman failed. Retrying now."
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
+    pacman -Syu --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-setup.txt" && break ||
+        echo "WARNING: pacman failed. Retrying now."
 done
 ## Install optional dependencies
 DEPENDENCIES=""
@@ -188,7 +230,13 @@ pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
 for i in {1..5}; do
-    pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES" && break || echo "WARNING: pacman failed. Retrying now."
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
+    pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"$DEPENDENCIES" && break ||
+        echo "WARNING: pacman failed. Retrying now."
 done
 ## Reinstall packages as dependencies
 DEPENDENCIES=""
@@ -205,7 +253,13 @@ pacman -Qq "tesseract-data-fra" >/dev/null 2>&1 &&
 pacman -Qq "tesseract-data-nld" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-nld'
 for i in {1..5}; do
-    pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES" && break || echo "WARNING: pacman failed. Retrying now."
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
+    pacman -S --noprogressbar --noconfirm --asdeps - <<<"$DEPENDENCIES" && break ||
+        echo "WARNING: pacman failed. Retrying now."
 done
 
 # Configure $SYSUSER

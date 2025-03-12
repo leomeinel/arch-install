@@ -25,7 +25,13 @@ sed_exit() {
 
 # Replace doas.conf with option nopass
 for i in {1..5}; do
-    doas sh -c 'echo "permit nopass setenv { LANG LC_ALL } :wheel" >/etc/doas.conf' || echo "WARNING: You have entered an incorrect password. Retrying now."
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
+    doas sh -c 'echo "permit nopass setenv { LANG LC_ALL } :wheel" >/etc/doas.conf' && break ||
+        echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 
 # Configure $KEYMAP
@@ -291,10 +297,22 @@ doas sh -c "{
 
 # Install AUR packages
 for i in {1..5}; do
-    paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt" && break || echo "WARNING: paru failed. Retrying now."
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
+    paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt" && break ||
+        echo "WARNING: paru failed. Retrying now."
 done
 for i in {1..5}; do
-    paru -Syu --noprogressbar --noconfirm && break || echo "WARNING: paru failed. Retrying now."
+    [[ $i -eq 5 ]] &&
+        {
+            echo "ERROR: Too many retries. Exiting now."
+            exit 1
+        }
+    paru -Syu --noprogressbar --noconfirm && break ||
+        echo "WARNING: paru failed. Retrying now."
 done
 paru -Scc
 doas sh -c 'pacman -Qtdq | pacman -Rns -' || true
