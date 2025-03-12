@@ -278,7 +278,7 @@ makepkg -sri --noprogressbar --noconfirm --needed
 doas sh -c "{
     echo ''
     echo '# Custom'
-    echo 'Include = /etc/paru.conf.d/*.conf'
+    echo 'Include = /etc/paru.conf.d/custom-paru.conf'
 } >>/etc/paru.conf"
 
 # Install AUR packages
