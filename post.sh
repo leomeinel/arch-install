@@ -275,33 +275,11 @@ cd ~/git/paru-bin
 makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
-## START sed
-FILE=/etc/paru.conf
-STRING="^#RemoveMake"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/RemoveMake/" "$FILE"
-STRING="^#CleanAfter"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/CleanAfter/" "$FILE"
-STRING="^#SudoLoop.*"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/SudoLoop = true/" "$FILE"
-STRING="^#\[bin\]"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/\[bin\]/" "$FILE"
-STRING="^#FileManager =.*"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/FileManager = nvim/" "$FILE"
-STRING="^FileManager = nvim"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "/$STRING/a FileManagerFlags = -cNvimTreeFocus" "$FILE"
-STRING="^#Sudo =.*"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "s/$STRING/Sudo = doas/" "$FILE"
-STRING="^#CombinedUpgrade"
-grep -q "$STRING" "$FILE" || sed_exit
-doas sed -i "/$STRING/a BatchInstall" "$FILE"
-## END sed
+doas sh -c "{
+    echo ''
+    echo '# Custom'
+    echo 'Include = /etc/paru.conf.d/*.conf'
+} >>/etc/paru.conf"
 
 # Install packages
 ## FIXME: Hack to avoid gnupg errors

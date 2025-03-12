@@ -152,7 +152,7 @@ chmod 755 /etc/sysctl.d
 chmod 644 /etc/sysctl.d/*
 ## Configure /etc/systemd/system/snapper-cleanup.timer.d/override.conf
 chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
-## Configure /etc/pacman.conf /etc/makepkg.conf /etc/xdg/reflector/reflector.conf
+## Configure /etc/pacman.conf /etc/xdg/reflector/reflector.conf
 {
     echo "--save /etc/pacman.d/mirrorlist"
     echo "--country $MIRRORCOUNTRIES"
@@ -161,26 +161,11 @@ chmod 644 /etc/systemd/system/snapper-cleanup.timer.d/override.conf
     echo "--sort rate"
 } >/etc/xdg/reflector/reflector.conf
 chmod 644 /etc/xdg/reflector/reflector.conf
-### START sed
-FILE=/etc/makepkg.conf
-STRING="^#PACMAN_AUTH=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/PACMAN_AUTH=(doas)/" "$FILE"
-STRING="OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge debug lto)"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge !debug lto)/" "$FILE"
-###
-FILE=/etc/pacman.conf
-STRING="^#Color"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/Color/" "$FILE"
-STRING="^ParallelDownloads =.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
-STRING="^#CacheDir"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/CacheDir/" "$FILE"
-### END sed
+{
+    echo ''
+    echo '# Custom'
+    echo 'Include = /etc/pacman.conf.d/*.conf'
+} >>/etc/pacman.conf
 pacman-key --init
 ## Update mirrors
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
@@ -302,8 +287,10 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
 ### END sed
 ## Configure /etc/mdadm.conf
-lsblk -rno TYPE "$DISK1P2" | grep -q "raid1" &&
-    mdadm --detail --scan >>/etc/mdadm.conf
+if lsblk -rno TYPE "$DISK1P2" | grep -q "raid1"; then
+    mkdir -p /etc/mdadm.conf.d/
+    mdadm --detail --scan >/etc/mdadm.conf.d/custom-mdadm.conf
+fi
 ## Configure /etc/usbguard/usbguard-daemon.conf /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
@@ -325,13 +312,6 @@ grep -q "$STRING" "$FILE" || sed_exit
 sed -i "s/$STRING/log_group = audit/" "$FILE"
 ### END sed
 ## mDNS
-### Configure /etc/systemd/resolved.conf
-### START sed
-FILE=/etc/systemd/resolved.conf
-STRING="^#MulticastDNS=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/MulticastDNS=no/" "$FILE"
-### END sed
 ## Configure /etc/libvirt/network.conf
 {
     echo ''
@@ -339,30 +319,23 @@ sed -i "s/$STRING/MulticastDNS=no/" "$FILE"
     echo 'firewall_backend = "nftables"'
 } >>/etc/libvirt/network.conf
 ## Lid switching
-### Configure /etc/systemd/logind.conf
-### START sed
-FILE=/etc/systemd/logind.conf
-STRING="^#HandleLidSwitch=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/HandleLidSwitch=suspend/" "$FILE"
-STRING="^#HandleLidSwitchDocked=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/HandleLidSwitchDocked=ignore/" "$FILE"
-### END sed
 ### Configure /etc/nsswitch.conf
 ### START sed
 FILE=/etc/nsswitch.conf
 STRING="^hosts: mymachines"
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/hosts: mymachines mdns_minimal [NOTFOUND=return]/" "$FILE"
+sed -i "s/$STRING/hosts: mymachines mdns/" "$FILE"
 ### END sed
-## Configure /etc/bluetooth/main.conf
-### START sed
-FILE=/etc/bluetooth/main.conf
-STRING="^#AutoEnable=.*"
+### Configure /etc/avahi/avahi-daemon.conf
+FILE=/etc/avahi/avahi-daemon.conf
+STRING="^#domain-name=.*"
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/AutoEnable=true/" "$FILE"
-### END sed
+sed -i "s/$STRING/domain-name=$DOMAIN/" "$FILE"
+### Configure /etc/mdns.allow
+{
+    echo ".$DOMAIN"
+    echo ".local"
+} >/etc/mdns.allow
 ## Configure /etc/snap-pac.ini
 {
     echo ""

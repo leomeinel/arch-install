@@ -344,18 +344,13 @@ if [[ -n "$DISK1ID" ]]; then
 fi
 
 # Install packages
-## START sed
-FILE=/etc/pacman.conf
-STRING="^#Color"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/Color/" "$FILE"
-STRING="^ParallelDownloads =.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/ParallelDownloads = 10/" "$FILE"
-STRING="^#NoProgressBar"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/NoProgressBar/" "$FILE"
-## END sed
+mkdir -p /etc/pacman.d/conf.d/
+cp "$SCRIPT_DIR/etc/pacman.d/conf.d/*.conf" /etc/pacman.d/conf.d/
+{
+    echo ''
+    echo '# Custom'
+    echo 'Include = /etc/pacman.conf.d/*.conf'
+} >>/etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country "$MIRRORCOUNTRIES" --protocol https --latest 20 --sort rate
 pacman -Syy
 pacman -S --noprogressbar --noconfirm --needed lshw
