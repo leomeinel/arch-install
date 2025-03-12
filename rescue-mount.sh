@@ -3,7 +3,7 @@
 # File: rescue-mount.sh
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
-# Copyright (c) 2024 Leopold Meinel & contributors
+# Copyright (c) 2025 Leopold Meinel & contributors
 # SPDX ID: GPL-3.0-or-later
 # URL: https://www.gnu.org/licenses/gpl-3.0-standalone.html
 # -----
@@ -101,10 +101,14 @@ if [[ -n "$DISK2" ]]; then
     ## Configure raid1
     RAID_DEVICE=/dev/md/md0
     ## Configure encryption
-    cryptsetup open "$RAID_DEVICE" md0_crypt
+    for i in {1..5}; do
+        cryptsetup open "$RAID_DEVICE" md0_crypt && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    done
 else
     ## Configure encryption
-    cryptsetup open "$DISK1P2" md0_crypt
+    for i in {1..5}; do
+        cryptsetup open "$DISK1P2" md0_crypt && break || echo "WARNING: You have entered an incorrect password. Retrying now."
+    done
 fi
 
 ## Mount subvolumes
@@ -113,6 +117,7 @@ LV0="/dev/mapper/vg0-lv0"
 LV1="/dev/mapper/vg0-lv1"
 LV2="/dev/mapper/vg0-lv2"
 LV3="/dev/mapper/vg0-lv3"
+LV4="/dev/mapper/vg0-lv4"
 OPTIONS0="noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
@@ -143,11 +148,14 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     "/usr/")
         mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS1" "$LV1"
         ;;
+    "/nix/")
+        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS1" "$LV2"
+        ;;
     "/var/")
-        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "$LV2"
+        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "$LV3"
         ;;
     "/home/")
-        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "$LV3"
+        mount_subs0 "${SUBVOLUMES[$i]}" "${CONFIGS[$i]}" "$OPTIONS2" "$LV4"
         ;;
     esac
 done
