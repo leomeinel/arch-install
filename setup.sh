@@ -434,7 +434,7 @@ pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
 echo "kernel_cmdline=\"$PARAMETERS\"" >/etc/dracut.conf.d/cmdline.conf
 ## Harden system
-### Disable coredump
+### Disable coredump and set process limit
 {
     echo ""
     echo "# Custom"
