@@ -30,6 +30,20 @@ sed_exit() {
     echo "password required pam_pwquality.so retry=2 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
     echo "password required pam_unix.so use_authtok yescrypt shadow"
 } >/etc/pam.d/passwd
+## Configure login.defs
+## START sed
+FILE=/etc/login.defs
+### YESCRYPT_COST_FACTOR is currently commented out, that's why we don't exit if it fails
+STRING="^YESCRYPT_COST_FACTOR"
+grep -q "$STRING" "$FILE" || true
+sed -i "s/$STRING/#YESCRYPT_COST_FACTOR" "$FILE" || true
+STRING="^UMASK"
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/#UMASK" "$FILE"
+STRING="^HOME_MODE"
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/#HOME_MODE" "$FILE"
+## END sed
 {
     echo ""
     echo "# Custom"
