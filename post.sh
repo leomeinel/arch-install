@@ -313,12 +313,9 @@ doas sh -c 'pacman -Qtdq | pacman -Rns -' || true
 pacman -Qq "nftables" >/dev/null 2>&1 &&
     doas systemctl enable nftables.service
 
-# Remove repo
-rm -rf ~/git
-
 # Remove user files
 FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-post.txt" "pkgs-flatpak.txt" "post.sh" ".bash_history" ".nix-channels" ".rhosts" ".rlogin" ".shosts")
-DIRS=(".gnupg" ".nix-defexpr" ".nix-profile")
+DIRS=(".gnupg" ".nix-defexpr" ".nix-profile" "git")
 USERS=("$GUESTUSER" "$HOMEUSER" "root" "$SYSUSER" "$VIRTUSER" "$WORKUSER")
 for user in "${USERS[@]}"; do
     for file in "${FILES[@]}"; do
