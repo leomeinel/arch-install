@@ -50,6 +50,8 @@ sed -i "s/$STRING/#HOME_MODE" "$FILE"
     echo "YESCRYPT_COST_FACTOR 11"
     echo "UMASK 027"
     echo "HOME_MODE 0700"
+    echo "SHA_CRYPT_MIN_ROUNDS 99999999"
+    echo "SHA_CRYPT_MAX_ROUNDS 999999999"
 } >>/etc/login.defs
 ## START sed
 FILE=/etc/default/useradd
