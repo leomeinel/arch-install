@@ -431,7 +431,7 @@ ln -s "$(which nvim)" /usr/local/bin/vim
 # Create dirs/files and modify perms
 FILES_600=("/etc/at.deny" "/etc/anacrontab" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts" "/etc/audit/rules.d/custom.rules")
 DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly" "/etc/audit/rules.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
-FILES_755=("/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/systemd-boot-sign" "/usr/local/bin/edit" "/usr/local/bin/ex" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/prismlauncher" "/usr/local/bin/rpi-imager" "/usr/local/bin/sway-logout" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-packages" "/usr/local/bin/trilium" "/usr/local/bin/vedit" "/usr/local/bin/vi" "/usr/local/bin/view" "/usr/local/bin/vim" "/usr/local/bin/vimdiff")
+FILES_755=("/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/systemd-boot-sign" "/usr/local/bin/edit" "/usr/local/bin/ex" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/rpi-imager" "/usr/local/bin/sway-logout" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-packages" "/usr/local/bin/vedit" "/usr/local/bin/vi" "/usr/local/bin/view" "/usr/local/bin/vim" "/usr/local/bin/vimdiff")
 for file in "${FILES_600[@]}"; do
     [[ ! -f "$file" ]] &&
         touch "$file"
