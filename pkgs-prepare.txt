@@ -3,7 +3,6 @@ base-devel
 btrfs-progs
 dracut
 git
-iptables-nft
 libpwquality
 linux
 linux-firmware
@@ -15,6 +14,7 @@ linux-zen-headers
 lvm2
 mesa
 neovim
+nftables
 opendoas
 reflector
 rsync
