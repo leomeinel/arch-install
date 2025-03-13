@@ -274,7 +274,7 @@ doas runuser -l "$HOMEUSER" -c "rm -f ~/.*.bak"
 doas rm -f /root/.*.bak
 rm -f ~/.*.bak
 doas runuser -l "$VIRTUSER" -c "rm -f ~/.*.bak"
-doas runuser -l"$WORKUSER" -c "rm -f ~/.*.bak"
+doas runuser -l "$WORKUSER" -c "rm -f ~/.*.bak"
 
 # Source ~/.bash_profile
 source ~/.bash_profile
