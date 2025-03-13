@@ -27,8 +27,8 @@ sed_exit() {
 ## Configure passwords
 {
     echo "# passwd defaults from arch-install"
-    echo "password required pam_pwquality.so retry=3 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
-    echo "password required pam_unix.so use_authtok shadow"
+    echo "password required pam_pwquality.so retry=2 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
+    echo "password required pam_unix.so use_authtok yescrypt shadow"
 } >/etc/pam.d/passwd
 {
     echo ""
