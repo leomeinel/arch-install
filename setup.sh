@@ -264,14 +264,24 @@ for i in {1..5}; do
         echo "WARNING: pacman failed. Retrying now."
 done
 
-# Configure $SYSUSER
-## Run sysuser.sh
-chmod 755 "$SCRIPT_DIR/sysuser.sh"
-runuser -u "$SYSUSER" -- "$SCRIPT_DIR/sysuser.sh"
-cp "$SCRIPT_DIR/dot-files.sh" /
-cp "$SCRIPT_DIR/install.conf" /
-chmod 755 /dot-files.sh
-chmod 644 /install.conf
+# Set up user scripts
+## All users
+FILES=("dot-files.sh" "install.conf")
+USERS=("$GUESTUSER" "$HOMEUSER" "$SYSUSER" "$VIRTUSER" "$WORKUSER")
+for user in "${USERS[@]}"; do
+    for file in "${FILES[@]}"; do
+        cp "$SCRIPT_DIR"/"$file" "$(eval echo ~$user)"/
+        chown "$user":"$user" "$(eval echo ~$user)"/"$file"
+    done
+    chmod 755 "$(eval echo ~$user)"/dot-files.sh
+done
+## SYSUSER
+FILES=("nix.conf" "pkgs-post.txt" "pkgs-flatpak.txt" "post.sh")
+for file in "${FILES[@]}"; do
+    cp "$SCRIPT_DIR"/"$file" "$(eval echo ~$SYSUSER)"/
+    chown "$SYSUSER":"$SYSUSER" "$(eval echo ~$SYSUSER)"/"$file"
+done
+chmod 755 "$(eval echo ~$SYSUSER)"/post.sh
 
 # Configure /etc
 ## Configure /etc/crypttab

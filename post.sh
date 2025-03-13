@@ -11,7 +11,7 @@
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
-source /install.conf
+source "$SCRIPT_DIR/install.conf"
 
 # Fail on error
 set -e
@@ -261,20 +261,12 @@ esac
 doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file $SCRIPT_DIR/nix.conf"
 
 # Configure dot-files
-doas systemd-run -P --wait --user -M "$GUESTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --user -M "$HOMEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh
-doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-doas systemd-run -P --wait --user -M "$WORKUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
-
-# Remove .bak files
-doas runuser -l "$GUESTUSER" -c "rm -f ~/.*.bak"
-doas runuser -l "$HOMEUSER" -c "rm -f ~/.*.bak"
-doas rm -f /root/.*.bak
-rm -f ~/.*.bak
-doas runuser -l "$VIRTUSER" -c "rm -f ~/.*.bak"
-doas runuser -l "$WORKUSER" -c "rm -f ~/.*.bak"
+doas systemd-run -P --wait --user -M "$GUESTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --user -M "$HOMEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh
+doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --user -M "$WORKUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 
 # Source ~/.bash_profile
 source ~/.bash_profile
@@ -324,22 +316,19 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
 # Remove repo
 rm -rf ~/git
 
-# Remove files
-doas rm -f /dot-files.sh
-doas rm -f /install.conf
-doas rm -f /root/.bash_history
-doas rm -rf /root/.gnupg
-doas rm -f /root/.nix-channels
-doas rm -rf /root/.nix-defexpr
-doas rm -rf /root/.nix-profile
-doas rm -f /root/.rhosts
-doas rm -f /root/.rlogin
-doas rm -f /root/.shosts
-rm -f ~/.bash_history
-rm -f "$SCRIPT_DIR/nix.conf"
-rm -f "$SCRIPT_DIR/pkgs-post.txt"
-rm -f "$SCRIPT_DIR/pkgs-flatpak.txt"
-rm -f "$SCRIPT_DIR/post.sh"
+# Remove user files
+FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-post.txt" "pkgs-flatpak.txt" "post.sh" ".bash_history" ".nix-channels" ".rhosts" ".rlogin" ".shosts")
+DIRS=(".gnupg" ".nix-defexpr" ".nix-profile")
+USERS=("$GUESTUSER" "$HOMEUSER" "root" "$SYSUSER" "$VIRTUSER" "$WORKUSER")
+for user in "${USERS[@]}"; do
+    for file in "${FILES[@]}"; do
+        doas rm -f "$(eval echo ~$user)"/"$file"
+    done
+    for dir in "${DIRS[@]}"; do
+        doas rm -rf "$(eval echo ~$user)"/"$dir"
+    done
+    doas rm -f "$(eval echo ~$user)"/.*.bak
+done
 
 # Replace doas.conf with default
 doas sh -c 'echo "permit persist setenv { LANG LC_ALL } :wheel" >/etc/doas.conf'
