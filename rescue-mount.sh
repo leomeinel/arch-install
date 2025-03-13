@@ -16,13 +16,6 @@ source "$SCRIPT_DIR/install.conf"
 # Fail on error
 set -e
 
-# Define functions
-sed_exit() {
-    echo "ERROR: 'sed' didn't replace, report this @"
-    echo "       https://github.com/leomeinel/arch-install/issues"
-    exit 1
-}
-
 # Unmount everything from /mnt
 mountpoint -q /mnt &&
     umount -AR /mnt
