@@ -9,4 +9,4 @@
 # -----
 ###
 
-export TMOUT=3600
+export TMOUT=86400
