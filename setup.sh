@@ -52,13 +52,19 @@ sed -i "s/$STRING/#HOME_MODE" "$FILE"
     echo "HOME_MODE 0700"
     echo "SHA_CRYPT_MIN_ROUNDS 99999999"
     echo "SHA_CRYPT_MAX_ROUNDS 999999999"
-} >>/etc/login.defs
+} >>"$FILE"
+## Configure /etc/default/useradd
 ## START sed
 FILE=/etc/default/useradd
-STRING="^SHELL=.*"
+STRING="^SHELL="
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/SHELL=\/bin\/bash/" "$FILE"
+sed -i "s/$STRING/#SHELL=" "$FILE"
 ## END sed
+{
+    echo ''
+    echo '# Custom'
+    echo 'SHELL=/bin/bash'
+} >>"$FILE"
 groupadd -r audit
 groupadd -r libvirt
 groupadd -r usbguard
@@ -143,14 +149,15 @@ done
 
 # Setup /etc
 rsync -rq "$SCRIPT_DIR/etc/" /etc
-## Configure locale in /etc/locale.gen /etc/locale.conf
-### START sed
+## Configure locale
 FILE=/etc/locale.gen
+{
+    echo ""
+    echo "# Custom"
+} >>"$FILE"
 for string in "${LANGUAGES[@]}"; do
-    grep -q "^#$string" "$FILE" || sed_exit
-    sed -i "s/^#$string/$string/" "$FILE"
+    echo "$string" >>"$FILE"
 done
-### END sed
 locale-gen
 ## Configure /etc/doas.conf
 chown root:root /etc/doas.conf
@@ -330,24 +337,34 @@ cp /git/cryptboot/cryptboot.conf /etc/
 ## Configure /etc/xdg/user-dirs.defaults
 ### START sed
 FILE=/etc/xdg/user-dirs.defaults
-STRING="^TEMPLATES=.*"
+STRING="^TEMPLATES="
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|TEMPLATES=Documents/Templates|" "$FILE"
-STRING="^PUBLICSHARE=.*"
+sed -i "s|$STRING|#TEMPLATES=|" "$FILE"
+STRING="^PUBLICSHARE="
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|PUBLICSHARE=Documents/Public|" "$FILE"
-STRING="^DESKTOP=.*"
+sed -i "s|$STRING|#PUBLICSHARE=|" "$FILE"
+STRING="^DESKTOP="
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|DESKTOP=Desktop|" "$FILE"
-STRING="^MUSIC=.*"
+sed -i "s|$STRING|#DESKTOP=|" "$FILE"
+STRING="^MUSIC="
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|MUSIC=Documents/Music|" "$FILE"
-STRING="^PICTURES=.*"
+sed -i "s|$STRING|#MUSIC=|" "$FILE"
+STRING="^PICTURES="
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|PICTURES=Documents/Pictures|" "$FILE"
-STRING="^VIDEOS=.*"
+sed -i "s|$STRING|#PICTURES=|" "$FILE"
+STRING="^VIDEOS="
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|VIDEOS=Documents/Videos|" "$FILE"
+sed -i "s|$STRING|#VIDEOS=|" "$FILE"
+{
+    echo ''
+    echo '# Custom'
+    echo 'TEMPLATES=Documents/Templates'
+    echo 'PUBLICSHARE=Documents/Public'
+    echo 'DESKTOP=Desktop'
+    echo 'MUSIC=Documents/Music'
+    echo 'PICTURES=Documents/Pictures'
+    echo 'VIDEOS=Documents/Videos'
+} >>"$FILE"
 ### END sed
 ## Configure /etc/mdadm.conf.d/custom-mdadm.conf
 if lsblk -rno TYPE "$DISK1P2" | grep -q "raid1"; then
@@ -363,32 +380,38 @@ usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --excep
 ## Configure /etc/usbguard/usbguard-daemon.conf
 ## START sed
 FILE=/etc/usbguard/usbguard-daemon.conf
-STRING="^PresentControllerPolicy"
+STRING="^PresentControllerPolicy="
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/#PresentControllerPolicy" "$FILE"
+sed -i "s/$STRING/#PresentControllerPolicy=" "$FILE"
 ## END sed
 {
     echo ""
     echo "# Custom"
     echo "PresentControllerPolicy=apply-policy"
-} >>/etc/usbguard/usbguard-daemon.conf
+} >>"$FILE"
 ## Configure /etc/pam.d
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
 ### START sed
-FILE=/etc/security/faillock.conf
-STRING="^#.*dir.*=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s|$STRING|dir = /var/lib/faillock|" "$FILE"
-### END sed
+## Configure /etc/security/faillock.conf
+{
+    echo ''
+    echo '# Custom'
+    echo 'dir = /var/lib/faillock'
+} >>/etc/security/faillock.conf
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 ## Configure /etc/audit/auditd.conf
 ### START sed
 FILE=/etc/audit/auditd.conf
-STRING="^log_group.*=.*"
+STRING="^log_group.*="
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/log_group = audit/" "$FILE"
+sed -i "s/$STRING/#log_group =/" "$FILE"
 ### END sed
+{
+    echo ""
+    echo "# Custom"
+    echo "log_group = audit"
+} >>"$FILE"
 ## Configure /etc/libvirt/network.conf
 {
     echo ''
@@ -400,13 +423,20 @@ sed -i "s/$STRING/log_group = audit/" "$FILE"
 FILE=/etc/nsswitch.conf
 STRING="^hosts: mymachines"
 grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/hosts: mymachines mdns/" "$FILE"
+sed -i "s/$STRING/#hosts: mymachines/" "$FILE"
+STRING="hosts: mymachines"
+{
+    echo ""
+    echo "# Custom"
+    grep "$STRING" "$FILE" | sed "s/$STRING/$STRING mdns/"
+} >>"$FILE"
 ### END sed
 ## Configure /etc/avahi/avahi-daemon.conf
-FILE=/etc/avahi/avahi-daemon.conf
-STRING="^#domain-name=.*"
-grep -q "$STRING" "$FILE" || sed_exit
-sed -i "s/$STRING/domain-name=$DOMAIN/" "$FILE"
+{
+    echo ""
+    echo "# Custom"
+    echo "domain-name=$DOMAIN"
+} >>/etc/avahi/avahi-daemon.conf
 ## Configure /etc/mdns.allow
 {
     echo ".$DOMAIN"
