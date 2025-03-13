@@ -269,12 +269,12 @@ doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c 'source /nix/var/
 doas systemd-run -P --wait --user -M "$WORKUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && /dot-files.sh'
 
 # Remove .bak files
-runuser -u "$GUESTUSER" -- "rm -f ~/*.bak"
-runuser -u "$HOMEUSER" -- "rm -f ~/*.bak"
-runuser -u root -- "rm -f ~/*.bak"
-rm -f ~/*.bak
-runuser -u "$VIRTUSER" -- "rm -f ~/*.bak"
-runuser -u "$WORKUSER" -- "rm -f ~/*.bak"
+doas runuser -l "$GUESTUSER" -c "rm -f ~/.*.bak"
+doas runuser -l "$HOMEUSER" -c "rm -f ~/.*.bak"
+doas rm -f /root/.*.bak
+rm -f ~/.*.bak
+doas runuser -l "$VIRTUSER" -c "rm -f ~/.*.bak"
+doas runuser -l"$WORKUSER" -c "rm -f ~/.*.bak"
 
 # Source ~/.bash_profile
 source ~/.bash_profile
