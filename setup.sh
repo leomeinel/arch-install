@@ -267,7 +267,7 @@ done
 # Set up user scripts
 ## All users
 FILES=("dot-files.sh" "install.conf")
-USERS=("$GUESTUSER" "$HOMEUSER" "$SYSUSER" "$VIRTUSER" "$WORKUSER")
+USERS=("$GUESTUSER" "$HOMEUSER" "root" "$SYSUSER" "$VIRTUSER" "$WORKUSER")
 for user in "${USERS[@]}"; do
     for file in "${FILES[@]}"; do
         cp "$SCRIPT_DIR"/"$file" "$(eval echo ~$user)"/
