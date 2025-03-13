@@ -360,6 +360,18 @@ fi
 ## Configure /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
 usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --exceptions=listen
+## Configure /etc/usbguard/usbguard-daemon.conf
+## START sed
+FILE=/etc/usbguard/usbguard-daemon.conf
+STRING="^PresentControllerPolicy"
+grep -q "$STRING" "$FILE" || sed_exit
+sed -i "s/$STRING/#PresentControllerPolicy" "$FILE"
+## END sed
+{
+    echo ""
+    echo "# Custom"
+    echo "PresentControllerPolicy=apply-policy"
+} >>/etc/usbguard/usbguard-daemon.conf
 ## Configure /etc/pam.d
 echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
 ### START sed
