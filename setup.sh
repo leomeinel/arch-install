@@ -27,13 +27,15 @@ sed_exit() {
 ## Configure passwords
 {
     echo "# passwd defaults from arch-install"
-    echo "password required pam_pwquality.so shadowretry=3 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
+    echo "password required pam_pwquality.so retry=3 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
     echo "password required pam_unix.so use_authtok shadow"
 } >/etc/pam.d/passwd
 {
     echo ""
     echo "# Custom"
     echo "YESCRYPT_COST_FACTOR 11"
+    echo "UMASK 027"
+    echo "HOME_MODE 027"
 } >>/etc/login.defs
 ## START sed
 FILE=/etc/default/useradd
