@@ -10,7 +10,7 @@ Meant for general purpose systems with a GUI.
 
 :information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
-:information_source: | I recommend disks with at least 512GB (change $DISK_ALLOCATION in install.conf otherwise).
+:information_source: | I recommend disks with at least 512GiB (change $DISK_ALLOCATION in install.conf otherwise).
 
 :warning: | All data on selected disks will be wiped!
 
