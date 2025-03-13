@@ -35,7 +35,7 @@ sed_exit() {
     echo "# Custom"
     echo "YESCRYPT_COST_FACTOR 11"
     echo "UMASK 027"
-    echo "HOME_MODE 027"
+    echo "HOME_MODE 0700"
 } >>/etc/login.defs
 ## START sed
 FILE=/etc/default/useradd
