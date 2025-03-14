@@ -428,7 +428,7 @@ STRING="hosts: mymachines"
 {
     echo ""
     echo "# Custom"
-    grep "$STRING" "$FILE" | sed "s/$STRING/$STRING mdns/"
+    grep "$STRING" "$FILE" | sed "s/^.*$STRING/$STRING mdns/"
 } >>"$FILE"
 ### END sed
 ## Configure /etc/avahi/avahi-daemon.conf
