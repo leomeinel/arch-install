@@ -11,7 +11,7 @@
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
-source "$SCRIPT_DIR/install.conf"
+. "$SCRIPT_DIR"/install.conf
 
 # Fail on error
 set -e
@@ -201,7 +201,7 @@ doas sh -c 'nft -s list ruleset >/etc/nftables.conf'
 # Prompt user
 # This prompt prevents unwanted overrides of already enrolled keys
 echo "INFO: To deploy your own keys, don't confirm the next prompt"
-source "/etc/cryptboot.conf"
+. /etc/cryptboot.conf
 read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
 case "$choice" in
 YES)
@@ -221,7 +221,7 @@ YES)
     {
         echo '#!/usr/bin/env bash'
         echo ''
-        echo 'source "/etc/cryptboot.conf"'
+        echo '. /etc/cryptboot.conf'
         echo 'read -rp "Have you transferred your keys to $EFI_KEYS_DIR? (Type '"'"'yes'"'"' in capital letters): " choice'
         echo 'case "$choice" in'
         echo 'YES)'
@@ -254,15 +254,15 @@ esac
 doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file $SCRIPT_DIR/nix.conf"
 
 # Configure dot-files
-doas systemd-run -P --wait --user -M "$GUESTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
-doas systemd-run -P --wait --user -M "$HOMEUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
-doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
-source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh
-doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
-doas systemd-run -P --wait --user -M "$WORKUSER"@ /bin/bash -c 'source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --user -M "$GUESTUSER"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --user -M "$HOMEUSER"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh
+doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --user -M "$WORKUSER"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 
 # Source ~/.bash_profile
-source ~/.bash_profile
+. ~/.bash_profile
 
 # Install flatpaks
 [[ -n $(which flatpak) ]] >/dev/null 2>&1 &&

@@ -11,7 +11,7 @@
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
-source "$SCRIPT_DIR/install.conf"
+. "$SCRIPT_DIR"/install.conf
 
 # Fail on error
 set -e
