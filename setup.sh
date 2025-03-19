@@ -532,7 +532,7 @@ for user in "${USERS[@]}"; do
     UPGRADE_HOME+=$'\ndoas systemd-run -P --wait --user -M "'"${user}"'"@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
 done
 UPGRADE_HOME+=$'\ndoas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
-UPGRADE_HOME+=$'\n. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'
+UPGRADE_HOME+=$'\nexec /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
 echo "${UPGRADE_HOME}" | tail -n +2 >/usr/local/bin/upgrade-home
 
 # Create dirs/files and modify perms

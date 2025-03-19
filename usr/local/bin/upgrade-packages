@@ -22,4 +22,4 @@ fi
 paru
 
 # Upgrade flatpak
-doas flatpak --system update
+exec doas flatpak --system update
