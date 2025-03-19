@@ -37,13 +37,13 @@ FILE=/etc/login.defs
 ### YESCRYPT_COST_FACTOR is currently commented out, that's why we don't exit if it fails
 STRING="^YESCRYPT_COST_FACTOR"
 grep -q "${STRING}" "${FILE}" || true
-sed -i "s/${STRING}/#YESCRYPT_COST_FACTOR" "${FILE}" || true
+sed -i "s/${STRING}/#YESCRYPT_COST_FACTOR/g" "${FILE}" || true
 STRING="^UMASK"
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s/${STRING}/#UMASK" "${FILE}"
+sed -i "s/${STRING}/#UMASK/g" "${FILE}"
 STRING="^HOME_MODE"
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s/${STRING}/#HOME_MODE" "${FILE}"
+sed -i "s/${STRING}/#HOME_MODE/g" "${FILE}"
 ## END sed
 {
     echo ""
@@ -59,7 +59,7 @@ sed -i "s/${STRING}/#HOME_MODE" "${FILE}"
 FILE=/etc/default/useradd
 STRING="^SHELL="
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s/${STRING}/#SHELL=" "${FILE}"
+sed -i "s/${STRING}/#SHELL=/g" "${FILE}"
 ## END sed
 {
     echo ''
@@ -165,7 +165,7 @@ chown root:root /etc/doas.conf
 chmod 0400 /etc/doas.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
-DISK1P2="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//g' | sed -n '2p' | tr -d "[:space:]")"
 lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1" &&
     {
         {
@@ -340,22 +340,22 @@ cp /git/cryptboot/cryptboot.conf /etc/
 FILE=/etc/xdg/user-dirs.defaults
 STRING="^TEMPLATES="
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#TEMPLATES=|" "${FILE}"
+sed -i "s|${STRING}|#TEMPLATES=|g" "${FILE}"
 STRING="^PUBLICSHARE="
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#PUBLICSHARE=|" "${FILE}"
+sed -i "s|${STRING}|#PUBLICSHARE=|g" "${FILE}"
 STRING="^DESKTOP="
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#DESKTOP=|" "${FILE}"
+sed -i "s|${STRING}|#DESKTOP=|g" "${FILE}"
 STRING="^MUSIC="
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#MUSIC=|" "${FILE}"
+sed -i "s|${STRING}|#MUSIC=|g" "${FILE}"
 STRING="^PICTURES="
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#PICTURES=|" "${FILE}"
+sed -i "s|${STRING}|#PICTURES=|g" "${FILE}"
 STRING="^VIDEOS="
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#VIDEOS=|" "${FILE}"
+sed -i "s|${STRING}|#VIDEOS=|g" "${FILE}"
 {
     echo ''
     echo '# Custom'
@@ -383,7 +383,7 @@ usbguard add-user -g usbguard --devices=modify,list,listen --policy=list --excep
 FILE=/etc/usbguard/usbguard-daemon.conf
 STRING="^PresentControllerPolicy="
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s/${STRING}/#PresentControllerPolicy=" "${FILE}"
+sed -i "s/${STRING}/#PresentControllerPolicy=/g" "${FILE}"
 ## END sed
 {
     echo ""
@@ -406,7 +406,7 @@ echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 FILE=/etc/audit/auditd.conf
 STRING="^log_group.*="
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s/${STRING}/#log_group =/" "${FILE}"
+sed -i "s/${STRING}/#log_group =/g" "${FILE}"
 ### END sed
 {
     echo ""
@@ -424,14 +424,14 @@ sed -i "s/${STRING}/#log_group =/" "${FILE}"
 FILE=/etc/nsswitch.conf
 STRING="^hosts: mymachines"
 grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s/${STRING}/#hosts: mymachines/" "${FILE}"
+sed -i "s/${STRING}/#hosts: mymachines/g" "${FILE}"
 STRING="hosts: mymachines"
 tmpfile="$(mktemp /tmp/arch-install-XXXXXX)"
 cp "${FILE}" "${tmpfile}" &&
     {
         echo ""
         echo "# Custom"
-        grep "${STRING}" "${tmpfile}" | sed "s/^.*${STRING}/${STRING} mdns/"
+        grep "${STRING}" "${tmpfile}" | sed "s/^.*${STRING}/${STRING} mdns/g"
     } >>"${FILE}"
 rm -f "${tmpfile}"
 ### END sed
@@ -524,45 +524,65 @@ done
 # Configure /usr
 ## Configure snapper
 ### START sed
-STRING0="^ALLOW_GROUPS=.*"
-STRING1="^SPACE_LIMIT=.*"
-STRING2="^FREE_LIMIT=.*"
-STRING3="^NUMBER_LIMIT=.*"
-STRING4="^NUMBER_LIMIT_IMPORTANT=.*"
-STRING5="^TIMELINE_CREATE=.*"
-STRING5="^TIMELINE_CLEANUP=.*"
-STRING6="^TIMELINE_LIMIT_MONTHLY=.*"
-STRING7="^TIMELINE_LIMIT_YEARLY=.*"
+STRING0="^ALLOW_GROUPS="
+STRING1="^SPACE_LIMIT="
+STRING2="^FREE_LIMIT="
+STRING3="^NUMBER_LIMIT="
+STRING4="^NUMBER_LIMIT_IMPORTANT="
+STRING5="^TIMELINE_CLEANUP="
+STRING6="^TIMELINE_LIMIT_MONTHLY="
+STRING7="^TIMELINE_LIMIT_YEARLY="
+STRING8="^TIMELINE_CREATE="
+STRING9="^TIMELINE_LIMIT_HOURLY="
+STRING10="^TIMELINE_LIMIT_DAILY="
+STRING11="^TIMELINE_LIMIT_WEEKLY="
+
 ###
 FILE0=/usr/share/snapper/config-templates/default
 grep -q "${STRING0}" "${FILE0}" || sed_exit
-sed -i "s/${STRING0}/ALLOW_GROUPS=\"wheel\"/" "${FILE0}"
+sed -i "s/${STRING0}/#ALLOW_GROUPS=/g" "${FILE0}"
 grep -q "${STRING1}" "${FILE0}" || sed_exit
-sed -i "s/${STRING1}/SPACE_LIMIT=\"0.2\"/" "${FILE0}"
+sed -i "s/${STRING1}/#SPACE_LIMIT=/g" "${FILE0}"
 grep -q "${STRING2}" "${FILE0}" || sed_exit
-sed -i "s/${STRING2}/FREE_LIMIT=\"0.4\"/" "${FILE0}"
+sed -i "s/${STRING2}/#FREE_LIMIT=/g" "${FILE0}"
 grep -q "${STRING3}" "${FILE0}" || sed_exit
-sed -i "s/${STRING3}/NUMBER_LIMIT=\"5\"/" "${FILE0}"
+sed -i "s/${STRING3}/#NUMBER_LIMIT=/g" "${FILE0}"
 grep -q "${STRING4}" "${FILE0}" || sed_exit
-sed -i "s/${STRING4}/NUMBER_LIMIT_IMPORTANT=\"5\"/" "${FILE0}"
+sed -i "s/${STRING4}/#NUMBER_LIMIT_IMPORTANT=/g" "${FILE0}"
 grep -q "${STRING5}" "${FILE0}" || sed_exit
-sed -i "s/${STRING5}/TIMELINE_CLEANUP=\"yes\"/" "${FILE0}"
+sed -i "s/${STRING5}/#TIMELINE_CLEANUP=/g" "${FILE0}"
 grep -q "${STRING6}" "${FILE0}" || sed_exit
-sed -i "s/${STRING6}/TIMELINE_LIMIT_MONTHLY=\"0\"/" "${FILE0}"
+sed -i "s/${STRING6}/#TIMELINE_LIMIT_MONTHLY=/g" "${FILE0}"
 grep -q "${STRING7}" "${FILE0}" || sed_exit
-sed -i "s/${STRING7}/TIMELINE_LIMIT_YEARLY=\"0\"/" "${FILE0}"
+sed -i "s/${STRING7}/#TIMELINE_LIMIT_YEARLY=/g" "${FILE0}"
+grep -q "${STRING8}" "${FILE0}" || sed_exit
+sed -i "s/${STRING8}/#TIMELINE_CREATE=/g" "${FILE0}"
+grep -q "${STRING9}" "${FILE0}" || sed_exit
+sed -i "s/${STRING9}/#TIMELINE_LIMIT_HOURLY=/g" "${FILE0}"
+grep -q "${STRING10}" "${FILE0}" || sed_exit
+sed -i "s/${STRING10}/#TIMELINE_LIMIT_DAILY=/g" "${FILE0}"
+grep -q "${STRING11}" "${FILE0}" || sed_exit
+sed -i "s/${STRING11}/#TIMELINE_LIMIT_WEEKLY=/g" "${FILE0}"
+{
+    echo ''
+    echo '# Custom'
+    echo 'ALLOW_GROUPS="wheel"'
+    echo 'SPACE_LIMIT="0.2"'
+    echo 'FREE_LIMIT="0.4"'
+    echo 'NUMBER_LIMIT="5"'
+    echo 'NUMBER_LIMIT_IMPORTANT="5"'
+    echo 'TIMELINE_CLEANUP="yes"'
+    echo 'TIMELINE_LIMIT_MONTHLY="0"'
+    echo 'TIMELINE_LIMIT_YEARLY="0"'
+} >>"${FILE0}"
+
 ### END sed
 ### Remove & unmount snapshots (Prepare snapshot dirs 1)
 for subvolume in "${SUBVOLUMES[@]}"; do
     umount "${subvolume}".snapshots
     rm -rf "${subvolume}".snapshots
 done
-#### START sed
-STRING0="^TIMELINE_CREATE=.*"
-STRING1="^TIMELINE_LIMIT_HOURLY=.*"
-STRING2="^TIMELINE_LIMIT_DAILY=.*"
-STRING3="^TIMELINE_LIMIT_WEEKLY=.*"
-####
+### Append configs individually
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
 [[ "${SUBVOLUMES_LENGTH}" -ne ${#CONFIGS[@]} ]] &&
     {
@@ -576,46 +596,46 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     #### Set variables for configs
     case "${CONFIGS[${i}]}" in
     "root" | "usr" | "nix" | "var" | "var_lib" | "var_lib_containers" | "var_lib_flatpak" | "var_lib_mysql")
-        CREATE="yes"
-        HOURLY=2
-        DAILY=1
-        WEEKLY=0
+        {
+            echo 'TIMELINE_CREATE="yes"'
+            echo 'TIMELINE_LIMIT_HOURLY="2"'
+            echo 'TIMELINE_LIMIT_DAILY="1"'
+            echo 'TIMELINE_LIMIT_WEEKLY="0"'
+        } >>"${FILE1}"
         ;;
     "var_lib_libvirt")
-        CREATE="yes"
-        HOURLY=0
-        DAILY=1
-        WEEKLY=0
+        {
+            echo 'TIMELINE_CREATE="yes"'
+            echo 'TIMELINE_LIMIT_HOURLY="0"'
+            echo 'TIMELINE_LIMIT_DAILY="1"'
+            echo 'TIMELINE_LIMIT_WEEKLY="0"'
+        } >>"${FILE1}"
         ;;
     "var_log")
-        CREATE="yes"
-        HOURLY=1
-        DAILY=1
-        WEEKLY=1
+        {
+            echo 'TIMELINE_CREATE="yes"'
+            echo 'TIMELINE_LIMIT_HOURLY="1"'
+            echo 'TIMELINE_LIMIT_DAILY="1"'
+            echo 'TIMELINE_LIMIT_WEEKLY="1"'
+        } >>"${FILE1}"
         ;;
     "home")
-        CREATE="yes"
-        HOURLY=2
-        DAILY=2
-        WEEKLY=0
+        {
+            echo 'TIMELINE_CREATE="yes"'
+            echo 'TIMELINE_LIMIT_HOURLY="2"'
+            echo 'TIMELINE_LIMIT_DAILY="2"'
+            echo 'TIMELINE_LIMIT_WEEKLY="0"'
+        } >>"${FILE1}"
         ;;
     *)
-        CREATE="no"
-        HOURLY=0
-        DAILY=0
-        WEEKLY=0
+        {
+            echo 'TIMELINE_CREATE="no"'
+            echo 'TIMELINE_LIMIT_HOURLY="0"'
+            echo 'TIMELINE_LIMIT_DAILY="0"'
+            echo 'TIMELINE_LIMIT_WEEKLY="0"'
+        } >>"${FILE1}"
         ;;
     esac
-    ####
-    grep -q "${STRING0}" "${FILE1}" || sed_exit
-    sed -i "s/${STRING0}/TIMELINE_CREATE=\"${CREATE}\"/" "${FILE1}"
-    grep -q "${STRING1}" "${FILE1}" || sed_exit
-    sed -i "s/${STRING1}/TIMELINE_LIMIT_HOURLY=\"${HOURLY}\"/" "${FILE1}"
-    grep -q "${STRING2}" "${FILE1}" || sed_exit
-    sed -i "s/${STRING2}/TIMELINE_LIMIT_DAILY=\"${DAILY}\"/" "${FILE1}"
-    grep -q "${STRING3}" "${FILE1}" || sed_exit
-    sed -i "s/${STRING3}/TIMELINE_LIMIT_WEEKLY=\"${WEEKLY}\"/" "${FILE1}"
-    #### END sed
     #### Create config
     snapper --no-dbus -c "${CONFIGS[${i}]}" create-config -t "${CONFIGS[${i}]}" "${SUBVOLUMES[${i}]}"
 done

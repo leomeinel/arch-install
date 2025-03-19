@@ -170,11 +170,11 @@ else
 fi
 
 # Configure raid and encryption
-DISK1P1="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
-DISK1P2="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+DISK1P1="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//g' | sed -n '1p' | tr -d "[:space:]")"
+DISK1P2="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//g' | sed -n '2p' | tr -d "[:space:]")"
 if [[ -n "${DISK2}" ]]; then
-    DISK2P1="$(lsblk -rnpo TYPE,NAME "${DISK2}" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
-    DISK2P2="$(lsblk -rnpo TYPE,NAME "${DISK2}" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
+    DISK2P1="$(lsblk -rnpo TYPE,NAME "${DISK2}" | grep "part" | sed 's/part//g' | sed -n '1p' | tr -d "[:space:]")"
+    DISK2P2="$(lsblk -rnpo TYPE,NAME "${DISK2}" | grep "part" | sed 's/part//g' | sed -n '2p' | tr -d "[:space:]")"
     ## Configure raid1
     RAID_DEVICE=/dev/md/md0
     mdadm -Cv --homehost=any -N md0 -l 1 -n 2 -e default -b internal "${RAID_DEVICE}" "${DISK1P2}" "${DISK2P2}"
