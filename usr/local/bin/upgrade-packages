@@ -9,11 +9,17 @@
 # -----
 ###
 
-# If current user is root, don't do anything
-if [[ "${UID}" -eq 0 ]]; then
-    echo "ERROR: You can't run this script as root!"
+# Fail on error
+set -e
+
+# If current user is not UID 1000, don't do anything
+if [[ "${UID}" -ne 1000 ]]; then
+    echo "ERROR: You can only run this script as UID 1000"
     exit 1
 fi
 
+# Upgrade paru
 paru
+
+# Upgrade flatpak
 doas flatpak --system update

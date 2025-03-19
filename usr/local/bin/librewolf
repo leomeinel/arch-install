@@ -9,4 +9,8 @@
 # -----
 ###
 
+# Fail on error
+set -e
+
+# Execute flatpak
 exec flatpak run io.gitlab.librewolf-community "$@"

@@ -9,6 +9,9 @@
 # -----
 ###
 
+# Fail on error
+set -e
+
 # Stop ssh-agent if it is started
 [[ -n "${SSH_AUTH_SOCK}" ]] &&
     eval "$(ssh-agent -k)"
@@ -19,4 +22,5 @@ for process in "${PROCESSES[@]}"; do
     pkill -u ${UID} "${process}"
 done
 
+# Execute swaymsg exit
 exec swaymsg exit

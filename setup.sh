@@ -501,11 +501,44 @@ rsync -rq "${SCRIPT_DIR}/usr/" /usr
 cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
+## Set up /usr/local/bin/upgrade-home
+USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
+UPGRADE_HOME=$(
+    cat <<'EOF'
+#!/usr/bin/env bash
+###
+# File = upgrade-home
+# Author = Leopold Meinel (leo@meinel.dev)
+# -----
+# Copyright (c) 2025 Leopold Meinel & contributors
+# SPDX ID = MIT
+# URL = https://opensource.org/licenses/MIT
+# -----
+###
+
+# Fail on error
+set -e
+
+# If current user is not UID 1000, don't do anything
+if [[ "${UID}" -ne 1000 ]]; then
+    echo "ERROR: You can only run this script as UID 1000"
+    exit 1
+fi
+
+# Run ~/.config/dot-files/update.sh for each user
+EOF
+)
+for user in "${USERS[@]}"; do
+    UPGRADE_HOME+=$'\ndoas systemd-run -P --wait --user -M "'"${user}"'"@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
+done
+UPGRADE_HOME+=$'\ndoas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
+UPGRADE_HOME+=$'\n. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'
+echo "${UPGRADE_HOME}" | tail -n +2 >/usr/local/bin/upgrade-home
 
 # Create dirs/files and modify perms
 FILES_600=("/etc/at.deny" "/etc/anacrontab" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts" "/etc/audit/rules.d/custom.rules")
 DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly" "/etc/audit/rules.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
-FILES_755=("/etc/profile.d/zzz-custom-archinstall.sh" "/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/systemd-boot-sign" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/rpi-imager" "/usr/local/bin/sway-logout" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-packages")
+FILES_755=("/etc/profile.d/zzz-custom-archinstall.sh" "/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/systemd-boot-sign" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/rpi-imager" "/usr/local/bin/sway-logout" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages")
 for file in "${FILES_600[@]}"; do
     [[ ! -f "${file}" ]] &&
         touch "${file}"
