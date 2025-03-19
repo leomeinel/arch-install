@@ -11,6 +11,7 @@
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
+# shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
 
 # Fail on error
@@ -201,6 +202,7 @@ doas sh -c 'nft -s list ruleset >/etc/nftables.conf'
 # Prompt user
 # This prompt prevents unwanted overrides of already enrolled keys
 echo "INFO: To deploy your own keys, don't confirm the next prompt"
+# shellcheck source=/dev/null
 . /etc/cryptboot.conf
 read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
 case "${choice}" in
@@ -212,19 +214,22 @@ YES)
     doas cryptboot-efikeys create
     doas cryptboot-efikeys enroll
     doas cryptboot systemd-boot-sign
-    doas sh -c "{
-        echo "uefi_secureboot_cert=\""${EFI_KEYS_DIR}"/db.crt\""
-        echo "uefi_secureboot_key=\""${EFI_KEYS_DIR}"/db.key\""
-    } >/etc/dracut.conf.d/secureboot.conf"
+    doas sh -c '{
+        echo "uefi_secureboot_cert="'"${EFI_KEYS_DIR}"'"/db.crt"
+        echo "uefi_secureboot_key="'"${EFI_KEYS_DIR}"'"/db.key"
+    } >/etc/dracut.conf.d/secureboot.conf'
     ;;
 *)
     {
         echo '#!/usr/bin/env bash'
         echo ''
         echo '. /etc/cryptboot.conf'
+        # shellcheck disable=SC2016
         echo 'read -rp "Have you transferred your keys to ${EFI_KEYS_DIR}? (Type '"'"'yes'"'"' in capital letters): " choice'
+        # shellcheck disable=SC2016
         echo 'case "${choice}" in'
         echo 'YES)'
+        # shellcheck disable=SC2016
         echo '    doas chmod 000 "${EFI_KEYS_DIR}"/*'
         echo '    if mountpoint -q /efi; then'
         echo '        doas umount -AR /efi'
@@ -232,11 +237,14 @@ YES)
         echo '    doas mount /efi'
         echo '    doas cryptboot systemd-boot-sign'
         echo '    doas sh -c "{'
+        # shellcheck disable=SC2016
         echo '        echo "uefi_secureboot_cert=\""${EFI_KEYS_DIR}"/db.crt\""'
+        # shellcheck disable=SC2016
         echo '        echo "uefi_secureboot_key=\""${EFI_KEYS_DIR}"/db.key\""'
         echo '    } >/etc/dracut.conf.d/secureboot.conf"'
         echo '    ;;'
         echo '*)'
+        # shellcheck disable=SC2016
         echo '    echo "ERROR: User has not transferred keys to ${EFI_KEYS_DIR}!"'
         echo '    exit 1'
         echo '    ;;'
@@ -257,11 +265,13 @@ doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-ext
 doas systemd-run -P --wait --user -M "${GUESTUSER}"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 doas systemd-run -P --wait --user -M "${HOMEUSER}"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+# shellcheck source=/dev/null
 . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh
 doas systemd-run -P --wait --user -M "${VIRTUSER}"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 doas systemd-run -P --wait --user -M "${WORKUSER}"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 
 # Source ~/.bash_profile
+# shellcheck source=/dev/null
 . ~/.bash_profile
 
 # Install flatpaks
@@ -312,12 +322,12 @@ DIRS=(".gnupg" ".nix-defexpr" ".nix-profile" "git")
 USERS=("${GUESTUSER}" "${HOMEUSER}" "root" "${SYSUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${USERS[@]}"; do
     for file in "${FILES[@]}"; do
-        doas rm -f "$(eval echo ~${user})"/"${file}"
+        doas rm -f "$(eval echo ~"${user}")"/"${file}"
     done
     for dir in "${DIRS[@]}"; do
-        doas rm -rf "$(eval echo ~${user})"/"${dir}"
+        doas rm -rf "$(eval echo ~"${user}")"/"${dir}"
     done
-    doas rm -f "$(eval echo ~${user})"/.*.bak
+    doas rm -f "$(eval echo ~"${user}")"/.*.bak
 done
 
 # Replace doas.conf with default

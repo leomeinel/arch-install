@@ -11,6 +11,7 @@
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
+# shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
 
 # Fail on error
@@ -90,7 +91,6 @@ DISK1P1="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//' | sed
 DISK1P2="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
 if [[ -n "${DISK2}" ]]; then
     DISK2P1="$(lsblk -rnpo TYPE,NAME "${DISK2}" | grep "part" | sed 's/part//' | sed -n '1p' | tr -d "[:space:]")"
-    DISK2P2="$(lsblk -rnpo TYPE,NAME "${DISK2}" | grep "part" | sed 's/part//' | sed -n '2p' | tr -d "[:space:]")"
     ## Configure raid1
     RAID_DEVICE=/dev/md/md0
     ## Configure encryption

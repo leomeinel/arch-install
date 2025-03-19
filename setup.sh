@@ -11,6 +11,7 @@
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
+# shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
 
 # Fail on error
@@ -293,25 +294,25 @@ FILES=("dot-files.sh" "install.conf")
 USERS=("${GUESTUSER}" "${HOMEUSER}" "root" "${SYSUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${USERS[@]}"; do
     for file in "${FILES[@]}"; do
-        cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~${user})"/
-        chown "${user}":"${user}" "$(eval echo ~${user})"/"${file}"
+        cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~"${user}")"/
+        chown "${user}":"${user}" "$(eval echo ~"${user}")"/"${file}"
     done
-    chmod 755 "$(eval echo ~${user})"/dot-files.sh
+    chmod 755 "$(eval echo ~"${user}")"/dot-files.sh
 done
 ## SYSUSER
 FILES=("nix.conf" "pkgs-post.txt" "pkgs-flatpak.txt" "post.sh")
 for file in "${FILES[@]}"; do
-    cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~${SYSUSER})"/
-    chown "${SYSUSER}":"${SYSUSER}" "$(eval echo ~${SYSUSER})"/"${file}"
+    cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~"${SYSUSER}")"/
+    chown "${SYSUSER}":"${SYSUSER}" "$(eval echo ~"${SYSUSER}")"/"${file}"
 done
-chmod 755 "$(eval echo ~${SYSUSER})"/post.sh
+chmod 755 "$(eval echo ~"${SYSUSER}")"/post.sh
 
 # Configure /etc
 ## Configure /etc/crypttab
 if lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1"; then
     MD0UUID="$(blkid -s UUID -o value /dev/md/md0)"
 else
-    MD0UUID="$(blkid -s UUID -o value ${DISK1P2})"
+    MD0UUID="$(blkid -s UUID -o value "${DISK1P2}")"
 fi
 {
     echo "md0_crypt UUID=${MD0UUID} none luks,key-slot=0"
@@ -425,11 +426,14 @@ STRING="^hosts: mymachines"
 grep -q "${STRING}" "${FILE}" || sed_exit
 sed -i "s/${STRING}/#hosts: mymachines/" "${FILE}"
 STRING="hosts: mymachines"
-{
-    echo ""
-    echo "# Custom"
-    grep "${STRING}" "${FILE}" | sed "s/^.*${STRING}/${STRING} mdns/"
-} >>"${FILE}"
+tmpfile="$(mktemp)"
+cp "${FILE}" "${tmpfile}" &&
+    {
+        echo ""
+        echo "# Custom"
+        grep "${STRING}" "${tmpfile}" | sed "s/^.*${STRING}/${STRING} mdns/"
+    } >>"${FILE}"
+rm -f "${tmpfile}"
 ### END sed
 ## Configure /etc/avahi/avahi-daemon.conf
 {

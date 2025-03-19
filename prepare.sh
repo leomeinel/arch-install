@@ -11,6 +11,7 @@
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
+# shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
 
 # Fail on error
@@ -349,19 +350,24 @@ done
 if [[ -n "${DISK1ID}" ]]; then
     mkdir -p /mnt/usr/lib/systemd/system-sleep
     {
+        # shellcheck disable=SC2016
         echo 'if [[ "${1}" = "post" ]]; then'
         echo '    sleep 1'
         echo '    if hdparm --security-freeze '"${DISK1ID}"'; then'
+        # shellcheck disable=SC2016
         echo '        logger "${0}: SSD freeze command executed successfully"'
         echo '    else'
+        # shellcheck disable=SC2016
         echo '        logger "${0}: SSD freeze command failed"'
         echo '    fi'
     } >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
     if [[ -n "${DISK2ID}" ]]; then
         {
             echo '    if hdparm --security-freeze '"${DISK2ID}"'; then'
+            # shellcheck disable=SC2016
             echo '        logger "${0}: SSD freeze command executed successfully"'
             echo '    else'
+            # shellcheck disable=SC2016
             echo '        logger "${0}: SSD freeze command failed"'
             echo '    fi'
         } >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
