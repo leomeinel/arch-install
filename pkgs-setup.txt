@@ -131,6 +131,7 @@ ruff
 rustup
 sbsigntools
 screen
+shellcheck
 shfmt
 shotwell
 signal-desktop
