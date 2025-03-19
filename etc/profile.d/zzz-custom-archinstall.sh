@@ -14,3 +14,6 @@ export TMOUT=86400
 
 # Set umask
 umask 027
+
+# Disable coredumps
+ulimit -c 0
