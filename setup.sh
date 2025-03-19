@@ -439,6 +439,7 @@ rm -f "${tmpfile}"
 {
     echo ""
     echo "# Custom"
+    echo "[server]"
     echo "domain-name=${DOMAIN}"
 } >>/etc/avahi/avahi-daemon.conf
 ## Configure /etc/mdns.allow
