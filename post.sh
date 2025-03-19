@@ -10,15 +10,15 @@
 ###
 
 # Source config
-SCRIPT_DIR="$(dirname -- "$(readlink -f -- "$0")")"
-. "$SCRIPT_DIR"/install.conf
+SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
+. "${SCRIPT_DIR}"/install.conf
 
 # Fail on error
 set -e
 
 # Replace doas.conf with option nopass
 for i in {1..5}; do
-    [[ $i -eq 5 ]] &&
+    [[ ${i} -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -27,9 +27,9 @@ for i in {1..5}; do
         echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 
-# Configure $KEYMAP
-doas localectl --no-convert set-keymap "$KEYMAP"
-doas localectl --no-convert set-x11-keymap "$KEYLAYOUT"
+# Configure KEYMAP
+doas localectl --no-convert set-keymap "${KEYMAP}"
+doas localectl --no-convert set-x11-keymap "${KEYLAYOUT}"
 
 # Configure clock
 doas timedatectl set-ntp true
@@ -203,7 +203,7 @@ doas sh -c 'nft -s list ruleset >/etc/nftables.conf'
 echo "INFO: To deploy your own keys, don't confirm the next prompt"
 . /etc/cryptboot.conf
 read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
-case "$choice" in
+case "${choice}" in
 YES)
     if mountpoint -q /efi; then
         doas umount -AR /efi
@@ -213,8 +213,8 @@ YES)
     doas cryptboot-efikeys enroll
     doas cryptboot systemd-boot-sign
     doas sh -c "{
-        echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/db.crt\""
-        echo "uefi_secureboot_key=\""$EFI_KEYS_DIR"/db.key\""
+        echo "uefi_secureboot_cert=\""${EFI_KEYS_DIR}"/db.crt\""
+        echo "uefi_secureboot_key=\""${EFI_KEYS_DIR}"/db.key\""
     } >/etc/dracut.conf.d/secureboot.conf"
     ;;
 *)
@@ -222,18 +222,18 @@ YES)
         echo '#!/usr/bin/env bash'
         echo ''
         echo '. /etc/cryptboot.conf'
-        echo 'read -rp "Have you transferred your keys to $EFI_KEYS_DIR? (Type '"'"'yes'"'"' in capital letters): " choice'
-        echo 'case "$choice" in'
+        echo 'read -rp "Have you transferred your keys to ${EFI_KEYS_DIR}? (Type '"'"'yes'"'"' in capital letters): " choice'
+        echo 'case "${choice}" in'
         echo 'YES)'
-        echo '    doas chmod 000 "$EFI_KEYS_DIR"/*'
+        echo '    doas chmod 000 "${EFI_KEYS_DIR}"/*'
         echo '    if mountpoint -q /efi; then'
         echo '        doas umount -AR /efi'
         echo '    fi'
         echo '    doas mount /efi'
         echo '    doas cryptboot systemd-boot-sign'
         echo '    doas sh -c "{'
-        echo '        echo "uefi_secureboot_cert=\""$EFI_KEYS_DIR"/db.crt\""'
-        echo '        echo "uefi_secureboot_key=\""$EFI_KEYS_DIR"/db.key\""'
+        echo '        echo "uefi_secureboot_cert=\""${EFI_KEYS_DIR}"/db.crt\""'
+        echo '        echo "uefi_secureboot_key=\""${EFI_KEYS_DIR}"/db.key\""'
         echo '    } >/etc/dracut.conf.d/secureboot.conf"'
         echo '    ;;'
         echo '*)'
@@ -242,31 +242,31 @@ YES)
         echo '    ;;'
         echo 'esac'
     } >~/secureboot.sh
-    doas mkdir -p "$EFI_KEYS_DIR"
-    doas chmod 700 "$EFI_KEYS_DIR"
+    doas mkdir -p "${EFI_KEYS_DIR}"
+    doas chmod 700 "${EFI_KEYS_DIR}"
     chmod 755 ~/secureboot.sh
     echo "WARNING: User aborted enrolling secureboot keys"
-    echo "         Deploy your own keys in $EFI_KEYS_DIR and run ~/secureboot.sh to sign your bootloader"
+    echo "         Deploy your own keys in ${EFI_KEYS_DIR} and run ~/secureboot.sh to sign your bootloader"
     ;;
 esac
 
 # Install nix
-doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file $SCRIPT_DIR/nix.conf"
+doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file ${SCRIPT_DIR}/nix.conf"
 
 # Configure dot-files
-doas systemd-run -P --wait --user -M "$GUESTUSER"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
-doas systemd-run -P --wait --user -M "$HOMEUSER"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --user -M "${GUESTUSER}"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --user -M "${HOMEUSER}"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh
-doas systemd-run -P --wait --user -M "$VIRTUSER"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
-doas systemd-run -P --wait --user -M "$WORKUSER"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --user -M "${VIRTUSER}"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+doas systemd-run -P --wait --user -M "${WORKUSER}"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 
 # Source ~/.bash_profile
 . ~/.bash_profile
 
 # Install flatpaks
 [[ -n $(which flatpak) ]] >/dev/null 2>&1 &&
-    xargs -n 1 doas flatpak install --system -y --noninteractive <"$SCRIPT_DIR/pkgs-flatpak.txt"
+    xargs -n 1 doas flatpak install --system -y --noninteractive <"${SCRIPT_DIR}/pkgs-flatpak.txt"
 
 # Install paru-bin
 git clone https://aur.archlinux.org/paru-bin.git ~/git/paru-bin
@@ -282,16 +282,16 @@ doas sh -c "{
 
 # Install AUR packages
 for i in {1..5}; do
-    [[ $i -eq 5 ]] &&
+    [[ ${i} -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
         }
-    paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt" && break ||
+    paru -S --noprogressbar --noconfirm --needed - <"${SCRIPT_DIR}/pkgs-post.txt" && break ||
         echo "WARNING: paru failed. Retrying now."
 done
 for i in {1..5}; do
-    [[ $i -eq 5 ]] &&
+    [[ ${i} -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -309,15 +309,15 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
 # Remove user files
 FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-post.txt" "pkgs-flatpak.txt" "post.sh" ".bash_history" ".nix-channels" ".rhosts" ".rlogin" ".shosts")
 DIRS=(".gnupg" ".nix-defexpr" ".nix-profile" "git")
-USERS=("$GUESTUSER" "$HOMEUSER" "root" "$SYSUSER" "$VIRTUSER" "$WORKUSER")
+USERS=("${GUESTUSER}" "${HOMEUSER}" "root" "${SYSUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${USERS[@]}"; do
     for file in "${FILES[@]}"; do
-        doas rm -f "$(eval echo ~$user)"/"$file"
+        doas rm -f "$(eval echo ~${user})"/"${file}"
     done
     for dir in "${DIRS[@]}"; do
-        doas rm -rf "$(eval echo ~$user)"/"$dir"
+        doas rm -rf "$(eval echo ~${user})"/"${dir}"
     done
-    doas rm -f "$(eval echo ~$user)"/.*.bak
+    doas rm -f "$(eval echo ~${user})"/.*.bak
 done
 
 # Replace doas.conf with default
