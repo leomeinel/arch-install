@@ -630,10 +630,6 @@ mount -a
 for subvolume in "${SUBVOLUMES[@]}"; do
     chown :wheel "${subvolume}".snapshots
 done
-## Configure /usr/share/wallpapers/Custom/content
-mkdir -p /usr/share/wallpapers/Custom/content
-git clone https://github.com/leomeinel/wallpapers.git /git/wallpapers
-cp /git/wallpapers/*.jpg /git/wallpapers/*.png /usr/share/wallpapers/Custom/content/
 
 # Configure /var
 ## Configure /var/games
