@@ -426,7 +426,7 @@ STRING="^hosts: mymachines"
 grep -q "${STRING}" "${FILE}" || sed_exit
 sed -i "s/${STRING}/#hosts: mymachines/" "${FILE}"
 STRING="hosts: mymachines"
-tmpfile="$(mktemp)"
+tmpfile="$(mktemp /tmp/arch-install-XXX)"
 cp "${FILE}" "${tmpfile}" &&
     {
         echo ""
