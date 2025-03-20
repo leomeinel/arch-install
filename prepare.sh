@@ -252,7 +252,7 @@ create_subs0() {
 }
 create_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
-        if [[ "${SUBVOLUMES[${a}]}" != "${1}" ]] && grep -nq "^${1}" <<<"${SUBVOLUMES[${a}]}"; then
+        if [[ "${SUBVOLUMES[${a}]}" != "${1}" ]] && grep -q "^${1}" <<<"${SUBVOLUMES[${a}]}"; then
             btrfs subvolume create "/mnt/@${CONFIGS[${a}]}"
             btrfs subvolume create "/mnt/@${CONFIGS[${a}]}_snapshots"
         fi
@@ -298,8 +298,8 @@ mount_subs0() {
 }
 mount_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
-        if [[ "${SUBVOLUMES[${a}]}" != "${1}" ]] && grep -nq "^${1}" <<<"${SUBVOLUMES[${a}]}"; then
-            if { grep -nq "^${1}log/" <<<"${SUBVOLUMES[${a}]}"; } || { grep -nq "^${1}lib/" <<<"${SUBVOLUMES[${a}]}" && ! grep -nq "^${1}lib/flatpak/" <<<"${SUBVOLUMES[${a}]}"; }; then
+        if [[ "${SUBVOLUMES[${a}]}" != "${1}" ]] && grep -q "^${1}" <<<"${SUBVOLUMES[${a}]}"; then
+            if { grep -q "^${1}log/" <<<"${SUBVOLUMES[${a}]}"; } || { grep -q "^${1}lib/" <<<"${SUBVOLUMES[${a}]}" && ! grep -q "^${1}lib/flatpak/" <<<"${SUBVOLUMES[${a}]}"; }; then
                 mount --mkdir -o "${OPTIONS3}${CONFIGS[${a}]}" "${3}" "/mnt${SUBVOLUMES[${a}]}"
             else
                 mount --mkdir -o "${2}${CONFIGS[${a}]}" "${3}" "/mnt${SUBVOLUMES[${a}]}"
