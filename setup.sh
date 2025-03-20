@@ -495,7 +495,6 @@ postconf -e inet_interfaces=loopback-only
 
 # Configure /usr
 ## Set up /usr/local/bin
-cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
 ## Set up /usr/local/bin/upgrade-home
@@ -660,7 +659,7 @@ done
 # Create dirs/files and modify perms
 FILES_600=("/etc/at.deny" "/etc/anacrontab" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts" "/etc/audit/rules.d/custom.rules")
 DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly" "/etc/audit/rules.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
-FILES_755=("/etc/profile.d/zzz-custom-archinstall.sh" "/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/systemd-boot-sign" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/rpi-imager" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages")
+FILES_755=("/etc/profile.d/zzz-custom-archinstall.sh" "/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/rpi-imager" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages")
 for file in "${FILES_600[@]}"; do
     [[ ! -f "${file}" ]] &&
         touch "${file}"

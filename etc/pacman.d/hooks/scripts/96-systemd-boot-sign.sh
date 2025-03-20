@@ -9,4 +9,6 @@
 # -----
 ###
 
-/usr/local/bin/systemd-boot-sign
+set -eu
+
+/usr/local/bin/cryptboot systemd-boot-sign
