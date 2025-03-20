@@ -9,6 +9,9 @@
 # -----
 ###
 
+# INFO: This file is not needed for the installation.
+#       It enables you to use your own keys for signing the bootloader.
+
 # Fail on error
 set -e
 

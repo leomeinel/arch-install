@@ -9,6 +9,9 @@
 # -----
 ###
 
+# INFO: This file is executed automatically during installation.
+#       There is no need to execute it manually.
+
 # Fail on error
 set -e
 
