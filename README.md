@@ -25,6 +25,7 @@ Meant for general purpose systems with a GUI.
 ```sh
 pacman -Sy
 pacman -S git
+# Instead of main, you can also use a tag.
 git clone -b main https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 /root/arch-install/prepare.sh
