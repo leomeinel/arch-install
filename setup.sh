@@ -24,13 +24,12 @@ sed_exit() {
     exit 1
 }
 
+# Sync files from this repo to system
+rsync -rq "${SCRIPT_DIR}/etc/" /etc
+rsync -rq "${SCRIPT_DIR}/usr/" /usr
+rsync -rq "${SCRIPT_DIR}/efi/" /efi
+
 # Add groups & users
-## Configure passwords
-{
-    echo "# passwd defaults from arch-install"
-    echo "password required pam_pwquality.so retry=2 minlen=12 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 enforce_for_root"
-    echo "password required pam_unix.so use_authtok yescrypt shadow"
-} >/etc/pam.d/passwd
 ## Configure login.defs
 ## START sed
 FILE=/etc/login.defs
@@ -148,8 +147,7 @@ for i in {1..5}; do
         echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 
-# Setup /etc
-rsync -rq "${SCRIPT_DIR}/etc/" /etc
+# Configure /etc before installing packages
 ## Configure locale
 FILE=/etc/locale.gen
 {
@@ -300,7 +298,7 @@ for user in "${USERS[@]}"; do
     chmod 755 "$(eval echo ~"${user}")"/dot-files.sh
 done
 ## SYSUSER
-FILES=("nix.conf" "pkgs-post.txt" "pkgs-flatpak.txt" "post.sh")
+FILES=("nix.conf" "pkgs-post.txt" "pkgs-flatpak.txt" "post.sh" "secureboot.sh")
 for file in "${FILES[@]}"; do
     cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~"${SYSUSER}")"/
     chown "${SYSUSER}":"${SYSUSER}" "$(eval echo ~"${SYSUSER}")"/"${file}"
@@ -356,6 +354,7 @@ sed -i "s|${STRING}|#PICTURES=|g" "${FILE}"
 STRING="^VIDEOS="
 grep -q "${STRING}" "${FILE}" || sed_exit
 sed -i "s|${STRING}|#VIDEOS=|g" "${FILE}"
+### END sed
 {
     echo ''
     echo '# Custom'
@@ -366,7 +365,6 @@ sed -i "s|${STRING}|#VIDEOS=|g" "${FILE}"
     echo 'PICTURES=Documents/Pictures'
     echo 'VIDEOS=Documents/Videos'
 } >>"${FILE}"
-### END sed
 ## Configure /etc/mdadm.conf.d/custom-mdadm.conf
 if lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1"; then
     mkdir -p /etc/mdadm.conf.d/
@@ -422,10 +420,10 @@ sed -i "s/${STRING}/#log_group =/g" "${FILE}"
 ## Configure /etc/nsswitch.conf
 ### START sed
 FILE=/etc/nsswitch.conf
-STRING="^hosts: mymachines"
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s/${STRING}/#hosts: mymachines/g" "${FILE}"
 STRING="hosts: mymachines"
+grep -q "${STRING}" "${FILE}" || sed_exit
+sed -i "s/^${STRING}/#hosts: mymachines/g" "${FILE}"
+### END sed
 tmpfile="$(mktemp /tmp/arch-install-XXXXXX)"
 cp "${FILE}" "${tmpfile}" &&
     {
@@ -434,7 +432,6 @@ cp "${FILE}" "${tmpfile}" &&
         grep "${STRING}" "${tmpfile}" | sed "s/^.*${STRING}/${STRING} mdns/g"
     } >>"${FILE}"
 rm -f "${tmpfile}"
-### END sed
 ## Configure /etc/avahi/avahi-daemon.conf
 {
     echo ""
@@ -471,10 +468,6 @@ rm -f "${tmpfile}"
     echo "snapshot = True"
     echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
 } >>/etc/snap-pac.ini
-## Configure /etc/dracut.conf.d/modules.conf
-{
-    echo "filesystems+=\" btrfs \""
-} >/etc/dracut.conf.d/modules.conf
 ## Configure /etc/dracut.conf.d/cmdline.conf
 DISK1P2UUID="$(blkid -s UUID -o value "${DISK1P2}")"
 PARAMETERS="rd.luks.uuid=luks-${MD0UUID} rd.lvm.lv=vg0/lv0 rd.md.uuid=${DISK1P2UUID} root=/dev/mapper/vg0-lv0 rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@ rd.lvm.lv=vg0/lv1 rd.lvm.lv=vg0/lv2 rd.lvm.lv=vg0/lv3 rd.vconsole.unicode rd.vconsole.keymap=${KEYMAP} loglevel=3 bgrt_disable audit=1 audit_backlog_limit=8192 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
@@ -495,9 +488,8 @@ echo "kernel_cmdline=\"${PARAMETERS}\"" >/etc/dracut.conf.d/cmdline.conf
 postconf -e disable_vrfy_command=yes
 postconf -e inet_interfaces=loopback-only
 
-# Setup /usr
-rsync -rq "${SCRIPT_DIR}/usr/" /usr
-## Setup /usr/local/bin
+# Configure /usr
+## Set up /usr/local/bin
 cp /git/cryptboot/systemd-boot-sign /usr/local/bin/
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
@@ -534,28 +526,6 @@ done
 UPGRADE_HOME+=$'\ndoas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
 UPGRADE_HOME+=$'\nexec /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
 echo "${UPGRADE_HOME}" | tail -n +2 >/usr/local/bin/upgrade-home
-
-# Create dirs/files and modify perms
-FILES_600=("/etc/at.deny" "/etc/anacrontab" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts" "/etc/audit/rules.d/custom.rules")
-DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly" "/etc/audit/rules.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
-FILES_755=("/etc/profile.d/zzz-custom-archinstall.sh" "/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/systemd-boot-sign" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/rpi-imager" "/usr/local/bin/sway-logout" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages")
-for file in "${FILES_600[@]}"; do
-    [[ ! -f "${file}" ]] &&
-        touch "${file}"
-    chmod 600 "${file}"
-done
-for file in "${FILES_755[@]}"; do
-    [[ ! -f "${file}" ]] &&
-        touch "${file}"
-    chmod 755 "${file}"
-done
-for dir in "${DIRS_700[@]}"; do
-    [[ ! -f "${dir}" ]] &&
-        mkdir -p "${dir}"
-    chmod 700 "${dir}"
-done
-
-# Configure /usr
 ## Configure snapper
 ### START sed
 STRING0="^ALLOW_GROUPS="
@@ -570,8 +540,6 @@ STRING8="^TIMELINE_CREATE="
 STRING9="^TIMELINE_LIMIT_HOURLY="
 STRING10="^TIMELINE_LIMIT_DAILY="
 STRING11="^TIMELINE_LIMIT_WEEKLY="
-
-###
 FILE0=/usr/share/snapper/config-templates/default
 grep -q "${STRING0}" "${FILE0}" || sed_exit
 sed -i "s/${STRING0}/#ALLOW_GROUPS=/g" "${FILE0}"
@@ -597,6 +565,7 @@ grep -q "${STRING10}" "${FILE0}" || sed_exit
 sed -i "s/${STRING10}/#TIMELINE_LIMIT_DAILY=/g" "${FILE0}"
 grep -q "${STRING11}" "${FILE0}" || sed_exit
 sed -i "s/${STRING11}/#TIMELINE_LIMIT_WEEKLY=/g" "${FILE0}"
+### END sed
 {
     echo ''
     echo '# Custom'
@@ -609,8 +578,6 @@ sed -i "s/${STRING11}/#TIMELINE_LIMIT_WEEKLY=/g" "${FILE0}"
     echo 'TIMELINE_LIMIT_MONTHLY="0"'
     echo 'TIMELINE_LIMIT_YEARLY="0"'
 } >>"${FILE0}"
-
-### END sed
 ### Remove & unmount snapshots (Prepare snapshot dirs 1)
 for subvolume in "${SUBVOLUMES[@]}"; do
     umount "${subvolume}".snapshots
@@ -685,12 +652,25 @@ for subvolume in "${SUBVOLUMES[@]}"; do
     chown :wheel "${subvolume}".snapshots
 done
 
-# Configure /var
-## Configure /var/games
-chown :games /var/games
-
-# Setup /efi
-rsync -rq "${SCRIPT_DIR}/efi/" /efi
+# Create dirs/files and modify perms
+FILES_600=("/etc/at.deny" "/etc/anacrontab" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts" "/etc/audit/rules.d/custom.rules")
+DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly" "/etc/audit/rules.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
+FILES_755=("/etc/profile.d/zzz-custom-archinstall.sh" "/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/systemd-boot-sign" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/rpi-imager" "/usr/local/bin/sway-logout" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages")
+for file in "${FILES_600[@]}"; do
+    [[ ! -f "${file}" ]] &&
+        touch "${file}"
+    chmod 600 "${file}"
+done
+for file in "${FILES_755[@]}"; do
+    [[ ! -f "${file}" ]] &&
+        touch "${file}"
+    chmod 755 "${file}"
+done
+for dir in "${DIRS_700[@]}"; do
+    [[ ! -f "${dir}" ]] &&
+        mkdir -p "${dir}"
+    chmod 700 "${dir}"
+done
 
 # Enable systemd services
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
@@ -745,7 +725,7 @@ pacman -Qq "usbguard" >/dev/null 2>&1 &&
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
 
-# Setup /boot & /efi
+# Set up /boot & /efi
 bootctl --esp-path=/efi --no-variables install
 dracut --regenerate-all --force
 

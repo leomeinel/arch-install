@@ -202,12 +202,13 @@ doas sh -c 'nft -s list ruleset >/etc/nftables.conf'
 # Configure secureboot
 # Prompt user
 # This prompt prevents unwanted overrides of already enrolled keys
-echo "INFO: To deploy your own keys, don't confirm the next prompt"
+echo "INFO: To deploy your own keys, don't confirm the next prompt. Make sure the keys are already enrolled."
 # shellcheck source=/dev/null
 . /etc/cryptboot.conf
 read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
 case "${choice}" in
 YES)
+    rm -f ~/secureboot.sh
     if mountpoint -q /efi; then
         doas umount -AR /efi
     fi
@@ -221,36 +222,6 @@ YES)
     } >/etc/dracut.conf.d/secureboot.conf'
     ;;
 *)
-    {
-        echo '#!/usr/bin/env bash'
-        echo ''
-        echo '. /etc/cryptboot.conf'
-        # shellcheck disable=SC2016
-        echo 'read -rp "Have you transferred your keys to ${EFI_KEYS_DIR}? (Type '"'"'yes'"'"' in capital letters): " choice'
-        # shellcheck disable=SC2016
-        echo 'case "${choice}" in'
-        echo 'YES)'
-        # shellcheck disable=SC2016
-        echo '    doas chmod 000 "${EFI_KEYS_DIR}"/*'
-        echo '    if mountpoint -q /efi; then'
-        echo '        doas umount -AR /efi'
-        echo '    fi'
-        echo '    doas mount /efi'
-        echo '    doas cryptboot systemd-boot-sign'
-        echo '    doas sh -c "{'
-        # shellcheck disable=SC2016
-        echo '        echo "uefi_secureboot_cert=\""${EFI_KEYS_DIR}"/db.crt\""'
-        # shellcheck disable=SC2016
-        echo '        echo "uefi_secureboot_key=\""${EFI_KEYS_DIR}"/db.key\""'
-        echo '    } >/etc/dracut.conf.d/secureboot.conf"'
-        echo '    ;;'
-        echo '*)'
-        # shellcheck disable=SC2016
-        echo '    echo "ERROR: User has not transferred keys to ${EFI_KEYS_DIR}!"'
-        echo '    exit 1'
-        echo '    ;;'
-        echo 'esac'
-    } >~/secureboot.sh
     doas mkdir -p "${EFI_KEYS_DIR}"
     doas chmod 700 "${EFI_KEYS_DIR}"
     chmod 755 ~/secureboot.sh
