@@ -143,6 +143,7 @@ starship
 sway
 swaybg
 swayidle
+swaylock
 swaync
 sysstat
 system-config-printer
