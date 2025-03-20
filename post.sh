@@ -18,6 +18,7 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 set -e
 
 # Replace doas.conf with option nopass
+DOAS_CONF="$(doas cat /etc/doas.conf)"
 for i in {1..5}; do
     [[ ${i} -eq 5 ]] &&
         {
@@ -331,4 +332,4 @@ for user in "${USERS[@]}"; do
 done
 
 # Replace doas.conf with default
-doas sh -c 'echo "permit persist setenv { LANG LC_ALL } :wheel" >/etc/doas.conf'
+doas sh -c 'echo '"${DOAS_CONF}"' >/etc/doas.conf'
