@@ -125,7 +125,7 @@ esac
 ## Deactivate all vgs
 vgchange -an || true
 ## Close all crypt volumes
-dmsetup ls | awk '{print "/dev/mapper/"$1}' | xargs -n 1 cryptsetup close || true
+dmsetup ls | awk '{print "/dev/mapper/"$1}' | parallel cryptsetup close {} || true
 ## Stop all mdadm RAIDs
 mdadm -Ss || true
 ## Use dd, sgdisk and wipefs to wipe the header and more to make sure that it is erased

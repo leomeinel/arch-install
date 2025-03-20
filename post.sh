@@ -276,7 +276,7 @@ doas systemd-run -P --wait --user -M "${WORKUSER}"@ /bin/bash -c '. /nix/var/nix
 
 # Install flatpaks
 [[ -n $(which flatpak) ]] >/dev/null 2>&1 &&
-    xargs -n 1 doas flatpak install --system -y --noninteractive <"${SCRIPT_DIR}/pkgs-flatpak.txt"
+    parallel doas flatpak install --system -y --noninteractive {} <"${SCRIPT_DIR}"/pkgs-flatpak.txt
 
 # Install paru-bin
 git clone https://aur.archlinux.org/paru-bin.git ~/git/paru-bin
