@@ -1,4 +1,5 @@
 com.nitrokey.nitrokey-app2
+com.saivert.pwvucontrol
 com.sweethome3d.Sweethome3d
 io.freetubeapp.FreeTube
 io.gitlab.librewolf-community
