@@ -331,7 +331,12 @@ echo "${HOSTNAME}" >/etc/hostname
     echo "ff02::2  ip6-allrouters"
 } >/etc/hosts
 ## Configure /etc/cryptboot.conf
-git clone -b main https://github.com/leomeinel/cryptboot.git /git/cryptboot
+### Clone cryptboot
+if [ "${IS_RELEASE}" ]; then
+    git clone -b "${CRYPTBOOT_VERSION}" https://github.com/leomeinel/cryptboot.git /git/cryptboot
+else
+    git clone -b main https://github.com/leomeinel/cryptboot.git /git/cryptboot
+fi
 cp /git/cryptboot/cryptboot.conf /etc/
 ## Configure /etc/xdg/user-dirs.defaults
 ### START sed
