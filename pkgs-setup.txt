@@ -3,7 +3,6 @@ alacritty
 alsa-utils
 android-tools
 apparmor
-arc-gtk-theme
 arch-audit
 ark
 audacity
@@ -96,7 +95,6 @@ maven
 mtools
 network-manager-applet
 nextcloud-client
-noto-fonts
 nss-mdns
 ntfs-3g
 nwg-bar
@@ -106,7 +104,6 @@ openssh
 oxipng
 pacman-contrib
 pam-u2f
-papirus-icon-theme
 pdftk
 perl-image-exiftool
 perl-rename

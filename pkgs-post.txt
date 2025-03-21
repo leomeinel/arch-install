@@ -1,2 +1,1 @@
 kvantum-theme-arc
-ttf-hasklig
