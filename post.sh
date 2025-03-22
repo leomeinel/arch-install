@@ -262,25 +262,7 @@ doas sh -c "{
     echo 'Include = /etc/paru.conf.d/custom-paru.conf'
 } >>/etc/paru.conf"
 
-# Install AUR packages
-for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
-        {
-            echo "ERROR: Too many retries. Exiting now."
-            exit 1
-        }
-    paru -S --noprogressbar --noconfirm --needed - <"${SCRIPT_DIR}/pkgs-post.txt" && break ||
-        echo "WARNING: paru failed. Retrying now."
-done
-for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
-        {
-            echo "ERROR: Too many retries. Exiting now."
-            exit 1
-        }
-    paru -Syu --noprogressbar --noconfirm && break ||
-        echo "WARNING: paru failed. Retrying now."
-done
+# Clear package cache
 paru -Scc
 doas sh -c 'pacman -Qtdq | pacman -Rns -' || true
 
@@ -289,7 +271,7 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
     doas systemctl enable nftables.service
 
 # Remove user files
-FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-post.txt" "pkgs-flatpak.txt" "post.sh" ".bash_history" ".nix-channels" ".rhosts" ".rlogin" ".shosts")
+FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-flatpak.txt" "post.sh" ".bash_history" ".nix-channels" ".rhosts" ".rlogin" ".shosts")
 DIRS=(".gnupg" ".nix-defexpr" ".nix-profile" "git")
 USERS=("${GUESTUSER}" "${HOMEUSER}" "root" "${SYSUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${USERS[@]}"; do

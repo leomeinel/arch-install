@@ -298,7 +298,7 @@ for user in "${USERS[@]}"; do
     chmod 755 "$(eval echo ~"${user}")"/dot-files.sh
 done
 ## SYSUSER
-FILES=("nix.conf" "pkgs-post.txt" "pkgs-flatpak.txt" "post.sh" "secureboot.sh")
+FILES=("nix.conf" "pkgs-flatpak.txt" "post.sh" "secureboot.sh")
 for file in "${FILES[@]}"; do
     cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~"${SYSUSER}")"/
     chown "${SYSUSER}":"${SYSUSER}" "$(eval echo ~"${SYSUSER}")"/"${file}"

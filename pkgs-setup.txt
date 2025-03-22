@@ -119,7 +119,6 @@ python-pynitrokey
 qemu-desktop
 qemu-emulators-full
 qt6-wayland
-qt6ct
 quilt
 ripgrep
 rkhunter
