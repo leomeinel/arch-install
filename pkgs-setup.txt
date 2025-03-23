@@ -11,7 +11,6 @@ bat
 bc
 blas-openblas
 bleachbit
-blueman
 bluez
 bluez-utils
 brightnessctl
@@ -90,7 +89,6 @@ man-db
 mariadb
 mtools
 nextcloud-client
-nm-connection-editor
 nss-mdns
 ntfs-3g
 nwg-bar
