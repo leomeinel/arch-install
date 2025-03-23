@@ -398,7 +398,7 @@ lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
     echo "amd-ucode" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
-lscpu | grep "Flags:" | grep -q "hypervisor" &&
+[[ "$(systemd-detect-virt)" != "none" ]] &&
     {
         echo "qemu-guest-agent"
         echo "spice-vdagent"
