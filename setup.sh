@@ -249,8 +249,6 @@ pacman -Qq "tlp" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nsmartmontools'
 pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntransmission-cli'
-pacman -Qq "wl-clipboard" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nmailcap'
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
 for i in {1..5}; do
