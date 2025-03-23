@@ -93,7 +93,6 @@ man-db
 mariadb
 maven
 mtools
-network-manager-applet
 nextcloud-client
 nss-mdns
 ntfs-3g
