@@ -94,6 +94,7 @@ mariadb
 maven
 mtools
 nextcloud-client
+nm-connection-editor
 nss-mdns
 ntfs-3g
 nwg-bar
