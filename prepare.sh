@@ -121,6 +121,18 @@ YES)
     ;;
 esac
 
+# Install packages that are dependencies for this script
+mkdir -p /etc/pacman.conf.d/
+cp "${SCRIPT_DIR}"/etc/pacman.conf.d/*.conf /etc/pacman.conf.d/
+{
+    echo ''
+    echo '# Custom'
+    echo 'Include = /etc/pacman.conf.d/*.conf'
+} >>/etc/pacman.conf
+reflector --save /etc/pacman.d/mirrorlist --country "${MIRRORCOUNTRIES}" --protocol https --latest 20 --sort rate
+pacman -Syy
+pacman -S --noprogressbar --noconfirm --needed lshw parallel
+
 # Erase disks
 ## Deactivate all vgs
 vgchange -an || true
@@ -376,17 +388,7 @@ if [[ -n "${DISK1ID}" ]]; then
     chmod 755 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
 fi
 
-# Install packages
-mkdir -p /etc/pacman.conf.d/
-cp "${SCRIPT_DIR}"/etc/pacman.conf.d/*.conf /etc/pacman.conf.d/
-{
-    echo ''
-    echo '# Custom'
-    echo 'Include = /etc/pacman.conf.d/*.conf'
-} >>/etc/pacman.conf
-reflector --save /etc/pacman.d/mirrorlist --country "${MIRRORCOUNTRIES}" --protocol https --latest 20 --sort rate
-pacman -Syy
-pacman -S --noprogressbar --noconfirm --needed lshw
+# Append system packages
 [[ -n "${DISK2}" ]] &&
     echo "mdadm" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
 [[ -d "/proc/acpi/button/lid" ]] &&
