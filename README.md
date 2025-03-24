@@ -28,6 +28,7 @@ pacman -S git
 # Instead of main, you can also use a tag.
 git clone -b main https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
+# Modify install.conf before executing prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt
 /git/arch-install/setup.sh
