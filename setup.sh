@@ -330,7 +330,7 @@ echo "${HOSTNAME}" >/etc/hostname
 } >/etc/hosts
 ## Configure /etc/cryptboot.conf
 ### Clone cryptboot
-if [[ "${IS_RELEASE}" ]]; then
+if [[ "${IS_RELEASE}" == "true" ]]; then
     git clone -b "${CRYPTBOOT_VERSION}" https://github.com/leomeinel/cryptboot.git /git/cryptboot
 else
     git clone -b main https://github.com/leomeinel/cryptboot.git /git/cryptboot
