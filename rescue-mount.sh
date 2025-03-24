@@ -98,7 +98,7 @@ if [[ -n "${DISK2}" ]]; then
     RAID_DEVICE=/dev/md/md0
     ## Configure encryption
     for i in {1..5}; do
-        [[ ${i} -eq 5 ]] &&
+        [[ "${i}" -eq 5 ]] &&
             {
                 echo "ERROR: Too many retries. Exiting now."
                 exit 1
@@ -109,7 +109,7 @@ if [[ -n "${DISK2}" ]]; then
 else
     ## Configure encryption
     for i in {1..5}; do
-        [[ ${i} -eq 5 ]] &&
+        [[ "${i}" -eq 5 ]] &&
             {
                 echo "ERROR: Too many retries. Exiting now."
                 exit 1

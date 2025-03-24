@@ -180,7 +180,7 @@ if [[ -n "${DISK2}" ]]; then
     mdadm -Cv --homehost=any -N md0 -l 1 -n 2 -e default -b internal "${RAID_DEVICE}" "${DISK1P2}" "${DISK2P2}"
     ## Configure encryption
     for i in {1..5}; do
-        [[ ${i} -eq 5 ]] &&
+        [[ "${i}" -eq 5 ]] &&
             {
                 echo "ERROR: Too many retries. Exiting now."
                 exit 1
@@ -189,7 +189,7 @@ if [[ -n "${DISK2}" ]]; then
             echo "WARNING: You have entered an incorrect password. Retrying now."
     done
     for i in {1..5}; do
-        [[ ${i} -eq 5 ]] &&
+        [[ "${i}" -eq 5 ]] &&
             {
                 echo "ERROR: Too many retries. Exiting now."
                 exit 1
@@ -201,7 +201,7 @@ if [[ -n "${DISK2}" ]]; then
 else
     ## Configure encryption
     for i in {1..5}; do
-        [[ ${i} -eq 5 ]] &&
+        [[ "${i}" -eq 5 ]] &&
             {
                 echo "ERROR: Too many retries. Exiting now."
                 exit 1
@@ -210,7 +210,7 @@ else
             echo "WARNING: You have entered an incorrect password. Retrying now."
     done
     for i in {1..5}; do
-        [[ ${i} -eq 5 ]] &&
+        [[ "${i}" -eq 5 ]] &&
             {
                 echo "ERROR: Too many retries. Exiting now."
                 exit 1
@@ -415,7 +415,7 @@ lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
         echo "xf86-video-intel"
     } >>"${SCRIPT_DIR}"/pkgs-prepare.txt
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1

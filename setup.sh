@@ -87,7 +87,7 @@ echo "#           at least 1 digit, 1 uppercase character,            #"
 echo "#         1 lowercace character and 1 other character.          #"
 echo "#################################################################"
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -97,7 +97,7 @@ for i in {1..5}; do
         echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -107,7 +107,7 @@ for i in {1..5}; do
         echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -117,7 +117,7 @@ for i in {1..5}; do
         echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -127,7 +127,7 @@ for i in {1..5}; do
         echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -137,7 +137,7 @@ for i in {1..5}; do
         echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -217,7 +217,7 @@ reflector --save /etc/pacman.d/mirrorlist --country "${MIRRORCOUNTRIES}" --proto
 
 # Install packages
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -252,7 +252,7 @@ pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -275,7 +275,7 @@ pacman -Qq "tesseract-data-fra" >/dev/null 2>&1 &&
 pacman -Qq "tesseract-data-nld" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-nld'
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -497,7 +497,7 @@ cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
 ## Set up /usr/local/bin/upgrade-home
 USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
-UPGRADE_HOME=$(
+UPGRADE_HOME="$(
     cat <<'EOF'
 #!/usr/bin/env bash
 ###
@@ -521,7 +521,7 @@ fi
 
 # Run ~/.config/dot-files/update.sh for each user
 EOF
-)
+)"
 for user in "${USERS[@]}"; do
     UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --user -M '"${user}"'@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
 done
@@ -587,7 +587,7 @@ for subvolume in "${SUBVOLUMES[@]}"; do
 done
 ### Append configs individually
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
-[[ "${SUBVOLUMES_LENGTH}" -ne ${#CONFIGS[@]} ]] &&
+[[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]] &&
     {
         echo "ERROR: SUBVOLUMES and CONFIGS aren't the same length!"
         exit 1

@@ -20,7 +20,7 @@ set -e
 # Replace doas.conf with option nopass
 DOAS_CONF="$(doas cat /etc/doas.conf)"
 for i in {1..5}; do
-    [[ ${i} -eq 5 ]] &&
+    [[ "${i}" -eq 5 ]] &&
         {
             echo "ERROR: Too many retries. Exiting now."
             exit 1
@@ -247,7 +247,7 @@ doas systemd-run -P --wait --user -M "${WORKUSER}"@ /bin/bash -c '. /nix/var/nix
 . ~/.bash_profile
 
 # Install flatpaks
-[[ -n $(which flatpak) ]] >/dev/null 2>&1 &&
+[[ -n "$(which flatpak)" ]] >/dev/null 2>&1 &&
     parallel doas flatpak install --system -y --noninteractive {} <"${SCRIPT_DIR}"/pkgs-flatpak.txt
 
 # Install paru-bin
