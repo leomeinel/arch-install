@@ -107,6 +107,7 @@ polkit-gnome
 postfix
 postgresql
 procs
+python
 qemu-desktop
 qemu-emulators-full
 qt6-wayland
