@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec flatpak run one.ablaze.floorp "$@"
+exec /usr/bin/flatpak run one.ablaze.floorp "$@"

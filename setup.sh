@@ -515,7 +515,7 @@ set -e
 
 # If current user is not UID 1000, don't do anything
 if [[ "${UID}" -ne 1000 ]]; then
-    echo "ERROR: You can only run this script as UID 1000"
+    /usr/bin/echo "ERROR: You can only run this script as UID 1000"
     exit 1
 fi
 
@@ -523,10 +523,10 @@ fi
 EOF
 )
 for user in "${USERS[@]}"; do
-    UPGRADE_HOME+=$'\ndoas systemd-run -P --wait --user -M '"${user}"'@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
+    UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --user -M '"${user}"'@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
 done
-UPGRADE_HOME+=$'\ndoas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
-UPGRADE_HOME+=$'\nexec /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && git pull && chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
+UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
+UPGRADE_HOME+=$'\nexec /bin/bash -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
 echo "${UPGRADE_HOME}" | tail -n +2 >/usr/local/bin/upgrade-home
 ## Configure snapper
 ### START sed

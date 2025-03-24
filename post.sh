@@ -25,7 +25,7 @@ for i in {1..5}; do
             echo "ERROR: Too many retries. Exiting now."
             exit 1
         }
-    doas sh -c 'echo "permit nopass setenv { LANG LC_ALL } :wheel" >/etc/doas.conf' && break ||
+    doas /bin/sh -c 'echo "permit nopass setenv { LANG LC_ALL } :wheel" >/etc/doas.conf' && break ||
         echo "WARNING: You have entered an incorrect password. Retrying now."
 done
 
@@ -197,7 +197,7 @@ doas nft 'add rule ip6 filter input_prerouting udp dport 62990 counter accept'
 doas nft 'add rule ip6 filter forward iifname "virbr0" counter accept'
 doas nft 'add rule ip6 filter forward oifname "virbr0" counter accept'
 ### Save rules to /etc/nftables.conf
-doas sh -c 'nft -s list ruleset >/etc/nftables.conf'
+doas /bin/sh -c 'nft -s list ruleset >/etc/nftables.conf'
 
 # Configure secureboot
 # Prompt user
@@ -216,7 +216,7 @@ YES)
     doas cryptboot-efikeys create
     doas cryptboot-efikeys enroll
     doas cryptboot systemd-boot-sign
-    doas sh -c '{
+    doas /bin/sh -c '{
         echo "uefi_secureboot_cert='"${EFI_KEYS_DIR}"'/db.crt"
         echo "uefi_secureboot_key='"${EFI_KEYS_DIR}"'/db.key"
     } >/etc/dracut.conf.d/secureboot.conf'
@@ -231,7 +231,7 @@ YES)
 esac
 
 # Install nix
-doas sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file ${SCRIPT_DIR}/nix.conf"
+doas /bin/sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file ${SCRIPT_DIR}/nix.conf"
 
 # Configure dot-files
 doas systemd-run -P --wait --user -M "${GUESTUSER}"@ /bin/bash -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
@@ -256,7 +256,7 @@ cd ~/git/paru-bin
 makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
-doas sh -c "{
+doas /bin/sh -c "{
     echo ''
     echo '# Custom'
     echo 'Include = /etc/paru.conf.d/custom-paru.conf'
@@ -264,7 +264,7 @@ doas sh -c "{
 
 # Clear package cache
 paru -Scc
-doas sh -c 'pacman -Qtdq | pacman -Rns -' || true
+doas /bin/sh -c 'pacman -Qtdq | pacman -Rns -' || true
 
 # Enable systemd services
 pacman -Qq "nftables" >/dev/null 2>&1 &&
@@ -285,4 +285,4 @@ for user in "${USERS[@]}"; do
 done
 
 # Replace doas.conf with default
-doas sh -c 'echo '"${DOAS_CONF}"' >/etc/doas.conf'
+doas /bin/sh -c 'echo '"${DOAS_CONF}"' >/etc/doas.conf'

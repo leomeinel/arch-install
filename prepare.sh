@@ -353,22 +353,22 @@ if [[ -n "${DISK1ID}" ]]; then
         # shellcheck disable=SC2016
         echo 'if [[ "${1}" = "post" ]]; then'
         echo '    sleep 1'
-        echo '    if hdparm --security-freeze '"${DISK1ID}"'; then'
+        echo '    if /usr/bin/hdparm --security-freeze '"${DISK1ID}"'; then'
         # shellcheck disable=SC2016
-        echo '        logger "${0}: SSD freeze command executed successfully"'
+        echo '        /usr/bin/logger "${0}: SSD freeze command executed successfully"'
         echo '    else'
         # shellcheck disable=SC2016
-        echo '        logger "${0}: SSD freeze command failed"'
+        echo '        /usr/bin/logger "${0}: SSD freeze command failed"'
         echo '    fi'
     } >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
     if [[ -n "${DISK2ID}" ]]; then
         {
-            echo '    if hdparm --security-freeze '"${DISK2ID}"'; then'
+            echo '    if /usr/bin/hdparm --security-freeze '"${DISK2ID}"'; then'
             # shellcheck disable=SC2016
-            echo '        logger "${0}: SSD freeze command executed successfully"'
+            echo '        /usr/bin/logger "${0}: SSD freeze command executed successfully"'
             echo '    else'
             # shellcheck disable=SC2016
-            echo '        logger "${0}: SSD freeze command failed"'
+            echo '        /usr/bin/logger "${0}: SSD freeze command failed"'
             echo '    fi'
         } >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
     fi

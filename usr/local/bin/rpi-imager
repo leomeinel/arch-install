@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec flatpak run org.raspberrypi.rpi-imager "$@"
+exec /usr/bin/flatpak run org.raspberrypi.rpi-imager "$@"

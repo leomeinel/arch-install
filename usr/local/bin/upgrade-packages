@@ -14,12 +14,12 @@ set -e
 
 # If current user is not UID 1000, don't do anything
 if [[ "${UID}" -ne 1000 ]]; then
-    echo "ERROR: You can only run this script as UID 1000"
+    /usr/bin/echo "ERROR: You can only run this script as UID 1000"
     exit 1
 fi
 
 # Upgrade paru
-paru
+/usr/bin/paru
 
 # Upgrade flatpak
-exec doas flatpak --system update
+exec doas /usr/bin/flatpak --system update
