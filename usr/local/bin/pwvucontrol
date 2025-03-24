@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run com.saivert.pwvucontrol "$@"
+exec /usr/bin/flatpak run com.saivert.pwvucontrol "${@}"

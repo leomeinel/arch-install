@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run com.nitrokey.nitrokey-app2 "$@"
+exec /usr/bin/flatpak run com.nitrokey.nitrokey-app2 "${@}"

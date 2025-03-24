@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run com.sweethome3d.Sweethome3d "$@"
+exec /usr/bin/flatpak run com.sweethome3d.Sweethome3d "${@}"

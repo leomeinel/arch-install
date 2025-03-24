@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run io.freetubeapp.FreeTube "$@"
+exec /usr/bin/flatpak run io.freetubeapp.FreeTube "${@}"
