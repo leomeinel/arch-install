@@ -21,7 +21,7 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 set -e
 
 # Clone dot-files
-if [ "${IS_RELEASE}" ]; then
+if [[ "${IS_RELEASE}" ]]; then
     git clone -b "${DOTFILES_VERSION}" https://github.com/leomeinel/dot-files.git ~/.config/dot-files
 else
     git clone -b main https://github.com/leomeinel/dot-files.git ~/.config/dot-files
