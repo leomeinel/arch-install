@@ -17,7 +17,6 @@ brightnessctl
 calibre
 cdrtools
 celluloid
-cmake
 cups
 dbus
 devtools
@@ -88,6 +87,7 @@ lzop
 man-db
 mariadb
 mtools
+networkmanager
 nextcloud-client
 nss-mdns
 ntfs-3g
@@ -107,15 +107,12 @@ polkit-gnome
 postfix
 postgresql
 procs
-python
-python-pynitrokey
 qemu-desktop
 qemu-emulators-full
 qt6-wayland
 quilt
 ripgrep
 rkhunter
-ruff
 sbsigntools
 screen
 shotwell
