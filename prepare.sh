@@ -454,3 +454,6 @@ ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 mkdir -p /mnt/git
 mv "${SCRIPT_DIR}" /mnt/git/
 chmod 755 /mnt/git/arch-install/setup.sh
+
+# Notify user if script has finished successfully
+echo "$(basename "${0}") has finished successfully."

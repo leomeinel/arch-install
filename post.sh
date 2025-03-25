@@ -286,3 +286,6 @@ done
 
 # Replace doas.conf with default
 doas /bin/sh -c 'echo '"${DOAS_CONF}"' >/etc/doas.conf'
+
+# Notify user if script has finished successfully
+echo "$(basename "${0}") has finished successfully."

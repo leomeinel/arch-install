@@ -733,3 +733,6 @@ dracut --regenerate-all --force
 
 # Remove repo
 rm -rf /git
+
+# Notify user if script has finished successfully
+echo "$(basename "${0}") has finished successfully."
