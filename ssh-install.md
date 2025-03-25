@@ -21,6 +21,8 @@ echo "<public_key>" >~/.ssh/authorized_keys
 exit
 ```
 
+After rebooting, you will have to enter the decryption key for your disk. This cannot be done over ssh.
+
 You will then be able to log into the target system via ssh from your machine if it is in the same local network. To do this run the following script.
 
 ```sh
