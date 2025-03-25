@@ -18,6 +18,7 @@ su <SYSUSER>
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 echo "<public_key>" >~/.ssh/authorized_keys
+exit
 ```
 
 You will then be able to log into the target system via ssh from your machine if it is in the same local network. To do this run the following script.
