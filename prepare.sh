@@ -350,44 +350,6 @@ mkdir -p /mnt/boot
 ## Modify perms
 chmod 775 /mnt/var/games
 
-# Set SSD state to "frozen" after sleep
-for link in /dev/disk/by-id/*; do
-    if [[ "$(readlink -f "${link}")" = "${DISK1}" ]]; then
-        DISK1ID="${link}"
-    fi
-    if [[ -n "${DISK2}" ]] && [[ "$(readlink -f "${link}")" = "${DISK2}" ]]; then
-        DISK2ID="${link}"
-    fi
-done
-if [[ -n "${DISK1ID}" ]]; then
-    mkdir -p /mnt/usr/lib/systemd/system-sleep
-    {
-        # shellcheck disable=SC2016
-        echo 'if [[ "${1}" = "post" ]]; then'
-        echo '    sleep 1'
-        echo '    if /usr/bin/hdparm --security-freeze '"${DISK1ID}"'; then'
-        # shellcheck disable=SC2016
-        echo '        /usr/bin/logger "${0}: SSD freeze command executed successfully"'
-        echo '    else'
-        # shellcheck disable=SC2016
-        echo '        /usr/bin/logger "${0}: SSD freeze command failed"'
-        echo '    fi'
-    } >/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
-    if [[ -n "${DISK2ID}" ]]; then
-        {
-            echo '    if /usr/bin/hdparm --security-freeze '"${DISK2ID}"'; then'
-            # shellcheck disable=SC2016
-            echo '        /usr/bin/logger "${0}: SSD freeze command executed successfully"'
-            echo '    else'
-            # shellcheck disable=SC2016
-            echo '        /usr/bin/logger "${0}: SSD freeze command failed"'
-            echo '    fi'
-        } >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
-    fi
-    echo 'fi' >>/mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
-    chmod 755 /mnt/usr/lib/systemd/system-sleep/freeze-ssd.sh
-fi
-
 # Append system packages
 [[ -n "${DISK2}" ]] &&
     echo "mdadm" >>"${SCRIPT_DIR}/pkgs-prepare.txt"

@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="block", RUN+="/usr/bin/hdparm --security-freeze /dev/%k"
