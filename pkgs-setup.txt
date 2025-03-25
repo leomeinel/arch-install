@@ -62,7 +62,6 @@ jdk21-openjdk
 jdk8-openjdk
 jpegoptim
 jq
-kanshi
 kdenlive
 libavif
 libheif
