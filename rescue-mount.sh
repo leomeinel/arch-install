@@ -175,7 +175,7 @@ mount --mkdir -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
 
 # Inform user how to use arch-chroot
 echo "INFO: To enter the rescue-system, execute the following:"
-echo "          > arch-chroot /mnt"
+echo "      > arch-chroot /mnt"
 
 # Notify user if script has finished successfully
 echo "$(basename "${0}") has finished successfully."
