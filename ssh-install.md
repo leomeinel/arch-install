@@ -1,10 +1,12 @@
 # Using ssh to authenticate in the installation image
 
-This is relevant for the `Installation` section of `README.md`. It will not work for the `Post-installation` section of `README.md`.
-
 Follow [this guide](https://wiki.archlinux.org/title/Install_Arch_Linux_via_SSH) for up to date instructions.
 
-To use ssh for `Post-installation` also set `ENABLE_SSH="true"` in `install.conf`.
+It should be enough to just use the following script to set a password for root
+
+```sh
+passwd
+```
 
 # Using ssh for Post-installation
 
