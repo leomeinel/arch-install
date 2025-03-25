@@ -14,7 +14,7 @@ Meant for general purpose systems with a GUI.
 
 :warning: | All data on selected disks will be wiped!
 
-:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/virt-manager.md) for virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/virt-manager-install.md) for virt-manager.
 
 ## Pre-installation
 
