@@ -8,7 +8,7 @@ Meant for general purpose systems with a GUI.
 
 ## Info
 
-:information_source: | Expect errors to occur during the installation. They only matter if any of the scripts don't finish successfully.
+:information_source: | Expect errors or warnings to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
 :information_source: | I recommend disks with at least 512GiB (change DISK_ALLOCATION in install.conf otherwise).
 
