@@ -43,4 +43,4 @@ YES)
 esac
 
 # Notify user if script has finished successfully
-echo "$(basename "${0}") has finished successfully."
+echo "INFO: $(basename "${0}") has finished successfully."

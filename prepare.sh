@@ -419,4 +419,4 @@ mv "${SCRIPT_DIR}" /mnt/git/
 chmod 755 /mnt/git/arch-install/setup.sh
 
 # Notify user if script has finished successfully
-echo "$(basename "${0}") has finished successfully."
+echo "INFO: $(basename "${0}") has finished successfully."

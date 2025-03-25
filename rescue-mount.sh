@@ -178,4 +178,4 @@ echo "INFO: To enter the rescue-system, execute the following:"
 echo "      > arch-chroot /mnt"
 
 # Notify user if script has finished successfully
-echo "$(basename "${0}") has finished successfully."
+echo "INFO: $(basename "${0}") has finished successfully."
