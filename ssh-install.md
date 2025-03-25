@@ -25,6 +25,8 @@ After rebooting, you will have to enter the decryption key for your disk. This c
 
 You will then be able to log into the target system via ssh from your machine if it is in the same local network. To do this run the following script.
 
+Make sure that you are using the correct IP. If you are using virt-manager, it will probably use a different IP now.
+
 ```sh
 ssh -p 9122 -i ~/.ssh/<private_key> <SYSUSER>@<ip_address>
 ```
