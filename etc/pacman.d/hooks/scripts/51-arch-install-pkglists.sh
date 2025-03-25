@@ -13,10 +13,10 @@
 set -e
 
 print_header() {
-    /usr/bin/echo ''
-    /usr/bin/echo '########################'
+    /usr/bin/echo ""
+    /usr/bin/echo "########################"
     /usr/bin/date -u +"#%Y-%m-%dT%H:%M:%S %Z"
-    /usr/bin/echo '########################'
+    /usr/bin/echo "########################"
 }
 {
     print_header

@@ -256,11 +256,11 @@ cd ~/git/paru-bin
 makepkg -sri --noprogressbar --noconfirm --needed
 
 # Configure paru.conf
-doas /bin/sh -c "{
-    echo ''
-    echo '# arch-install'
-    echo 'Include = /etc/paru.conf.d/50-arch-install.conf'
-} >>/etc/paru.conf"
+doas /bin/sh -c '{
+    echo ""
+    echo "# arch-install"
+    echo "Include = /etc/paru.conf.d/50-arch-install.conf"
+} >>/etc/paru.conf'
 
 # Clear package cache
 paru -Scc

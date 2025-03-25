@@ -61,9 +61,9 @@ grep -q "${STRING}" "${FILE}" || sed_exit
 sed -i "s/${STRING}/#SHELL=/g" "${FILE}"
 ## END sed
 {
-    echo ''
-    echo '# arch-install'
-    echo 'SHELL=/bin/bash'
+    echo ""
+    echo "# arch-install"
+    echo "SHELL=/bin/bash"
 } >>"${FILE}"
 groupadd -r audit
 groupadd -r libvirt
@@ -169,9 +169,9 @@ lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1" &&
 chmod 755 /etc/pacman.d/hooks/scripts/*.sh
 ## Configure /etc/pacman.conf
 {
-    echo ''
-    echo '# arch-install'
-    echo 'Include = /etc/pacman.conf.d/*.conf'
+    echo ""
+    echo "# arch-install"
+    echo "Include = /etc/pacman.conf.d/*.conf"
 } >>/etc/pacman.conf
 ## Configure /etc/xdg/reflector/reflector.conf and update mirrors
 {
@@ -328,21 +328,21 @@ grep -q "${STRING}" "${FILE}" || sed_exit
 sed -i "s|${STRING}|#VIDEOS=|g" "${FILE}"
 ### END sed
 {
-    echo ''
-    echo '# arch-install'
-    echo 'TEMPLATES=Documents/Templates'
-    echo 'PUBLICSHARE=Documents/Public'
-    echo 'DESKTOP=Desktop'
-    echo 'MUSIC=Documents/Music'
-    echo 'PICTURES=Documents/Pictures'
-    echo 'VIDEOS=Documents/Videos'
+    echo ""
+    echo "# arch-install"
+    echo "TEMPLATES=Documents/Templates"
+    echo "PUBLICSHARE=Documents/Public"
+    echo "DESKTOP=Desktop"
+    echo "MUSIC=Documents/Music"
+    echo "PICTURES=Documents/Pictures"
+    echo "VIDEOS=Documents/Videos"
 } >>"${FILE}"
 ## Configure /etc/mdadm.conf.d/50-arch-install.conf
 if lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1"; then
     mkdir -p /etc/mdadm.conf.d/
     {
         mdadm -Ds
-        echo 'MAILADDR root'
+        echo "MAILADDR root"
     } >/etc/mdadm.conf.d/50-arch-install.conf
 fi
 ## Configure /etc/usbguard/rules.conf
@@ -381,9 +381,9 @@ sed -i "s/${STRING}/#PresentControllerPolicy=/g" "${FILE}"
 ### START sed
 ## Configure /etc/security/faillock.conf
 {
-    echo ''
-    echo '# arch-install'
-    echo 'dir = /var/lib/faillock'
+    echo ""
+    echo "# arch-install"
+    echo "dir = /var/lib/faillock"
 } >>/etc/security/faillock.conf
 ## Configure /etc/audit/auditd.conf
 ### START sed
@@ -552,8 +552,8 @@ grep -q "${STRING11}" "${FILE0}" || sed_exit
 sed -i "s/${STRING11}/#TIMELINE_LIMIT_WEEKLY=/g" "${FILE0}"
 ### END sed
 {
-    echo ''
-    echo '# arch-install'
+    echo ""
+    echo "# arch-install"
     echo 'ALLOW_GROUPS="wheel"'
     echo 'SPACE_LIMIT="0.2"'
     echo 'FREE_LIMIT="0.4"'
