@@ -8,6 +8,8 @@ To use ssh for `Post-installation` also set `ENABLE_SSH="true"` in `install.conf
 
 # Using ssh for Post-installation
 
+Set `ENABLE_SSH="true"` in `install.conf` before running `/git/arch-install/setup.sh`.
+
 After running `/git/arch-install/setup.sh`, you will have to add your public key to the SYSUSER account.
 
 The following script is a way to do this after `setup.sh` has finished successfully. Text written as `<...>` will have to be replaced according to your configuration.
@@ -23,10 +25,9 @@ exit
 
 After rebooting, you will have to enter the decryption key for your disk. This cannot be done over ssh.
 
-You will then be able to log into the target system via ssh from your machine if it is in the same local network. To do this run the following script.
-
-Make sure that you are using the correct IP. If you are using virt-manager, it will probably use a different IP now.
+You will then be able to log into the target system via ssh from another machine in the same local network. To do this run the following script.
 
 ```sh
+# <ip_address> might have changed. Execute ip a on target system if the old <ip_address> doesn't work
 ssh -p 9122 -i ~/.ssh/<private_key> <SYSUSER>@<ip_address>
 ```

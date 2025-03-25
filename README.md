@@ -20,7 +20,7 @@ Meant for general purpose systems with a GUI.
 
 :information_source: | Follow the `Pre-installation` section of [this guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section.
 
-:information_source: | To install via ssh follow [this guide](https://wiki.archlinux.org/title/Install_Arch_Linux_via_SSH). See [these instructions](https://github.com/leomeinel/arch-install/blob/main/ssh-install.md) for more details, especially if you want to use ssh for the `Post-installation`.
+:information_source: | To install via ssh follow [this guide](https://wiki.archlinux.org/title/Install_Arch_Linux_via_SSH). See [these instructions](https://github.com/leomeinel/arch-install/blob/main/ssh-install.md) for more details, especially if you want to use ssh for `Post-installation`.
 
 ## Installation
 
@@ -30,7 +30,7 @@ pacman -S git
 # Instead of main, you can also use a tag.
 git clone -b main https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
-# Modify install.conf before executing prepare.sh
+# Modify install.conf before executing prepare.sh.
 /root/arch-install/prepare.sh
 arch-chroot /mnt
 /git/arch-install/setup.sh
