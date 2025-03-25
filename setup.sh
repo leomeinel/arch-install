@@ -471,8 +471,19 @@ echo "kernel_cmdline=\"${PARAMETERS}\"" >/etc/dracut.conf.d/50-arch-install-cmdl
     echo "* hard nproc 20000"
 } >>/etc/security/limits.conf
 ### Harden Postfix
-postconf -e disable_vrfy_command=yes
-postconf -e inet_interfaces=loopback-only
+{
+    echo ""
+    echo "# arch-install"
+    echo "myhostname = localhost"
+    echo "mydomain = localdomain"
+    # shellcheck disable=SC2016
+    echo 'mydestination = $myhostname, localhost.$mydomain, localhost'
+    # shellcheck disable=SC2016
+    echo 'inet_interfaces = $myhostname, localhost'
+    echo "mynetworks_style = host"
+    echo "default_transport = error: outside mail is not deliverable"
+    echo "disable_vrfy_command = yes"
+}
 
 # Configure /usr
 ## Set up /usr/local/bin
