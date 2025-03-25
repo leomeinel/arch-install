@@ -258,8 +258,8 @@ makepkg -sri --noprogressbar --noconfirm --needed
 # Configure paru.conf
 doas /bin/sh -c "{
     echo ''
-    echo '# Custom'
-    echo 'Include = /etc/paru.conf.d/custom-paru.conf'
+    echo '# arch-install'
+    echo 'Include = /etc/paru.conf.d/50-arch-install.conf'
 } >>/etc/paru.conf"
 
 # Clear package cache
@@ -271,7 +271,7 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
     doas systemctl enable nftables.service
 
 # Remove user files
-FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-flatpak.txt" "post.sh" ".bash_history" ".nix-channels" ".rhosts" ".rlogin" ".shosts")
+FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-flatpak.txt" "post.sh" ".bash_history" ".nix-channels")
 DIRS=(".gnupg" ".nix-defexpr" ".nix-profile" "git")
 USERS=("${GUESTUSER}" "${HOMEUSER}" "root" "${SYSUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${USERS[@]}"; do

@@ -46,7 +46,7 @@ sed -i "s/${STRING}/#HOME_MODE/g" "${FILE}"
 ## END sed
 {
     echo ""
-    echo "# Custom"
+    echo "# arch-install"
     echo "YESCRYPT_COST_FACTOR 11"
     echo "UMASK 027"
     echo "HOME_MODE 0700"
@@ -62,7 +62,7 @@ sed -i "s/${STRING}/#SHELL=/g" "${FILE}"
 ## END sed
 {
     echo ''
-    echo '# Custom'
+    echo '# arch-install'
     echo 'SHELL=/bin/bash'
 } >>"${FILE}"
 groupadd -r audit
@@ -152,7 +152,7 @@ done
 FILE=/etc/locale.gen
 {
     echo ""
-    echo "# Custom"
+    echo "# arch-install"
 } >>"${FILE}"
 for string in "${LANGUAGES[@]}"; do
     echo "${string}" >>"${FILE}"
@@ -201,7 +201,7 @@ chmod 755 /etc/pacman.d/hooks/scripts/*.sh
 ## Configure /etc/pacman.conf
 {
     echo ''
-    echo '# Custom'
+    echo '# arch-install'
     echo 'Include = /etc/pacman.conf.d/*.conf'
 } >>/etc/pacman.conf
 ## Configure /etc/xdg/reflector/reflector.conf and update mirrors
@@ -360,7 +360,7 @@ sed -i "s|${STRING}|#VIDEOS=|g" "${FILE}"
 ### END sed
 {
     echo ''
-    echo '# Custom'
+    echo '# arch-install'
     echo 'TEMPLATES=Documents/Templates'
     echo 'PUBLICSHARE=Documents/Public'
     echo 'DESKTOP=Desktop'
@@ -368,13 +368,13 @@ sed -i "s|${STRING}|#VIDEOS=|g" "${FILE}"
     echo 'PICTURES=Documents/Pictures'
     echo 'VIDEOS=Documents/Videos'
 } >>"${FILE}"
-## Configure /etc/mdadm.conf.d/custom-mdadm.conf
+## Configure /etc/mdadm.conf.d/50-arch-install.conf
 if lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1"; then
     mkdir -p /etc/mdadm.conf.d/
     {
         mdadm -Ds
         echo 'MAILADDR root'
-    } >/etc/mdadm.conf.d/custom-mdadm.conf
+    } >/etc/mdadm.conf.d/50-arch-install.conf
 fi
 ## Configure /etc/usbguard/rules.conf
 usbguard generate-policy >/etc/usbguard/rules.conf
@@ -388,7 +388,7 @@ sed -i "s/${STRING}/#PresentControllerPolicy=/g" "${FILE}"
 ## END sed
 {
     echo ""
-    echo "# Custom"
+    echo "# arch-install"
     echo "PresentControllerPolicy=apply-policy"
 } >>"${FILE}"
 ## Configure /etc/pam.d
@@ -397,7 +397,7 @@ echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
 ## Configure /etc/security/faillock.conf
 {
     echo ''
-    echo '# Custom'
+    echo '# arch-install'
     echo 'dir = /var/lib/faillock'
 } >>/etc/security/faillock.conf
 echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
@@ -411,13 +411,13 @@ sed -i "s/${STRING}/#log_group =/g" "${FILE}"
 ### END sed
 {
     echo ""
-    echo "# Custom"
+    echo "# arch-install"
     echo "log_group = audit"
 } >>"${FILE}"
 ## Configure /etc/libvirt/network.conf
 {
     echo ''
-    echo '# Custom'
+    echo '# arch-install'
     echo 'firewall_backend = "nftables"'
 } >>/etc/libvirt/network.conf
 ## Configure /etc/nsswitch.conf
@@ -431,14 +431,14 @@ tmpfile="$(mktemp /tmp/arch-install-XXXXXX)"
 cp "${FILE}" "${tmpfile}" &&
     {
         echo ""
-        echo "# Custom"
+        echo "# arch-install"
         grep "${STRING}" "${tmpfile}" | sed "s/^.*${STRING}/${STRING} mdns/g"
     } >>"${FILE}"
 rm -f "${tmpfile}"
 ## Configure /etc/avahi/avahi-daemon.conf
 {
     echo ""
-    echo "# Custom"
+    echo "# arch-install"
     echo "[server]"
     echo "domain-name=${DOMAIN}"
 } >>/etc/avahi/avahi-daemon.conf
@@ -450,7 +450,7 @@ rm -f "${tmpfile}"
 ## Configure /etc/snap-pac.ini
 {
     echo ""
-    echo "# Custom"
+    echo "# arch-install"
     echo "[root]"
     echo "snapshot = True"
     echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
@@ -482,7 +482,7 @@ echo "kernel_cmdline=\"${PARAMETERS}\"" >/etc/dracut.conf.d/cmdline.conf
 ### Disable coredump and set process limit
 {
     echo ""
-    echo "# Custom"
+    echo "# arch-install"
     echo "* hard core 0"
     echo "* soft nproc 10000"
     echo "* hard nproc 20000"
@@ -570,7 +570,7 @@ sed -i "s/${STRING11}/#TIMELINE_LIMIT_WEEKLY=/g" "${FILE0}"
 ### END sed
 {
     echo ''
-    echo '# Custom'
+    echo '# arch-install'
     echo 'ALLOW_GROUPS="wheel"'
     echo 'SPACE_LIMIT="0.2"'
     echo 'FREE_LIMIT="0.4"'
@@ -655,9 +655,9 @@ for subvolume in "${SUBVOLUMES[@]}"; do
 done
 
 # Create dirs/files and modify perms
-FILES_600=("/etc/at.deny" "/etc/anacrontab" "/etc/cron.deny" "/etc/crontab" "/etc/ssh/sshd_config" "/root/.rhosts" "/root/.rlogin" "/root/.shosts" "/etc/audit/rules.d/50-arch-install.rules")
-DIRS_700=("/etc/cron.d" "/etc/cron.daily" "/etc/cron.hourly" "/etc/cron.monthly" "/etc/cron.weekly" "/etc/audit/rules.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
-FILES_755=("/etc/profile.d/zzz-custom-archinstall.sh" "/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/pwvucontrol" "/usr/local/bin/rpi-imager" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages")
+FILES_600=("/etc/ssh/sshd_config.d/50-arch-install.conf" "/etc/audit/rules.d/50-arch-install.rules")
+DIRS_700=("/etc/audit/rules.d" "/etc/ssh/sshd_config.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
+FILES_755=("/etc/profile.d/zz-arch-install.sh" "/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/pwvucontrol" "/usr/local/bin/rpi-imager" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages")
 for file in "${FILES_600[@]}"; do
     [[ ! -f "${file}" ]] &&
         touch "${file}"

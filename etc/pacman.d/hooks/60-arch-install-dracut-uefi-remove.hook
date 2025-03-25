@@ -12,5 +12,5 @@ Target = usr/lib/systemd/boot/efi/*.efi.stub
 [Action]
 Description = Removing unified EFI kernel images...
 When = PreTransaction
-Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/60-dracut-uefi-remove.sh'
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/60-arch-install-dracut-uefi-remove.sh'
 NeedsTargets

@@ -6,6 +6,6 @@ Type = Package
 Target = *
 
 [Action]
-Description = Generating pkglists...
+Description = Logging orphans...
 When = PostTransaction
-Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/51-pkglists.sh'
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/50-arch-install-log-orphans.sh'

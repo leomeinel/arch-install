@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###
-# File = zzz-custom-archinstall.sh
+# File = zz-arch-install.sh
 # Author = Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors

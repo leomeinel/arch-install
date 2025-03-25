@@ -12,5 +12,5 @@ Target = usr/lib/systemd/boot/efi/*.efi.stub
 [Action]
 Description = Signing kernel for secure boot...
 When = PostTransaction
-Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/96-systemd-boot-sign.sh'
+Exec = /usr/local/bin/cryptboot systemd-boot-sign
 NeedsTargets

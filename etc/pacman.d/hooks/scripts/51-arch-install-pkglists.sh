@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 ###
-# File: 51-pkglists.sh
-# Author: Leopold Meinel (leo@meinel.dev)
+# File = 51-arch-install-pkglists.sh
+# Author = Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID: MIT
-# URL: https://opensource.org/licenses/MIT
+# SPDX ID = MIT
+# URL = https://opensource.org/licenses/MIT
 # -----
 ###
+
+# Fail on error
+set -e
 
 print_header() {
     /usr/bin/echo ''

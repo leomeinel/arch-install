@@ -126,7 +126,7 @@ mkdir -p /etc/pacman.conf.d/
 cp "${SCRIPT_DIR}"/etc/pacman.conf.d/*.conf /etc/pacman.conf.d/
 {
     echo ''
-    echo '# Custom'
+    echo '# arch-install'
     echo 'Include = /etc/pacman.conf.d/*.conf'
 } >>/etc/pacman.conf
 reflector --save /etc/pacman.d/mirrorlist --country "${MIRRORCOUNTRIES}" --protocol https --latest 20 --sort rate
