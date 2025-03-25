@@ -27,14 +27,14 @@ Meant for general purpose systems with a GUI.
 ```sh
 pacman -Sy
 pacman -S git
-# Instead of main, you can also use a tag.
+# Instead of main, you can also use a tag
 git clone -b main https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
-# Modify install.conf before executing prepare.sh.
+# Modify install.conf before executing prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt
 /git/arch-install/setup.sh
-# If you want to use ssh for running post.sh add your public key to SYSUSER account here.
+# If you want to use ssh for running post.sh add your public key to SYSUSER account here
 exit
 umount -AR /mnt
 reboot

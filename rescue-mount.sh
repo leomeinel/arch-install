@@ -9,8 +9,7 @@
 # -----
 ###
 
-# INFO: This file is not needed for the installation.
-#       It enables you to remount the volumes in a rescure environment.
+# INFO: This file is not needed for the installation
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"

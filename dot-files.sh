@@ -9,8 +9,7 @@
 # -----
 ###
 
-# INFO: This file is executed automatically during installation.
-#       There is no need to execute it manually.
+# INFO: This file is executed automatically during installation
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
