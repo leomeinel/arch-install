@@ -210,6 +210,8 @@ pacman -Qq "pipewire" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npipewire-alsa\npipewire-pulse'
 pacman -Qq "podman" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nslirp4netns\npodman-compose\nnetavark\naardvark-dns'
+pacman -Qq "sway" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nxdg-desktop-portal-gtk\nxdg-desktop-portal-wlr'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ncups-pk-helper'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
