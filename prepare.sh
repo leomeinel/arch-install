@@ -391,10 +391,11 @@ done
 # Configure /mnt/etc/fstab
 genfstab -U /mnt >>/mnt/etc/fstab
 {
-    echo '# tmpfs'
+    echo '# arch-install'
+    echo '## tmpfs'
     echo 'tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid 0 0'
     echo 'tmpfs /tmp tmpfs rw,nodev,nosuid,uid=0,gid=0,mode=1700 0 0'
-    echo '# proc'
+    echo '## proc'
     echo 'proc /proc proc noexec,nodev,nosuid,gid=proc,hidepid=2 0 0'
 } >>/mnt/etc/fstab
 [[ -n "${DISK2}" ]] &&

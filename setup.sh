@@ -360,8 +360,24 @@ sed -i "s/${STRING}/#PresentControllerPolicy=/g" "${FILE}"
     echo "# arch-install"
     echo "PresentControllerPolicy=apply-policy"
 } >>"${FILE}"
-## Configure /etc/pam.d
-echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
+## Configure /etc/pam.d/system-login
+{
+    echo ""
+    echo "# arch-install"
+    echo "auth optional pam_faildelay.so delay=8000000"
+} >>/etc/pam.d/system-login
+## Configure /etc/pam.d/su
+{
+    echo ""
+    echo "# arch-install"
+    echo "auth required pam_wheel.so use_uid"
+} >>/etc/pam.d/su
+## Configure /etc/pam.d/su-l
+{
+    echo ""
+    echo "# arch-install"
+    echo "auth required pam_wheel.so use_uid"
+} >>/etc/pam.d/su-l
 ### START sed
 ## Configure /etc/security/faillock.conf
 {
@@ -369,8 +385,6 @@ echo "auth optional pam_faildelay.so delay=8000000" >>/etc/pam.d/system-login
     echo '# arch-install'
     echo 'dir = /var/lib/faillock'
 } >>/etc/security/faillock.conf
-echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su
-echo "auth required pam_wheel.so use_uid" >>/etc/pam.d/su-l
 ## Configure /etc/audit/auditd.conf
 ### START sed
 FILE=/etc/audit/auditd.conf
