@@ -720,6 +720,8 @@ pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
+[[ "${ENABLE_SSH}" == "true" ]] && pacman -Qq "openssh" >/dev/null 2>&1 &&
+    systemctl enable sshd.service
 
 # Set up /boot & /efi
 bootctl --esp-path=/efi --no-variables install

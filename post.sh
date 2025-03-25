@@ -104,6 +104,22 @@ doas nft 'add rule ip filter input ip protocol tcp ct state new counter drop'
 ### Rate-limit UDP packets
 doas nft 'add rule ip filter input ip protocol udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip filter input ip protocol udp ct state new counter drop'
+### Allow SSH from LOCAL_DOMAINS if sshd.service is enabled
+LOCAL_DOMAINS="$(
+    cat <<'EOF'
+10.0.0.0/8
+172.16.0.0/12
+192.168.0.0/16
+127.0.0.0/8
+EOF
+)"
+[[ "${ENABLE_SSH}" == "true" ]] &&
+    {
+        for local_domain in $LOCAL_DOMAINS; do
+            doas nft "add rule ip filter input_prerouting ip saddr $local_domain tcp dport 9122 counter accept"
+        done
+    }
+doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
 ### Accept interface virbr0 (input_prerouting)
 doas nft 'add rule ip filter input_prerouting iifname "virbr0" udp dport 53 counter accept'
 doas nft 'add rule ip filter input_prerouting iifname "virbr0" udp dport 67 counter accept'
@@ -172,6 +188,20 @@ doas nft 'add rule ip6 filter input meta l4proto tcp ct state new counter drop'
 ### Rate-limit UDP packets
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new counter drop'
+### Allow SSH from LOCAL_DOMAINS if sshd.service is enabled
+LOCAL_DOMAINS="$(
+    cat <<'EOF'
+fe80::/10
+::1
+EOF
+)"
+[[ "${ENABLE_SSH}" == "true" ]] &&
+    {
+        for local_domain in $LOCAL_DOMAINS; do
+            doas nft "add rule ip6 filter input_prerouting ip6 saddr $local_domain tcp dport 9122 counter accept"
+        done
+    }
+doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
 ### Accept interface virbr0 (input_prerouting)
 doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 53 counter accept'
 doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 67 counter accept'
