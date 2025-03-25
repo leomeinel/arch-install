@@ -291,9 +291,9 @@ echo "KEYMAP=${KEYMAP}" >/etc/vconsole.conf
 echo "${HOSTNAME}" >/etc/hostname
 ## Configure /etc/hosts
 {
-    echo "127.0.0.1  localhost"
+    echo "127.0.0.1  localhost localhost.localdomain"
     echo "127.0.1.1  ${HOSTNAME}.${DOMAIN}	${HOSTNAME}"
-    echo "::1  ip6-localhost ip6-loopback"
+    echo "::1  ip6-localhost ip6-localhost.localdomain ip6-loopback ip6-loopback.localdomain"
     echo "ff02::1  ip6-allnodes"
     echo "ff02::2  ip6-allrouters"
 } >/etc/hosts
