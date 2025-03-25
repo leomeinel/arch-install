@@ -12,5 +12,5 @@ Target = usr/lib/systemd/boot/efi/*.efi.stub
 [Action]
 Description = Signing kernel for secure boot...
 When = PostTransaction
-Exec = /usr/local/bin/cryptboot systemd-boot-sign
+Exec = /bin/sh -c '/usr/local/bin/cryptboot systemd-boot-sign'
 NeedsTargets
