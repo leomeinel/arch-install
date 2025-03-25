@@ -18,9 +18,9 @@ Meant for general purpose systems with a GUI.
 
 ## Pre-installation
 
-:information_source: | Follow the `Pre-installation` section of this [guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section.
+:information_source: | Follow the `Pre-installation` section of [this guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section.
 
-:information_source: | To install via ssh follow this [guide](https://wiki.archlinux.org/title/Install_Arch_Linux_via_SSH). This also works when using virt-manager.
+:information_source: | To install via ssh follow [this guide](https://wiki.archlinux.org/title/Install_Arch_Linux_via_SSH). See [these instructions](https://github.com/leomeinel/arch-install/blob/main/ssh-install.md) for more details, especially if you want to use ssh for the `Post-installation`.
 
 ## Installation
 
@@ -34,6 +34,7 @@ chmod +x /root/arch-install/prepare.sh
 /root/arch-install/prepare.sh
 arch-chroot /mnt
 /git/arch-install/setup.sh
+# If you want to use ssh for running post.sh add your public key to SYSUSER account here.
 exit
 umount -AR /mnt
 reboot
@@ -43,7 +44,7 @@ reboot
 
 :information_source: | Configure installation using `vim /root/arch-install/install.conf`.
 
-## Post-installation (tty)
+## Post-installation
 
 :warning: | If using virt-manager skip ¹.
 
