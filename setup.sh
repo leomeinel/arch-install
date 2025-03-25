@@ -446,7 +446,7 @@ PARAMETERS="rd.luks.uuid=luks-${MD0UUID} rd.lvm.lv=vg0/lv0 rd.md.uuid=${DISK1P2U
 ### If on intel set kernel parameter intel_iommu=on
 pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
-echo "kernel_cmdline=\"${PARAMETERS}\"" >/etc/dracut.conf.d/cmdline.conf
+echo "kernel_cmdline=\"${PARAMETERS}\"" >/etc/dracut.conf.d/50-arch-install-cmdline.conf
 ## Harden system
 ### Disable coredump and set process limit
 {

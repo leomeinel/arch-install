@@ -33,7 +33,7 @@ YES)
     doas /bin/sh -c '{
         echo "uefi_secureboot_cert='\""${EFI_KEYS_DIR}"\"'/db.crt"
         echo "uefi_secureboot_key='\""${EFI_KEYS_DIR}"\"'/db.key"
-    } >/etc/dracut.conf.d/secureboot.conf'
+    } >/etc/dracut.conf.d/50-arch-install-secureboot.conf'
     rm -f ~/secureboot.sh
     ;;
 *)
