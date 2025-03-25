@@ -483,7 +483,7 @@ echo "kernel_cmdline=\"${PARAMETERS}\"" >/etc/dracut.conf.d/50-arch-install-cmdl
     echo "mynetworks_style = host"
     echo "default_transport = error: outside mail is not deliverable"
     echo "disable_vrfy_command = yes"
-}
+} >>/etc/postfix/main.cf
 
 # Configure /usr
 ## Set up /usr/local/bin
