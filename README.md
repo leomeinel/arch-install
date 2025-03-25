@@ -20,6 +20,8 @@ Meant for general purpose systems with a GUI.
 
 :information_source: | Follow the `Pre-installation` section of this [guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section.
 
+:information_source: | To install via ssh follow this [guide](https://wiki.archlinux.org/title/Install_Arch_Linux_via_SSH). This also works when using virt-manager.
+
 ## Installation
 
 ```sh
