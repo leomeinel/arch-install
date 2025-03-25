@@ -31,5 +31,5 @@ You will then be able to log into the target system via ssh from another machine
 
 ```sh
 # <ip_address> might have changed. Execute ip a on target system if the old <ip_address> doesn't work
-ssh -p 9122 -i ~/.ssh/<private_key> <SYSUSER>@<ip_address>
+ssh -p 9122 -i ~/.ssh/<private_key> -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null <SYSUSER>@<ip_address>
 ```
