@@ -165,38 +165,7 @@ chmod 0400 /etc/doas.conf
 DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
 DISK1P2="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//g' | sed -n '2p' | tr -d "[:space:]")"
 lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1" &&
-    {
-        {
-            echo '[Trigger]'
-            echo 'Operation = Install'
-            echo 'Operation = Upgrade'
-            echo 'Operation = Remove'
-            echo 'Type = Path'
-            echo 'Target = usr/lib/modules/*/vmlinuz'
-            echo ''
-            echo '[Action]'
-            echo 'Depends = rsync'
-            echo 'Description = Backing up /efi...'
-            echo 'When = PostTransaction'
-            echo "Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/99-efibackup.sh'"
-        } >/etc/pacman.d/hooks/99-efibackup.hook
-        {
-            echo '#!/usr/bin/env sh'
-            echo ''
-            echo 'set -e'
-            echo 'if /usr/bin/mountpoint -q /efi; then'
-            echo '    /usr/bin/umount -AR /efi'
-            echo 'fi'
-            echo 'if /usr/bin/mountpoint -q /.efi.bak; then'
-            echo '    /usr/bin/umount -AR /.efi.bak'
-            echo 'fi'
-            echo '/usr/bin/mount /efi'
-            echo '/usr/bin/mount /.efi.bak'
-            echo '/usr/bin/rsync -aq --delete --mkpath /.efi.bak/ /.efi.bak.old'
-            echo '/usr/bin/rsync -aq --delete --mkpath /efi/ /.efi.bak'
-            echo '/usr/bin/umount /.efi.bak'
-        } >/etc/pacman.d/hooks/scripts/99-efibackup.sh
-    }
+    rsync -rq "${SCRIPT_DIR}/dynamic-deploy/etc/pacman.d/hooks/" /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts/*.sh
 ## Configure /etc/pacman.conf
 {
