@@ -217,8 +217,8 @@ YES)
     doas cryptboot-efikeys enroll
     doas cryptboot systemd-boot-sign
     doas /bin/sh -c '{
-        echo "uefi_secureboot_cert='"${EFI_KEYS_DIR}"'/db.crt"
-        echo "uefi_secureboot_key='"${EFI_KEYS_DIR}"'/db.key"
+        echo "uefi_secureboot_cert='\""${EFI_KEYS_DIR}"\"'/db.crt"
+        echo "uefi_secureboot_key='\""${EFI_KEYS_DIR}"\"'/db.key"
     } >/etc/dracut.conf.d/secureboot.conf'
     ;;
 *)
