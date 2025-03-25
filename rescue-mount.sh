@@ -171,7 +171,7 @@ done
 OPTIONS4="noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077"
 mount --mkdir -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
 [[ -n "${DISK2}" ]] &&
-    mount --mkdir -o "${OPTIONS4}" "${DISK2P1}" /mnt/.efi.bak
+    mount --mkdir -o "${OPTIONS4}" "${DISK2P1}" /mnt/efi.bak
 
 # Inform user how to use arch-chroot
 echo "INFO: To enter the rescue-system, execute the following:"

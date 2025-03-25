@@ -344,7 +344,7 @@ done
 OPTIONS4="noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077"
 mount --mkdir -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
 [[ -n "${DISK2}" ]] &&
-    mount --mkdir -o "${OPTIONS4}" "${DISK2P1}" /mnt/.efi.bak
+    mount --mkdir -o "${OPTIONS4}" "${DISK2P1}" /mnt/efi.bak
 ## /boot
 mkdir -p /mnt/boot
 ## Modify perms
@@ -401,7 +401,7 @@ genfstab -U /mnt >>/mnt/etc/fstab
     {
         ## START sed
         FILE=/mnt/etc/fstab
-        STRING0="/.efi.bak.*vfat"
+        STRING0="/efi.bak.*vfat"
         grep -q "${STRING0}" "${FILE}" || sed_exit
         STRING1="rw"
         grep -q "${STRING1}" "${FILE}" || sed_exit
