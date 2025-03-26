@@ -2,10 +2,17 @@
 
 :information_source: | Follow [this guide](https://wiki.archlinux.org/title/Install_Arch_Linux_via_SSH) for up to date instructions.
 
-It should be enough to just use the following script to set a password for root:
+Set a password for root on the target system:
 
 ```sh
 passwd
+```
+
+To ssh into the target system run:
+
+```sh
+# Execute ip a on the target system to get <ip_address>
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@<ip_address>
 ```
 
 # Using ssh for Post-installation
@@ -16,9 +23,9 @@ passwd
 
 Set `ENABLE_SSH="true"` and modify `SYSUSER_PUBKEY` in `install.conf` before running `prepare.sh`.
 
-To do this run the following script:
+To ssh into the target system run:
 
 ```sh
-# <ip_address> might have changed. Execute ip a on target system if the old <ip_address> doesn't work
+# Execute ip a on the target system to get <ip_address>
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 9122 -i ~/.ssh/<private_key> <SYSUSER>@<ip_address>
 ```
