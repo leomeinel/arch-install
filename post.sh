@@ -314,6 +314,9 @@ for user in "${USERS[@]}"; do
     doas rm -f "$(eval echo ~"${user}")"/.*.bak
 done
 
+# Set correct permissions on /nix/.snapshots; the install script also modifies the .snapshots dir
+doas chown :wheel /nix/.snapshots
+
 # Replace doas.conf with default
 doas /bin/sh -c 'echo '"${DOAS_CONF}"' >/etc/doas.conf'
 
