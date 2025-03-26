@@ -340,13 +340,19 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
         ;;
     esac
 done
+## tmpfs
+mount -m -o "rw,noexec,nodev,nosuid,size=80%" -t tmpfs tmpfs /mnt/dev/shm
+### FIXME: Ideally, /tmp should be noexec; See: https://github.com/NixOS/nix/issues/10492
+mount -m -o "rw,nodev,nosuid,mode=1700,size=80%" -t tmpfs tmpfs /mnt/tmp
+## proc
+mount -m -o "noexec,nodev,nosuid,gid=proc,hidepid=2" -t proc proc /mnt/proc
 ## /efi
 OPTIONS4="noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077"
-mount --mkdir -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
+mount -m -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
 [[ -n "${DISK2}" ]] &&
-    mount --mkdir -o "${OPTIONS4}" "${DISK2P1}" /mnt/efi.bak
+    mount -m -o "${OPTIONS4},noauto" "${DISK2P1}" /mnt/efi.bak
 ## /boot
-mount --mkdir --bind /mnt/efi /mnt/boot
+mount -m -B /mnt/efi /mnt/boot
 ## Modify perms
 chmod 775 /mnt/var/games
 
@@ -388,28 +394,8 @@ for i in {1..5}; do
         echo "WARNING: pacstrap failed. Retrying now."
 done
 
-# Configure /mnt/etc/fstab
-genfstab -U /mnt >>/mnt/etc/fstab
-{
-    echo "# arch-install"
-    echo "## tmpfs"
-    echo "tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,size=80% 0 0"
-    # FIXME: Ideally, /tmp should be noexec; See: https://github.com/NixOS/nix/issues/10492
-    echo "tmpfs /tmp tmpfs rw,nodev,nosuid,uid=0,gid=0,mode=1700,size=80% 0 0"
-    echo "## proc"
-    echo "proc /proc proc noexec,nodev,nosuid,gid=proc,hidepid=2 0 0"
-} >>/mnt/etc/fstab
-[[ -n "${DISK2}" ]] &&
-    {
-        ## START sed
-        FILE=/mnt/etc/fstab
-        STRING0="/efi.bak.*vfat"
-        grep -q "${STRING0}" "${FILE}" || sed_exit
-        STRING1="rw"
-        grep -q "${STRING1}" "${FILE}" || sed_exit
-        sed -i "/\\${STRING0}/s/${STRING1}/${STRING1},noauto/" "${FILE}"
-        ## END sed
-    }
+# Generate /mnt/etc/fstab
+genfstab -UP /mnt >>/mnt/etc/fstab
 
 # Configure /mnt/etc/resolv.conf
 ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
