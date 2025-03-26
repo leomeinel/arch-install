@@ -12,21 +12,37 @@
 # Fail on error
 set -e
 
+# Define functions
 print_header() {
     /usr/bin/echo ""
     /usr/bin/echo "########################"
     /usr/bin/date -u +"#%Y-%m-%dT%H:%M:%S %Z"
     /usr/bin/echo "########################"
 }
-{
-    print_header
-    /usr/bin/pacman -Qen
-} >>/var/log/pkglist-explicit.pacman.log
-{
-    print_header
-    /usr/bin/pacman -Qem
-} >>/var/log/pkglist-foreign.pacman.log
-{
-    print_header
-    /usr/bin/pacman -Qd
-} >>/var/log/pkglist-deps.pacman.log
+
+# Append pkglists
+[[ -n "$(/usr/bin/pacman -Qen)" ]] >/dev/null 2>&1 &&
+    {
+        print_header
+        /usr/bin/pacman -Qen
+        SUCCESS="true"
+    } >>/var/log/pkglist-explicit.pacman.log
+[[ -n "$(/usr/bin/pacman -Qem)" ]] >/dev/null 2>&1 &&
+    {
+        print_header
+        /usr/bin/pacman -Qem
+        SUCCESS="true"
+    } >>/var/log/pkglist-foreign.pacman.log
+[[ -n "$(/usr/bin/pacman -Qd)" ]] >/dev/null 2>&1 &&
+    {
+        print_header
+        /usr/bin/pacman -Qd
+        SUCCESS="true"
+    } >>/var/log/pkglist-deps.pacman.log
+
+# Fail only if none of the commands have succeeded
+if [[ -n "${SUCCESS}" ]]; then
+    exit 0
+else
+    exit 1
+fi

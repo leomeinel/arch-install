@@ -9,4 +9,4 @@ Target = usr/lib/modules/*/vmlinuz
 Depends = rsync
 Description = Backing up /efi...
 When = PostTransaction
-Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/99-efibackup.sh'
+Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/99-arch-install-efibackup.sh'
