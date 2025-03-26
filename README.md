@@ -33,9 +33,9 @@ git clone -b main https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 # Modify install.conf before executing prepare.sh
 vim /root/arch-install/install.conf
-/root/arch-install/prepare.sh |& tee "$(basename "${0}").log" && mv ./prepare.sh.log /mnt
+/root/arch-install/prepare.sh |& tee ./prepare.sh.log && mv ./prepare.sh.log /mnt
 arch-chroot /mnt
-/git/arch-install/setup.sh |& tee "$(basename "${0}").log"
+/git/arch-install/setup.sh |& tee ./setup.sh.log
 exit
 umount -AR /mnt
 reboot
@@ -52,7 +52,7 @@ reboot
 Log into SYSUSER account and run:
 
 ```sh
-~/post.sh |& tee "$(basename "${0}").log"
+~/post.sh |& tee ./post.sh.log
 doas reboot
 ```
 
