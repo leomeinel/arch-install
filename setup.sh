@@ -68,9 +68,10 @@ sed -i "s/${STRING}/#SHELL=/g" "${FILE}"
 groupadd -r audit
 groupadd -r libvirt
 groupadd -r usbguard
+groupadd -r ssh-allow
 useradd -ms /bin/bash -G video "${GUESTUSER}"
 useradd -ms /bin/bash -G video "${HOMEUSER}"
-useradd -ms /bin/bash -G adm,audit,log,proc,rfkill,sys,systemd-journal,usbguard,wheel,video "${SYSUSER}"
+useradd -ms /bin/bash -G adm,audit,log,proc,rfkill,ssh-allow,sys,systemd-journal,usbguard,wheel,video "${SYSUSER}"
 useradd -ms /bin/bash -G libvirt,video "${VIRTUSER}"
 useradd -ms /bin/bash -G libvirt,video "${WORKUSER}"
 echo "#################################################################"
