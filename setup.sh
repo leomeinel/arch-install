@@ -722,7 +722,7 @@ pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
-[[ "${ENABLE_SSH}" == "true" ]] && pacman -Qq "openssh" >/dev/null 2>&1 &&
+[[ -n "${SYSUSER_PUBKEY}" ]] && pacman -Qq "openssh" >/dev/null 2>&1 &&
     {
         systemctl enable sshd.service
         runuser -l "${SYSUSER}" -c "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo ${SYSUSER_PUBKEY} >~/.ssh/authorized_keys"

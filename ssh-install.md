@@ -21,7 +21,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@<ip_address
 
 :information_source: | Due to security restrictions, you will only be able to ssh into the target system from a local network.
 
-Set `ENABLE_SSH="true"` and modify `SYSUSER_PUBKEY` in `install.conf` before running `prepare.sh`.
+Add your public ssh key to `SYSUSER_PUBKEY` in `install.conf` before running `prepare.sh`.
 
 To ssh into the target system run:
 

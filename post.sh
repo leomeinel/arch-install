@@ -113,7 +113,7 @@ LOCAL_DOMAINS="$(
 127.0.0.0/8
 EOF
 )"
-[[ "${ENABLE_SSH}" == "true" ]] &&
+[[ -n "${SYSUSER_PUBKEY}" ]] &&
     {
         for local_domain in $LOCAL_DOMAINS; do
             doas nft "add rule ip filter input_prerouting ip saddr $local_domain tcp dport 9122 counter accept"
@@ -195,7 +195,7 @@ fe80::/10
 ::1
 EOF
 )"
-[[ "${ENABLE_SSH}" == "true" ]] &&
+[[ -n "${SYSUSER_PUBKEY}" ]] &&
     {
         for local_domain in $LOCAL_DOMAINS; do
             doas nft "add rule ip6 filter input_prerouting ip6 saddr $local_domain tcp dport 9122 counter accept"
