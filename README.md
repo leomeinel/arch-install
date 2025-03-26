@@ -12,6 +12,8 @@ Meant for general purpose systems with a GUI.
 
 :information_source: | I recommend disks with at least 512GiB (change DISK_ALLOCATION in install.conf otherwise).
 
+:information_source: | I recommend at least 16GiB of RAM. You could also try to circumvent this in the installation by specifying a different `TMPDIR` before running `post.sh`, otherwise nix will not be able to build.
+
 :warning: | All data on selected disks will be wiped!
 
 :exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/virt-manager-install.md) for virt-manager.
