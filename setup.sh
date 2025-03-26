@@ -594,7 +594,7 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     cp "${FILE0}" "${FILE1}"
     #### Set variables for configs
     case "${CONFIGS[${i}]}" in
-    "root" | "usr" | "nix" | "var" | "var_lib" | "var_lib_containers" | "var_lib_flatpak" | "var_lib_mysql")
+    "root" | "usr" | "var" | "var_lib" | "var_lib_containers" | "var_lib_flatpak" | "var_lib_mysql")
         {
             echo 'TIMELINE_CREATE="yes"'
             echo 'TIMELINE_LIMIT_HOURLY="2"'
