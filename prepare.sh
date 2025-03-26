@@ -341,9 +341,9 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     esac
 done
 ## tmpfs
-mount -m -o "rw,noexec,nodev,nosuid,size=80%" -t tmpfs tmpfs /mnt/dev/shm
+mount -m -o "noexec,nodev,nosuid,size=80%" -t tmpfs tmpfs /mnt/dev/shm
 ### FIXME: Ideally, /tmp should be noexec; See: https://github.com/NixOS/nix/issues/10492
-mount -m -o "rw,nodev,nosuid,mode=1700,size=80%" -t tmpfs tmpfs /mnt/tmp
+mount -m -o "nodev,nosuid,mode=1700,size=80%" -t tmpfs tmpfs /mnt/tmp
 ## proc
 mount -m -o "noexec,nodev,nosuid,gid=proc,hidepid=2" -t proc proc /mnt/proc
 ## /efi
