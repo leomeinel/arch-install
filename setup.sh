@@ -728,7 +728,7 @@ pacman -Qq "util-linux" >/dev/null 2>&1 &&
         runuser -l "${SYSUSER}" -c "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo ${SYSUSER_PUBKEY} >~/.ssh/authorized_keys"
     }
 
-# Set up /boot & /efi
+# Set up /efi
 bootctl --esp-path=/efi --no-variables install
 dracut --regenerate-all --force
 
