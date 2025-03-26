@@ -10,7 +10,7 @@ Meant for general purpose systems with a GUI.
 
 :information_source: | Expect errors or warnings to occur during the installation. They only matter if any of the scripts don't finish successfully.
 
-:information_source: | I recommend disks with at least 512GiB (change `DISK_ALLOCATION` in `install.conf` otherwise).
+:information_source: | I recommend disks with at least 512GiB. change `DISK_ALLOCATION` in `install.conf` otherwise.
 
 :information_source: | I recommend at least 16GiB of RAM. By specifying `TMPDIR` manually before running `post.sh` to force nix to not use the tmpfs, you might be able to circumvent this. Also see these issues: [(1)](https://github.com/NixOS/nixpkgs/issues/54707) and [(2)](https://github.com/NixOS/nix/issues/2098).
 
