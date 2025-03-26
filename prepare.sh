@@ -393,8 +393,9 @@ genfstab -U /mnt >>/mnt/etc/fstab
 {
     echo "# arch-install"
     echo "## tmpfs"
-    echo "tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid 0 0"
-    echo "tmpfs /tmp tmpfs rw,nodev,nosuid,uid=0,gid=0,mode=1700 0 0"
+    echo "tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,size=80% 0 0"
+    # FIXME: Ideally, /tmp should be noexec; See: https://github.com/NixOS/nix/issues/10492
+    echo "tmpfs /tmp tmpfs rw,nodev,nosuid,uid=0,gid=0,mode=1700,size=80% 0 0"
     echo "## proc"
     echo "proc /proc proc noexec,nodev,nosuid,gid=proc,hidepid=2 0 0"
 } >>/mnt/etc/fstab
