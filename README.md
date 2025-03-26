@@ -20,7 +20,7 @@ Meant for general purpose systems with a GUI.
 
 ## Pre-installation
 
-:information_source: | Follow the `Pre-installation` section of [this guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section.
+Follow the `Pre-installation` section of [this guide](https://wiki.archlinux.org/title/Installation_guide#Pre-installation) until (including) the `Connect to the internet` section.
 
 ## Installation
 
@@ -43,17 +43,17 @@ reboot
 
 ## Post-installation
 
-:warning: | If installing to virt-manager skip ¹.
+:information_source: | If installing to virt-manager skip ¹.
 
-:information_source: | ¹Enable `Secure Boot` [`Setup Mode`](https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Putting_firmware_in_"Setup_Mode") in [`UEFI Firmware Settings`](https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Before_booting_the_OS).
+¹Enable `Secure Boot` [`Setup Mode`](https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Putting_firmware_in_"Setup_Mode") in [`UEFI Firmware Settings`](https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Before_booting_the_OS).
 
-:information_source: | ¹Set your UEFI password(s) and reboot.
+¹Set your UEFI password(s) and reboot.
 
-:information_source: | Log into SYSUSER account and run:
+Log into SYSUSER account and run:
 
 ```sh
 ~/post.sh |& tee "$(basename "${0}").log"
 doas reboot
 ```
 
-:information_source: | ¹Enable `Secure Boot` in [`UEFI Firmware Settings`](https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Before_booting_the_OS).
+¹Enable `Secure Boot` in [`UEFI Firmware Settings`](https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Before_booting_the_OS).

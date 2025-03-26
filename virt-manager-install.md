@@ -10,7 +10,6 @@ Enable `Edit -> Preferences -> General -> Enable XML editing`.
 
 Go to `Video <...>` and replace content of `XML` tab with the following:
 
-
 ```xml
 <video>
   <model type="virtio" heads="1" primary="yes"/>
