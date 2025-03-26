@@ -1,8 +1,8 @@
 [Trigger]
-Type = Path
 Operation = Install
 Operation = Upgrade
 Operation = Remove
+Type = Path
 Target = usr/lib/modules/*/pkgbase
 Target = usr/src/*/dkms.conf
 Target = usr/lib/dracut/*
@@ -13,4 +13,3 @@ Target = usr/lib/systemd/boot/efi/*.efi.stub
 Description = Removing unified EFI kernel images...
 When = PreTransaction
 Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/60-arch-install-dracut-uefi-remove.sh'
-NeedsTargets

@@ -1,8 +1,8 @@
 [Trigger]
-Type = Path
 Operation = Install
 Operation = Upgrade
 Operation = Remove
+Type = Path
 Target = usr/lib/modules/*/pkgbase
 Target = usr/src/*/dkms.conf
 Target = usr/lib/dracut/*
@@ -13,4 +13,3 @@ Target = usr/lib/systemd/boot/efi/*.efi.stub
 Description = Signing kernel for secure boot...
 When = PostTransaction
 Exec = /bin/sh -c '/usr/local/bin/cryptboot systemd-boot-sign'
-NeedsTargets

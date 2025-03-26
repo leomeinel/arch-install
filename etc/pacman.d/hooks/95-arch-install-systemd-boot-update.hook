@@ -1,10 +1,10 @@
 [Trigger]
-Type = Package
 Operation = Upgrade
+Type = Package
 Target = systemd
 
 [Action]
 Description = Gracefully upgrading systemd-boot...
 When = PostTransaction
 Exec = /bin/sh -c '/usr/bin/systemctl restart systemd-boot-update.service'
-NeedsTargets
+Depends = systemd

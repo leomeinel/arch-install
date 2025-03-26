@@ -3,10 +3,14 @@ Operation = Install
 Operation = Upgrade
 Operation = Remove
 Type = Path
-Target = usr/lib/modules/*/vmlinuz
+Target = usr/lib/modules/*/pkgbase
+Target = usr/src/*/dkms.conf
+Target = usr/lib/dracut/*
+Target = usr/lib/systemd/systemd
+Target = usr/lib/systemd/boot/efi/*.efi.stub
 
 [Action]
-Depends = rsync
 Description = Backing up /efi...
 When = PostTransaction
 Exec = /bin/sh -c '/etc/pacman.d/hooks/scripts/99-arch-install-efibackup.sh'
+Depends = rsync
