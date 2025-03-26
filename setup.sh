@@ -159,7 +159,6 @@ for string in "${LANGUAGES[@]}"; do
 done
 locale-gen
 ## Configure /etc/doas.conf
-chown root:root /etc/doas.conf
 chmod 0400 /etc/doas.conf
 ## Configure pacman hooks in /etc/pacman.d/hooks
 DISK1="$(lsblk -npo PKNAME "$(findmnt -no SOURCE --target /efi)" | tr -d "[:space:]")"
