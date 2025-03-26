@@ -350,7 +350,7 @@ mount -m -o "noexec,nodev,nosuid,gid=proc,hidepid=2" -t proc proc /mnt/proc
 OPTIONS4="noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077"
 mount -m -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
 [[ -n "${DISK2}" ]] &&
-    mount -m -o "${OPTIONS4},noauto" "${DISK2P1}" /mnt/efi.bak
+    mount -m -o "${OPTIONS4}" "${DISK2P1}" /mnt/efi.bak
 ## /boot
 mount -m -B /mnt/efi /mnt/boot
 ## Modify perms
@@ -396,6 +396,17 @@ done
 
 # Generate /mnt/etc/fstab
 genfstab -UP /mnt >>/mnt/etc/fstab
+[[ -n "${DISK2}" ]] &&
+    {
+        ## START sed
+        FILE=/mnt/etc/fstab
+        STRING0="/efi.bak.*vfat"
+        grep -q "${STRING0}" "${FILE}" || sed_exit
+        STRING1="rw"
+        grep -q "${STRING1}" "${FILE}" || sed_exit
+        sed -i "/\\${STRING0}/s/${STRING1}/${STRING1},noauto/" "${FILE}"
+        ## END sed
+    }
 
 # Configure /mnt/etc/resolv.conf
 ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf

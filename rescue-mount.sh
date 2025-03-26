@@ -176,7 +176,7 @@ mount -m -o "noexec,nodev,nosuid,gid=proc,hidepid=2" -t proc proc /mnt/proc
 OPTIONS4="noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077"
 mount -m -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
 [[ -n "${DISK2}" ]] &&
-    mount -m -o "${OPTIONS4},noauto" "${DISK2P1}" /mnt/efi.bak
+    mount -m -o "${OPTIONS4}" "${DISK2P1}" /mnt/efi.bak
 ## /boot
 mount -m -B /mnt/efi /mnt/boot
 
