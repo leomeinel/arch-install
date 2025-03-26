@@ -12,7 +12,7 @@
 # Fail on error
 set -e
 
-PKGS="$(/usr/bin/pacman -Qtdq)"
+PKGS="$(/usr/bin/pacman -Qtdq || true)"
 if [[ -n "${PKGS}" ]]; then
     {
         /usr/bin/echo "The following packages are installed but not required (anymore): "
