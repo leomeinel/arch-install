@@ -1,1 +1,1 @@
-ACTION=="add", KERNEL=="sd*[!0-9]", SUBSYSTEM=="block", RUN+="/usr/bin/hdparm --security-freeze /dev/%k"
+ACTION=="add", KERNEL=="sd[a-z]", SUBSYSTEM=="block", RUN+="/usr/bin/hdparm --security-freeze /dev/%k"
