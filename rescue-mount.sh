@@ -130,19 +130,19 @@ OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@
 OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS3="noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 mount_subs0() {
-    mount --mkdir -o "${3}${2}" "${4}" "/mnt${1}"
-    mount --mkdir -o "${OPTIONS3}${2}_snapshots" "${4}" "/mnt${1}.snapshots"
+    mount -m -o "${3}${2}" "${4}" "/mnt${1}"
+    mount -m -o "${OPTIONS3}${2}_snapshots" "${4}" "/mnt${1}.snapshots"
     mount_subs1 "${1}" "${3}" "${4}"
 }
 mount_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
         if [[ "${SUBVOLUMES[${a}]}" != "${1}" ]] && grep -q "^${1}" <<<"${SUBVOLUMES[${a}]}"; then
             if grep -q "^${1}lib/" <<<"${SUBVOLUMES[${a}]}" && ! grep -q "^${1}lib/flatpak/" <<<"${SUBVOLUMES[${a}]}"; then
-                mount --mkdir -o "${OPTIONS3}${CONFIGS[${a}]}" "${3}" "/mnt${SUBVOLUMES[${a}]}"
+                mount -m -o "${OPTIONS3}${CONFIGS[${a}]}" "${3}" "/mnt${SUBVOLUMES[${a}]}"
             else
-                mount --mkdir -o "${2}${CONFIGS[${a}]}" "${3}" "/mnt${SUBVOLUMES[${a}]}"
+                mount -m -o "${2}${CONFIGS[${a}]}" "${3}" "/mnt${SUBVOLUMES[${a}]}"
             fi
-            mount --mkdir -o "${OPTIONS3}${CONFIGS[${a}]}_snapshots" "${3}" "/mnt${SUBVOLUMES[${a}]}.snapshots"
+            mount -m -o "${OPTIONS3}${CONFIGS[${a}]}_snapshots" "${3}" "/mnt${SUBVOLUMES[${a}]}.snapshots"
         fi
     done
 }
@@ -150,7 +150,7 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[${i}]}" in
     "/")
         mount -o "${OPTIONS0}" "${LV0}" "/mnt${SUBVOLUMES[${i}]}"
-        mount --mkdir -o "${OPTIONS3}snapshots" "${LV0}" "/mnt${SUBVOLUMES[${i}]}.snapshots"
+        mount -m -o "${OPTIONS3}snapshots" "${LV0}" "/mnt${SUBVOLUMES[${i}]}.snapshots"
         ;;
     "/usr/")
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS1}" "${LV1}"
@@ -168,9 +168,9 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
 done
 ## /efi
 OPTIONS4="noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077"
-mount --mkdir -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
+mount -m -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
 [[ -n "${DISK2}" ]] &&
-    mount --mkdir -o "${OPTIONS4}" "${DISK2P1}" /mnt/efi.bak
+    mount -m -o "${OPTIONS4}" "${DISK2P1}" /mnt/efi.bak
 
 # Inform user how to use arch-chroot
 echo "INFO: To enter the rescue-system, execute the following:"
