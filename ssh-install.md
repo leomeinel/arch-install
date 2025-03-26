@@ -1,4 +1,4 @@
-# Using ssh to authenticate in the installation image
+# Using ssh to in the installation image
 
 :information_source: | Follow [this guide](https://wiki.archlinux.org/title/Install_Arch_Linux_via_SSH) for up to date instructions.
 
