@@ -392,6 +392,8 @@ done
 genfstab -U /mnt >>/mnt/etc/fstab
 {
     echo "# arch-install"
+    echo "## bind mount /efi to /boot"
+    echo "/efi /boot none bind 0 0"
     echo "## tmpfs"
     echo "tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,size=80% 0 0"
     # FIXME: Ideally, /tmp should be noexec; See: https://github.com/NixOS/nix/issues/10492
