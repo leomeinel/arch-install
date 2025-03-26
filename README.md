@@ -12,7 +12,7 @@ Meant for general purpose systems with a GUI.
 
 :information_source: | I recommend disks with at least 512GiB (change DISK_ALLOCATION in install.conf otherwise).
 
-:information_source: | I recommend at least 16GiB of RAM. You could also try to circumvent this in the installation by specifying a different `TMPDIR` before running `post.sh`, otherwise nix will not be able to build.
+:information_source: | I recommend at least 16GiB of RAM. By specifying `TMPDIR` manually before running `post.sh` to force nix to not use the tmpfs, you might be able to circumvent this. Also see [this](https://github.com/NixOS/nixpkgs/issues/54707) and [this](https://github.com/NixOS/nix/issues/2098). I haven't tried this myself.
 
 :warning: | All data on selected disks will be wiped!
 
