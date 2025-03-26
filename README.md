@@ -16,7 +16,7 @@ Meant for general purpose systems with a GUI.
 
 :exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/virt-manager-install.md) for installing to virt-manager.
 
-:exclamation: | See [these instructions](https://github.com/leomeinel/arch-install/blob/main/ssh-install.md) for installing via ssh.
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/ssh-install.md) for installing via ssh.
 
 ## Pre-installation
 
