@@ -10,7 +10,7 @@ passwd
 
 # Using ssh for Post-installation
 
-Set `ENABLE_SSH="true"` and modify `SYSUSER_PUBKEY` in `install.conf` before running `/git/arch-install/setup.sh`.
+Set `ENABLE_SSH="true"` and modify `SYSUSER_PUBKEY` in `install.conf` before running `prepare.sh`.
 
 After rebooting, you will have to enter the decryption key for your disk. This cannot be done over ssh.
 
