@@ -346,7 +346,7 @@ mount --mkdir -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
 [[ -n "${DISK2}" ]] &&
     mount --mkdir -o "${OPTIONS4}" "${DISK2P1}" /mnt/efi.bak
 ## /boot
-mkdir -p /mnt/boot
+mount --mkdir --bind /mnt/efi /mnt/boot
 ## Modify perms
 chmod 775 /mnt/var/games
 
@@ -392,8 +392,6 @@ done
 genfstab -U /mnt >>/mnt/etc/fstab
 {
     echo "# arch-install"
-    echo "## bind mount /efi to /boot"
-    echo "/efi /boot none bind 0 0"
     echo "## tmpfs"
     echo "tmpfs /dev/shm tmpfs rw,noexec,nodev,nosuid,size=80% 0 0"
     # FIXME: Ideally, /tmp should be noexec; See: https://github.com/NixOS/nix/issues/10492
