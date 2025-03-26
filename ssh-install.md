@@ -10,20 +10,7 @@ passwd
 
 # Using ssh for Post-installation
 
-Set `ENABLE_SSH="true"` in `install.conf` before running `/git/arch-install/setup.sh`.
-
-After running `/git/arch-install/setup.sh`, you will have to add your public key to the SYSUSER account.
-
-The following script is a way to do this after `setup.sh` has finished successfully. Text written as `<...>` will have to be replaced according to your configuration.
-
-```sh
-su <SYSUSER>
-# A public key looks similar to this: ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-echo "<public_key>" >~/.ssh/authorized_keys
-exit
-```
+Set `ENABLE_SSH="true"` and modify `SYSUSER_PUBKEY` in `install.conf` before running `/git/arch-install/setup.sh`.
 
 After rebooting, you will have to enter the decryption key for your disk. This cannot be done over ssh.
 
