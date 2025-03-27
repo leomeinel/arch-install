@@ -155,8 +155,9 @@ FILE=/etc/locale.gen
     echo ""
     echo "# arch-install"
 } >>"${FILE}"
-for string in "${LANGUAGES[@]}"; do
-    echo "${string}" >>"${FILE}"
+for locale in "${LOCALES[@]}"; do
+    grep -q "^#${locale}" /etc/locale.gen || continue
+    echo "${locale}" >>"${FILE}"
 done
 locale-gen
 ## Configure /etc/doas.conf
