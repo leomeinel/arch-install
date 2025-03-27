@@ -11,13 +11,13 @@
 
 # INFO: This file is not needed for the installation
 
+# Fail on error
+set -e
+
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
-
-# Fail on error
-set -e
 
 # Unmount everything from /mnt
 mountpoint -q /mnt &&
