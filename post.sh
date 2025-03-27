@@ -17,6 +17,12 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
 
+# Define functions
+var_invalid_error() {
+    echo "ERROR: '${1}' isn't valid in '{$2}'"
+    exit 1
+}
+
 # Replace doas.conf with option nopass
 DOAS_CONF="$(doas cat /etc/doas.conf)"
 for i in {1..5}; do
@@ -264,13 +270,15 @@ esac
 doas /bin/sh -c "/bin/sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file ${SCRIPT_DIR}/nix.conf"
 
 # Configure dot-files
-doas systemd-run -P --wait --user -M "${GUESTUSER}"@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
-doas systemd-run -P --wait --user -M "${HOMEUSER}"@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+TMP_USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
+for user in "${TMP_USERS[@]}"; do
+    id "${user}" >/dev/null 2>&1 ||
+        var_invalid_error "${user}" "TMP_USERS"
+    doas systemd-run -P --wait --user -M "${user}"@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+done
 doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 # shellcheck source=/dev/null
 . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh
-doas systemd-run -P --wait --user -M "${VIRTUSER}"@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
-doas systemd-run -P --wait --user -M "${WORKUSER}"@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 
 # Source ~/.bash_profile
 # shellcheck source=/dev/null
@@ -303,13 +311,18 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
 # Remove user files
 FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-flatpak.txt" "post.sh" ".bash_history" ".nix-channels")
 DIRS=(".gnupg" ".nix-defexpr" ".nix-profile" "git")
-USERS=("${GUESTUSER}" "${HOMEUSER}" "root" "${SYSUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${USERS[@]}"; do
-    for file in "${FILES[@]}"; do
-        doas rm -f "$(eval echo ~"${user}")"/"${file}"
+    id "${user}" >/dev/null 2>&1 ||
+        var_invalid_error "${user}" "USERS"
+    for tmp_file in "${FILES[@]}"; do
+        file="$(eval echo ~"${user}")"/"${tmp_file}"
+        doas /bin/sh -c "[[ -f ${file} ]] || continue"
+        doas rm -f "${file}"
     done
-    for dir in "${DIRS[@]}"; do
-        doas rm -rf "$(eval echo ~"${user}")"/"${dir}"
+    for tmp_dir in "${DIRS[@]}"; do
+        dir="$(eval echo ~"${user}")"/"${tmp_dir}"
+        doas /bin/sh -c "[[ -d ${dir} ]] || continue"
+        doas rm -rf "${dir}"
     done
     doas runuser -l "${user}" -c "rm -f ~/.*.bak"
 done

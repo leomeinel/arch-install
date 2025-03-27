@@ -23,6 +23,13 @@ sed_exit() {
     echo "       https://github.com/leomeinel/arch-install/issues"
     exit 1
 }
+var_invalid_error() {
+    echo "ERROR: '${1}' isn't valid in '{$2}'"
+    exit 1
+}
+var_invalid_warning() {
+    echo "WARNING: '${1}' isn't valid in '{$2}'"
+}
 
 # Sync files from this repo to system
 rsync -rq "${SCRIPT_DIR}/etc/" /etc
@@ -87,65 +94,19 @@ echo "#                    At least 12 characters,                    #"
 echo "#           at least 1 digit, 1 uppercase character,            #"
 echo "#         1 lowercace character and 1 other character.          #"
 echo "#################################################################"
-for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            echo "ERROR: Too many retries. Exiting now."
-            exit 1
-        }
-    echo "Enter password for ${GUESTUSER}"
-    passwd "${GUESTUSER}" && break ||
-        echo "WARNING: You have entered an incorrect password. Retrying now."
-done
-for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            echo "ERROR: Too many retries. Exiting now."
-            exit 1
-        }
-    echo "Enter password for ${HOMEUSER}"
-    passwd "${HOMEUSER}" && break ||
-        echo "WARNING: You have entered an incorrect password. Retrying now."
-done
-for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            echo "ERROR: Too many retries. Exiting now."
-            exit 1
-        }
-    echo "Enter password for root"
-    passwd root && break ||
-        echo "WARNING: You have entered an incorrect password. Retrying now."
-done
-for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            echo "ERROR: Too many retries. Exiting now."
-            exit 1
-        }
-    echo "Enter password for ${SYSUSER}"
-    passwd "${SYSUSER}" && break ||
-        echo "WARNING: You have entered an incorrect password. Retrying now."
-done
-for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            echo "ERROR: Too many retries. Exiting now."
-            exit 1
-        }
-    echo "Enter password for ${VIRTUSER}"
-    passwd "${VIRTUSER}" && break ||
-        echo "WARNING: You have entered an incorrect password. Retrying now."
-done
-for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            echo "ERROR: Too many retries. Exiting now."
-            exit 1
-        }
-    echo "Enter password for ${WORKUSER}"
-    passwd "${WORKUSER}" && break ||
-        echo "WARNING: You have entered an incorrect password. Retrying now."
+for user in "${USERS[@]}"; do
+    id "${user}" >/dev/null 2>&1 ||
+        var_invalid_error "${user}" "USERS"
+    for i in {1..5}; do
+        [[ "${i}" -eq 5 ]] &&
+            {
+                echo "ERROR: Too many retries. Exiting now."
+                exit 1
+            }
+        echo "Enter password for ${user}"
+        passwd "${user}" && break ||
+            echo "WARNING: You have entered an incorrect password. Retrying now."
+    done
 done
 
 # Configure /etc before installing packages
@@ -156,7 +117,8 @@ FILE=/etc/locale.gen
     echo "# arch-install"
 } >>"${FILE}"
 for locale in "${LOCALES[@]}"; do
-    grep -q "^#${locale}" /etc/locale.gen || continue
+    grep -q "^#${locale}" /etc/locale.gen ||
+        var_invalid_error "${locale}" "LOCALES"
     echo "${locale}" >>"${FILE}"
 done
 locale-gen
@@ -259,9 +221,12 @@ done
 # Set up user scripts
 ## All users
 FILES=("dot-files.sh" "install.conf")
-USERS=("${GUESTUSER}" "${HOMEUSER}" "root" "${SYSUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${USERS[@]}"; do
+    id "${user}" >/dev/null 2>&1 ||
+        var_invalid_error "${user}" "USERS"
     for file in "${FILES[@]}"; do
+        [[ -f "${file}" ]] ||
+            var_invalid_error "${file}" "FILES"
         cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~"${user}")"/
         chown "${user}":"${user}" "$(eval echo ~"${user}")"/"${file}"
     done
@@ -270,6 +235,8 @@ done
 ## SYSUSER
 FILES=("nix.conf" "pkgs-flatpak.txt" "post.sh" "secureboot.sh")
 for file in "${FILES[@]}"; do
+    [[ -f "${file}" ]] ||
+        var_invalid_error "${file}" "FILES"
     cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~"${SYSUSER}")"/
     chown "${SYSUSER}":"${SYSUSER}" "$(eval echo ~"${SYSUSER}")"/"${file}"
 done
@@ -499,7 +466,6 @@ echo "kernel_cmdline=\"${PARAMETERS}\"" >/etc/dracut.conf.d/50-arch-install-cmdl
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
 ## Set up /usr/local/bin/upgrade-home
-USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
 UPGRADE_HOME="$(
     cat <<'EOF'
 #!/usr/bin/env bash
@@ -525,7 +491,10 @@ fi
 # Run ~/.config/dot-files/update.sh for each user
 EOF
 )"
-for user in "${USERS[@]}"; do
+TMP_USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
+for user in "${TMP_USERS[@]}"; do
+    id "${user}" >/dev/null 2>&1 ||
+        var_invalid_error "${user}" "TMP_USERS"
     UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --user -M '"${user}"'@ /bin/sh -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
 done
 UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '"'"'. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && ~/.config/dot-files/update.sh'"'"''
@@ -584,9 +553,14 @@ sed -i "s/${STRING11}/#TIMELINE_LIMIT_WEEKLY=/g" "${FILE0}"
     echo 'TIMELINE_LIMIT_YEARLY="0"'
 } >>"${FILE0}"
 ### Remove & unmount snapshots (Prepare snapshot dirs 1)
-for subvolume in "${SUBVOLUMES[@]}"; do
-    umount "${subvolume}".snapshots
-    rm -rf "${subvolume}".snapshots
+for dir in "${SUBVOLUMES[@]}"; do
+    [[ -d "${dir}" ]] ||
+        {
+            var_invalid_warning "${dir}" "SUBVOLUMES"
+            continue
+        }
+    umount "${dir}".snapshots
+    rm -rf "${dir}".snapshots
 done
 ### Append configs individually
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
@@ -646,15 +620,19 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     snapper --no-dbus -c "${CONFIGS[${i}]}" create-config -t "${CONFIGS[${i}]}" "${SUBVOLUMES[${i}]}"
 done
 ### Replace subvolumes for snapshots (Prepare snapshot dirs 2)
-for subvolume in "${SUBVOLUMES[@]}"; do
-    btrfs subvolume delete "${subvolume}".snapshots
-    mkdir -p "${subvolume}".snapshots
+for dir in "${SUBVOLUMES[@]}"; do
+    [[ -d "${dir}" ]] ||
+        var_invalid_error "${dir}" "SUBVOLUMES"
+    btrfs subvolume delete "${dir}".snapshots
+    mkdir -p "${dir}".snapshots
 done
 ### Mount /etc/fstab
 mount -a
 ### Set correct permissions on snapshots (Prepare snapshot dirs 3)
-for subvolume in "${SUBVOLUMES[@]}"; do
-    chown :wheel "${subvolume}".snapshots
+for dir in "${SUBVOLUMES[@]}"; do
+    [[ -d "${dir}" ]] ||
+        var_invalid_error "${dir}" "SUBVOLUMES"
+    chown :wheel "${dir}".snapshots
 done
 
 # Create dirs/files and modify perms
@@ -672,7 +650,7 @@ for file in "${FILES_755[@]}"; do
     chmod 755 "${file}"
 done
 for dir in "${DIRS_700[@]}"; do
-    [[ ! -f "${dir}" ]] &&
+    [[ ! -d "${dir}" ]] &&
         mkdir -p "${dir}"
     chmod 700 "${dir}"
 done
