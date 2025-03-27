@@ -20,10 +20,11 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 set -e
 
 # Clone dot-files
+DOT_FILES_DIR=~/.config/dot-files/
 if [[ "${IS_RELEASE}" == "true" ]]; then
-    git clone -b "${DOTFILES_VERSION}" https://github.com/leomeinel/dot-files.git ~/.config/dot-files
+    git clone -b "${DOTFILES_VERSION}" https://github.com/leomeinel/dot-files.git "${DOT_FILES_DIR}"
 else
-    git clone -b main https://github.com/leomeinel/dot-files.git ~/.config/dot-files
+    git clone -b main https://github.com/leomeinel/dot-files.git "${DOT_FILES_DIR}"
 fi
 
 # Append dot-files/install.conf
@@ -31,8 +32,8 @@ fi
     echo ""
     echo "# arch-install"
     cat "${SCRIPT_DIR}"/install.conf
-} >>~/.config/dot-files/install.conf
-chmod 755 ~/.config/dot-files/setup.sh
+} >"${DOT_FILES_DIR}"/install.conf
+chmod 755 "${DOT_FILES_DIR}"/setup.sh
 
 # Run dot-files
-~/.config/dot-files/setup.sh
+"${DOT_FILES_DIR}"/setup.sh
