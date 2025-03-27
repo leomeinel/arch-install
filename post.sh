@@ -311,7 +311,7 @@ for user in "${USERS[@]}"; do
     for dir in "${DIRS[@]}"; do
         doas rm -rf "$(eval echo ~"${user}")"/"${dir}"
     done
-    doas rm -f "$(eval echo ~"${user}")"/.*.bak
+    doas runuser -l "${user}" -c "rm -f ~/.*.bak"
 done
 
 # Set correct permissions on /nix/.snapshots; the install script also modifies the .snapshots dir
