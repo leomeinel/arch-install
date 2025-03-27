@@ -26,7 +26,13 @@ else
     git clone -b main https://github.com/leomeinel/dot-files.git ~/.config/dot-files
 fi
 
-# Run dot-files
-cat "${SCRIPT_DIR}"/install.conf >>~/.config/dot-files/install.conf
+# Append dot-files/install.conf
+{
+    echo ""
+    echo "# arch-install"
+    cat "${SCRIPT_DIR}"/install.conf
+} >>~/.config/dot-files/install.conf
 chmod 755 ~/.config/dot-files/setup.sh
+
+# Run dot-files
 ~/.config/dot-files/setup.sh
