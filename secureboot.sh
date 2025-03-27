@@ -20,23 +20,23 @@ set -e
 
 # Configure secureboot
 # Prompt user
-read -rp "Have you transferred your keys to ${EFI_KEYS_DIR}? (Type 'yes' in capital letters): " choice
+read -rp "Have you transferred your keys to ${EFI_KEYS_DIR:?}/keys? (Type 'yes' in capital letters): " choice
 case "${choice}" in
 YES)
-    doas chmod 000 "${EFI_KEYS_DIR}"/*
+    doas chmod 000 "${EFI_KEYS_DIR:?}"/keys/*
     if mountpoint -q /efi; then
         doas umount -AR /efi
     fi
     doas mount /efi
     doas cryptboot systemd-boot-sign
     doas /bin/sh -c '{
-        echo "uefi_secureboot_cert='\""${EFI_KEYS_DIR}"\"'/db.crt"
-        echo "uefi_secureboot_key='\""${EFI_KEYS_DIR}"\"'/db.key"
+        echo "uefi_secureboot_cert='\""${EFI_KEYS_DIR:?}"/keys\"'/db.crt"
+        echo "uefi_secureboot_key='\""${EFI_KEYS_DIR:?}"/keys\"'/db.key"
     } >/etc/dracut.conf.d/50-arch-install-secureboot.conf'
     rm -f ~/secureboot.sh
     ;;
 *)
-    echo "ERROR: User has not transferred keys to ${EFI_KEYS_DIR}!"
+    echo "ERROR: User has not transferred keys to ${EFI_KEYS_DIR:?}/keys!"
     exit 1
     ;;
 esac
