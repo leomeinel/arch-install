@@ -306,6 +306,12 @@ if [[ "${IS_RELEASE}" == "true" ]]; then
 else
     git clone -b main https://github.com/leomeinel/cryptboot.git /git/cryptboot
 fi
+### Modify /etc/cryptboot.conf
+{
+    echo ""
+    echo "# arch-install"
+    echo "ENABLE_OPROM=\"${ENABLE_OPROM}\""
+} >>/git/cryptboot/cryptboot.conf
 cp /git/cryptboot/cryptboot.conf /etc/
 ## Configure /etc/xdg/user-dirs.defaults
 ### START sed
