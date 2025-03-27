@@ -261,7 +261,7 @@ YES)
 esac
 
 # Install nix
-doas /bin/sh -c "sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file ${SCRIPT_DIR}/nix.conf"
+doas /bin/sh -c "/bin/sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file ${SCRIPT_DIR}/nix.conf"
 
 # Configure dot-files
 doas systemd-run -P --wait --user -M "${GUESTUSER}"@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
