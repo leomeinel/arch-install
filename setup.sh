@@ -640,17 +640,17 @@ FILES_600=("/etc/ssh/sshd_config.d/50-arch-install.conf" "/etc/audit/rules.d/50-
 DIRS_700=("/etc/audit/rules.d" "/etc/ssh/sshd_config.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
 FILES_755=("/etc/profile.d/zz-arch-install.sh" "/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/pwvucontrol" "/usr/local/bin/rpi-imager" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages")
 for file in "${FILES_600[@]}"; do
-    [[ ! -f "${file}" ]] &&
+    ! [[ -f "${file}" ]] &&
         touch "${file}"
     chmod 600 "${file}"
 done
 for file in "${FILES_755[@]}"; do
-    [[ ! -f "${file}" ]] &&
+    ! [[ -f "${file}" ]] &&
         touch "${file}"
     chmod 755 "${file}"
 done
 for dir in "${DIRS_700[@]}"; do
-    [[ ! -d "${dir}" ]] &&
+    ! [[ -d "${dir}" ]] &&
         mkdir -p "${dir}"
     chmod 700 "${dir}"
 done
