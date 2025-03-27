@@ -43,5 +43,6 @@ if [[ "${IS_RELEASE}" == "true" ]]; then
     cd "${DOT_FILES_DIR}"
     git switch -c tmp
     git checkout main
-    git merge tmp
+    git merge --no-gpg-sign --no-edit tmp ||
+        echo "WARNING: Couldn't merge changes to main. Please manually merge branch tmp later!"
 fi
