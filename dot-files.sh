@@ -37,3 +37,11 @@ chmod 755 "${DOT_FILES_DIR}"/setup.sh
 
 # Run dot-files
 "${DOT_FILES_DIR}"/setup.sh
+
+# Merge changes to main in detached HEAD state because of using a tagged version
+if [[ "${IS_RELEASE}" == "true" ]]; then
+    cd "${DOT_FILES_DIR}"
+    git switch -c tmp
+    git checkout main
+    git merge tmp
+fi
