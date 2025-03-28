@@ -24,11 +24,11 @@ sed_exit() {
     exit 1
 }
 var_invalid_error() {
-    echo "ERROR: '${1}' isn't valid in '{$2}'"
+    echo "ERROR: '${1}' isn't valid in '${2}'"
     exit 1
 }
 var_invalid_warning() {
-    echo "WARNING: '${1}' isn't valid in '{$2}'"
+    echo "WARNING: '${1}' isn't valid in '${2}'"
 }
 
 # Sync files from this repo to system

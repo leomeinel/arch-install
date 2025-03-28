@@ -19,7 +19,7 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 
 # Define functions
 var_invalid_error() {
-    echo "ERROR: '${1}' isn't valid in '{$2}'"
+    echo "ERROR: '${1}' isn't valid in '${2}'"
     exit 1
 }
 
