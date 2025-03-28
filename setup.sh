@@ -229,7 +229,7 @@ for user in "${USERS[@]}"; do
         [[ -f "${file}" ]] ||
             var_invalid_error "${file}" "FILES"
         cp "${file}" "$(eval echo ~"${user}")"/
-        chown "${user}":"${user}" "$(eval echo ~"${user}")"/"${file}"
+        chown "${user}":"${user}" "$(eval echo ~"${user}")"/"${tmp_file}"
     done
     chmod 755 "$(eval echo ~"${user}")"/dot-files.sh
 done
@@ -240,7 +240,7 @@ for tmp_file in "${FILES[@]}"; do
     [[ -f "${file}" ]] ||
         var_invalid_error "${file}" "FILES"
     cp "${file}" "$(eval echo ~"${SYSUSER}")"/
-    chown "${SYSUSER}":"${SYSUSER}" "$(eval echo ~"${SYSUSER}")"/"${file}"
+    chown "${SYSUSER}":"${SYSUSER}" "$(eval echo ~"${SYSUSER}")"/"${tmp_file}"
 done
 chmod 755 "$(eval echo ~"${SYSUSER}")"/post.sh
 
