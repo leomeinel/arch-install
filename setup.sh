@@ -224,20 +224,22 @@ FILES=("dot-files.sh" "install.conf")
 for user in "${USERS[@]}"; do
     id "${user}" >/dev/null 2>&1 ||
         var_invalid_error "${user}" "USERS"
-    for file in "${FILES[@]}"; do
+    for tmp_file in "${FILES[@]}"; do
+        file="${SCRIPT_DIR}"/"${tmp_file}"
         [[ -f "${file}" ]] ||
             var_invalid_error "${file}" "FILES"
-        cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~"${user}")"/
+        cp "${file}" "$(eval echo ~"${user}")"/
         chown "${user}":"${user}" "$(eval echo ~"${user}")"/"${file}"
     done
     chmod 755 "$(eval echo ~"${user}")"/dot-files.sh
 done
 ## SYSUSER
 FILES=("nix.conf" "pkgs-flatpak.txt" "post.sh" "secureboot.sh")
-for file in "${FILES[@]}"; do
+for tmp_file in "${FILES[@]}"; do
+    file="${SCRIPT_DIR}"/"${tmp_file}"
     [[ -f "${file}" ]] ||
         var_invalid_error "${file}" "FILES"
-    cp "${SCRIPT_DIR}"/"${file}" "$(eval echo ~"${SYSUSER}")"/
+    cp "${file}" "$(eval echo ~"${SYSUSER}")"/
     chown "${SYSUSER}":"${SYSUSER}" "$(eval echo ~"${SYSUSER}")"/"${file}"
 done
 chmod 755 "$(eval echo ~"${SYSUSER}")"/post.sh
