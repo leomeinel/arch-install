@@ -12,27 +12,36 @@
 # Fail on error
 set -e
 
+# Define functions
+log_err() {
+    /usr/bin/logger -s -p local0.err <<<"${@}"
+}
+log_warning() {
+    /usr/bin/logger -s -p local0.warning <<<"${@}"
+}
+var_invalid_error() {
+    log_err "'${1}' is invalid in '${2}'."
+    exit 1
+}
+
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
-
-# Define functions
-var_invalid_error() {
-    echo "ERROR: '${1}' isn't valid in '${2}'"
-    exit 1
-}
 
 # Replace doas.conf with option nopass
 DOAS_CONF="$(doas cat /etc/doas.conf)"
 for i in {1..5}; do
     [[ "${i}" -eq 5 ]] &&
         {
-            echo "ERROR: Too many retries. Exiting now."
+            log_err "Too many retries."
             exit 1
         }
-    doas /bin/sh -c 'echo "permit nopass setenv { LANG LC_ALL } :wheel" >/etc/doas.conf' && break ||
-        echo "WARNING: You have entered an incorrect password. Retrying now."
+    if doas /bin/sh -c 'echo "permit nopass setenv { LANG LC_ALL } :wheel" >/etc/doas.conf'; then
+        break
+    else
+        log_warning "You have entered an incorrect password. Retrying now."
+    fi
 done
 
 # Configure KEYMAP
@@ -238,7 +247,7 @@ doas /bin/sh -c 'nft -s list ruleset >/etc/nftables.conf'
 # Configure secureboot
 # Prompt user
 # This prompt prevents unwanted overrides of already enrolled keys
-echo "INFO: To deploy your own keys, don't confirm the next prompt. Make sure the keys are already enrolled."
+echo "To deploy your own keys, don't confirm the next prompt."
 # shellcheck source=/dev/null
 . /etc/cryptboot.conf
 read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
@@ -261,8 +270,8 @@ YES)
     doas mkdir -p "${EFI_KEYS_DIR:?}"/keys
     doas chmod 700 "${EFI_KEYS_DIR:?}"/keys
     chmod 755 ~/secureboot.sh
-    echo "WARNING: User aborted enrolling secureboot keys"
-    echo "         Deploy your own keys in ${EFI_KEYS_DIR:?}/keys and run ~/secureboot.sh to sign your bootloader"
+    log_warning "User aborted enrolling secureboot keys."
+    log_warning "Deploy your own keys in '${EFI_KEYS_DIR:?}/keys' and run '~/secureboot.sh' to sign your bootloader."
     ;;
 esac
 
@@ -334,4 +343,4 @@ doas chown :wheel /nix/.snapshots
 doas /bin/sh -c 'echo '"${DOAS_CONF}"' >/etc/doas.conf'
 
 # Notify user if script has finished successfully
-echo "INFO: $(basename "${0}") has finished successfully."
+echo "'$(basename "${0}")' has finished successfully."

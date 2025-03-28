@@ -14,13 +14,18 @@
 # Fail on error
 set -e
 
+# Define functions
+log_err() {
+    /usr/bin/logger -s -p local0.err <<<"${@}"
+}
+
 # Source config
 # shellcheck source=/dev/null
 . /etc/cryptboot.conf
 
 # Configure secureboot
 # Prompt user
-read -rp "Have you transferred your keys to ${EFI_KEYS_DIR:?}/keys? (Type 'yes' in capital letters): " choice
+read -rp "Have you transferred your keys to '${EFI_KEYS_DIR:?}/keys'? (Type 'yes' in capital letters): " choice
 case "${choice}" in
 YES)
     doas chmod 000 "${EFI_KEYS_DIR:?}"/keys/*
@@ -36,10 +41,10 @@ YES)
     rm -f ~/secureboot.sh
     ;;
 *)
-    echo "ERROR: User has not transferred keys to ${EFI_KEYS_DIR:?}/keys!"
+    log_err "User has not transferred keys to '${EFI_KEYS_DIR:?}/keys'."
     exit 1
     ;;
 esac
 
 # Notify user if script has finished successfully
-echo "INFO: $(basename "${0}") has finished successfully."
+echo "'$(basename "${0}")' has finished successfully."

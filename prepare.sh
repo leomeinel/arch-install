@@ -12,17 +12,22 @@
 # Fail on error
 set -e
 
+# Define functions
+log_err() {
+    /usr/bin/logger -s -p local0.err <<<"${@}"
+}
+log_warning() {
+    /usr/bin/logger -s -p local0.warning <<<"${@}"
+}
+sed_exit() {
+    log_err "'sed' didn't replace, report this at https://github.com/leomeinel/arch-install/issues."
+    exit 1
+}
+
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
-
-# Define functions
-sed_exit() {
-    echo "ERROR: 'sed' didn't replace, report this @"
-    echo "       https://github.com/leomeinel/arch-install/issues"
-    exit 1
-}
 
 # Unmount everything from /mnt
 mountpoint -q /mnt &&
@@ -45,21 +50,21 @@ YES)
     done
     [[ "${#DISKS[@]}" -lt 2 ]] &&
         {
-            echo "ERROR: There are less than 2 disks attached!"
+            log_err "There are less than 2 disks attached."
             exit 1
         }
     [[ "${#DISKS[@]}" -gt 2 ]] &&
         {
-            echo "WARNING: There are more than 2 disks attached!"
+            log_warning "There are more than 2 disks attached."
             lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
             ### Prompt user to select 2 RAID members
             read -rp "Which disk should be the first RAID member? (Type '/dev/sdX' fex.): " choice0
             read -rp "Which disk should be the second RAID member? (Type '/dev/sdY' fex.): " choice1
             if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
-                echo "Using ${choice0} and ${choice1} for installation."
+                echo "Using '${choice0}' and '${choice1}' for installation."
                 DISKS=("${choice0}" "${choice1}")
             else
-                echo "ERROR: Drives not suitable for installation!"
+                log_err "Drives not suitable for installation."
                 exit 1
             fi
         }
@@ -68,7 +73,7 @@ YES)
     SIZE2="$(lsblk -drnbo SIZE "${DISKS[1]}" | tr -d "[:space:]")"
     ### Check that both drives are over 10GiB
     if [[ "${SIZE1}" -lt 10737418240 ]] || [[ "${SIZE2}" -lt 10737418240 ]]; then
-        echo "ERROR: Drive too small for installation!"
+        log_err "Drive too small for installation."
         exit 1
     fi
     if [[ "${SIZE1}" -eq "${SIZE2}" ]]; then
@@ -76,8 +81,8 @@ YES)
         DISK2="${DISKS[1]}"
         PART_SIZE=0
     else
-        echo "WARNING: The attached disks don't have the same size!"
-        echo "         The larger disk will have unpartitioned space remaining."
+        log_warning "The attached disks don't have the same size."
+        log_warning "The larger disk will have unpartitioned space remaining."
         if [[ "${SIZE1}" -gt "${SIZE2}" ]]; then
             DISK1="${DISKS[0]}"
             DISK2="${DISKS[1]}"
@@ -89,13 +94,13 @@ YES)
         fi
     fi
     ## Prompt user to confirm erasure
-    read -rp "Erase ${DISK1} and ${DISK2}? (Type 'yes' in capital letters): " choice
+    read -rp "Erase '${DISK1}' and '${DISK2}'? (Type 'yes' in capital letters): " choice
     case "${choice}" in
     YES)
-        echo "Erasing ${DISK1} and ${DISK2}..."
+        echo "Erasing '${DISK1}' and '${DISK2}'..."
         ;;
     *)
-        echo "ERROR: User aborted erasing ${DISK1} and ${DISK2}!"
+        log_err "User aborted erasing '${DISK1}' and '${DISK2}'."
         exit 1
         ;;
     esac
@@ -106,16 +111,17 @@ YES)
     lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
     read -rp "Which disk do you want to erase? (Type '/dev/sdX' fex.): " choice
     if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice}"; then
-        echo "Erasing ${choice}..."
         DISK1="${choice}"
+        echo "Erasing '${DISK1}'..."
+
         ### Check that the drive is over 10GiB
         SIZE1="$(lsblk -drnbo SIZE "${DISK1}" | tr -d "[:space:]")"
         if [[ "${SIZE1}" -lt 10737418240 ]]; then
-            echo "ERROR: Drive too small for installation!"
+            log_err "Drive too small for installation."
             exit 1
         fi
     else
-        echo "ERROR: Drive not suitable for installation!"
+        log_err "Drive not suitable for installation."
         exit 1
     fi
     ;;
@@ -154,13 +160,13 @@ if [[ -n "${DISK2}" ]]; then
 fi
 ## Prompt user if they want to secure wipe the whole disk
 if [[ -n "${DISK2}" ]]; then
-    read -rp "Secure wipe ${DISK1} and ${DISK2}? (Type 'yes' in capital letters): " choice
+    read -rp "Secure wipe '${DISK1}' and '${DISK2}'? (Type 'yes' in capital letters): " choice
     if [[ "${choice}" == "YES" ]]; then
         dd if=/dev/urandom of="${DISK1}" bs="$(stat -c "%o" "${DISK1}")" status=progress || true
         dd if=/dev/urandom of="${DISK2}" bs="$(stat -c "%o" "${DISK2}")" status=progress || true
     fi
 else
-    read -rp "Secure wipe ${DISK1}? (Type 'yes' in capital letters): " choice
+    read -rp "Secure wipe '${DISK1}'? (Type 'yes' in capital letters): " choice
     if [[ "${choice}" == "YES" ]]; then
         dd if=/dev/urandom of="${DISK1}" bs="$(stat -c "%o" "${DISK1}")" status=progress || true
     fi
@@ -194,20 +200,26 @@ if [[ -n "${DISK2}" ]]; then
     for i in {1..5}; do
         [[ "${i}" -eq 5 ]] &&
             {
-                echo "ERROR: Too many retries. Exiting now."
+                log_err "Too many retries."
                 exit 1
             }
-        cryptsetup -y -v luksFormat "${RAID_DEVICE}" && break ||
-            echo "WARNING: You have entered an incorrect password. Retrying now."
+        if cryptsetup -y -v luksFormat "${RAID_DEVICE}"; then
+            break
+        else
+            log_warning "You have entered an incorrect password. Retrying now."
+        fi
     done
     for i in {1..5}; do
         [[ "${i}" -eq 5 ]] &&
             {
-                echo "ERROR: Too many retries. Exiting now."
+                log_err "Too many retries."
                 exit 1
             }
-        cryptsetup open "${RAID_DEVICE}" md0_crypt && break ||
-            echo "WARNING: You have entered an incorrect password. Retrying now."
+        if cryptsetup open "${RAID_DEVICE}" md0_crypt; then
+            break
+        else
+            log_warning "You have entered an incorrect password. Retrying now."
+        fi
     done
 
 else
@@ -215,20 +227,26 @@ else
     for i in {1..5}; do
         [[ "${i}" -eq 5 ]] &&
             {
-                echo "ERROR: Too many retries. Exiting now."
+                log_err "Too many retries."
                 exit 1
             }
-        cryptsetup -y -v luksFormat "${DISK1P2}" && break ||
-            echo "WARNING: You have entered an incorrect password. Retrying now."
+        if cryptsetup -y -v luksFormat "${DISK1P2}"; then
+            break
+        else
+            log_warning "You have entered an incorrect password. Retrying now."
+        fi
     done
     for i in {1..5}; do
         [[ "${i}" -eq 5 ]] &&
             {
-                echo "ERROR: Too many retries. Exiting now."
+                log_err "Too many retries."
                 exit 1
             }
-        cryptsetup open "${DISK1P2}" md0_crypt && break ||
-            echo "WARNING: You have entered an incorrect password. Retrying now."
+        if cryptsetup open "${DISK1P2}" md0_crypt; then
+            break
+        else
+            log_warning "You have entered an incorrect password. Retrying now."
+        fi
     done
 fi
 
@@ -251,7 +269,7 @@ mkfs.fat -n EFI -F32 "${DISK1P1}"
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
 [[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]] &&
     {
-        echo "ERROR: SUBVOLUMES and CONFIGS aren't the same length!"
+        log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
         exit 1
     }
 create_subs0() {
@@ -387,11 +405,14 @@ lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
 for i in {1..5}; do
     [[ "${i}" -eq 5 ]] &&
         {
-            echo "ERROR: Too many retries. Exiting now."
+            log_err "Too many retries."
             exit 1
         }
-    pacstrap -K /mnt - <"${SCRIPT_DIR}/pkgs-prepare.txt" && break ||
-        echo "WARNING: pacstrap failed. Retrying now."
+    if pacstrap -K /mnt - <"${SCRIPT_DIR}/pkgs-prepare.txt"; then
+        break
+    else
+        log_warning "'pacstrap' failed. Retrying now."
+    fi
 done
 
 # Generate /mnt/etc/fstab
@@ -417,4 +438,4 @@ mv "${SCRIPT_DIR}" /mnt/git/
 chmod 755 /mnt/git/arch-install/setup.sh
 
 # Notify user if script has finished successfully
-echo "INFO: $(basename "${0}") has finished successfully."
+echo "'$(basename "${0}")' has finished successfully."

@@ -14,6 +14,11 @@
 # Fail on error
 set -e
 
+# Define functions
+log_warning() {
+    /usr/bin/logger -s -p local0.warning <<<"${@}"
+}
+
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
@@ -44,5 +49,5 @@ if [[ "${IS_RELEASE}" == "true" ]]; then
     git switch -c tmp
     git checkout main
     git merge --no-gpg-sign --no-edit tmp ||
-        echo "WARNING: Couldn't merge changes to main. Please manually merge branch tmp later!"
+        log_warning "Couldn't merge changes to main. Please manually merge branch 'tmp' later."
 fi

@@ -12,24 +12,29 @@
 # Fail on error
 set -e
 
+# Define functions
+log_err() {
+    /usr/bin/logger -s -p local0.err <<<"${@}"
+}
+log_warning() {
+    /usr/bin/logger -s -p local0.warning <<<"${@}"
+}
+sed_exit() {
+    log_err "'sed' didn't replace, report this at https://github.com/leomeinel/arch-install/issues."
+    exit 1
+}
+var_invalid_error() {
+    log_err "'${1}' is invalid in '${2}'."
+    exit 1
+}
+var_invalid_warning() {
+    log_warning "'${1}' is invalid in '${2}'."
+}
+
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
-
-# Define functions
-sed_exit() {
-    echo "ERROR: 'sed' didn't replace, report this @"
-    echo "       https://github.com/leomeinel/arch-install/issues"
-    exit 1
-}
-var_invalid_error() {
-    echo "ERROR: '${1}' isn't valid in '${2}'"
-    exit 1
-}
-var_invalid_warning() {
-    echo "WARNING: '${1}' isn't valid in '${2}'"
-}
 
 # Sync files from this repo to system
 rsync -rq "${SCRIPT_DIR}/etc/" /etc
@@ -100,12 +105,15 @@ for user in "${USERS[@]}"; do
     for i in {1..5}; do
         [[ "${i}" -eq 5 ]] &&
             {
-                echo "ERROR: Too many retries. Exiting now."
+                log_err "Too many retries."
                 exit 1
             }
         echo "Enter password for ${user}"
-        passwd "${user}" && break ||
-            echo "WARNING: You have entered an incorrect password. Retrying now."
+        if passwd "${user}"; then
+            break
+        else
+            log_warning "You have entered an incorrect password. Retrying now."
+        fi
     done
 done
 
@@ -151,11 +159,14 @@ reflector --save /etc/pacman.d/mirrorlist --country "${MIRRORCOUNTRIES}" --proto
 for i in {1..5}; do
     [[ "${i}" -eq 5 ]] &&
         {
-            echo "ERROR: Too many retries. Exiting now."
+            log_err "Too many retries."
             exit 1
         }
-    pacman -Syu --noprogressbar --noconfirm --needed - <"${SCRIPT_DIR}/pkgs-setup.txt" && break ||
-        echo "WARNING: pacman failed. Retrying now."
+    if pacman -Syu --noprogressbar --noconfirm --needed - <"${SCRIPT_DIR}/pkgs-setup.txt"; then
+        break
+    else
+        log_warning "'pacman' failed. Retrying now."
+    fi
 done
 ## Install optional dependencies
 DEPENDENCIES=""
@@ -188,11 +199,14 @@ pacman -Qq "wlroots" >/dev/null 2>&1 &&
 for i in {1..5}; do
     [[ "${i}" -eq 5 ]] &&
         {
-            echo "ERROR: Too many retries. Exiting now."
+            log_err "Too many retries."
             exit 1
         }
-    pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"${DEPENDENCIES}" && break ||
-        echo "WARNING: pacman failed. Retrying now."
+    if pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"${DEPENDENCIES}"; then
+        break
+    else
+        log_warning "'pacman' failed. Retrying now."
+    fi
 done
 ## Reinstall packages as dependencies
 DEPENDENCIES=""
@@ -211,11 +225,14 @@ pacman -Qq "tesseract-data-nld" >/dev/null 2>&1 &&
 for i in {1..5}; do
     [[ "${i}" -eq 5 ]] &&
         {
-            echo "ERROR: Too many retries. Exiting now."
+            log_err "Too many retries."
             exit 1
         }
-    pacman -S --noprogressbar --noconfirm --asdeps - <<<"${DEPENDENCIES}" && break ||
-        echo "WARNING: pacman failed. Retrying now."
+    if pacman -S --noprogressbar --noconfirm --asdeps - <<<"${DEPENDENCIES}"; then
+        break
+    else
+        log_warning "'pacman' failed. Retrying now."
+    fi
 done
 
 # Set up user scripts
@@ -484,9 +501,13 @@ UPGRADE_HOME="$(
 # Fail on error
 set -e
 
+log_err() {
+    /usr/bin/logger -s -p local0.err <<<"${@}"
+}
+
 # If current user is not UID 1000, don't do anything
 if [[ "${UID}" -ne 1000 ]]; then
-    /usr/bin/echo "ERROR: You can only run this script as UID 1000"
+    log_err "You can only run this script as UID 1000."
     exit 1
 fi
 
@@ -568,7 +589,7 @@ done
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
 [[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]] &&
     {
-        echo "ERROR: SUBVOLUMES and CONFIGS aren't the same length!"
+        log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
         exit 1
     }
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
@@ -723,4 +744,4 @@ dracut --regenerate-all --force
 rm -rf /git
 
 # Notify user if script has finished successfully
-echo "INFO: $(basename "${0}") has finished successfully."
+echo "'$(basename "${0}")' has finished successfully."

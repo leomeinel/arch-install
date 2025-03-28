@@ -12,9 +12,14 @@
 # Fail on error
 set -e
 
+# Define functions
+log_err() {
+    /usr/bin/logger -s -p local0.err <<<"${@}"
+}
+
 # If current user is not UID 1000, don't do anything
 if [[ "${UID}" -ne 1000 ]]; then
-    /usr/bin/echo "ERROR: You can only run this script as UID 1000"
+    log_err "You can only run this script as UID 1000."
     exit 1
 fi
 

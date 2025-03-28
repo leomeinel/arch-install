@@ -14,6 +14,14 @@
 # Fail on error
 set -e
 
+# Define functions
+log_err() {
+    /usr/bin/logger -s -p local0.err <<<"${@}"
+}
+log_warning() {
+    /usr/bin/logger -s -p local0.warning <<<"${@}"
+}
+
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
@@ -40,21 +48,21 @@ YES)
     done
     [[ "${#DISKS[@]}" -lt 2 ]] &&
         {
-            echo "ERROR: There are less than 2 disks attached!"
+            log_err "There are less than 2 disks attached."
             exit 1
         }
     [[ "${#DISKS[@]}" -gt 2 ]] &&
         {
-            echo "WARNING: There are more than 2 disks attached!"
+            log_warning "There are more than 2 disks attached."
             lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
             ### Prompt user to select 2 RAID members
             read -rp "Which disk is the first RAID member? (Type '/dev/sdX' fex.): " choice0
             read -rp "Which disk is the second RAID member? (Type '/dev/sdY' fex.): " choice1
             if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
-                echo "Using ${choice0} and ${choice1} for rescue-system."
+                echo "Using '${choice0}' and '${choice1}' for rescue-system."
                 DISKS=("${choice0}" "${choice1}")
             else
-                echo "ERROR: Drives not suitable for rescue-system!"
+                log_err "Drives not suitable for rescue-system."
                 exit 1
             fi
         }
@@ -62,13 +70,13 @@ YES)
     DISK1="${DISKS[0]}"
     DISK2="${DISKS[1]}"
     ## Prompt user to confirm selection
-    read -rp "Use ${DISK1} and ${DISK2}? (Type 'yes' in capital letters): " choice
+    read -rp "Use '${DISK1}' and '${DISK2}'? (Type 'yes' in capital letters): " choice
     case "${choice}" in
     YES)
-        echo "Using ${DISK1} and ${DISK2}..."
+        echo "Using '${DISK1}' and '${DISK2}'..."
         ;;
     *)
-        echo "ERROR: User aborted using ${DISK1} and ${DISK2}!"
+        log_err "User aborted using '${DISK1}' and '${DISK2}'."
         exit 1
         ;;
     esac
@@ -79,10 +87,10 @@ YES)
     lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
     read -rp "Which disk do you want to use? (Type '/dev/sdX' fex.): " choice
     if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice}"; then
-        echo "Using ${choice}..."
         DISK1="${choice}"
+        echo "Using '${DISK1}'..."
     else
-        echo "ERROR: Drive not suitable for rescue-system!"
+        log_err "Drive not suitable for rescue-system."
         exit 1
     fi
     ;;
@@ -99,22 +107,28 @@ if [[ -n "${DISK2}" ]]; then
     for i in {1..5}; do
         [[ "${i}" -eq 5 ]] &&
             {
-                echo "ERROR: Too many retries. Exiting now."
+                log_err "Too many retries."
                 exit 1
             }
-        cryptsetup open "${RAID_DEVICE}" md0_crypt && break ||
-            echo "WARNING: You have entered an incorrect password. Retrying now."
+        if cryptsetup open "${RAID_DEVICE}" md0_crypt; then
+            break
+        else
+            log_warning "You have entered an incorrect password. Retrying now."
+        fi
     done
 else
     ## Configure encryption
     for i in {1..5}; do
         [[ "${i}" -eq 5 ]] &&
             {
-                echo "ERROR: Too many retries. Exiting now."
+                log_err "Too many retries."
                 exit 1
             }
-        cryptsetup open "${DISK1P2}" md0_crypt && break ||
-            echo "WARNING: You have entered an incorrect password. Retrying now."
+        if cryptsetup open "${DISK1P2}" md0_crypt; then
+            break
+        else
+            log_warning "You have entered an incorrect password. Retrying now."
+        fi
     done
 fi
 
@@ -181,8 +195,7 @@ mount -m -o "${OPTIONS4}" "${DISK1P1}" /mnt/efi
 mount -m -B /mnt/efi /mnt/boot
 
 # Inform user how to use arch-chroot
-echo "INFO: To enter the rescue-system, execute the following:"
-echo "      > arch-chroot /mnt"
+echo "To enter the rescue-system, execute the following: 'arch-chroot /mnt'"
 
 # Notify user if script has finished successfully
-echo "INFO: $(basename "${0}") has finished successfully."
+echo "'$(basename "${0}")' has finished successfully."
