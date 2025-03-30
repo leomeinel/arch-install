@@ -16,10 +16,10 @@ set -e
 
 # Define functions
 log_err() {
-    /usr/bin/logger -s -p local0.err <<<"'$(basename "${0}"):' ${*}"
+    /usr/bin/logger -s -p local0.err <<<"$(basename "${0}"): ${*}"
 }
 log_warning() {
-    /usr/bin/logger -s -p local0.warning <<<"'$(basename "${0}"):' ${*}"
+    /usr/bin/logger -s -p local0.warning <<<"$(basename "${0}"): ${*}"
 }
 
 # Source config
