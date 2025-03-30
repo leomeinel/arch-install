@@ -252,7 +252,7 @@ echo "To deploy your own keys, don't confirm the next prompt."
 . /etc/cryptboot.conf
 read -rp "Overwrite secureboot keys? (Type 'yes' in capital letters): " choice
 case "${choice}" in
-YES)
+"YES")
     rm -f ~/secureboot.sh
     if mountpoint -q /efi; then
         doas umount -AR /efi

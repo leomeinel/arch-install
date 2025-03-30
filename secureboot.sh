@@ -27,7 +27,7 @@ log_err() {
 # Prompt user
 read -rp "Have you transferred your keys to '${EFI_KEYS_DIR:?}/keys'? (Type 'yes' in capital letters): " choice
 case "${choice}" in
-YES)
+"YES")
     doas chmod 000 "${EFI_KEYS_DIR:?}"/keys/*
     if mountpoint -q /efi; then
         doas umount -AR /efi

@@ -34,7 +34,7 @@ mountpoint -q /mnt &&
 # Prompt user for RAID
 read -rp "Use RAID? (Type 'yes' in capital letters): " choice
 case "${choice}" in
-YES)
+"YES")
     ## Detect disks
     readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
     DISKS_LENGTH="${#DISKS[@]}"
@@ -72,7 +72,7 @@ YES)
     ## Prompt user to confirm selection
     read -rp "Use '${DISK1}' and '${DISK2}'? (Type 'yes' in capital letters): " choice
     case "${choice}" in
-    YES)
+    "YES")
         echo "Using '${DISK1}' and '${DISK2}'..."
         ;;
     *)

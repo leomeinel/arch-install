@@ -36,7 +36,7 @@ mountpoint -q /mnt &&
 # Prompt user for RAID
 read -rp "Set up RAID? (Type 'yes' in capital letters): " choice
 case "${choice}" in
-YES)
+"YES")
     ## Detect disks
     readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
     DISKS_LENGTH="${#DISKS[@]}"
@@ -96,7 +96,7 @@ YES)
     ## Prompt user to confirm erasure
     read -rp "Erase '${DISK1}' and '${DISK2}'? (Type 'yes' in capital letters): " choice
     case "${choice}" in
-    YES)
+    "YES")
         echo "Erasing '${DISK1}' and '${DISK2}'..."
         ;;
     *)
