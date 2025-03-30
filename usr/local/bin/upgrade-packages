@@ -14,7 +14,7 @@ set -e
 
 # Define functions
 log_err() {
-    /usr/bin/logger -s -p local0.err <<<"${@}"
+    /usr/bin/logger -s -p local0.err <<<"'$(basename "${0}"):' ${*}"
 }
 
 # If current user is not UID 1000, don't do anything

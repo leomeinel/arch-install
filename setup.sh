@@ -14,10 +14,10 @@ set -e
 
 # Define functions
 log_err() {
-    /usr/bin/logger -s -p local0.err <<<"${@}"
+    /usr/bin/logger -s -p local0.err <<<"'$(basename "${0}"):' ${*}"
 }
 log_warning() {
-    /usr/bin/logger -s -p local0.warning <<<"${@}"
+    /usr/bin/logger -s -p local0.warning <<<"'$(basename "${0}"):' ${*}"
 }
 sed_exit() {
     log_err "'sed' didn't replace, report this at https://github.com/leomeinel/arch-install/issues."
@@ -502,7 +502,7 @@ UPGRADE_HOME="$(
 set -e
 
 log_err() {
-    /usr/bin/logger -s -p local0.err <<<"${@}"
+    /usr/bin/logger -s -p local0.err <<<"'$(basename "${0}"):' ${*}"
 }
 
 # If current user is not UID 1000, don't do anything

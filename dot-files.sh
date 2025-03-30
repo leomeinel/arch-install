@@ -16,7 +16,7 @@ set -e
 
 # Define functions
 log_warning() {
-    /usr/bin/logger -s -p local0.warning <<<"${@}"
+    /usr/bin/logger -s -p local0.warning <<<"'$(basename "${0}"):' ${*}"
 }
 
 # Source config
