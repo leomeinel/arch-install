@@ -27,4 +27,4 @@ fi
 /usr/bin/paru
 
 # Upgrade flatpak
-exec doas /usr/bin/flatpak --system update
+exec /usr/bin/doas /usr/bin/flatpak --system update
