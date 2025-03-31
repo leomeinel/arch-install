@@ -17,9 +17,9 @@ log_err() {
     /usr/bin/logger -s -p local0.err <<<"$(basename "${0}"): ${*}"
 }
 
-# If current user is not UID 1000, don't do anything
-if [[ "${UID}" -ne 1000 ]]; then
-    log_err "You can only run this script as UID 1000."
+# If current user is not UID 1002, don't do anything
+if [[ "${UID}" -ne 1002 ]]; then
+    log_err "You can only run this script as UID 1002."
     exit 1
 fi
 
