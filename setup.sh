@@ -518,10 +518,10 @@ TMP_USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${TMP_USERS[@]}"; do
     id "${user}" >/dev/null 2>&1 ||
         var_invalid_error "${user}" "TMP_USERS"
-    UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --user -M '"${user}"'@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" && ~/.config/dot-files/update.sh'"'"''
+    UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --user -M '"${user}"'@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . &&{ /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
 done
-UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" && ~/.config/dot-files/update.sh'"'"''
-UPGRADE_HOME+=$'\nexec /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" && ~/.config/dot-files/update.sh'"'"''
+UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
+UPGRADE_HOME+=$'\nexec /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
 echo "${UPGRADE_HOME}" >/usr/local/bin/upgrade-home
 ## Configure snapper
 ### START sed
