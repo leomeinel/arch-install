@@ -450,7 +450,8 @@ rm -f "${tmpfile}"
     echo 'important_packages = ["dracut", "linux", "linux-lts", "linux-zen"]'
 } >>/etc/snap-pac.ini
 ## Configure /etc/dracut.conf.d/cmdline.conf
-PARAMETERS="rd.auto rd.luks.uuid=${MD0UUID} rd.luks rd.lvm rd.md root=/dev/mapper/vg0-lv0 rd.vconsole.unicode rd.vconsole.keymap=${KEYMAP} loglevel=3 bgrt_disable audit=1 audit_backlog_limit=8192 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
+LV0_UUID="$(blkid -s UUID -o value /dev/mapper/vg0-lv0)"
+PARAMETERS="rd.auto rd.luks.uuid=${MD0UUID} rd.luks rd.lvm rd.md root=UUID=${LV0_UUID} rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvol=/@ rd.vconsole.unicode rd.vconsole.keymap=${KEYMAP} loglevel=3 bgrt_disable audit=1 audit_backlog_limit=8192 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
 ### If on intel set kernel parameter intel_iommu=on
 pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
@@ -736,6 +737,7 @@ pacman -Qq "util-linux" >/dev/null 2>&1 &&
     }
 
 # Set up /efi
+cp /etc/fstab /etc/fstab.sys
 bootctl --esp-path=/efi --no-variables install
 dracut --regenerate-all --force
 
