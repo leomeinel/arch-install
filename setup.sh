@@ -737,7 +737,7 @@ pacman -Qq "util-linux" >/dev/null 2>&1 &&
     }
 
 # Set up /efi
-cp /etc/fstab /etc/fstab.sys
+ln -sf /etc/fstab /etc/fstab.sys
 bootctl --esp-path=/efi --no-variables install
 dracut --regenerate-all --force
 
