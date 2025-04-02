@@ -84,6 +84,7 @@ groupadd -r ssh-allow
 [[ -n "${SYSUSER}" ]] ||
     {
         log_err "'SYSUSER' has to be specified."
+        exit 1
     }
 useradd -ms /bin/bash -G adm,audit,log,proc,rfkill,ssh-allow,sys,systemd-journal,usbguard,wheel,video "${SYSUSER}"
 [[ -n "${GUESTUSER}" ]] &&
