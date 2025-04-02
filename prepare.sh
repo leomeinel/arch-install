@@ -371,10 +371,6 @@ mount -m -o "${OPTIONS4}" -t vfat "${DISK1P1}" /mnt/efi
 ## Configure bind mounts
 ### /boot
 mount -m -B /mnt/efi /mnt/boot
-### /etc/fstab.sys
-touch /mnt/etc/fstab
-touch /mnt/etc/fstab.sys
-mount -m -B /mnt/etc/fstab /mnt/etc/fstab.sys
 ## Modify perms
 chmod 775 /mnt/var/games
 
@@ -421,7 +417,6 @@ done
 
 # Unmount bind mounts to not include wrong mountpoints in /mnt/etc/fstab
 umount /mnt/boot
-umount /mnt/etc/fstab.sys
 
 # Generate /mnt/etc/fstab
 genfstab -UP /mnt >>/mnt/etc/fstab
@@ -429,7 +424,6 @@ genfstab -UP /mnt >>/mnt/etc/fstab
     echo ""
     echo "# arch-install"
     echo "## bind"
-    echo "/etc/fstab /etc/fstab.sys none bind 0 0"
     echo "/efi /boot none bind 0 0"
 } >>/mnt/etc/fstab
 [[ -n "${DISK2}" ]] &&
@@ -443,6 +437,9 @@ genfstab -UP /mnt >>/mnt/etc/fstab
         sed -i "/\\${STRING0}/s/${STRING1}/${STRING1},noauto/" "${FILE}"
         ## END sed
     }
+
+# Copy /mnt/etc/fstab to /mnt/etc/fstab.sys for dracut
+cp /mnt/etc/fstab /mnt/etc/fstab.sys
 
 # Configure /mnt/etc/resolv.conf
 ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
