@@ -36,6 +36,9 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}"/install.conf
 
+# Mount /etc/fstab
+mount -a
+
 # Sync files from this repo to system
 rsync -rq "${SCRIPT_DIR}/etc/" /etc
 rsync -rq "${SCRIPT_DIR}/usr/" /usr
