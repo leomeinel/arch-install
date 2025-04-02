@@ -420,12 +420,6 @@ umount /mnt/boot
 
 # Generate /mnt/etc/fstab
 genfstab -UP /mnt >>/mnt/etc/fstab
-{
-    echo ""
-    echo "# arch-install"
-    echo "## bind"
-    echo "/efi /boot none bind 0 0"
-} >>/mnt/etc/fstab
 [[ -n "${DISK2}" ]] &&
     {
         ## START sed
@@ -440,6 +434,14 @@ genfstab -UP /mnt >>/mnt/etc/fstab
 
 # Copy /mnt/etc/fstab to /mnt/etc/fstab.sys for dracut
 cp /mnt/etc/fstab /mnt/etc/fstab.sys
+
+# Append /mnt/etc/fstab
+{
+    echo ""
+    echo "# arch-install"
+    echo "## bind"
+    echo "/efi /boot none bind 0 0"
+} >>/mnt/etc/fstab
 
 # Configure /mnt/etc/resolv.conf
 ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
