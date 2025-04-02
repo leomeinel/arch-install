@@ -11,8 +11,8 @@ passwd
 To ssh into the target system run:
 
 ```sh
-# Execute ip a on the target system to get <ip_address>
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@<ip_address>
+# Execute ip a on the target system to get [ip_address]
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@[ip_address]
 ```
 
 # Using ssh for Post-installation
@@ -26,6 +26,6 @@ Add your public ssh key to `SYSUSER_PUBKEY` in `install.conf` before running `pr
 To ssh into the target system run:
 
 ```sh
-# Execute ip a on the target system to get <ip_address>
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 9122 -i ~/.ssh/<private_key> <SYSUSER>@<ip_address>
+# Execute ip a on the target system to get [ip_address]
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 9122 -i ~/.ssh/[private_key] [SYSUSER]@[ip_address]
 ```
