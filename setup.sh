@@ -81,11 +81,19 @@ groupadd -r audit
 groupadd -r libvirt
 groupadd -r usbguard
 groupadd -r ssh-allow
-useradd -ms /bin/bash -G video "${GUESTUSER}"
-useradd -ms /bin/bash -G video "${HOMEUSER}"
+[[ -n "${SYSUSER}" ]] ||
+    {
+        log_err "'SYSUSER' has to be specified."
+    }
 useradd -ms /bin/bash -G adm,audit,log,proc,rfkill,ssh-allow,sys,systemd-journal,usbguard,wheel,video "${SYSUSER}"
-useradd -ms /bin/bash -G libvirt,video "${VIRTUSER}"
-useradd -ms /bin/bash -G libvirt,video "${WORKUSER}"
+[[ -n "${GUESTUSER}" ]] &&
+    useradd -ms /bin/bash -G video "${GUESTUSER}"
+[[ -n "${HOMEUSER}" ]] &&
+    useradd -ms /bin/bash -G video "${HOMEUSER}"
+[[ -n "${VIRTUSER}" ]] &&
+    useradd -ms /bin/bash -G libvirt,video "${VIRTUSER}"
+[[ -n "${WORKUSER}" ]] &&
+    useradd -ms /bin/bash -G libvirt,video "${WORKUSER}"
 echo "#################################################################"
 echo "#                      _    _           _   _                   #"
 echo "#                     / \  | | ___ _ __| |_| |                  #"
@@ -100,6 +108,8 @@ echo "#           at least 1 digit, 1 uppercase character,            #"
 echo "#         1 lowercace character and 1 other character.          #"
 echo "#################################################################"
 for user in "${USERS[@]}"; do
+    [[ -n "${user}" ]] ||
+        continue
     id "${user}" >/dev/null 2>&1 ||
         var_invalid_error "${user}" "USERS"
     for i in {1..5}; do
@@ -239,6 +249,8 @@ done
 ## All users
 FILES=("dot-files.sh" "install.conf")
 for user in "${USERS[@]}"; do
+    [[ -n "${user}" ]] ||
+        continue
     id "${user}" >/dev/null 2>&1 ||
         var_invalid_error "${user}" "USERS"
     for tmp_file in "${FILES[@]}"; do
@@ -505,23 +517,25 @@ log_err() {
     /usr/bin/logger -s -p local0.err <<<"$(basename "${0}"): ${*}"
 }
 
-# If current user is not UID 1002, don't do anything
-if [[ "${UID}" -ne 1002 ]]; then
-    log_err "You can only run this script as UID 1002."
+# If current user is not UID 1000, don't do anything
+if [[ "${UID}" -ne 1000 ]]; then
+    log_err "You can only run this script as UID 1000."
     exit 1
 fi
 
 # Run ~/.config/dot-files/update.sh for each user
 EOF
 )"
+UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
+UPGRADE_HOME+=$'\nexec /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
 TMP_USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${TMP_USERS[@]}"; do
+    [[ -n "${user}" ]] ||
+        continue
     id "${user}" >/dev/null 2>&1 ||
         var_invalid_error "${user}" "TMP_USERS"
     UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --user -M '"${user}"'@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . &&{ /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
 done
-UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
-UPGRADE_HOME+=$'\nexec /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
 echo "${UPGRADE_HOME}" >/usr/local/bin/upgrade-home
 ## Configure snapper
 ### START sed
