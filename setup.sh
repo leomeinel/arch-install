@@ -729,10 +729,7 @@ pacman -Qq "snapper" >/dev/null 2>&1 &&
 pacman -Qq "sysstat" >/dev/null 2>&1 &&
     systemctl enable sysstat.service
 pacman -Qq "systemd" >/dev/null 2>&1 &&
-    {
-        systemctl enable systemd-resolved.service
-        systemctl enable systemd-boot-update.service
-    }
+    systemctl enable systemd-resolved.service
 pacman -Qq "tlp-rdw" >/dev/null 2>&1 && pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager-dispatcher.service
 pacman -Qq "tlp" >/dev/null 2>&1 &&
