@@ -19,7 +19,7 @@ log_err() {
 log_warning() {
     /usr/bin/logger -s -p local0.warning <<<"$(basename "${0}"): ${*}"
 }
-var_invalid_error() {
+var_invalid_err_exit() {
     log_err "'${1}' is invalid in '${2}'."
     exit 1
 }
@@ -287,7 +287,7 @@ for user in "${TMP_USERS[@]}"; do
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
-        var_invalid_error "${user}" "TMP_USERS"
+        var_invalid_err_exit "${user}" "TMP_USERS"
     doas systemd-run -P --wait --user -M "${user}"@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
 done
 
@@ -326,7 +326,7 @@ for user in "${USERS[@]}"; do
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
-        var_invalid_error "${user}" "USERS"
+        var_invalid_err_exit "${user}" "USERS"
     for tmp_file in "${FILES[@]}"; do
         file="$(eval echo ~"${user}")"/"${tmp_file}"
         doas /bin/sh -c "[[ -f ${file} ]] || continue"

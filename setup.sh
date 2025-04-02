@@ -23,7 +23,7 @@ sed_exit() {
     log_err "'sed' didn't replace, report this at https://github.com/leomeinel/arch-install/issues."
     exit 1
 }
-var_invalid_error() {
+var_invalid_err_exit() {
     log_err "'${1}' is invalid in '${2}'."
     exit 1
 }
@@ -112,7 +112,7 @@ for user in "${USERS[@]}"; do
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
-        var_invalid_error "${user}" "USERS"
+        var_invalid_err_exit "${user}" "USERS"
     for i in {1..5}; do
         [[ "${i}" -eq 5 ]] &&
             {
@@ -137,7 +137,7 @@ FILE=/etc/locale.gen
 } >>"${FILE}"
 for locale in "${LOCALES[@]}"; do
     grep -q "^#${locale}" /etc/locale.gen ||
-        var_invalid_error "${locale}" "LOCALES"
+        var_invalid_err_exit "${locale}" "LOCALES"
     echo "${locale}" >>"${FILE}"
 done
 locale-gen
@@ -253,11 +253,11 @@ for user in "${USERS[@]}"; do
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
-        var_invalid_error "${user}" "USERS"
+        var_invalid_err_exit "${user}" "USERS"
     for tmp_file in "${FILES[@]}"; do
         file="${SCRIPT_DIR}"/"${tmp_file}"
         [[ -f "${file}" ]] ||
-            var_invalid_error "${file}" "FILES"
+            var_invalid_err_exit "${file}" "FILES"
         cp "${file}" "$(eval echo ~"${user}")"/
         chown "${user}":"${user}" "$(eval echo ~"${user}")"/"${tmp_file}"
     done
@@ -268,7 +268,7 @@ FILES=("nix.conf" "pkgs-flatpak.txt" "post.sh" "secureboot.sh")
 for tmp_file in "${FILES[@]}"; do
     file="${SCRIPT_DIR}"/"${tmp_file}"
     [[ -f "${file}" ]] ||
-        var_invalid_error "${file}" "FILES"
+        var_invalid_err_exit "${file}" "FILES"
     cp "${file}" "$(eval echo ~"${SYSUSER}")"/
     chown "${SYSUSER}":"${SYSUSER}" "$(eval echo ~"${SYSUSER}")"/"${tmp_file}"
 done
@@ -534,7 +534,7 @@ for user in "${TMP_USERS[@]}"; do
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
-        var_invalid_error "${user}" "TMP_USERS"
+        var_invalid_err_exit "${user}" "TMP_USERS"
     UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --user -M '"${user}"'@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . &&{ /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
 done
 echo "${UPGRADE_HOME}" >/usr/local/bin/upgrade-home
@@ -660,7 +660,7 @@ done
 ### Replace subvolumes for snapshots (Prepare snapshot dirs 2)
 for dir in "${SUBVOLUMES[@]}"; do
     [[ -d "${dir}" ]] ||
-        var_invalid_error "${dir}" "SUBVOLUMES"
+        var_invalid_err_exit "${dir}" "SUBVOLUMES"
     btrfs subvolume delete "${dir}".snapshots
     mkdir -p "${dir}".snapshots
 done
@@ -669,7 +669,7 @@ mount -a
 ### Set correct permissions on snapshots (Prepare snapshot dirs 3)
 for dir in "${SUBVOLUMES[@]}"; do
     [[ -d "${dir}" ]] ||
-        var_invalid_error "${dir}" "SUBVOLUMES"
+        var_invalid_err_exit "${dir}" "SUBVOLUMES"
     chown :wheel "${dir}".snapshots
 done
 
