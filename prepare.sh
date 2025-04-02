@@ -150,25 +150,25 @@ mdadm -Ss || true
 sgdisk -o "${DISK1}" || true
 sgdisk -Z "${DISK1}" || true
 wipefs -a "${DISK1}"
-dd if=/dev/zero of="${DISK1}" bs=1M count=8192 status=progress
+dd if=/dev/zero of="${DISK1}" bs=1M conv=fsync count=8192 status=progress
 
 if [[ -n "${DISK2}" ]]; then
     sgdisk -o "${DISK2}" || true
     sgdisk -Z "${DISK2}" || true
     wipefs -a "${DISK2}"
-    dd if=/dev/zero of="${DISK2}" bs=1M count=8192 status=progress
+    dd if=/dev/zero of="${DISK2}" bs=1M conv=fsync count=8192 status=progress
 fi
 ## Prompt user if they want to secure wipe the whole disk
 if [[ -n "${DISK2}" ]]; then
     read -rp "Secure wipe '${DISK1}' and '${DISK2}'? (Type 'yes' in capital letters): " choice
     if [[ "${choice}" == "YES" ]]; then
-        dd if=/dev/urandom of="${DISK1}" bs="$(stat -c "%o" "${DISK1}")" status=progress || true
-        dd if=/dev/urandom of="${DISK2}" bs="$(stat -c "%o" "${DISK2}")" status=progress || true
+        dd if=/dev/urandom of="${DISK1}" bs="$(stat -c "%o" "${DISK1}")" conv=fsync status=progress || true
+        dd if=/dev/urandom of="${DISK2}" bs="$(stat -c "%o" "${DISK2}")" conv=fsync status=progress || true
     fi
 else
     read -rp "Secure wipe '${DISK1}'? (Type 'yes' in capital letters): " choice
     if [[ "${choice}" == "YES" ]]; then
-        dd if=/dev/urandom of="${DISK1}" bs="$(stat -c "%o" "${DISK1}")" status=progress || true
+        dd if=/dev/urandom of="${DISK1}" bs="$(stat -c "%o" "${DISK1}")" conv=fsync status=progress || true
     fi
 fi
 
