@@ -528,7 +528,7 @@ fi
 EOF
 )"
 UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
-UPGRADE_HOME+=$'\nexec /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
+UPGRADE_HOME+=$'\n/bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
 TMP_USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
 for user in "${TMP_USERS[@]}"; do
     [[ -n "${user}" ]] ||
