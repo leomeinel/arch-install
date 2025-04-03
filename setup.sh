@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File: setup.sh
-# Author: Leopold Meinel (leo@meinel.dev)
+# File = setup.sh
+# Author = Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID: MIT
-# URL: https://opensource.org/licenses/MIT
+# SPDX ID = MIT
+# URL = https://opensource.org/licenses/MIT
 # -----
 ###
 
@@ -666,6 +666,8 @@ pacman -Qq "avahi" >/dev/null 2>&1 &&
     systemctl enable avahi-daemon.service
 pacman -Qq "bluez" >/dev/null 2>&1 &&
     systemctl enable bluetooth.service
+pacman -Qq "containerd" >/dev/null 2>&1 &&
+    systemctl enable containerd.service
 pacman -Qq "cups" >/dev/null 2>&1 &&
     systemctl enable cups.service
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
@@ -677,6 +679,8 @@ pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager.service
+pacman -Qq "podman" >/dev/null 2>&1 &&
+    systemctl enable podman.service
 pacman -Qq "reflector" >/dev/null 2>&1 &&
     {
         systemctl enable reflector.service

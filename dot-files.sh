@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File: dot-files.sh
-# Author: Leopold Meinel (leo@meinel.dev)
+# File = dot-files.sh
+# Author = Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID: MIT
-# URL: https://opensource.org/licenses/MIT
+# SPDX ID = MIT
+# URL = https://opensource.org/licenses/MIT
 # -----
 ###
 
@@ -34,7 +34,6 @@ fi
 
 # Append dot-files/install.conf
 {
-    echo ""
     echo "# arch-install"
     cat "${SCRIPT_DIR}"/install.conf
 } >"${DOT_FILES_DIR}"/install.conf

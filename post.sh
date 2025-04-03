@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File: post.sh
-# Author: Leopold Meinel (leo@meinel.dev)
+# File = post.sh
+# Author = Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID: MIT
-# URL: https://opensource.org/licenses/MIT
+# SPDX ID = MIT
+# URL = https://opensource.org/licenses/MIT
 # -----
 ###
 
@@ -140,7 +140,7 @@ doas nft 'add rule ip filter NETAVARK_FORWARD ip protocol tcp ct state new count
 ### Rate-limit UDP packets
 doas nft 'add rule ip filter input ip protocol udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip filter input ip protocol udp ct state new counter drop'
-### Allow SSH from LOCAL_DOMAINS if it is enabled
+### Accept SSH from LOCAL_DOMAINS if it is enabled
 LOCAL_DOMAINS="$(
     cat <<'EOF'
 10.0.0.0/8
@@ -260,8 +260,8 @@ doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags fin,syn,rst,psh,ack,urg
 doas nft 'add rule ip6 filter input meta l4proto tcp ct state new tcp option maxseg size != 536-65535 counter drop'
 doas nft 'add rule ip6 filter NETAVARK_FORWARD meta l4proto tcp ct state new tcp option maxseg size != 536-65535 counter drop'
 ### Drop spoofed packets
-doas nft 'add rule ip6 filter input iifname != "lo" ip6 saddr ::1 counter drop'
-doas nft 'add rule ip6 filter NETAVARK_FORWARD iifname != "lo" ip6 saddr ::1 counter drop'
+doas nft 'add rule ip6 filter input iifname != "lo" ip6 saddr ::1/128 counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD iifname != "lo" ip6 saddr ::1/128 counter drop'
 ### Drop ICMP
 doas nft 'add rule ip6 filter input meta l4proto icmp counter drop'
 doas nft 'add rule ip6 filter NETAVARK_FORWARD meta l4proto icmp counter drop'
@@ -282,11 +282,11 @@ doas nft 'add rule ip6 filter NETAVARK_FORWARD meta l4proto tcp ct state new cou
 ### Rate-limit UDP packets
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new counter drop'
-### Allow SSH from LOCAL_DOMAINS if it is enabled
+### Accept SSH from LOCAL_DOMAINS if it is enabled
 LOCAL_DOMAINS="$(
     cat <<'EOF'
 fe80::/10
-::1
+::1/128
 EOF
 )"
 [[ -n "${SYSUSER_PUBKEY}" ]] &&
@@ -362,7 +362,11 @@ case "${choice}" in
     if mountpoint -q /efi; then
         doas umount -AR /efi
     fi
+    if mountpoint -q /boot; then
+        doas umount -AR /boot
+    fi
     doas mount /efi
+    doas mount /boot
     doas cryptboot-efikeys create
     doas cryptboot-efikeys enroll "${EFI_KEYS_DIR:?}"/keys/PK.key "${EFI_KEYS_DIR:?}"/keys/KEK.key
     doas cryptboot systemd-boot-sign
