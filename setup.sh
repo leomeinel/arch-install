@@ -316,38 +316,6 @@ fi
     echo "ENABLE_OPROM=\"${ENABLE_OPROM}\""
 } >>/git/cryptboot/cryptboot.conf
 cp /git/cryptboot/cryptboot.conf /etc/
-## Configure /etc/xdg/user-dirs.defaults
-### START sed
-FILE=/etc/xdg/user-dirs.defaults
-STRING="^TEMPLATES="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#TEMPLATES=|g" "${FILE}"
-STRING="^PUBLICSHARE="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#PUBLICSHARE=|g" "${FILE}"
-STRING="^DESKTOP="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#DESKTOP=|g" "${FILE}"
-STRING="^MUSIC="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#MUSIC=|g" "${FILE}"
-STRING="^PICTURES="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#PICTURES=|g" "${FILE}"
-STRING="^VIDEOS="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#VIDEOS=|g" "${FILE}"
-### END sed
-{
-    echo ""
-    echo "# arch-install"
-    echo "TEMPLATES=Documents/Templates"
-    echo "PUBLICSHARE=Documents/Public"
-    echo "DESKTOP=Desktop"
-    echo "MUSIC=Documents/Music"
-    echo "PICTURES=Documents/Pictures"
-    echo "VIDEOS=Documents/Videos"
-} >>"${FILE}"
 ## Configure /etc/mdadm.conf.d/50-arch-install.conf
 if lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1"; then
     mkdir -p /etc/mdadm.conf.d/

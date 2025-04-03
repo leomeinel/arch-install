@@ -64,6 +64,5 @@ unzip
 usbguard
 usbutils
 wireguard-tools
-xdg-user-dirs
 yq
 zram-generator
