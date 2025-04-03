@@ -119,7 +119,7 @@ doas nft 'add rule ip filter input ip protocol tcp ct state new counter drop'
 ### Rate-limit UDP packets
 doas nft 'add rule ip filter input ip protocol udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip filter input ip protocol udp ct state new counter drop'
-### Allow SSH from LOCAL_DOMAINS if it is enabled
+### Accept SSH from LOCAL_DOMAINS if it is enabled
 LOCAL_DOMAINS="$(
     cat <<'EOF'
 10.0.0.0/8
@@ -203,7 +203,7 @@ doas nft 'add rule ip6 filter input meta l4proto tcp ct state new counter drop'
 ### Rate-limit UDP packets
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new counter drop'
-### Allow SSH from LOCAL_DOMAINS if it is enabled
+### Accept SSH from LOCAL_DOMAINS if it is enabled
 LOCAL_DOMAINS="$(
     cat <<'EOF'
 fe80::/10
