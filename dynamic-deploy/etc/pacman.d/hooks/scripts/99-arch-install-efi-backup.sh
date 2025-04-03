@@ -16,10 +16,14 @@ set -e
 if /usr/bin/mountpoint -q /efi; then
     /usr/bin/umount -AR /efi
 fi
-/usr/bin/mount /efi
+if /usr/bin/mountpoint -q /boot; then
+    /usr/bin/umount -AR /boot
+fi
 if /usr/bin/mountpoint -q /efi.bak; then
     /usr/bin/umount -AR /efi.bak
 fi
+/usr/bin/mount /efi
+/usr/bin/mount /boot
 /usr/bin/mount /efi.bak
 
 # Backup /efi to /efi.bak
