@@ -391,17 +391,6 @@ lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
         echo "qemu-guest-agent"
         echo "spice-vdagent"
     } >>"${SCRIPT_DIR}/pkgs-prepare.txt"
-lshw -C display | grep "vendor:" | grep -q "Advanced Micro Devices, Inc." &&
-    {
-        echo "vulkan-radeon"
-        echo "xf86-video-amdgpu"
-    } >>"${SCRIPT_DIR}/pkgs-prepare.txt"
-lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
-    {
-        echo "intel-media-driver"
-        echo "vulkan-intel"
-        echo "xf86-video-intel"
-    } >>"${SCRIPT_DIR}"/pkgs-prepare.txt
 for i in {1..5}; do
     [[ "${i}" -eq 5 ]] &&
         {
