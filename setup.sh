@@ -41,7 +41,6 @@ mount -a
 
 # Sync files from this repo to system
 rsync -rq "${SCRIPT_DIR}/etc/" /etc
-rsync -rq "${SCRIPT_DIR}/usr/" /usr
 rsync -rq "${SCRIPT_DIR}/efi/" /efi
 
 # Add groups & users
@@ -267,7 +266,7 @@ for user in "${USERS[@]}"; do
     chmod 755 "$(eval echo ~"${user}")"/dot-files.sh
 done
 ## SYSUSER
-FILES=("nix.conf" "pkgs-flatpak.txt" "post.sh" "secureboot.sh")
+FILES=("nix.conf" "post.sh" "secureboot.sh")
 for tmp_file in "${FILES[@]}"; do
     file="${SCRIPT_DIR}"/"${tmp_file}"
     [[ -f "${file}" ]] ||
@@ -376,12 +375,6 @@ sed -i "s/${STRING}/#log_group =/g" "${FILE}"
     echo "# arch-install"
     echo "log_group = audit"
 } >>"${FILE}"
-## Configure /etc/libvirt/network.conf
-{
-    echo ''
-    echo '# arch-install'
-    echo 'firewall_backend = "nftables"'
-} >>/etc/libvirt/network.conf
 ## Configure /etc/nsswitch.conf
 ### START sed
 FILE=/etc/nsswitch.conf
