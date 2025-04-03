@@ -34,7 +34,6 @@ fi
 
 # Append dot-files/install.conf
 {
-    echo ""
     echo "# arch-install"
     cat "${SCRIPT_DIR}"/install.conf
 } >"${DOT_FILES_DIR}"/install.conf
