@@ -60,7 +60,6 @@ lollypop
 lrzip
 lshw
 lsof
-lxappearance
 lzop
 man-db
 mtools

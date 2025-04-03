@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File: post.sh
-# Author: Leopold Meinel (leo@meinel.dev)
+# File = post.sh
+# Author = Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID: MIT
-# URL: https://opensource.org/licenses/MIT
+# SPDX ID = MIT
+# URL = https://opensource.org/licenses/MIT
 # -----
 ###
 
@@ -257,7 +257,11 @@ case "${choice}" in
     if mountpoint -q /efi; then
         doas umount -AR /efi
     fi
+    if mountpoint -q /boot; then
+        doas umount -AR /boot
+    fi
     doas mount /efi
+    doas mount /boot
     doas cryptboot-efikeys create
     doas cryptboot-efikeys enroll "${EFI_KEYS_DIR:?}"/keys/PK.key "${EFI_KEYS_DIR:?}"/keys/KEK.key
     doas cryptboot systemd-boot-sign

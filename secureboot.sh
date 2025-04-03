@@ -32,7 +32,11 @@ case "${choice}" in
     if mountpoint -q /efi; then
         doas umount -AR /efi
     fi
+    if mountpoint -q /boot; then
+        doas umount -AR /boot
+    fi
     doas mount /efi
+    doas mount /boot
     doas cryptboot systemd-boot-sign
     doas /bin/sh -c '{
         echo "uefi_secureboot_cert='\""${EFI_KEYS_DIR:?}"/keys\"'/db.crt"
