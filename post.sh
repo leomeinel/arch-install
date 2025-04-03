@@ -155,7 +155,7 @@ doas nft 'add rule ip filter input_prerouting tcp dport 443 counter accept'
 ### Accept Transmission
 doas nft 'add rule ip filter input_prerouting udp dport 51413 counter accept'
 ### Accept custom wireguard
-doas nft 'add rule ip filter input_prerouting udp dport 62990 counter accept'
+doas nft 'add rule ip filter input_prerouting udp dport 59605 counter accept'
 ### Accept interface virbr0 (forward)
 doas nft 'add rule ip filter forward iifname "virbr0" counter accept'
 doas nft 'add rule ip filter forward oifname "virbr0" counter accept'
@@ -237,7 +237,7 @@ doas nft 'add rule ip6 filter input_prerouting tcp dport 443 counter accept'
 ### Accept Transmission
 doas nft 'add rule ip6 filter input_prerouting udp dport 51413 counter accept'
 ### Accept custom wireguard
-doas nft 'add rule ip6 filter input_prerouting udp dport 62990 counter accept'
+doas nft 'add rule ip6 filter input_prerouting udp dport 59605 counter accept'
 ### Accept interface virbr0 (forward)
 doas nft 'add rule ip6 filter forward iifname "virbr0" counter accept'
 doas nft 'add rule ip6 filter forward oifname "virbr0" counter accept'
