@@ -311,6 +311,9 @@ doas /bin/sh -c '{
     echo "Include = /etc/paru.conf.d/50-arch-install.conf"
 } >>/etc/paru.conf'
 
+# AUR packages
+paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
+
 # Clear package cache
 paru -Scc
 doas /bin/sh -c 'pacman -Qtdq | pacman -Rns -' || true
@@ -320,7 +323,7 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
     doas systemctl enable nftables.service
 
 # Remove user files
-FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-flatpak.txt" "post.sh" ".bash_history" ".nix-channels")
+FILES=("dot-files.sh" "install.conf" "nix.conf" "pkgs-flatpak.txt" "pkgs-post.txt" "post.sh" ".bash_history" ".nix-channels")
 DIRS=(".gnupg" ".nix-defexpr" ".nix-profile" "git")
 for user in "${USERS[@]}"; do
     [[ -n "${user}" ]] ||

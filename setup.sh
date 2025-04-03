@@ -267,7 +267,7 @@ for user in "${USERS[@]}"; do
     chmod 755 "$(eval echo ~"${user}")"/dot-files.sh
 done
 ## SYSUSER
-FILES=("nix.conf" "pkgs-flatpak.txt" "post.sh" "secureboot.sh")
+FILES=("nix.conf" "pkgs-flatpak.txt" "pkgs-post.txt" "post.sh" "secureboot.sh")
 for tmp_file in "${FILES[@]}"; do
     file="${SCRIPT_DIR}"/"${tmp_file}"
     [[ -f "${file}" ]] ||
@@ -679,7 +679,7 @@ done
 # Create dirs/files and modify perms
 FILES_600=("/etc/ssh/sshd_config.d/50-arch-install.conf" "/etc/audit/rules.d/50-arch-install.rules")
 DIRS_700=("/etc/audit/rules.d" "/etc/ssh/sshd_config.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
-FILES_755=("/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/nitrokey-app" "/usr/local/bin/pwvucontrol" "/usr/local/bin/rpi-imager" "/usr/local/bin/sweethome3d" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages")
+FILES_755=("/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/protontricks" "/usr/local/bin/pwvucontrol" "/usr/local/bin/steam" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages" "/usr/local/bin/wine" "/usr/local/bin/winetricks")
 for file in "${FILES_600[@]}"; do
     ! [[ -f "${file}" ]] &&
         touch "${file}"
