@@ -74,8 +74,6 @@ librsvg
 libsecret
 libvirt
 libwmf
-lldb
-llvm
 logrotate
 logwatch
 lollypop
