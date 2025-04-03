@@ -210,18 +210,20 @@ pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntransmission-cli'
 pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
-for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            log_err "Too many retries."
-            exit 1
-        }
-    if pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"${DEPENDENCIES}"; then
-        break
-    else
-        log_warning "'pacman' failed. Retrying now."
-    fi
-done
+if [[ -n "${DEPENDENCIES}" ]]; then
+    for i in {1..5}; do
+        [[ "${i}" -eq 5 ]] &&
+            {
+                log_err "Too many retries."
+                exit 1
+            }
+        if pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"${DEPENDENCIES}"; then
+            break
+        else
+            log_warning "'pacman' failed. Retrying now."
+        fi
+    done
+fi
 ## Reinstall packages as dependencies
 DEPENDENCIES=""
 pacman -Qq "blas-openblas" >/dev/null 2>&1 &&
@@ -236,18 +238,20 @@ pacman -Qq "tesseract-data-fra" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-fra'
 pacman -Qq "tesseract-data-nld" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-nld'
-for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            log_err "Too many retries."
-            exit 1
-        }
-    if pacman -S --noprogressbar --noconfirm --asdeps - <<<"${DEPENDENCIES}"; then
-        break
-    else
-        log_warning "'pacman' failed. Retrying now."
-    fi
-done
+if [[ -n "${DEPENDENCIES}" ]]; then
+    for i in {1..5}; do
+        [[ "${i}" -eq 5 ]] &&
+            {
+                log_err "Too many retries."
+                exit 1
+            }
+        if pacman -S --noprogressbar --noconfirm --asdeps - <<<"${DEPENDENCIES}"; then
+            break
+        else
+            log_warning "'pacman' failed. Retrying now."
+        fi
+    done
+fi
 
 # Set up user scripts
 ## All users
