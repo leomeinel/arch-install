@@ -43,11 +43,11 @@ chmod 755 "${DOT_FILES_DIR}"/setup.sh
 # Run dot-files
 "${DOT_FILES_DIR}"/setup.sh
 
-# Merge changes to main in detached HEAD state because of using a tagged version
+# Merge changes to server in detached HEAD state because of using a tagged version
 if [[ "${IS_RELEASE}" == "true" ]]; then
     cd "${DOT_FILES_DIR}"
     git switch -c tmp
-    git checkout main
+    git checkout server
     git merge --no-gpg-sign --no-edit tmp ||
-        log_warning "Couldn't merge changes to main. Please manually merge branch 'tmp' later."
+        log_warning "Couldn't merge changes to server. Please manually merge branch 'tmp' later."
 fi
