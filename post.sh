@@ -159,7 +159,7 @@ EOF
 doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
 doas nft 'add rule ip filter NETAVARK_FORWARD_PREROUTING tcp dport 9122 counter drop'
 ### Accept custom wireguard
-doas nft 'add rule ip filter input_prerouting udp dport 62990 counter accept'
+doas nft 'add rule ip filter input_prerouting udp dport 65398 counter accept'
 ### Jump to nixos-fw
 doas nft 'add chain ip filter nixos-fw' || true
 doas nft 'add rule ip filter input_prerouting counter jump nixos-fw'
@@ -298,7 +298,7 @@ EOF
     }
 doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
 ### Accept custom wireguard
-doas nft 'add rule ip6 filter input_prerouting udp dport 62990 counter accept'
+doas nft 'add rule ip6 filter input_prerouting udp dport 65398 counter accept'
 ### Jump to nixos-fw
 doas nft 'add chain ip6 filter nixos-fw' || true
 doas nft 'add rule ip6 filter input_prerouting counter jump nixos-fw'
