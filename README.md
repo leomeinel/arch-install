@@ -2,7 +2,7 @@
 
 My personal Arch Linux install script using LUKS2 encryption, LVM and btrfs. With optional RAID1.
 
-Meant for general purpose systems with a GUI.
+Meant for systems with a GUI that mainly run steam and other games.
 
 ## Info
 
