@@ -29,7 +29,7 @@ DOT_FILES_DIR=~/.config/dot-files/
 if [[ "${IS_RELEASE}" == "true" ]]; then
     git clone -b "${DOTFILES_VERSION}" https://github.com/leomeinel/dot-files.git "${DOT_FILES_DIR}"
 else
-    git clone -b main https://github.com/leomeinel/dot-files.git "${DOT_FILES_DIR}"
+    git clone -b server https://github.com/leomeinel/dot-files.git "${DOT_FILES_DIR}"
 fi
 
 # Append dot-files/install.conf
