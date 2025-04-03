@@ -190,7 +190,7 @@ doas nft 'add rule ip6 filter input tcp flags fin,syn,rst,psh,ack,urg / fin,syn,
 ### Drop SYN packets with suspicious MSS value
 doas nft 'add rule ip6 filter input meta l4proto tcp ct state new tcp option maxseg size != 536-65535 counter drop'
 ### Drop spoofed packets
-doas nft 'add rule ip6 filter input iifname != "lo" ip6 saddr ::1 counter drop'
+doas nft 'add rule ip6 filter input iifname != "lo" ip6 saddr ::1/128 counter drop'
 ### Drop ICMP
 doas nft 'add rule ip6 filter input meta l4proto icmp counter drop'
 ### Drop excessive TCP RST packets
@@ -207,7 +207,7 @@ doas nft 'add rule ip6 filter input meta l4proto udp ct state new counter drop'
 LOCAL_DOMAINS="$(
     cat <<'EOF'
 fe80::/10
-::1
+::1/128
 EOF
 )"
 [[ -n "${SYSUSER_PUBKEY}" ]] &&
