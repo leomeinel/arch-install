@@ -98,6 +98,7 @@ openssh
 oxipng
 pacman-contrib
 pam-u2f
+pass
 pdftk
 perl-image-exiftool
 perl-rename
