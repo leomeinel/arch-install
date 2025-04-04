@@ -195,7 +195,8 @@ OPTIONS4="noexec,nodev,nosuid,noatime,fmask=0077,dmask=0077"
 mount -m -o "${OPTIONS4}" -t vfat "${DISK1P1}" /mnt/efi
 [[ -n "${DISK2}" ]] &&
     mount -m -o "${OPTIONS4}" -t vfat "${DISK2P1}" /mnt/efi.bak
-## /boot
+## Configure bind mounts
+### /boot
 mount -m -B /mnt/efi /mnt/boot
 
 # Inform user how to use arch-chroot

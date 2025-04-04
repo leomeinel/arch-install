@@ -280,7 +280,31 @@ case "${choice}" in
 esac
 
 # Install nix
-doas /bin/sh -c "/bin/sh <(curl -L https://nixos.org/nix/install) --daemon --yes --nix-extra-conf-file ${SCRIPT_DIR}/nix.conf"
+## Download nix upstream installation script
+tmpfile="$(mktemp /tmp/arch-install-nixos-XXXXXX.sh)"
+curl --proto '=https' --tlsv1.2 -sSfL https://nixos.org/nix/install -o "${tmpfile}"
+read -rp "Skip confirmation of nix upstream installation script? (Type 'yes' in capital letters): " choice
+case "${choice}" in
+"YES") ;;
+*)
+    ## View nix upstream installation script
+    echo "To exit confirmation hit 'q'."
+    sleep 5
+    bat --decorations auto --color auto "${tmpfile}"
+    read -rp "Execute nix upstream installation script? (Type 'yes' in capital letters): " choice
+    ;;
+esac
+case "${choice}" in
+"YES")
+    ## Execute nix upstream installation script
+    chmod +x "${tmpfile}"
+    doas "${tmpfile}" --daemon --yes --nix-extra-conf-file "${SCRIPT_DIR}"/nix.conf
+    ;;
+*)
+    log_err "User aborted executing nix upstream installation script."
+    exit 1
+    ;;
+esac
 
 # Configure dot-files
 doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'

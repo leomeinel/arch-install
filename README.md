@@ -24,7 +24,7 @@ Follow the `Pre-installation` section of [this guide](https://wiki.archlinux.org
 
 ## Installation
 
-:information_source: | `[...].sh |& tee [file]` will create a log file automatically.
+:information_source: | `|& tee [file]` will create a log file automatically. I would not recommend using it in a tty because it affects readability. Just skip any part after the `[...].sh`.
 
 ```sh
 pacman -Sy git
