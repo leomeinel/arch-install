@@ -760,6 +760,8 @@ pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
+
+# Enable sshd.service and add SYSUSER_PUBKEY if enabled
 [[ -n "${SYSUSER_PUBKEY}" ]] && pacman -Qq "openssh" >/dev/null 2>&1 &&
     {
         systemctl enable sshd.service
