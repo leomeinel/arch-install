@@ -46,15 +46,12 @@ done
 
 # Configure KEYMAP
 doas localectl --no-convert set-keymap "${KEYMAP}"
-doas localectl --no-convert set-x11-keymap "${KEYLAYOUT}"
 
 # Configure clock
 doas timedatectl set-ntp true
 
-# Set default java
-doas archlinux-java set java-21-openjdk
-
 # Configure nftables
+# FIXME: I'm almost certain that netavark/podman do not support nftables.
 # References
 #
 # https://networklessons.com/uncategorized/iptables-example-configuration
@@ -82,11 +79,16 @@ doas nft 'add chain ip filter output { type filter hook output priority 0; polic
 doas nft 'add rule ip filter input ct state related,established counter accept'
 ### Accept loopback
 doas nft 'add rule ip filter input iifname "lo" counter accept'
+### Accept established connections on NETAVARK_FORWARD
+doas nft 'add chain ip filter NETAVARK_FORWARD'
+doas nft 'add rule ip filter NETAVARK_FORWARD ip daddr 10.88.0.0/16 ct state related,established counter accept'
 ### First packet has to be TCP SYN
 doas nft 'add rule ip filter input tcp flags != syn / fin,syn,rst,ack ct state new counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags != syn / fin,syn,rst,ack ct state new counter drop'
 ### Drop all invalid packets
 doas nft 'add rule ip filter input ct state invalid counter drop'
 doas nft 'add rule ip filter forward ct state invalid counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD ct state invalid counter drop'
 doas nft 'add rule ip filter output ct state invalid counter drop'
 ### Drop packets with bogus TCP flags
 doas nft 'add rule ip filter input tcp flags fin,syn / fin,syn counter drop'
@@ -95,27 +97,46 @@ doas nft 'add rule ip filter input tcp flags fin,rst / fin,rst counter drop'
 doas nft 'add rule ip filter input tcp flags fin / fin,ack counter drop'
 doas nft 'add rule ip filter input tcp flags urg / ack,urg counter drop'
 doas nft 'add rule ip filter input tcp flags psh / psh,ack counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags fin,syn / fin,syn counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags syn,rst / syn,rst counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags fin,rst / fin,rst counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags fin / fin,ack counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags urg / ack,urg counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags psh / psh,ack counter drop'
 ### Drop NULL packets
 doas nft 'add rule ip filter input tcp flags 0x0 / fin,syn,rst,psh,ack,urg counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags 0x0 / fin,syn,rst,psh,ack,urg counter drop'
 ### Drop XMAS packets
 doas nft 'add rule ip filter input tcp flags fin,syn,rst,psh,ack,urg / fin,syn,rst,psh,ack,urg counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags fin,syn,rst,psh,ack,urg / fin,syn,rst,psh,ack,urg counter drop'
 ### Drop fragments
 doas nft 'add rule ip filter input ip frag-off & 0x1fff != 0 counter drop'
 doas nft 'add rule ip filter forward ip frag-off & 0x1fff != 0 counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD ip frag-off & 0x1fff != 0 counter drop'
 doas nft 'add rule ip filter output ip frag-off & 0x1fff != 0 counter drop'
 ### Drop SYN packets with suspicious MSS value
 doas nft 'add rule ip filter input ip protocol tcp ct state new tcp option maxseg size != 536-65535 counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD ip protocol tcp ct state new tcp option maxseg size != 536-65535 counter drop'
 ### Drop spoofed packets
 doas nft 'add rule ip filter input iifname != "lo" ip saddr 127.0.0.0/8 counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD iifname != "lo" ip saddr 127.0.0.0/8 counter drop'
 ### Drop ICMP
 doas nft 'add rule ip filter input ip protocol icmp counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD ip protocol icmp counter drop'
 ### Drop excessive TCP RST packets
 doas nft 'add chain ip filter input_prerouting'
 doas nft 'add rule ip filter input tcp flags rst limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip filter input tcp flags rst counter drop'
+#### Accept established connections on NETAVARK_FORWARD_PREROUTING
+doas nft 'add chain ip filter NETAVARK_FORWARD_PREROUTING'
+doas nft 'add rule ip filter NETAVARK_FORWARD_PREROUTING ip daddr 10.88.0.0/16 ct state related,established counter accept'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags rst limit rate 2/second burst 2 packets counter jump NETAVARK_FORWARD_PREROUTING'
+doas nft 'add rule ip filter NETAVARK_FORWARD tcp flags rst counter drop'
 ### Drop SYN-FLOOD packets
 doas nft 'add rule ip filter input ip protocol tcp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip filter input ip protocol tcp ct state new counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD ip protocol tcp ct state new limit rate 2/second burst 2 packets counter jump NETAVARK_FORWARD_PREROUTING'
+doas nft 'add rule ip filter NETAVARK_FORWARD ip protocol tcp ct state new counter drop'
 ### Rate-limit UDP packets
 doas nft 'add rule ip filter input ip protocol udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip filter input ip protocol udp ct state new counter drop'
@@ -132,33 +153,68 @@ EOF
     {
         for local_domain in $LOCAL_DOMAINS; do
             doas nft "add rule ip filter input_prerouting ip saddr $local_domain tcp dport 9122 counter accept"
+            doas nft "add rule ip filter NETAVARK_FORWARD_PREROUTING ip saddr $local_domain tcp dport 22 counter accept"
         done
     }
 doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
-### Accept interface virbr0 (input_prerouting)
-doas nft 'add rule ip filter input_prerouting iifname "virbr0" udp dport 53 counter accept'
-doas nft 'add rule ip filter input_prerouting iifname "virbr0" udp dport 67 counter accept'
-### Accept SMTP
-doas nft 'add rule ip filter input_prerouting tcp dport 25 counter accept'
-doas nft 'add rule ip filter input_prerouting tcp dport 587 counter accept'
-### Accept POP & POPS
-doas nft 'add rule ip filter input_prerouting tcp dport 110 counter accept'
-doas nft 'add rule ip filter input_prerouting tcp dport 995 counter accept'
-### Accept IMAP & IMAPS
-doas nft 'add rule ip filter input_prerouting tcp dport 143 counter accept'
-doas nft 'add rule ip filter input_prerouting tcp dport 993 counter accept'
-### Accept mDNS
-doas nft 'add rule ip filter input_prerouting udp dport 5353 counter accept'
-### Accept http & https (for wget)
-doas nft 'add rule ip filter input_prerouting tcp dport 80 counter accept'
-doas nft 'add rule ip filter input_prerouting tcp dport 443 counter accept'
-### Accept Transmission
-doas nft 'add rule ip filter input_prerouting udp dport 51413 counter accept'
+doas nft 'add rule ip filter NETAVARK_FORWARD_PREROUTING tcp dport 9122 counter drop'
 ### Accept custom wireguard
-doas nft 'add rule ip filter input_prerouting udp dport 62990 counter accept'
-### Accept interface virbr0 (forward)
-doas nft 'add rule ip filter forward iifname "virbr0" counter accept'
-doas nft 'add rule ip filter forward oifname "virbr0" counter accept'
+doas nft 'add rule ip filter input_prerouting udp dport 65398 counter accept'
+### Jump to nixos-fw
+doas nft 'add chain ip filter nixos-fw' || true
+doas nft 'add rule ip filter input_prerouting counter jump nixos-fw'
+#### FIXME: This is not part of nixos explicit config; These rules are created implicitly; Remove if migrating to nix
+doas nft 'add chain ip filter nixos-fw-accept'
+doas nft 'add chain ip filter nixos-fw-log-refuse'
+doas nft 'add chain ip filter nixos-fw-refuse'
+doas nft 'add rule ip filter nixos-fw iifname "lo" counter jump nixos-fw-accept'
+doas nft 'add rule ip filter nixos-fw ct state related,established counter jump nixos-fw-accept'
+doas nft 'add rule ip filter nixos-fw iifname "podman0" udp dport 53 counter jump nixos-fw-accept'
+doas nft 'add rule ip filter nixos-fw counter jump nixos-fw-log-refuse'
+doas nft 'add rule ip filter nixos-fw-accept counter accept'
+doas nft 'add rule ip filter nixos-fw-log-refuse tcp flags syn / fin,syn,rst,ack counter log prefix "refused connection: " level info'
+doas nft 'add rule ip filter nixos-fw-log-refuse pkttype != unicast counter jump nixos-fw-refuse'
+doas nft 'add rule ip filter nixos-fw-log-refuse counter jump nixos-fw-refuse'
+doas nft 'add rule ip filter nixos-fw-refuse counter drop'
+### Accept http & https
+#### Remote
+DOMAINS="$(curl -s -X GET --url https://api.cloudflare.com/client/v4/ips -H 'Content-Type: application/json' | jq -r '.result.ipv4_cidrs[]' 2>/dev/null)"
+if [[ -z "$DOMAINS" ]]; then
+    DOMAINS="$(
+        cat <<'EOF'
+173.245.48.0/20
+103.21.244.0/22
+103.22.200.0/22
+103.31.4.0/22
+141.101.64.0/18
+108.162.192.0/18
+190.93.240.0/20
+188.114.96.0/20
+197.234.240.0/22
+198.41.128.0/17
+162.158.0.0/15
+104.16.0.0/13
+104.24.0.0/14
+172.64.0.0/13
+131.0.72.0/22
+EOF
+    )"
+fi
+for domain in $DOMAINS; do
+    doas nft "add rule ip filter NETAVARK_FORWARD_PREROUTING ip saddr $domain ip daddr 10.88.0.0/16 tcp dport 80 counter accept"
+    doas nft "add rule ip filter NETAVARK_FORWARD_PREROUTING ip saddr $domain ip daddr 10.88.0.0/16 tcp dport 443 counter accept"
+done
+#### Local
+for local_domain in $LOCAL_DOMAINS; do
+    doas nft "add rule ip filter NETAVARK_FORWARD_PREROUTING ip saddr $local_domain ip daddr 10.88.0.0/16 tcp dport 80 counter accept"
+    doas nft "add rule ip filter NETAVARK_FORWARD_PREROUTING ip saddr $local_domain ip daddr 10.88.0.0/16 tcp dport 443 counter accept"
+done
+### Accept local network traffic on NETAVARK_FORWARD chains
+doas nft 'add rule ip filter NETAVARK_FORWARD ip saddr 10.88.0.0/16 counter accept'
+doas nft 'add rule ip filter NETAVARK_FORWARD_PREROUTING ip saddr 10.88.0.0/16 counter accept'
+### Drop other traffic on NETAVARK_FORWARD chains
+doas nft 'add rule ip filter NETAVARK_FORWARD counter drop'
+doas nft 'add rule ip filter NETAVARK_FORWARD_PREROUTING counter drop'
 ## ipv6
 ### Set up new tables
 doas nft 'add table ip6 filter'
@@ -170,11 +226,16 @@ doas nft 'add chain ip6 filter output { type filter hook output priority 0; poli
 doas nft 'add rule ip6 filter input ct state related,established counter accept'
 ### Accept loopback
 doas nft 'add rule ip6 filter input iifname "lo" counter accept'
+### Accept established connections on NETAVARK_FORWARD
+doas nft 'add chain ip6 filter NETAVARK_FORWARD'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD ip daddr fe80::/10 ct state related,established counter accept'
 ### First packet has to be TCP SYN
 doas nft 'add rule ip6 filter input tcp flags != syn / fin,syn,rst,ack ct state new counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags != syn / fin,syn,rst,ack ct state new counter drop'
 ### Drop all invalid packets
 doas nft 'add rule ip6 filter input ct state invalid counter drop'
 doas nft 'add rule ip6 filter forward ct state invalid counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD ct state invalid counter drop'
 doas nft 'add rule ip6 filter output ct state invalid counter drop'
 ### Drop packets with bogus TCP flags
 doas nft 'add rule ip6 filter input tcp flags fin,syn / fin,syn counter drop'
@@ -183,23 +244,41 @@ doas nft 'add rule ip6 filter input tcp flags fin,rst / fin,rst counter drop'
 doas nft 'add rule ip6 filter input tcp flags fin / fin,ack counter drop'
 doas nft 'add rule ip6 filter input tcp flags urg / ack,urg counter drop'
 doas nft 'add rule ip6 filter input tcp flags psh / psh,ack counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags fin,syn / fin,syn counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags syn,rst / syn,rst counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags fin,rst / fin,rst counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags fin / fin,ack counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags urg / ack,urg counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags psh / psh,ack counter drop'
 ### Drop NULL packets
 doas nft 'add rule ip6 filter input tcp flags 0x0 / fin,syn,rst,psh,ack,urg counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags 0x0 / fin,syn,rst,psh,ack,urg counter drop'
 ### Drop XMAS packets
 doas nft 'add rule ip6 filter input tcp flags fin,syn,rst,psh,ack,urg / fin,syn,rst,psh,ack,urg counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags fin,syn,rst,psh,ack,urg / fin,syn,rst,psh,ack,urg counter drop'
 ### Drop SYN packets with suspicious MSS value
 doas nft 'add rule ip6 filter input meta l4proto tcp ct state new tcp option maxseg size != 536-65535 counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD meta l4proto tcp ct state new tcp option maxseg size != 536-65535 counter drop'
 ### Drop spoofed packets
 doas nft 'add rule ip6 filter input iifname != "lo" ip6 saddr ::1/128 counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD iifname != "lo" ip6 saddr ::1/128 counter drop'
 ### Drop ICMP
 doas nft 'add rule ip6 filter input meta l4proto icmp counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD meta l4proto icmp counter drop'
 ### Drop excessive TCP RST packets
 doas nft 'add chain ip6 filter input_prerouting'
 doas nft 'add rule ip6 filter input tcp flags rst limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip6 filter input tcp flags rst counter drop'
+#### Accept established connections on NETAVARK_FORWARD_PREROUTING
+doas nft 'add chain ip6 filter NETAVARK_FORWARD_PREROUTING'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip daddr fe80::/10 ct state related,established counter accept'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags rst limit rate 2/second burst 2 packets counter jump NETAVARK_FORWARD_PREROUTING'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags rst counter drop'
 ### Drop SYN-FLOOD packets
 doas nft 'add rule ip6 filter input meta l4proto tcp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip6 filter input meta l4proto tcp ct state new counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD meta l4proto tcp ct state new limit rate 2/second burst 2 packets counter jump NETAVARK_FORWARD_PREROUTING'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD meta l4proto tcp ct state new counter drop'
 ### Rate-limit UDP packets
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new limit rate 2/second burst 2 packets counter jump input_prerouting'
 doas nft 'add rule ip6 filter input meta l4proto udp ct state new counter drop'
@@ -214,33 +293,59 @@ EOF
     {
         for local_domain in $LOCAL_DOMAINS; do
             doas nft "add rule ip6 filter input_prerouting ip6 saddr $local_domain tcp dport 9122 counter accept"
+            doas nft "add rule ip filter NETAVARK_FORWARD_PREROUTING ip6 saddr $local_domain tcp dport 22 counter accept"
         done
     }
 doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
-### Accept interface virbr0 (input_prerouting)
-doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 53 counter accept'
-doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 67 counter accept'
-### Accept SMTP
-doas nft 'add rule ip6 filter input_prerouting tcp dport 25 counter accept'
-doas nft 'add rule ip6 filter input_prerouting tcp dport 587 counter accept'
-### Accept POP & POPS
-doas nft 'add rule ip6 filter input_prerouting tcp dport 110 counter accept'
-doas nft 'add rule ip6 filter input_prerouting tcp dport 995 counter accept'
-### Accept IMAP & IMAPS
-doas nft 'add rule ip6 filter input_prerouting tcp dport 143 counter accept'
-doas nft 'add rule ip6 filter input_prerouting tcp dport 993 counter accept'
-### Accept mDNS
-doas nft 'add rule ip6 filter input_prerouting udp dport 5353 counter accept'
-### Accept http & https (for wget)
-doas nft 'add rule ip6 filter input_prerouting tcp dport 80 counter accept'
-doas nft 'add rule ip6 filter input_prerouting tcp dport 443 counter accept'
-### Accept Transmission
-doas nft 'add rule ip6 filter input_prerouting udp dport 51413 counter accept'
 ### Accept custom wireguard
-doas nft 'add rule ip6 filter input_prerouting udp dport 62990 counter accept'
-### Accept interface virbr0 (forward)
-doas nft 'add rule ip6 filter forward iifname "virbr0" counter accept'
-doas nft 'add rule ip6 filter forward oifname "virbr0" counter accept'
+doas nft 'add rule ip6 filter input_prerouting udp dport 65398 counter accept'
+### Jump to nixos-fw
+doas nft 'add chain ip6 filter nixos-fw' || true
+doas nft 'add rule ip6 filter input_prerouting counter jump nixos-fw'
+#### FIXME: This is not part of nixos explicit config; These rules are created implicitly; Remove if migrating to nix
+doas nft 'add chain ip6 filter nixos-fw-accept'
+doas nft 'add chain ip6 filter nixos-fw-log-refuse'
+doas nft 'add chain ip6 filter nixos-fw-refuse'
+doas nft 'add rule ip6 filter nixos-fw iifname "lo" counter jump nixos-fw-accept'
+doas nft 'add rule ip6 filter nixos-fw ct state related,established counter jump nixos-fw-accept'
+doas nft 'add rule ip6 filter nixos-fw iifname "podman0" udp dport 53 counter jump nixos-fw-accept'
+doas nft 'add rule ip6 filter nixos-fw meta l4proto ipv6-icmp icmpv6 type nd-redirect counter drop'
+doas nft 'add rule ip6 filter nixos-fw meta l4proto ipv6-icmp counter jump nixos-fw-accept'
+doas nft 'add rule ip6 filter nixos-fw ip6 daddr fe80::/64 udp dport 546 counter jump nixos-fw-accept'
+doas nft 'add rule ip6 filter nixos-fw counter jump nixos-fw-log-refuse'
+doas nft 'add rule ip6 filter nixos-fw-accept counter accept'
+doas nft 'add rule ip6 filter nixos-fw-log-refuse tcp flags syn / fin,syn,rst,ack counter log prefix "refused connection: " level info'
+doas nft 'add rule ip6 filter nixos-fw-log-refuse pkttype != unicast counter jump nixos-fw-refuse'
+doas nft 'add rule ip6 filter nixos-fw-log-refuse counter jump nixos-fw-refuse'
+doas nft 'add rule ip6 filter nixos-fw-refuse counter drop'
+### Accept http & https
+#### Remote
+DOMAINS="$(curl -s -X GET --url https://api.cloudflare.com/client/v4/ips -H 'Content-Type: application/json' | jq -r '.result.ipv6_cidrs[]' 2>/dev/null)"
+if [[ -z "$DOMAINS" ]]; then
+    read -rd '\0' DOMAINS <<EOF
+    2400:cb00::/32
+    2606:4700::/32
+    2803:f800::/32
+    2405:b500::/32
+    2405:8100::/32
+    2a06:98c0::/29
+    2c0f:f248::/32
+    \0
+EOF
+fi
+for domain in $DOMAINS; do
+    doas nft "add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip6 saddr $domain ip6 daddr fe80::/10 tcp dport 80 counter accept"
+    doas nft "add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip6 saddr $domain ip6 daddr fe80::/10 tcp dport 443 counter accept"
+done
+#### Local
+doas nft 'add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip6 saddr fe80::/10 ip6 daddr fe80::/10 tcp dport 80 counter accept'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip6 saddr fe80::/10 ip6 daddr fe80::/10 tcp dport 443 counter accept'
+### Accept local network traffic on NETAVARK_FORWARD chains
+doas nft 'add rule ip6 filter NETAVARK_FORWARD ip6 saddr fe80::/10 counter accept'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip6 saddr fe80::/10 counter accept'
+### Drop other traffic on NETAVARK_FORWARD chains
+doas nft 'add rule ip6 filter NETAVARK_FORWARD counter drop'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD_PREROUTING counter drop'
 ### Save rules to /etc/nftables.conf
 doas /bin/sh -c 'nft -s list ruleset >/etc/nftables.conf'
 
@@ -322,10 +427,6 @@ done
 # Source ~/.bash_profile
 # shellcheck source=/dev/null
 . ~/.bash_profile
-
-# Install flatpaks
-[[ -n "$(which flatpak)" ]] >/dev/null 2>&1 &&
-    xargs -n 1 doas flatpak install --system -y --noninteractive <"${SCRIPT_DIR}/pkgs-flatpak.txt"
 
 # Install paru-bin
 git clone https://aur.archlinux.org/paru-bin.git ~/git/paru-bin
