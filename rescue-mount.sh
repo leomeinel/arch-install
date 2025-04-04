@@ -39,33 +39,30 @@ case "${choice}" in
     readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
     DISKS_LENGTH="${#DISKS[@]}"
     for ((i = 0; i < DISKS_LENGTH; i++)); do
-        udevadm info -q property --property=ID_BUS --value "${DISKS[${i}]}" | grep -q "usb" &&
-            {
-                unset 'DISKS[${i}]'
-                continue
-            }
+        if udevadm info -q property --property=ID_BUS --value "${DISKS[${i}]}" | grep -q "usb"; then
+            unset 'DISKS[${i}]'
+            continue
+        fi
         DISKS=("${DISKS[@]}")
     done
-    [[ "${#DISKS[@]}" -lt 2 ]] &&
-        {
-            log_err "There are less than 2 disks attached."
+    if [[ "${#DISKS[@]}" -lt 2 ]]; then
+        log_err "There are less than 2 disks attached."
+        exit 1
+    fi
+    if [[ "${#DISKS[@]}" -gt 2 ]]; then
+        log_warning "There are more than 2 disks attached."
+        lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
+        ### Prompt user to select 2 RAID members
+        read -rp "Which disk is the first RAID member? (Type '/dev/sdX' fex.): " choice0
+        read -rp "Which disk is the second RAID member? (Type '/dev/sdY' fex.): " choice1
+        if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
+            echo "Using '${choice0}' and '${choice1}' for rescue-system."
+            DISKS=("${choice0}" "${choice1}")
+        else
+            log_err "Drives not suitable for rescue-system."
             exit 1
-        }
-    [[ "${#DISKS[@]}" -gt 2 ]] &&
-        {
-            log_warning "There are more than 2 disks attached."
-            lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
-            ### Prompt user to select 2 RAID members
-            read -rp "Which disk is the first RAID member? (Type '/dev/sdX' fex.): " choice0
-            read -rp "Which disk is the second RAID member? (Type '/dev/sdY' fex.): " choice1
-            if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
-                echo "Using '${choice0}' and '${choice1}' for rescue-system."
-                DISKS=("${choice0}" "${choice1}")
-            else
-                log_err "Drives not suitable for rescue-system."
-                exit 1
-            fi
-        }
+        fi
+    fi
     ## Set disks
     DISK1="${DISKS[0]}"
     DISK2="${DISKS[1]}"
@@ -106,11 +103,10 @@ if [[ -n "${DISK2}" ]]; then
     RAID_DEVICE=/dev/md/md0
     ## Configure encryption
     for i in {1..5}; do
-        [[ "${i}" -eq 5 ]] &&
-            {
-                log_err "Too many retries."
-                exit 1
-            }
+        if [[ "${i}" -eq 5 ]]; then
+            log_err "Too many retries."
+            exit 1
+        fi
         if cryptsetup open "${RAID_DEVICE}" md0_crypt; then
             break
         else
@@ -120,11 +116,10 @@ if [[ -n "${DISK2}" ]]; then
 else
     ## Configure encryption
     for i in {1..5}; do
-        [[ "${i}" -eq 5 ]] &&
-            {
-                log_err "Too many retries."
-                exit 1
-            }
+        if [[ "${i}" -eq 5 ]]; then
+            log_err "Too many retries."
+            exit 1
+        fi
         if cryptsetup open "${DISK1P2}" md0_crypt; then
             break
         else

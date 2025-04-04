@@ -21,43 +21,39 @@ print_header() {
 }
 
 # Append pkglists
-[[ -n "$(/usr/bin/pacman -Qen)" ]] >/dev/null 2>&1 &&
+if [[ -n "$(/usr/bin/pacman -Qen)" ]] >/dev/null 2>&1; then
+    file=/var/log/pkglist-explicit.pacman.log
+    tmpfile="$(/usr/bin/mktemp /tmp/"$(/usr/bin/basename "${0}")"-XXXXXX)"
+    cp "${file}" "${tmpfile}"
     {
-        file=/var/log/pkglist-explicit.pacman.log
-        tmpfile="$(/usr/bin/mktemp /tmp/"$(/usr/bin/basename "${0}")"-XXXXXX)"
-        cp "${file}" "${tmpfile}"
-        {
-            /usr/bin/cat "${tmpfile}"
-            print_header
-            /usr/bin/pacman -Qen
-        } | /usr/bin/awk '/^#/ || !NF || !seen[$0]++' >"${file}"
-        SUCCESS="true"
-    }
-[[ -n "$(/usr/bin/pacman -Qem)" ]] >/dev/null 2>&1 &&
+        /usr/bin/cat "${tmpfile}"
+        print_header
+        /usr/bin/pacman -Qen
+    } | /usr/bin/awk '/^#/ || !NF || !seen[$0]++' >"${file}"
+    SUCCESS="true"
+fi
+if [[ -n "$(/usr/bin/pacman -Qem)" ]] >/dev/null 2>&1; then
+    file=/var/log/pkglist-foreign.pacman.log
+    tmpfile="$(/usr/bin/mktemp /tmp/"$(/usr/bin/basename "${0}")"-XXXXXX)"
+    cp "${file}" "${tmpfile}"
     {
-        file=/var/log/pkglist-foreign.pacman.log
-        tmpfile="$(/usr/bin/mktemp /tmp/"$(/usr/bin/basename "${0}")"-XXXXXX)"
-        cp "${file}" "${tmpfile}"
-        {
-            /usr/bin/cat "${tmpfile}"
-            print_header
-            /usr/bin/pacman -Qem
-        } | /usr/bin/awk '/^#/ || !NF || !seen[$0]++' >"${file}"
-        SUCCESS="true"
-    }
-
-[[ -n "$(/usr/bin/pacman -Qd)" ]] >/dev/null 2>&1 &&
+        /usr/bin/cat "${tmpfile}"
+        print_header
+        /usr/bin/pacman -Qem
+    } | /usr/bin/awk '/^#/ || !NF || !seen[$0]++' >"${file}"
+    SUCCESS="true"
+fi
+if [[ -n "$(/usr/bin/pacman -Qd)" ]] >/dev/null 2>&1; then
+    file=/var/log/pkglist-deps.pacman.log
+    tmpfile="$(/usr/bin/mktemp /tmp/"$(/usr/bin/basename "${0}")"-XXXXXX)"
+    cp "${file}" "${tmpfile}"
     {
-        file=/var/log/pkglist-deps.pacman.log
-        tmpfile="$(/usr/bin/mktemp /tmp/"$(/usr/bin/basename "${0}")"-XXXXXX)"
-        cp "${file}" "${tmpfile}"
-        {
-            /usr/bin/cat "${tmpfile}"
-            print_header
-            /usr/bin/pacman -Qd
-        } | /usr/bin/awk '/^#/ || !NF || !seen[$0]++' >"${file}"
-        SUCCESS="true"
-    }
+        /usr/bin/cat "${tmpfile}"
+        print_header
+        /usr/bin/pacman -Qd
+    } | /usr/bin/awk '/^#/ || !NF || !seen[$0]++' >"${file}"
+    SUCCESS="true"
+fi
 
 # Fail only if none of the commands have succeeded
 if [[ -n "${SUCCESS}" ]]; then
