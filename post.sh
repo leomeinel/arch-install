@@ -213,7 +213,7 @@ if [[ -n "${SYSUSER_PUBKEY}" ]]; then
         doas nft "add rule ip6 filter input_prerouting ip6 saddr $local_domain tcp dport 9122 counter accept"
     done
 fi
-doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
+doas nft 'add rule ip6 filter input_prerouting tcp dport 9122 counter drop'
 ### Accept interface virbr0 (input_prerouting)
 doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 53 counter accept'
 doas nft 'add rule ip6 filter input_prerouting iifname "virbr0" udp dport 67 counter accept'
