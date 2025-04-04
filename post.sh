@@ -32,11 +32,10 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # Replace doas.conf with option nopass
 DOAS_CONF="$(doas cat /etc/doas.conf)"
 for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            log_err "Too many retries."
-            exit 1
-        }
+    if [[ "${i}" -eq 5 ]]; then
+        log_err "Too many retries."
+        exit 1
+    fi
     if doas /bin/sh -c 'echo "permit nopass setenv { LANG LC_ALL } :wheel" >/etc/doas.conf'; then
         break
     else
@@ -149,13 +148,12 @@ LOCAL_DOMAINS="$(
 127.0.0.0/8
 EOF
 )"
-[[ -n "${SYSUSER_PUBKEY}" ]] &&
-    {
-        for local_domain in $LOCAL_DOMAINS; do
-            doas nft "add rule ip filter input_prerouting ip saddr $local_domain tcp dport 9122 counter accept"
-            doas nft "add rule ip filter NETAVARK_FORWARD_PREROUTING ip saddr $local_domain tcp dport 22 counter accept"
-        done
-    }
+if [[ -n "${SYSUSER_PUBKEY}" ]]; then
+    for local_domain in $LOCAL_DOMAINS; do
+        doas nft "add rule ip filter input_prerouting ip saddr $local_domain tcp dport 9122 counter accept"
+        doas nft "add rule ip filter NETAVARK_FORWARD_PREROUTING ip saddr $local_domain tcp dport 22 counter accept"
+    done
+fi
 doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
 doas nft 'add rule ip filter NETAVARK_FORWARD_PREROUTING tcp dport 9122 counter drop'
 ### Accept custom wireguard
@@ -289,13 +287,12 @@ fe80::/10
 ::1/128
 EOF
 )"
-[[ -n "${SYSUSER_PUBKEY}" ]] &&
-    {
-        for local_domain in $LOCAL_DOMAINS; do
-            doas nft "add rule ip6 filter input_prerouting ip6 saddr $local_domain tcp dport 9122 counter accept"
-            doas nft "add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip6 saddr $local_domain tcp dport 22 counter accept"
-        done
-    }
+if [[ -n "${SYSUSER_PUBKEY}" ]]; then
+    for local_domain in $LOCAL_DOMAINS; do
+        doas nft "add rule ip6 filter input_prerouting ip6 saddr $local_domain tcp dport 9122 counter accept"
+        doas nft "add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip6 saddr $local_domain tcp dport 22 counter accept"
+    done
+fi
 doas nft 'add rule ip6 filter input_prerouting tcp dport 9122 counter drop'
 ### Accept custom wireguard
 doas nft 'add rule ip6 filter input_prerouting udp dport 65398 counter accept'

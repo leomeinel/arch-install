@@ -116,11 +116,10 @@ for user in "${USERS[@]}"; do
     id "${user}" >/dev/null 2>&1 ||
         var_invalid_err_exit "${user}" "USERS"
     for i in {1..5}; do
-        [[ "${i}" -eq 5 ]] &&
-            {
-                log_err "Too many retries."
-                exit 1
-            }
+        if [[ "${i}" -eq 5 ]]; then
+            log_err "Too many retries."
+            exit 1
+        fi
         echo "Enter password for ${user}"
         if passwd "${user}"; then
             break
@@ -170,11 +169,10 @@ reflector --save /etc/pacman.d/mirrorlist --country "${MIRRORCOUNTRIES}" --proto
 
 # Install packages
 for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            log_err "Too many retries."
-            exit 1
-        }
+    if [[ "${i}" -eq 5 ]]; then
+        log_err "Too many retries."
+        exit 1
+    fi
     if pacman -Syu --noprogressbar --noconfirm --needed - <"${SCRIPT_DIR}/pkgs-setup.txt"; then
         break
     else
@@ -211,11 +209,10 @@ pacman -Qq "wlroots" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxorg-xwayland'
 if [[ -n "${DEPENDENCIES}" ]]; then
     for i in {1..5}; do
-        [[ "${i}" -eq 5 ]] &&
-            {
-                log_err "Too many retries."
-                exit 1
-            }
+        if [[ "${i}" -eq 5 ]]; then
+            log_err "Too many retries."
+            exit 1
+        fi
         if pacman -S --noprogressbar --noconfirm --needed --asdeps - <<<"${DEPENDENCIES}"; then
             break
         else
@@ -239,11 +236,10 @@ pacman -Qq "tesseract-data-nld" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntesseract-data-nld'
 if [[ -n "${DEPENDENCIES}" ]]; then
     for i in {1..5}; do
-        [[ "${i}" -eq 5 ]] &&
-            {
-                log_err "Too many retries."
-                exit 1
-            }
+        if [[ "${i}" -eq 5 ]]; then
+            log_err "Too many retries."
+            exit 1
+        fi
         if pacman -S --noprogressbar --noconfirm --asdeps - <<<"${DEPENDENCIES}"; then
             break
         else
@@ -570,11 +566,10 @@ for dir in "${SUBVOLUMES[@]}"; do
 done
 ### Append configs individually
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
-[[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]] &&
-    {
-        log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
-        exit 1
-    }
+if [[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]]; then
+    log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
+    exit 1
+fi
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     #### Copy template
     FILE1="/usr/share/snapper/config-templates/${CONFIGS[${i}]}"
@@ -674,32 +669,28 @@ pacman -Qq "containerd" >/dev/null 2>&1 &&
     systemctl enable containerd.service
 pacman -Qq "cups" >/dev/null 2>&1 &&
     systemctl enable cups.service
-pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    {
-        systemctl enable libvirtd.socket
-        systemctl enable virtlogd.socket
-    }
+if pacman -Qq "libvirt" >/dev/null 2>&1; then
+    systemctl enable libvirtd.socket
+    systemctl enable virtlogd.socket
+fi
 pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager.service
-pacman -Qq "open-vm-tools" >/dev/null 2>&1 &&
-    {
-        systemctl enable vmtoolsd.service
-        systemctl enable vmware-vmblock-fuse.service
-    }
+if pacman -Qq "open-vm-tools" >/dev/null 2>&1; then
+    systemctl enable vmtoolsd.service
+    systemctl enable vmware-vmblock-fuse.service
+fi
 pacman -Qq "podman" >/dev/null 2>&1 &&
     systemctl enable podman.service
-pacman -Qq "reflector" >/dev/null 2>&1 &&
-    {
-        systemctl enable reflector.service
-        systemctl enable reflector.timer
-    }
-pacman -Qq "snapper" >/dev/null 2>&1 &&
-    {
-        systemctl enable snapper-cleanup.timer
-        systemctl enable snapper-timeline.timer
-    }
+if pacman -Qq "reflector" >/dev/null 2>&1; then
+    systemctl enable reflector.service
+    systemctl enable reflector.timer
+fi
+if pacman -Qq "snapper" >/dev/null 2>&1; then
+    systemctl enable snapper-cleanup.timer
+    systemctl enable snapper-timeline.timer
+fi
 pacman -Qq "sysstat" >/dev/null 2>&1 &&
     systemctl enable sysstat.service
 pacman -Qq "systemd" >/dev/null 2>&1 &&
@@ -709,26 +700,23 @@ pacman -Qq "systemd" >/dev/null 2>&1 &&
     }
 pacman -Qq "tlp-rdw" >/dev/null 2>&1 && pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager-dispatcher.service
-pacman -Qq "tlp" >/dev/null 2>&1 &&
-    {
-        systemctl enable tlp.service
-        pacman -Qq "systemd" >/dev/null 2>&1 &&
-            {
-                systemctl mask systemd-rfkill.service
-                systemctl mask systemd-rfkill.socket
-            }
-    }
+if pacman -Qq "tlp" >/dev/null 2>&1; then
+    systemctl enable tlp.service
+    if pacman -Qq "systemd" >/dev/null 2>&1; then
+        systemctl mask systemd-rfkill.service
+        systemctl mask systemd-rfkill.socket
+    fi
+fi
 pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
 
 # Enable sshd.service and add SYSUSER_PUBKEY if enabled
-[[ -n "${SYSUSER_PUBKEY}" ]] && pacman -Qq "openssh" >/dev/null 2>&1 &&
-    {
-        systemctl enable sshd.service
-        runuser -l "${SYSUSER}" -c "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo ${SYSUSER_PUBKEY} >~/.ssh/authorized_keys"
-    }
+if [[ -n "${SYSUSER_PUBKEY}" ]] && pacman -Qq "openssh" >/dev/null 2>&1; then
+    systemctl enable sshd.service
+    runuser -l "${SYSUSER}" -c "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo ${SYSUSER_PUBKEY} >~/.ssh/authorized_keys"
+fi
 
 # Set up /efi
 bootctl --esp-path=/efi --no-variables install
