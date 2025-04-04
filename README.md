@@ -31,7 +31,7 @@ Follow the `Pre-installation` section of [this guide](https://wiki.archlinux.org
 ```sh
 pacman -Sy git
 # Instead of server, you can also use a tag
-git clone -b 4.0.0-server https://github.com/leomeinel/arch-install.git
+git clone -b server https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 # Modify install.conf before executing prepare.sh
 vim /root/arch-install/install.conf
