@@ -288,7 +288,7 @@ case "${choice}" in
 "YES") ;;
 *)
     ## View nix upstream installation script
-    echo "To go back to the installation hit 'q'."
+    echo "To exit confirmation hit 'q'."
     sleep 5
     bat --decorations auto --color auto "${tmpfile}"
     read -rp "Execute nix upstream installation script? (Type 'yes' in capital letters): " choice
