@@ -1,7 +1,7 @@
-com.nitrokey.nitrokey-app2
+com.github.Matoking.protontricks
 com.saivert.pwvucontrol
-com.sweethome3d.Sweethome3d
+com.valvesoftware.Steam
 io.freetubeapp.FreeTube
 io.gitlab.librewolf-community
 one.ablaze.floorp
-org.raspberrypi.rpi-imager
+org.winehq.Wine/x86_64/stable-24.08

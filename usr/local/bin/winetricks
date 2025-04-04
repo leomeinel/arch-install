@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###
-# File = sweethome3d
+# File = winetricks
 # Author = Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run com.sweethome3d.Sweethome3d "${@}"
+exec /usr/bin/flatpak run --command=winetricks org.winehq.Wine "${@}"
