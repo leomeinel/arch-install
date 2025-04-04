@@ -228,7 +228,7 @@ doas nft 'add rule ip6 filter input ct state related,established counter accept'
 doas nft 'add rule ip6 filter input iifname "lo" counter accept'
 ### Accept established connections on NETAVARK_FORWARD
 doas nft 'add chain ip6 filter NETAVARK_FORWARD'
-doas nft 'add rule ip6 filter NETAVARK_FORWARD ip daddr fe80::/10 ct state related,established counter accept'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD ip6 daddr fe80::/10 ct state related,established counter accept'
 ### First packet has to be TCP SYN
 doas nft 'add rule ip6 filter input tcp flags != syn / fin,syn,rst,ack ct state new counter drop'
 doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags != syn / fin,syn,rst,ack ct state new counter drop'
@@ -271,7 +271,7 @@ doas nft 'add rule ip6 filter input tcp flags rst limit rate 2/second burst 2 pa
 doas nft 'add rule ip6 filter input tcp flags rst counter drop'
 #### Accept established connections on NETAVARK_FORWARD_PREROUTING
 doas nft 'add chain ip6 filter NETAVARK_FORWARD_PREROUTING'
-doas nft 'add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip daddr fe80::/10 ct state related,established counter accept'
+doas nft 'add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip6 daddr fe80::/10 ct state related,established counter accept'
 doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags rst limit rate 2/second burst 2 packets counter jump NETAVARK_FORWARD_PREROUTING'
 doas nft 'add rule ip6 filter NETAVARK_FORWARD tcp flags rst counter drop'
 ### Drop SYN-FLOOD packets
@@ -293,10 +293,10 @@ EOF
     {
         for local_domain in $LOCAL_DOMAINS; do
             doas nft "add rule ip6 filter input_prerouting ip6 saddr $local_domain tcp dport 9122 counter accept"
-            doas nft "add rule ip filter NETAVARK_FORWARD_PREROUTING ip6 saddr $local_domain tcp dport 22 counter accept"
+            doas nft "add rule ip6 filter NETAVARK_FORWARD_PREROUTING ip6 saddr $local_domain tcp dport 22 counter accept"
         done
     }
-doas nft 'add rule ip filter input_prerouting tcp dport 9122 counter drop'
+doas nft 'add rule ip6 filter input_prerouting tcp dport 9122 counter drop'
 ### Accept custom wireguard
 doas nft 'add rule ip6 filter input_prerouting udp dport 65398 counter accept'
 ### Jump to nixos-fw
