@@ -41,33 +41,30 @@ case "${choice}" in
     readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
     DISKS_LENGTH="${#DISKS[@]}"
     for ((i = 0; i < DISKS_LENGTH; i++)); do
-        udevadm info -q property --property=ID_BUS --value "${DISKS[${i}]}" | grep -q "usb" &&
-            {
-                unset 'DISKS[${i}]'
-                continue
-            }
+        if udevadm info -q property --property=ID_BUS --value "${DISKS[${i}]}" | grep -q "usb"; then
+            unset 'DISKS[${i}]'
+            continue
+        fi
         DISKS=("${DISKS[@]}")
     done
-    [[ "${#DISKS[@]}" -lt 2 ]] &&
-        {
-            log_err "There are less than 2 disks attached."
+    if [[ "${#DISKS[@]}" -lt 2 ]]; then
+        log_err "There are less than 2 disks attached."
+        exit 1
+    fi
+    if [[ "${#DISKS[@]}" -gt 2 ]]; then
+        log_warning "There are more than 2 disks attached."
+        lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
+        ### Prompt user to select 2 RAID members
+        read -rp "Which disk should be the first RAID member? (Type '/dev/sdX' fex.): " choice0
+        read -rp "Which disk should be the second RAID member? (Type '/dev/sdY' fex.): " choice1
+        if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
+            echo "Using '${choice0}' and '${choice1}' for installation."
+            DISKS=("${choice0}" "${choice1}")
+        else
+            log_err "Drives not suitable for installation."
             exit 1
-        }
-    [[ "${#DISKS[@]}" -gt 2 ]] &&
-        {
-            log_warning "There are more than 2 disks attached."
-            lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
-            ### Prompt user to select 2 RAID members
-            read -rp "Which disk should be the first RAID member? (Type '/dev/sdX' fex.): " choice0
-            read -rp "Which disk should be the second RAID member? (Type '/dev/sdY' fex.): " choice1
-            if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
-                echo "Using '${choice0}' and '${choice1}' for installation."
-                DISKS=("${choice0}" "${choice1}")
-            else
-                log_err "Drives not suitable for installation."
-                exit 1
-            fi
-        }
+        fi
+    fi
     ## Set size for partition of larger disk
     SIZE1="$(lsblk -drnbo SIZE "${DISKS[0]}" | tr -d "[:space:]")"
     SIZE2="$(lsblk -drnbo SIZE "${DISKS[1]}" | tr -d "[:space:]")"
@@ -198,11 +195,10 @@ if [[ -n "${DISK2}" ]]; then
     mdadm -Cv --homehost=any -N md0 -l 1 -n 2 -e default -b internal "${RAID_DEVICE}" "${DISK1P2}" "${DISK2P2}"
     ## Configure encryption
     for i in {1..5}; do
-        [[ "${i}" -eq 5 ]] &&
-            {
-                log_err "Too many retries."
-                exit 1
-            }
+        if [[ "${i}" -eq 5 ]]; then
+            log_err "Too many retries."
+            exit 1
+        fi
         if cryptsetup -y -v luksFormat "${RAID_DEVICE}"; then
             break
         else
@@ -210,11 +206,10 @@ if [[ -n "${DISK2}" ]]; then
         fi
     done
     for i in {1..5}; do
-        [[ "${i}" -eq 5 ]] &&
-            {
-                log_err "Too many retries."
-                exit 1
-            }
+        if [[ "${i}" -eq 5 ]]; then
+            log_err "Too many retries."
+            exit 1
+        fi
         if cryptsetup open "${RAID_DEVICE}" md0_crypt; then
             break
         else
@@ -224,11 +219,10 @@ if [[ -n "${DISK2}" ]]; then
 else
     ## Configure encryption
     for i in {1..5}; do
-        [[ "${i}" -eq 5 ]] &&
-            {
-                log_err "Too many retries."
-                exit 1
-            }
+        if [[ "${i}" -eq 5 ]]; then
+            log_err "Too many retries."
+            exit 1
+        fi
         if cryptsetup -y -v luksFormat "${DISK1P2}"; then
             break
         else
@@ -236,11 +230,10 @@ else
         fi
     done
     for i in {1..5}; do
-        [[ "${i}" -eq 5 ]] &&
-            {
-                log_err "Too many retries."
-                exit 1
-            }
+        if [[ "${i}" -eq 5 ]]; then
+            log_err "Too many retries."
+            exit 1
+        fi
         if cryptsetup open "${DISK1P2}" md0_crypt; then
             break
         else
@@ -266,11 +259,10 @@ mkfs.fat -n EFI -F32 "${DISK1P1}"
 # Configure mounts
 ## Create subvolumes
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
-[[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]] &&
-    {
-        log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
-        exit 1
-    }
+if [[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]]; then
+    log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
+    exit 1
+fi
 create_subs0() {
     mkfs.btrfs -L "${3}" "${4}"
     mount "${4}" /mnt
@@ -416,11 +408,10 @@ lshw -C display | grep "vendor:" | grep -q "Intel Corporation" &&
         echo "xf86-video-intel"
     } >>"${SCRIPT_DIR}"/pkgs-prepare.txt
 for i in {1..5}; do
-    [[ "${i}" -eq 5 ]] &&
-        {
-            log_err "Too many retries."
-            exit 1
-        }
+    if [[ "${i}" -eq 5 ]]; then
+        log_err "Too many retries."
+        exit 1
+    fi
     if pacstrap -K /mnt - <"${SCRIPT_DIR}/pkgs-prepare.txt"; then
         break
     else
@@ -433,17 +424,16 @@ umount /mnt/boot
 
 # Generate /mnt/etc/fstab
 genfstab -UP /mnt >>/mnt/etc/fstab
-[[ -n "${DISK2}" ]] &&
-    {
-        ## START sed
-        FILE=/mnt/etc/fstab
-        STRING0="/efi.bak.*vfat"
-        grep -q "${STRING0}" "${FILE}" || sed_exit
-        STRING1="rw"
-        grep -q "${STRING1}" "${FILE}" || sed_exit
-        sed -i "/\\${STRING0}/s/${STRING1}/${STRING1},noauto/" "${FILE}"
-        ## END sed
-    }
+if [[ -n "${DISK2}" ]]; then
+    ## START sed
+    FILE=/mnt/etc/fstab
+    STRING0="/efi.bak.*vfat"
+    grep -q "${STRING0}" "${FILE}" || sed_exit
+    STRING1="rw"
+    grep -q "${STRING1}" "${FILE}" || sed_exit
+    sed -i "/\\${STRING0}/s/${STRING1}/${STRING1},noauto/" "${FILE}"
+    ## END sed
+fi
 
 # Copy /mnt/etc/fstab to /mnt/etc/fstab.sys for dracut
 cp /mnt/etc/fstab /mnt/etc/fstab.sys
