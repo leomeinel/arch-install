@@ -2,7 +2,9 @@
 
 My personal Arch Linux install script using LUKS2 encryption, LVM and btrfs. With optional RAID1.
 
-Meant for servers that are mainly hosting podman. Currently this is only meant as a point of reference since some things will just not work at all.
+Meant for servers that are mainly hosting podman.
+
+Currently this is only meant as a point of reference since some things will just not work at all.
 
 ## Info
 
