@@ -386,11 +386,17 @@ lscpu | grep "Vendor ID:" | grep -q "GenuineIntel" &&
     echo "intel-ucode" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
 lscpu | grep "Vendor ID:" | grep -q "AuthenticAMD" &&
     echo "amd-ucode" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
-[[ "$(systemd-detect-virt)" != "none" ]] &&
-    {
-        echo "qemu-guest-agent"
-        echo "spice-vdagent"
-    } >>"${SCRIPT_DIR}/pkgs-prepare.txt"
+case "$(systemd-detect-virt -v)" in
+"kvm" | "qemu")
+    echo "qemu-guest-agent" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
+    ;;
+"oracle")
+    echo "virtualbox-guest-utils-nox" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
+    ;;
+"vmware")
+    echo "open-vm-tools" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
+    ;;
+esac
 for i in {1..5}; do
     [[ "${i}" -eq 5 ]] &&
         {

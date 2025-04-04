@@ -683,6 +683,11 @@ pacman -Qq "logwatch" >/dev/null 2>&1 &&
     systemctl enable logwatch.timer
 pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager.service
+pacman -Qq "open-vm-tools" >/dev/null 2>&1 &&
+    {
+        systemctl enable vmtoolsd.service
+        systemctl enable vmware-vmblock-fuse.service
+    }
 pacman -Qq "podman" >/dev/null 2>&1 &&
     systemctl enable podman.service
 pacman -Qq "reflector" >/dev/null 2>&1 &&
@@ -717,6 +722,8 @@ pacman -Qq "usbguard" >/dev/null 2>&1 &&
     systemctl enable usbguard.service
 pacman -Qq "util-linux" >/dev/null 2>&1 &&
     systemctl enable fstrim.timer
+
+# Enable sshd.service and add SYSUSER_PUBKEY if enabled
 [[ -n "${SYSUSER_PUBKEY}" ]] && pacman -Qq "openssh" >/dev/null 2>&1 &&
     {
         systemctl enable sshd.service
