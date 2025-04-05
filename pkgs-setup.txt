@@ -83,7 +83,6 @@ man-db
 mariadb
 mtools
 networkmanager
-nextcloud-client
 nss-mdns
 ntfs-3g
 nwg-bar
