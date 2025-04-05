@@ -4,7 +4,6 @@ alsa-utils
 android-tools
 apparmor
 arch-audit
-ark
 audacity
 bash-completion
 bat
@@ -62,7 +61,6 @@ jdk21-openjdk
 jdk8-openjdk
 jpegoptim
 jq
-kdenlive
 libavif
 libheif
 libjxl
@@ -107,7 +105,6 @@ procs
 python
 qemu-desktop
 qemu-emulators-full
-qt6-wayland
 quilt
 ripgrep
 rkhunter
