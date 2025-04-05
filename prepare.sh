@@ -258,10 +258,6 @@ mkfs.fat -n EFI -F32 "${DISK1P1}"
 # Configure mounts
 ## Create subvolumes
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
-if [[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]]; then
-    log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
-    exit 1
-fi
 create_subs0() {
     mkfs.btrfs -L "${3}" "${4}"
     mount "${4}" /mnt

@@ -605,10 +605,6 @@ for dir in "${SUBVOLUMES[@]}"; do
 done
 ### Append configs individually
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
-if [[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]]; then
-    log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
-    exit 1
-fi
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     #### Copy template
     FILE1=/usr/share/snapper/config-templates/"${CONFIGS[${i}]}"
