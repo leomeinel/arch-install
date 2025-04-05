@@ -286,9 +286,7 @@ if lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1"; then
 else
     MD0UUID="$(blkid -s UUID -o value "${DISK1P2}")"
 fi
-{
-    echo "md0_crypt UUID=${MD0UUID} none luks,key-slot=0"
-} >/etc/crypttab
+echo "md0_crypt UUID=${MD0UUID} none luks,key-slot=0" >/etc/crypttab
 ## Configure /etc/localtime
 ln -sf /usr/share/zoneinfo/"${TIMEZONE}" /etc/localtime
 hwclock --systohc

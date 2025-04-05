@@ -148,7 +148,6 @@ sgdisk -o "${DISK1}" || true
 sgdisk -Z "${DISK1}" || true
 wipefs -a "${DISK1}"
 dd if=/dev/zero of="${DISK1}" bs=1M conv=fsync count=8192 status=progress
-
 if [[ -n "${DISK2}" ]]; then
     sgdisk -o "${DISK2}" || true
     sgdisk -Z "${DISK2}" || true
@@ -174,7 +173,7 @@ loadkeys "${KEYMAP}"
 timedatectl set-ntp true
 timedatectl set-timezone "${TIMEZONE}"
 
-# Erase & partition disks
+# Partition disks
 sgdisk -n 0:0:+1G -t 1:ef00 "${DISK1}"
 if [[ -n "${DISK2}" ]]; then
     sgdisk -n 0:0:"${PART_SIZE}" -t 2:fd00 "${DISK1}"
