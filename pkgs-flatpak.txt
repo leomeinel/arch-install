@@ -1,6 +1,7 @@
 com.calibre_ebook.calibre
 com.nextcloud.desktopclient.nextcloud
 com.nitrokey.nitrokey-app2
+com.obsproject.Studio
 com.saivert.pwvucontrol
 com.sweethome3d.Sweethome3d
 io.freetubeapp.FreeTube
