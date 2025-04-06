@@ -1,3 +1,4 @@
+com.calibre_ebook.calibre
 com.nextcloud.desktopclient.nextcloud
 com.nitrokey.nitrokey-app2
 com.saivert.pwvucontrol

@@ -14,7 +14,6 @@ blueman
 bluez
 bluez-utils
 brightnessctl
-calibre
 cdrtools
 celluloid
 cups
