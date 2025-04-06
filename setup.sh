@@ -251,7 +251,10 @@ fi
 
 # Set up user scripts
 ## All users
-FILES=("dot-files.sh" "install.conf")
+FILES=(
+    "dot-files.sh"
+    "install.conf"
+)
 for user in "${USERS[@]}"; do
     [[ -n "${user}" ]] ||
         continue
@@ -267,7 +270,12 @@ for user in "${USERS[@]}"; do
     chmod 755 "$(eval echo ~"${user}")"/dot-files.sh
 done
 ## SYSUSER
-FILES=("nix.conf" "pkgs-flatpak.txt" "post.sh" "secureboot.sh")
+FILES=(
+    "nix.conf"
+    "pkgs-flatpak.txt"
+    "post.sh"
+    "secureboot.sh"
+)
 for tmp_file in "${FILES[@]}"; do
     file="${SCRIPT_DIR}"/"${tmp_file}"
     [[ -f "${file}" ]] ||
@@ -530,7 +538,12 @@ EOF
 )"
 UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
 UPGRADE_HOME+=$'\n/bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
-TMP_USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
+TMP_USERS=(
+    "${GUESTUSER}"
+    "${HOMEUSER}"
+    "${VIRTUSER}"
+    "${WORKUSER}"
+)
 for user in "${TMP_USERS[@]}"; do
     [[ -n "${user}" ]] ||
         continue
@@ -670,9 +683,30 @@ for dir in "${SUBVOLUMES[@]}"; do
 done
 
 # Create dirs/files and modify perms
-FILES_600=(/etc/ssh/sshd_config.d/50-arch-install.conf /etc/audit/rules.d/50-arch-install.rules)
-DIRS_700=(/etc/audit/rules.d /etc/ssh/sshd_config.d /etc/encryption/keys /etc/access/keys /root/backup)
-FILES_755=(/usr/local/bin/cryptboot /usr/local/bin/cryptboot-efikeys /usr/local/bin/floorp /usr/local/bin/freetube /usr/local/bin/librewolf /usr/local/bin/nitrokey-app /usr/local/bin/pwvucontrol /usr/local/bin/rpi-imager /usr/local/bin/sweethome3d /usr/local/bin/upgrade-home /usr/local/bin/upgrade-packages)
+FILES_600=(
+    /etc/audit/rules.d/50-arch-install.rules
+    /etc/ssh/sshd_config.d/50-arch-install.conf
+)
+DIRS_700=(
+    /etc/access/keys
+    /etc/audit/rules.d
+    /etc/encryption/keys
+    /etc/ssh/sshd_config.d
+    /root/backup
+)
+FILES_755=(
+    /usr/local/bin/cryptboot
+    /usr/local/bin/cryptboot-efikeys
+    /usr/local/bin/floorp
+    /usr/local/bin/freetube
+    /usr/local/bin/librewolf
+    /usr/local/bin/nitrokey-app
+    /usr/local/bin/pwvucontrol
+    /usr/local/bin/rpi-imager
+    /usr/local/bin/sweethome3d
+    /usr/local/bin/upgrade-home
+    /usr/local/bin/upgrade-packages
+)
 for file in "${FILES_600[@]}"; do
     ! [[ -f "${file}" ]] &&
         touch "${file}"

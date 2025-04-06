@@ -59,7 +59,10 @@ case "${choice}" in
         read -rp "Which disk should be the second RAID member? (Type '/dev/sdY' fex.): " choice1
         if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
             echo "Using '${choice0}' and '${choice1}' for installation."
-            DISKS=("${choice0}" "${choice1}")
+            DISKS=(
+                "${choice0}"
+                "${choice1}"
+            )
         else
             log_err "Drives not suitable for installation."
             exit 1
