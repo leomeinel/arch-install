@@ -184,8 +184,6 @@ done
 DEPENDENCIES=""
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2\npython-psutil'
-pacman -Qq "kdenlive" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nmediainfo'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
 pacman -Qq "open-vm-tools" >/dev/null 2>&1 &&
@@ -695,11 +693,15 @@ DIRS_700=(
     /root/backup
 )
 FILES_755=(
+    /usr/local/bin/ark
     /usr/local/bin/cryptboot
     /usr/local/bin/cryptboot-efikeys
     /usr/local/bin/floorp
     /usr/local/bin/freetube
+    /usr/local/bin/gnome-music
+    /usr/local/bin/kdenlive
     /usr/local/bin/librewolf
+    /usr/local/bin/nextcloud
     /usr/local/bin/nitrokey-app
     /usr/local/bin/pwvucontrol
     /usr/local/bin/rpi-imager
