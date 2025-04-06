@@ -501,6 +501,18 @@ echo "kernel_cmdline=\"${PARAMETERS}\"" >/etc/dracut.conf.d/50-arch-install-cmdl
 } >>/etc/postfix/main.cf
 
 # Configure /usr
+## Configure /usr/share/xdg-desktop-portal/portals/gnome-keyring.portal
+## START sed
+FILE=/usr/share/xdg-desktop-portal/portals/gnome-keyring.portal
+STRING="^UseIn="
+grep -q "${STRING}" "${FILE}" || sed_exit
+sed -i "s/${STRING}/#UseIn=/g" "${FILE}"
+## END sed
+{
+    echo ""
+    echo "# arch-install"
+    echo "UseIn=gnome;sway"
+} >>"${FILE}"
 ## Set up /usr/local/bin
 cp /git/cryptboot/cryptboot /usr/local/bin/
 cp /git/cryptboot/cryptboot-efikeys /usr/local/bin/
