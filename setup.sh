@@ -693,13 +693,13 @@ DIRS_700=(
     /root/backup
 )
 FILES_755=(
+    /usr/local/bin/amberol
     /usr/local/bin/ark
     /usr/local/bin/calibre
     /usr/local/bin/cryptboot
     /usr/local/bin/cryptboot-efikeys
     /usr/local/bin/floorp
     /usr/local/bin/freetube
-    /usr/local/bin/gnome-music
     /usr/local/bin/kdenlive
     /usr/local/bin/librewolf
     /usr/local/bin/nextcloud
@@ -708,6 +708,7 @@ FILES_755=(
     /usr/local/bin/pwvucontrol
     /usr/local/bin/rpi-imager
     /usr/local/bin/sweethome3d
+    /usr/local/bin/tagger
     /usr/local/bin/upgrade-home
     /usr/local/bin/upgrade-packages
 )
