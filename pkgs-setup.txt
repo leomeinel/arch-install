@@ -74,7 +74,6 @@ libvirt
 libwmf
 logrotate
 logwatch
-lollypop
 lrzip
 lshw
 lsof

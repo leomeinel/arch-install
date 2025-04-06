@@ -188,8 +188,6 @@ pacman -Qq "kdenlive" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nmediainfo'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
-pacman -Qq "lollypop" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav'
 pacman -Qq "open-vm-tools" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngtkmm3'
 pacman -Qq "mpv" >/dev/null 2>&1 &&
