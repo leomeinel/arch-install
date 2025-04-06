@@ -706,6 +706,7 @@ DIRS_700=(
 )
 FILES_755=(
     /usr/local/bin/ark
+    /usr/local/bin/calibre
     /usr/local/bin/cryptboot
     /usr/local/bin/cryptboot-efikeys
     /usr/local/bin/floorp
