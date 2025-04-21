@@ -184,6 +184,8 @@ done
 DEPENDENCIES=""
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2\npython-psutil'
+pacman -Qq "inkcape" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\npython-tinycss2'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
 pacman -Qq "open-vm-tools" >/dev/null 2>&1 &&

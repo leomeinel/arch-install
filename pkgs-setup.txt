@@ -23,6 +23,7 @@ dosfstools
 duf
 dust
 efibootmgr
+inkscape
 efitools
 ethtool
 evince
