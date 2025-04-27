@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File = rescue-mount.sh
-# Author = Leopold Meinel (leo@meinel.dev)
+# File: rescue-mount.sh
+# Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID = MIT
-# URL = https://opensource.org/licenses/MIT
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
 # -----
 ###
 
@@ -57,7 +57,10 @@ case "${choice}" in
         read -rp "Which disk is the second RAID member? (Type '/dev/sdY' fex.): " choice1
         if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
             echo "Using '${choice0}' and '${choice1}' for rescue-system."
-            DISKS=("${choice0}" "${choice1}")
+            DISKS=(
+                "${choice0}"
+                "${choice1}"
+            )
         else
             log_err "Drives not suitable for rescue-system."
             exit 1
@@ -133,48 +136,48 @@ vgchange -ay
 
 ## Mount subvolumes
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
-LV0="/dev/mapper/vg0-lv0"
-LV1="/dev/mapper/vg0-lv1"
-LV2="/dev/mapper/vg0-lv2"
-LV3="/dev/mapper/vg0-lv3"
-LV4="/dev/mapper/vg0-lv4"
+LV0=/dev/mapper/vg0-lv0
+LV1=/dev/mapper/vg0-lv1
+LV2=/dev/mapper/vg0-lv2
+LV3=/dev/mapper/vg0-lv3
+LV4=/dev/mapper/vg0-lv4
 OPTIONS0="noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS3="noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 mount_subs0() {
-    mount -m -o "${3}${2}" -t btrfs "${4}" "/mnt${1}"
-    mount -m -o "${OPTIONS3}${2}_snapshots" -t btrfs "${4}" "/mnt${1}.snapshots"
+    mount -m -o "${3}${2}" -t btrfs "${4}" /mnt"${1}"
+    mount -m -o "${OPTIONS3}${2}_snapshots" -t btrfs "${4}" /mnt"${1}".snapshots
     mount_subs1 "${1}" "${3}" "${4}"
 }
 mount_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
         if [[ "${SUBVOLUMES[${a}]}" != "${1}" ]] && grep -q "^${1}" <<<"${SUBVOLUMES[${a}]}"; then
             if { grep -q "^${1}log/" <<<"${SUBVOLUMES[${a}]}"; } || { grep -q "^${1}lib/" <<<"${SUBVOLUMES[${a}]}" && ! grep -q "^${1}lib/flatpak/" <<<"${SUBVOLUMES[${a}]}"; }; then
-                mount -m -o "${OPTIONS3}${CONFIGS[${a}]}" -t btrfs "${3}" "/mnt${SUBVOLUMES[${a}]}"
+                mount -m -o "${OPTIONS3}${CONFIGS[${a}]}" -t btrfs "${3}" /mnt"${SUBVOLUMES[${a}]}"
             else
-                mount -m -o "${2}${CONFIGS[${a}]}" -t btrfs "${3}" "/mnt${SUBVOLUMES[${a}]}"
+                mount -m -o "${2}${CONFIGS[${a}]}" -t btrfs "${3}" /mnt"${SUBVOLUMES[${a}]}"
             fi
-            mount -m -o "${OPTIONS3}${CONFIGS[${a}]}_snapshots" -t btrfs "${3}" "/mnt${SUBVOLUMES[${a}]}.snapshots"
+            mount -m -o "${OPTIONS3}${CONFIGS[${a}]}_snapshots" -t btrfs "${3}" /mnt"${SUBVOLUMES[${a}]}".snapshots
         fi
     done
 }
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[${i}]}" in
-    "/")
-        mount -m -o "${OPTIONS0}" -t btrfs "${LV0}" "/mnt${SUBVOLUMES[${i}]}"
-        mount -m -o "${OPTIONS3}snapshots" -t btrfs "${LV0}" "/mnt${SUBVOLUMES[${i}]}.snapshots"
+    /)
+        mount -m -o "${OPTIONS0}" -t btrfs "${LV0}" /mnt"${SUBVOLUMES[${i}]}"
+        mount -m -o "${OPTIONS3}snapshots" -t btrfs "${LV0}" /mnt"${SUBVOLUMES[${i}]}".snapshots
         ;;
-    "/usr/")
+    /usr/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS1}" "${LV1}"
         ;;
-    "/nix/")
+    /nix/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS1}" "${LV2}"
         ;;
-    "/var/")
+    /var/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV3}"
         ;;
-    "/home/")
+    /home/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV4}"
         ;;
     esac

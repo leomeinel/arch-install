@@ -3,7 +3,6 @@ alacritty
 alsa-utils
 apparmor
 arch-audit
-ark
 bash-completion
 bat
 bc
@@ -56,7 +55,6 @@ libvirt
 libwmf
 logrotate
 logwatch
-lollypop
 lrzip
 lshw
 lsof
@@ -83,7 +81,6 @@ procs
 python
 qemu-desktop
 qemu-emulators-full
-qt6-wayland
 quilt
 ripgrep
 rkhunter

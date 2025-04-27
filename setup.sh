@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File = setup.sh
-# Author = Leopold Meinel (leo@meinel.dev)
+# File: setup.sh
+# Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID = MIT
-# URL = https://opensource.org/licenses/MIT
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
 # -----
 ###
 
@@ -184,12 +184,10 @@ done
 DEPENDENCIES=""
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2\npython-psutil'
-pacman -Qq "kdenlive" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nmediainfo'
+pacman -Qq "inkcape" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\npython-tinycss2'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
-pacman -Qq "lollypop" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ngst-plugins-base\ngst-plugins-good\ngst-libav\nkid3-common'
 pacman -Qq "open-vm-tools" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngtkmm3'
 pacman -Qq "mpv" >/dev/null 2>&1 &&
@@ -253,7 +251,10 @@ fi
 
 # Set up user scripts
 ## All users
-FILES=("dot-files.sh" "install.conf")
+FILES=(
+    "dot-files.sh"
+    "install.conf"
+)
 for user in "${USERS[@]}"; do
     [[ -n "${user}" ]] ||
         continue
@@ -269,7 +270,13 @@ for user in "${USERS[@]}"; do
     chmod 755 "$(eval echo ~"${user}")"/dot-files.sh
 done
 ## SYSUSER
-FILES=("nix.conf" "pkgs-flatpak.txt" "pkgs-post.txt" "post.sh" "secureboot.sh")
+FILES=(
+    "nix.conf"
+    "pkgs-flatpak.txt"
+    "pkgs-post.txt"
+    "post.sh"
+    "secureboot.sh"
+)
 for tmp_file in "${FILES[@]}"; do
     file="${SCRIPT_DIR}"/"${tmp_file}"
     [[ -f "${file}" ]] ||
@@ -286,9 +293,7 @@ if lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1"; then
 else
     MD0UUID="$(blkid -s UUID -o value "${DISK1P2}")"
 fi
-{
-    echo "md0_crypt UUID=${MD0UUID} none luks,key-slot=0"
-} >/etc/crypttab
+echo "md0_crypt UUID=${MD0UUID} none luks,key-slot=0" >/etc/crypttab
 ## Configure /etc/localtime
 ln -sf /usr/share/zoneinfo/"${TIMEZONE}" /etc/localtime
 hwclock --systohc
@@ -507,12 +512,12 @@ UPGRADE_HOME="$(
     cat <<'EOF'
 #!/usr/bin/env bash
 ###
-# File = upgrade-home
-# Author = Leopold Meinel (leo@meinel.dev)
+# File: upgrade-home
+# Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID = MIT
-# URL = https://opensource.org/licenses/MIT
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
 # -----
 ###
 
@@ -534,7 +539,12 @@ EOF
 )"
 UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
 UPGRADE_HOME+=$'\n/bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
-TMP_USERS=("${GUESTUSER}" "${HOMEUSER}" "${VIRTUSER}" "${WORKUSER}")
+TMP_USERS=(
+    "${GUESTUSER}"
+    "${HOMEUSER}"
+    "${VIRTUSER}"
+    "${WORKUSER}"
+)
 for user in "${TMP_USERS[@]}"; do
     [[ -n "${user}" ]] ||
         continue
@@ -607,13 +617,9 @@ for dir in "${SUBVOLUMES[@]}"; do
 done
 ### Append configs individually
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
-if [[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]]; then
-    log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
-    exit 1
-fi
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     #### Copy template
-    FILE1="/usr/share/snapper/config-templates/${CONFIGS[${i}]}"
+    FILE1=/usr/share/snapper/config-templates/"${CONFIGS[${i}]}"
     cp "${FILE0}" "${FILE1}"
     #### Set variables for configs
     case "${CONFIGS[${i}]}" in
@@ -678,9 +684,35 @@ for dir in "${SUBVOLUMES[@]}"; do
 done
 
 # Create dirs/files and modify perms
-FILES_600=("/etc/ssh/sshd_config.d/50-arch-install.conf" "/etc/audit/rules.d/50-arch-install.rules")
-DIRS_700=("/etc/audit/rules.d" "/etc/ssh/sshd_config.d" "/etc/encryption/keys" "/etc/access/keys" "/root/backup")
-FILES_755=("/usr/local/bin/cryptboot" "/usr/local/bin/cryptboot-efikeys" "/usr/local/bin/floorp" "/usr/local/bin/freetube" "/usr/local/bin/librewolf" "/usr/local/bin/protontricks" "/usr/local/bin/pwvucontrol" "/usr/local/bin/steam" "/usr/local/bin/upgrade-home" "/usr/local/bin/upgrade-packages" "/usr/local/bin/wine" "/usr/local/bin/winetricks")
+FILES_600=(
+    /etc/audit/rules.d/50-arch-install.rules
+    /etc/ssh/sshd_config.d/50-arch-install.conf
+)
+DIRS_700=(
+    /etc/access/keys
+    /etc/audit/rules.d
+    /etc/encryption/keys
+    /etc/ssh/sshd_config.d
+    /root/backup
+)
+FILES_755=(
+    /usr/local/bin/amberol
+    /usr/local/bin/ark
+    /usr/local/bin/cryptboot
+    /usr/local/bin/cryptboot-efikeys
+    /usr/local/bin/floorp
+    /usr/local/bin/freetube
+    /usr/local/bin/librewolf
+    /usr/local/bin/protontricks
+    /usr/local/bin/pwvucontrol
+    /usr/local/bin/steam
+    /usr/local/bin/tagger
+    /usr/local/bin/upgrade-home
+    /usr/local/bin/upgrade-packages
+    /usr/local/bin/upgrade-packages
+    /usr/local/bin/wine
+    /usr/local/bin/winetricks
+)
 for file in "${FILES_600[@]}"; do
     ! [[ -f "${file}" ]] &&
         touch "${file}"
