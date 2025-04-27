@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File = prepare.sh
-# Author = Leopold Meinel (leo@meinel.dev)
+# File: prepare.sh
+# Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID = MIT
-# URL = https://opensource.org/licenses/MIT
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
 # -----
 ###
 
@@ -59,7 +59,10 @@ case "${choice}" in
         read -rp "Which disk should be the second RAID member? (Type '/dev/sdY' fex.): " choice1
         if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
             echo "Using '${choice0}' and '${choice1}' for installation."
-            DISKS=("${choice0}" "${choice1}")
+            DISKS=(
+                "${choice0}"
+                "${choice1}"
+            )
         else
             log_err "Drives not suitable for installation."
             exit 1
@@ -148,7 +151,6 @@ sgdisk -o "${DISK1}" || true
 sgdisk -Z "${DISK1}" || true
 wipefs -a "${DISK1}"
 dd if=/dev/zero of="${DISK1}" bs=1M conv=fsync count=8192 status=progress
-
 if [[ -n "${DISK2}" ]]; then
     sgdisk -o "${DISK2}" || true
     sgdisk -Z "${DISK2}" || true
@@ -174,7 +176,7 @@ loadkeys "${KEYMAP}"
 timedatectl set-ntp true
 timedatectl set-timezone "${TIMEZONE}"
 
-# Erase & partition disks
+# Partition disks
 sgdisk -n 0:0:+1G -t 1:ef00 "${DISK1}"
 if [[ -n "${DISK2}" ]]; then
     sgdisk -n 0:0:"${PART_SIZE}" -t 2:fd00 "${DISK1}"
@@ -259,50 +261,46 @@ mkfs.fat -n EFI -F32 "${DISK1P1}"
 # Configure mounts
 ## Create subvolumes
 SUBVOLUMES_LENGTH="${#SUBVOLUMES[@]}"
-if [[ "${SUBVOLUMES_LENGTH}" -ne "${#CONFIGS[@]}" ]]; then
-    log_err "'SUBVOLUMES' and 'CONFIGS' aren't the same length."
-    exit 1
-fi
 create_subs0() {
     mkfs.btrfs -L "${3}" "${4}"
     mount "${4}" /mnt
-    btrfs subvolume create "/mnt/@${2}"
-    btrfs subvolume create "/mnt/@${2}_snapshots"
+    btrfs subvolume create /mnt/@"${2}"
+    btrfs subvolume create /mnt/@"${2}"_snapshots
     create_subs1 "${1}"
     umount /mnt
 }
 create_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
         if [[ "${SUBVOLUMES[${a}]}" != "${1}" ]] && grep -q "^${1}" <<<"${SUBVOLUMES[${a}]}"; then
-            btrfs subvolume create "/mnt/@${CONFIGS[${a}]}"
-            btrfs subvolume create "/mnt/@${CONFIGS[${a}]}_snapshots"
+            btrfs subvolume create /mnt/@"${CONFIGS[${a}]}"
+            btrfs subvolume create /mnt/@"${CONFIGS[${a}]}"_snapshots
         fi
     done
 }
-LV0="/dev/mapper/vg0-lv0"
-LV1="/dev/mapper/vg0-lv1"
-LV2="/dev/mapper/vg0-lv2"
-LV3="/dev/mapper/vg0-lv3"
-LV4="/dev/mapper/vg0-lv4"
+LV0=/dev/mapper/vg0-lv0
+LV1=/dev/mapper/vg0-lv1
+LV2=/dev/mapper/vg0-lv2
+LV3=/dev/mapper/vg0-lv3
+LV4=/dev/mapper/vg0-lv4
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[${i}]}" in
-    "/")
+    /)
         mkfs.btrfs -L ROOT "${LV0}"
         mount "${LV0}" /mnt
         btrfs subvolume create /mnt/@
         btrfs subvolume create /mnt/@snapshots
         umount /mnt
         ;;
-    "/usr/")
+    /usr/)
         create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "USR" "${LV1}"
         ;;
-    "/nix/")
+    /nix/)
         create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "NIX" "${LV2}"
         ;;
-    "/var/")
+    /var/)
         create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "VAR" "${LV3}"
         ;;
-    "/home/")
+    /home/)
         create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "HOME" "${LV4}"
         ;;
     esac
@@ -313,38 +311,38 @@ OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@
 OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS3="noexec,nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 mount_subs0() {
-    mount -m -o "${3}${2}" -t btrfs "${4}" "/mnt${1}"
-    mount -m -o "${OPTIONS3}${2}_snapshots" -t btrfs "${4}" "/mnt${1}.snapshots"
+    mount -m -o "${3}${2}" -t btrfs "${4}" /mnt"${1}"
+    mount -m -o "${OPTIONS3}${2}_snapshots" -t btrfs "${4}" /mnt"${1}".snapshots
     mount_subs1 "${1}" "${3}" "${4}"
 }
 mount_subs1() {
     for ((a = 0; a < SUBVOLUMES_LENGTH; a++)); do
         if [[ "${SUBVOLUMES[${a}]}" != "${1}" ]] && grep -q "^${1}" <<<"${SUBVOLUMES[${a}]}"; then
             if { grep -q "^${1}log/" <<<"${SUBVOLUMES[${a}]}"; } || { grep -q "^${1}lib/" <<<"${SUBVOLUMES[${a}]}" && ! grep -q "^${1}lib/flatpak/" <<<"${SUBVOLUMES[${a}]}"; }; then
-                mount -m -o "${OPTIONS3}${CONFIGS[${a}]}" -t btrfs "${3}" "/mnt${SUBVOLUMES[${a}]}"
+                mount -m -o "${OPTIONS3}${CONFIGS[${a}]}" -t btrfs "${3}" /mnt"${SUBVOLUMES[${a}]}"
             else
-                mount -m -o "${2}${CONFIGS[${a}]}" -t btrfs "${3}" "/mnt${SUBVOLUMES[${a}]}"
+                mount -m -o "${2}${CONFIGS[${a}]}" -t btrfs "${3}" /mnt"${SUBVOLUMES[${a}]}"
             fi
-            mount -m -o "${OPTIONS3}${CONFIGS[${a}]}_snapshots" -t btrfs "${3}" "/mnt${SUBVOLUMES[${a}]}.snapshots"
+            mount -m -o "${OPTIONS3}${CONFIGS[${a}]}_snapshots" -t btrfs "${3}" /mnt"${SUBVOLUMES[${a}]}".snapshots
         fi
     done
 }
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[${i}]}" in
-    "/")
-        mount -m -o "${OPTIONS0}" -t btrfs "${LV0}" "/mnt${SUBVOLUMES[${i}]}"
-        mount -m -o "${OPTIONS3}snapshots" -t btrfs "${LV0}" "/mnt${SUBVOLUMES[${i}]}.snapshots"
+    /)
+        mount -m -o "${OPTIONS0}" -t btrfs "${LV0}" /mnt"${SUBVOLUMES[${i}]}"
+        mount -m -o "${OPTIONS3}snapshots" -t btrfs "${LV0}" /mnt"${SUBVOLUMES[${i}]}".snapshots
         ;;
-    "/usr/")
+    /usr/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS1}" "${LV1}"
         ;;
-    "/nix/")
+    /nix/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS1}" "${LV2}"
         ;;
-    "/var/")
+    /var/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV3}"
         ;;
-    "/home/")
+    /home/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV4}"
         ;;
     esac
@@ -369,7 +367,7 @@ chmod 775 /mnt/var/games
 # Append system packages
 [[ -n "${DISK2}" ]] &&
     echo "mdadm" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
-[[ -d "/proc/acpi/button/lid" ]] &&
+[[ -d /proc/acpi/button/lid ]] &&
     {
         echo "tlp"
         echo "tlp-rdw"
