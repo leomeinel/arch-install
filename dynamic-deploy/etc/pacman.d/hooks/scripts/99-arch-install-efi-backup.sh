@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File = 99-arch-install-efi-backup.sh
-# Author = Leopold Meinel (leo@meinel.dev)
+# File: 99-arch-install-efi-backup.sh
+# Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID = MIT
-# URL = https://opensource.org/licenses/MIT
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
 # -----
 ###
 

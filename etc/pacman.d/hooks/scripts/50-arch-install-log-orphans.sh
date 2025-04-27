@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File = 50-arch-install-log-orphans.sh
-# Author = Leopold Meinel (leo@meinel.dev)
+# File: 50-arch-install-log-orphans.sh
+# Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID = MIT
-# URL = https://opensource.org/licenses/MIT
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
 # -----
 ###
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File = setup.sh
-# Author = Leopold Meinel (leo@meinel.dev)
+# File: setup.sh
+# Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID = MIT
-# URL = https://opensource.org/licenses/MIT
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
 # -----
 ###
 
@@ -511,12 +511,12 @@ UPGRADE_HOME="$(
     cat <<'EOF'
 #!/usr/bin/env bash
 ###
-# File = upgrade-home
-# Author = Leopold Meinel (leo@meinel.dev)
+# File: upgrade-home
+# Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID = MIT
-# URL = https://opensource.org/licenses/MIT
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
 # -----
 ###
 
