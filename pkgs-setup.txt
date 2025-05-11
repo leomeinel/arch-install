@@ -41,7 +41,6 @@ htop
 hwinfo
 hyperfine
 inetutils
-inkscape
 jdk21-openjdk
 jdk8-openjdk
 jpegoptim
