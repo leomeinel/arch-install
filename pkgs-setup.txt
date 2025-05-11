@@ -23,7 +23,6 @@ dosfstools
 duf
 dust
 efibootmgr
-inkscape
 efitools
 ethtool
 evince
@@ -56,7 +55,9 @@ hyphen-de
 hyphen-en
 hyphen-fr
 hyphen-nl
+imagemagick
 inetutils
+inkscape
 jdk21-openjdk
 jdk8-openjdk
 jpegoptim
