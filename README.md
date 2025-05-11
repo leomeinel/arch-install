@@ -2,7 +2,7 @@
 
 My personal Arch Linux install script using LUKS2 encryption, LVM and btrfs. With optional RAID1.
 
-Meant for general purpose systems with a GUI.
+Meant for systems with a GUI that mainly run steam and other games.
 
 ## Info
 
@@ -14,9 +14,9 @@ Meant for general purpose systems with a GUI.
 
 :information_source: | I recommend at least 16GiB of RAM. By specifying `TMPDIR` manually before running `post.sh` to force nix to not use the tmpfs, you might be able to circumvent this. Also see these issues: [(1)](https://github.com/NixOS/nixpkgs/issues/54707) and [(2)](https://github.com/NixOS/nix/issues/2098).
 
-:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/virt-manager-install.md) for installing to virt-manager.
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/games/virt-manager-install.md) for installing to virt-manager.
 
-:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/main/ssh-install.md) for installing via ssh.
+:exclamation: | Follow [these instructions](https://github.com/leomeinel/arch-install/blob/games/ssh-install.md) for installing via ssh.
 
 ## Pre-installation
 
@@ -28,8 +28,8 @@ Follow the `Pre-installation` section of [this guide](https://wiki.archlinux.org
 
 ```sh
 pacman -Sy git
-# Instead of main, you can also use a tag
-git clone -b main https://github.com/leomeinel/arch-install.git
+# Instead of games, you can also use a tag
+git clone -b games https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 # Modify install.conf before executing prepare.sh
 vim /root/arch-install/install.conf

@@ -1,14 +1,10 @@
-com.calibre_ebook.calibre
-com.nextcloud.desktopclient.nextcloud
-com.nitrokey.nitrokey-app2
-com.obsproject.Studio
+com.github.Matoking.protontricks
 com.saivert.pwvucontrol
-com.sweethome3d.Sweethome3d
+com.valvesoftware.Steam
 io.bassi.Amberol
 io.freetubeapp.FreeTube
 io.gitlab.librewolf-community
 one.ablaze.floorp
 org.kde.ark
-org.kde.kdenlive
 org.nickvision.tagger
-org.raspberrypi.rpi-imager
+org.winehq.Wine/x86_64/stable-24.08

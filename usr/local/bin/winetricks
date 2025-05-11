@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 ###
-# File: obs
+# File: winetricks
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
-# SPDX ID: MIT
+# SPDX: ID MIT
 # URL: https://opensource.org/licenses/MIT
 # -----
 ###
@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run com.obsproject.Studio "${@}"
+exec /usr/bin/flatpak run --command=winetricks org.winehq.Wine "${@}"

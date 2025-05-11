@@ -273,6 +273,7 @@ done
 FILES=(
     "nix.conf"
     "pkgs-flatpak.txt"
+    "pkgs-post.txt"
     "post.sh"
     "secureboot.sh"
 )
@@ -473,7 +474,7 @@ rm -f "${tmpfile}"
 } >>/etc/snap-pac.ini
 ## Configure /etc/dracut.conf.d/cmdline.conf
 LV0_UUID="$(blkid -s UUID -o value /dev/mapper/vg0-lv0)"
-PARAMETERS="rd.auto rd.luks.uuid=${MD0UUID} rd.luks rd.lvm rd.md root=UUID=${LV0_UUID} rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvol=/@ rd.vconsole.unicode rd.vconsole.keymap=${KEYMAP} loglevel=3 bgrt_disable audit=1 audit_backlog_limit=8192 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1"
+PARAMETERS="rd.auto rd.luks.uuid=${MD0UUID} rd.luks rd.lvm rd.md root=UUID=${LV0_UUID} rootfstype=btrfs rootflags=rw,noatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvol=/@ rd.vconsole.unicode rd.vconsole.keymap=${KEYMAP} loglevel=3 bgrt_disable audit=0 audit_backlog_limit=8192 lsm=landlock,lockdown,yama,integrity,apparmor,bpf iommu=pt zswap.enabled=0 lockdown=integrity module.sig_enforce=1 tsc=reliable clocksource=tsc cpufreq.default_governor=performance"
 ### If on intel set kernel parameter intel_iommu=on
 pacman -Qq "intel-ucode" >/dev/null 2>&1 &&
     PARAMETERS="${PARAMETERS} intel_iommu=on"
@@ -697,22 +698,19 @@ DIRS_700=(
 FILES_755=(
     /usr/local/bin/amberol
     /usr/local/bin/ark
-    /usr/local/bin/calibre
     /usr/local/bin/cryptboot
     /usr/local/bin/cryptboot-efikeys
     /usr/local/bin/floorp
     /usr/local/bin/freetube
-    /usr/local/bin/kdenlive
     /usr/local/bin/librewolf
-    /usr/local/bin/nextcloud
-    /usr/local/bin/nitrokey-app
-    /usr/local/bin/obs
+    /usr/local/bin/protontricks
     /usr/local/bin/pwvucontrol
-    /usr/local/bin/rpi-imager
-    /usr/local/bin/sweethome3d
+    /usr/local/bin/steam
     /usr/local/bin/tagger
     /usr/local/bin/upgrade-home
     /usr/local/bin/upgrade-packages
+    /usr/local/bin/wine
+    /usr/local/bin/winetricks
 )
 for file in "${FILES_600[@]}"; do
     ! [[ -f "${file}" ]] &&
@@ -733,8 +731,6 @@ done
 # Enable systemd services
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     systemctl enable apparmor.service
-pacman -Qq "audit" >/dev/null 2>&1 &&
-    systemctl enable auditd.service
 pacman -Qq "avahi" >/dev/null 2>&1 &&
     systemctl enable avahi-daemon.service
 pacman -Qq "bluez" >/dev/null 2>&1 &&
