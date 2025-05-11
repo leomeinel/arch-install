@@ -41,7 +41,6 @@ mount -a
 
 # Sync files from this repo to system
 rsync -rq "${SCRIPT_DIR}/etc/" /etc
-rsync -rq "${SCRIPT_DIR}/usr/" /usr
 rsync -rq "${SCRIPT_DIR}/efi/" /efi
 
 # Add groups & users
@@ -188,8 +187,6 @@ pacman -Qq "inkcape" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-tinycss2'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ndnsmasq'
-pacman -Qq "open-vm-tools" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ngtkmm3'
 pacman -Qq "mpv" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nyt-dlp'
 pacman -Qq "pipewire" >/dev/null 2>&1 &&
@@ -272,7 +269,6 @@ done
 ## SYSUSER
 FILES=(
     "nix.conf"
-    "pkgs-flatpak.txt"
     "post.sh"
     "secureboot.sh"
 )
@@ -322,38 +318,6 @@ fi
     echo "ENABLE_OPROM=\"${ENABLE_OPROM}\""
 } >>/git/cryptboot/cryptboot.conf
 cp /git/cryptboot/cryptboot.conf /etc/
-## Configure /etc/xdg/user-dirs.defaults
-### START sed
-FILE=/etc/xdg/user-dirs.defaults
-STRING="^TEMPLATES="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#TEMPLATES=|g" "${FILE}"
-STRING="^PUBLICSHARE="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#PUBLICSHARE=|g" "${FILE}"
-STRING="^DESKTOP="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#DESKTOP=|g" "${FILE}"
-STRING="^MUSIC="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#MUSIC=|g" "${FILE}"
-STRING="^PICTURES="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#PICTURES=|g" "${FILE}"
-STRING="^VIDEOS="
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s|${STRING}|#VIDEOS=|g" "${FILE}"
-### END sed
-{
-    echo ""
-    echo "# arch-install"
-    echo "TEMPLATES=Documents/Templates"
-    echo "PUBLICSHARE=Documents/Public"
-    echo "DESKTOP=Desktop"
-    echo "MUSIC=Documents/Music"
-    echo "PICTURES=Documents/Pictures"
-    echo "VIDEOS=Documents/Videos"
-} >>"${FILE}"
 ## Configure /etc/mdadm.conf.d/50-arch-install.conf
 if lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1"; then
     mkdir -p /etc/mdadm.conf.d/
@@ -414,12 +378,6 @@ sed -i "s/${STRING}/#log_group =/g" "${FILE}"
     echo "# arch-install"
     echo "log_group = audit"
 } >>"${FILE}"
-## Configure /etc/libvirt/network.conf
-{
-    echo ''
-    echo '# arch-install'
-    echo 'firewall_backend = "nftables"'
-} >>/etc/libvirt/network.conf
 ## Configure /etc/nsswitch.conf
 ### START sed
 FILE=/etc/nsswitch.conf
@@ -695,24 +653,9 @@ DIRS_700=(
     /root/backup
 )
 FILES_755=(
-    /usr/local/bin/amberol
-    /usr/local/bin/ark
-    /usr/local/bin/calibre
     /usr/local/bin/cryptboot
     /usr/local/bin/cryptboot-efikeys
-    /usr/local/bin/floorp
-    /usr/local/bin/freetube
-    /usr/local/bin/kdenlive
-    /usr/local/bin/librewolf
-    /usr/local/bin/nextcloud
-    /usr/local/bin/nitrokey-app
-    /usr/local/bin/obs
-    /usr/local/bin/pwvucontrol
-    /usr/local/bin/rpi-imager
-    /usr/local/bin/sweethome3d
-    /usr/local/bin/tagger
     /usr/local/bin/upgrade-home
-    /usr/local/bin/upgrade-packages
 )
 for file in "${FILES_600[@]}"; do
     ! [[ -f "${file}" ]] &&
@@ -768,7 +711,10 @@ fi
 pacman -Qq "sysstat" >/dev/null 2>&1 &&
     systemctl enable sysstat.service
 pacman -Qq "systemd" >/dev/null 2>&1 &&
-    systemctl enable systemd-resolved.service
+    {
+        systemctl enable systemd-networkd.service
+        systemctl enable systemd-resolved.service
+    }
 pacman -Qq "tlp-rdw" >/dev/null 2>&1 && pacman -Qq "networkmanager" >/dev/null 2>&1 &&
     systemctl enable NetworkManager-dispatcher.service
 if pacman -Qq "tlp" >/dev/null 2>&1; then
