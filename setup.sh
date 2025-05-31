@@ -273,6 +273,7 @@ done
 FILES=(
     "nix.conf"
     "pkgs-flatpak.txt"
+    "pkgs-post.txt"
     "post.sh"
     "secureboot.sh"
 )

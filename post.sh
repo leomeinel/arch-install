@@ -341,6 +341,9 @@ doas /bin/sh -c '{
     echo "Include = /etc/paru.conf.d/50-arch-install.conf"
 } >>/etc/paru.conf'
 
+# AUR packages
+paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
+
 # Clear package cache
 paru -Scc
 doas /bin/sh -c 'pacman -Qtdq | pacman -Rns -' || true
@@ -357,6 +360,7 @@ FILES=(
     "install.conf"
     "nix.conf"
     "pkgs-flatpak.txt"
+    "pkgs-post.txt"
     "post.sh"
 )
 DIRS=(
