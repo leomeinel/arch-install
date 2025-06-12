@@ -698,6 +698,7 @@ DIRS_700=(
 FILES_755=(
     /usr/local/bin/amberol
     /usr/local/bin/ark
+    /usr/local/bin/chromium
     /usr/local/bin/cryptboot
     /usr/local/bin/cryptboot-efikeys
     /usr/local/bin/floorp
