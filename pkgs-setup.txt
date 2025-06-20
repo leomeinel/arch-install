@@ -102,6 +102,7 @@ postfix
 postgresql
 procs
 python
+python-poetry
 qemu-desktop
 qemu-emulators-full
 quilt
