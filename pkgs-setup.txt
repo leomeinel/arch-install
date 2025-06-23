@@ -43,7 +43,6 @@ grim
 gsettings-desktop-schemas
 gutenprint
 htop
-hugo
 hunspell
 hunspell-de
 hunspell-en_us
