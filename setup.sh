@@ -197,7 +197,7 @@ pacman -Qq "pipewire" >/dev/null 2>&1 &&
 pacman -Qq "podman" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nslirp4netns\npodman-compose\nnetavark\naardvark-dns'
 pacman -Qq "sway" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nxdg-desktop-portal-gtk\nxdg-desktop-portal-wlr'
+    DEPENDENCIES+=$'\nxdg-desktop-portal-gtk\nxdg-desktop-portal-wlr\nxorg-xwayland'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ncups-pk-helper'
 pacman -Qq "thunar" >/dev/null 2>&1 &&
@@ -206,8 +206,6 @@ pacman -Qq "tlp" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nsmartmontools'
 pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ntransmission-cli'
-pacman -Qq "wlroots" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nxorg-xwayland'
 if [[ -n "${DEPENDENCIES}" ]]; then
     for i in {1..5}; do
         if [[ "${i}" -eq 5 ]]; then
