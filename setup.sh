@@ -703,6 +703,7 @@ FILES_755=(
     /usr/local/bin/floorp
     /usr/local/bin/freetube
     /usr/local/bin/kdenlive
+    /usr/local/bin/kicad
     /usr/local/bin/librewolf
     /usr/local/bin/nextcloud
     /usr/local/bin/nitrokey-app
