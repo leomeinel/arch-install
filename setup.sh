@@ -194,6 +194,8 @@ pacman -Qq "mpv" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nyt-dlp'
 pacman -Qq "pipewire" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npipewire-alsa\npipewire-pulse'
+pacman -Qq "platformio-core" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nplatformio-core-udev\npython-click-completion\npython-shellingham'
 pacman -Qq "podman" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nslirp4netns\npodman-compose\nnetavark\naardvark-dns'
 pacman -Qq "sway" >/dev/null 2>&1 &&

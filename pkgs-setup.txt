@@ -96,6 +96,7 @@ perl-image-exiftool
 perl-rename
 pipewire
 pipewire-jack
+platformio-core
 polkit-gnome
 postfix
 postgresql
