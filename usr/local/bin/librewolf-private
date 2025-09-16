@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###
-# File: floorp
+# File: librewolf-private
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run one.ablaze.floorp "${@}"
+exec /usr/bin/flatpak run io.gitlab.librewolf-community --private-window "${@}"

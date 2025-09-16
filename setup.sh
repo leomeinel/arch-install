@@ -702,11 +702,11 @@ FILES_755=(
     /usr/local/bin/chromium
     /usr/local/bin/cryptboot
     /usr/local/bin/cryptboot-efikeys
-    /usr/local/bin/floorp
     /usr/local/bin/freetube
     /usr/local/bin/kdenlive
     /usr/local/bin/kicad
     /usr/local/bin/librewolf
+    /usr/local/bin/librewolf-private
     /usr/local/bin/nextcloud
     /usr/local/bin/nitrokey-app
     /usr/local/bin/obs

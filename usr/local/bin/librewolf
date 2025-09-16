@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run io.gitlab.librewolf-community --private-window "${@}"
+exec /usr/bin/flatpak run io.gitlab.librewolf-community "${@}"

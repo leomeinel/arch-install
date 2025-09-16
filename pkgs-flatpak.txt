@@ -8,7 +8,6 @@ io.bassi.Amberol
 io.freetubeapp.FreeTube
 io.github.ungoogled_software.ungoogled_chromium
 io.gitlab.librewolf-community
-one.ablaze.floorp
 org.kde.ark
 org.kde.kdenlive
 org.kicad.KiCad
