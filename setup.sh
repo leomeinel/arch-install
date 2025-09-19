@@ -198,6 +198,8 @@ pacman -Qq "platformio-core" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nplatformio-core-udev\npython-click-completion\npython-shellingham'
 pacman -Qq "podman" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nslirp4netns\npodman-compose\nnetavark\naardvark-dns'
+pacman -Qq "sane" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nsane-airscan'
 pacman -Qq "sway" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nxdg-desktop-portal-gtk\nxdg-desktop-portal-wlr\nxorg-xwayland'
 pacman -Qq "system-config-printer" >/dev/null 2>&1 &&

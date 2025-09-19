@@ -42,6 +42,7 @@ grex
 grim
 gsettings-desktop-schemas
 gutenprint
+hplip
 htop
 hugo
 hunspell
