@@ -702,6 +702,7 @@ FILES_755=(
     /usr/local/bin/ark
     /usr/local/bin/calibre
     /usr/local/bin/chromium
+    /usr/local/bin/chromium-private
     /usr/local/bin/cryptboot
     /usr/local/bin/cryptboot-efikeys
     /usr/local/bin/freetube
