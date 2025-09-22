@@ -151,6 +151,9 @@ DISK1P2="$(lsblk -rnpo TYPE,NAME "${DISK1}" | grep "part" | sed 's/part//g' | se
 lsblk -rno TYPE "${DISK1P2}" | grep -q "raid1" &&
     rsync -rq "${SCRIPT_DIR}/dynamic-deploy/etc/pacman.d/hooks/" /etc/pacman.d/hooks
 chmod 755 /etc/pacman.d/hooks/scripts/*.sh
+### Disable 90-dracut-install.hook
+### See: https://wiki.archlinux.org/title/Dracut#Generate_a_new_initramfs_on_kernel_upgrade
+touch /etc/pacman.d/hooks/90-dracut-install.hook
 ## Configure /etc/pacman.conf
 {
     echo ""
