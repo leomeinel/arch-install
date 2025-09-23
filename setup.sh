@@ -714,7 +714,6 @@ FILES_755=(
     /usr/local/bin/librewolf
     /usr/local/bin/librewolf-private
     /usr/local/bin/nextcloud
-    /usr/local/bin/nitrokey-app
     /usr/local/bin/obs
     /usr/local/bin/pwvucontrol
     /usr/local/bin/rpi-imager

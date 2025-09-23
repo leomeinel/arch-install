@@ -105,6 +105,7 @@ postgresql
 procs
 python
 python-poetry
+python-pynitrokey
 qemu-desktop
 qemu-emulators-full
 quilt
