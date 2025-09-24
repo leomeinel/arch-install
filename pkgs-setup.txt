@@ -33,6 +33,7 @@ ffmpeg
 filezilla
 flatpak
 fwupd
+gammastep
 gimp
 git-delta
 glow
