@@ -93,6 +93,7 @@ nwg-bar
 obs-studio
 openbsd-netcat
 openssh
+otf-hasklig-nerd
 oxipng
 pacman-contrib
 pam-u2f
@@ -145,6 +146,7 @@ tokei
 tpm2-tools
 transmission-gtk
 tree
+ttf-noto-nerd
 unarchiver
 unzip
 usbguard
