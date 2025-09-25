@@ -25,7 +25,6 @@ dust
 efibootmgr
 efitools
 ethtool
-evince
 eza
 fastfetch
 fd
@@ -43,6 +42,7 @@ grex
 grim
 gsettings-desktop-schemas
 gutenprint
+gvfs
 hplip
 htop
 hugo
@@ -94,6 +94,7 @@ openssh
 oxipng
 pacman-contrib
 pam-u2f
+papers
 pdftk
 perl-image-exiftool
 perl-rename
