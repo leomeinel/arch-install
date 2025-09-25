@@ -7,7 +7,6 @@ io.bassi.Amberol
 io.freetubeapp.FreeTube
 io.github.ungoogled_software.ungoogled_chromium
 io.gitlab.librewolf-community
-org.gtk.Gtk3theme.adw-gtk3-dark
 org.kde.ark
 org.kde.kdenlive
 org.kicad.KiCad
