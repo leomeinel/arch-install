@@ -278,6 +278,7 @@ done
 FILES=(
     "nix.conf"
     "pkgs-flatpak.txt"
+    "pkgs-flatpak-mask.txt"
     "pkgs-post.txt"
     "post.sh"
     "secureboot.sh"
