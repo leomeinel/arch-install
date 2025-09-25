@@ -86,7 +86,7 @@ lzop
 man-db
 mariadb
 mtools
-networkmanager
+network-manager-applet
 nss-mdns
 ntfs-3g
 nwg-bar
