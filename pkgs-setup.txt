@@ -1,5 +1,5 @@
 7zip
-adwaita-icon-theme
+adw-gtk-theme
 alacritty
 alsa-utils
 android-tools
@@ -38,7 +38,6 @@ gimp
 git-delta
 glow
 gnome-keyring
-gnome-themes-extra
 gptfdisk
 grex
 grim
@@ -98,6 +97,7 @@ oxipng
 pacman-contrib
 pam-u2f
 papers
+papirus-icon-theme
 pdftk
 perl-image-exiftool
 perl-rename
