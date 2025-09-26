@@ -1,14 +1,14 @@
-com.calibre_ebook.calibre
+com.github.johnfactotum.Foliate
 com.nextcloud.desktopclient.nextcloud
 com.obsproject.Studio
 com.saivert.pwvucontrol
 com.sweethome3d.Sweethome3d
-io.bassi.Amberol
 io.freetubeapp.FreeTube
 io.github.ungoogled_software.ungoogled_chromium
 io.gitlab.librewolf-community
+org.gnome.EasyTAG
+org.gnome.Music
 org.kde.ark
 org.kde.kdenlive
 org.kicad.KiCad
-org.nickvision.tagger
 org.raspberrypi.rpi-imager
