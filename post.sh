@@ -326,10 +326,9 @@ done
 . ~/.bash_profile
 
 # Install flatpaks
-if [[ -n "$(which flatpak)" ]] >/dev/null 2>&1; then
+[[ -n "$(which flatpak)" ]] >/dev/null 2>&1 && {
     xargs -n 1 doas flatpak install --system -y --noninteractive <"${SCRIPT_DIR}/pkgs-flatpak.txt"
-    xargs -n 1 doas flatpak mask --system <"${SCRIPT_DIR}/pkgs-flatpak-mask.txt"
-fi
+}
 
 # Install paru-bin
 git clone https://aur.archlinux.org/paru-bin.git ~/git/paru-bin
@@ -362,7 +361,6 @@ FILES=(
     "install.conf"
     "nix.conf"
     "pkgs-flatpak.txt"
-    "pkgs-flatpak-mask.txt"
     "pkgs-post.txt"
     "post.sh"
 )
