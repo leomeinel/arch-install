@@ -1,5 +1,4 @@
 7zip
-adw-gtk-theme
 alacritty
 alsa-utils
 android-tools
