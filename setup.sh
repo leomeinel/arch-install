@@ -187,6 +187,8 @@ done
 DEPENDENCIES=""
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2\npython-psutil'
+pacman -Qq "cmake" >/dev/null 2>&1 &&
+	DEPENDENCIES+=$'\nllvm\nninja'
 pacman -Qq "inkcape" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-tinycss2'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
@@ -211,8 +213,6 @@ pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
 pacman -Qq "tlp" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nsmartmontools'
-pacman -Qq "transmission-gtk" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ntransmission-cli'
 if [[ -n "${DEPENDENCIES}" ]]; then
     for i in {1..5}; do
         if [[ "${i}" -eq 5 ]]; then
