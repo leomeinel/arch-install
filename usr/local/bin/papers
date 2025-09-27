@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###
-# File: chromium-private
+# File: papers
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run io.github.ungoogled_software.ungoogled_chromium --incognito "${@}"
+exec /usr/bin/flatpak run org.gnome.Papers "${@}"

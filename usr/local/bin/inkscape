@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###
-# File: rpi-imager
+# File: inkscape
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run org.raspberrypi.rpi-imager "${@}"
+exec /usr/bin/flatpak run org.inkscape.Inkscape "${@}"

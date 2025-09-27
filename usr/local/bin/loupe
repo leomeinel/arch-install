@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###
-# File: ark
+# File: loupe
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run org.kde.ark "${@}"
+exec /usr/bin/flatpak run org.gnome.Loupe "${@}"

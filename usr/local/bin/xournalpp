@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###
-# File: easytag
+# File: xournalpp
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
@@ -13,4 +13,4 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run org.gnome.EasyTAG "${@}"
+exec /usr/bin/flatpak run com.github.xournalpp.xournalpp "${@}"

@@ -188,15 +188,13 @@ DEPENDENCIES=""
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2\npython-psutil'
 pacman -Qq "cmake" >/dev/null 2>&1 &&
-	DEPENDENCIES+=$'\nllvm\nninja'
-pacman -Qq "inkcape" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\npython-tinycss2'
+    DEPENDENCIES+=$'\nllvm\nninja'
+pacman -Qq "hyperfine" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\npython-numpy'
 pacman -Qq "libvirt" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\ndnsmasq'
+    DEPENDENCIES+=$'\ndnsmasq\npython-lxml'
 pacman -Qq "open-vm-tools" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngtkmm3'
-pacman -Qq "mpv" >/dev/null 2>&1 &&
-    DEPENDENCIES+=$'\nyt-dlp'
 pacman -Qq "pipewire" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npipewire-alsa\npipewire-pulse'
 pacman -Qq "platformio-core" >/dev/null 2>&1 &&
@@ -701,26 +699,33 @@ DIRS_700=(
     /root/backup
 )
 FILES_755=(
-    /usr/local/bin/ark
     /usr/local/bin/chromium
-    /usr/local/bin/chromium-private
     /usr/local/bin/cryptboot
     /usr/local/bin/cryptboot-efikeys
-    /usr/local/bin/easytag
+    /usr/local/bin/decibels
+    /usr/local/bin/eartag
     /usr/local/bin/foliate
+    /usr/local/bin/fragments
     /usr/local/bin/freetube
+    /usr/local/bin/gimp
+    /usr/local/bin/inkscape
     /usr/local/bin/kdenlive
     /usr/local/bin/kicad
     /usr/local/bin/librewolf
-    /usr/local/bin/librewolf-private
+    /usr/local/bin/loupe
     /usr/local/bin/music
-    /usr/local/bin/nextcloud
     /usr/local/bin/obs
+    /usr/local/bin/papers
+    /usr/local/bin/peazip
     /usr/local/bin/pwvucontrol
-    /usr/local/bin/rpi-imager
-    /usr/local/bin/sweethome3d
+    /usr/local/bin/shotwell
+    /usr/local/bin/showtime
+    /usr/local/bin/simple-scan
+    /usr/local/bin/thunderbird
     /usr/local/bin/upgrade-home
     /usr/local/bin/upgrade-packages
+    /usr/local/bin/upgrade-packages
+    /usr/local/bin/xournalpp
 )
 for file in "${FILES_600[@]}"; do
     ! [[ -f "${file}" ]] &&

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+###
+# File: simple-scan
+# Author: Leopold Meinel (leo@meinel.dev)
+# -----
+# Copyright (c) 2025 Leopold Meinel & contributors
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
+# -----
+###
+
+# Fail on error
+set -e
+
+# Execute flatpak
+exec /usr/bin/flatpak run org.gnome.SimpleScan "${@}"
+
