@@ -704,6 +704,7 @@ FILES_755=(
     /usr/local/bin/cryptboot-efikeys
     /usr/local/bin/decibels
     /usr/local/bin/eartag
+    /usr/local/bin/file-roller
     /usr/local/bin/foliate
     /usr/local/bin/fragments
     /usr/local/bin/freetube
@@ -716,7 +717,6 @@ FILES_755=(
     /usr/local/bin/music
     /usr/local/bin/obs
     /usr/local/bin/papers
-    /usr/local/bin/peazip
     /usr/local/bin/pwvucontrol
     /usr/local/bin/shotwell
     /usr/local/bin/showtime

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###
-# File: peazip
+# File: file-roller
 # Author: Leopold Meinel (leo@meinel.dev)
 # -----
 # Copyright (c) 2025 Leopold Meinel & contributors
@@ -13,4 +13,5 @@
 set -e
 
 # Execute flatpak
-exec /usr/bin/flatpak run io.github.peazip.PeaZip "${@}"
+# FIXME: Currently unverified; See: https://gitlab.gnome.org/GNOME/file-roller/-/issues/284
+exec /usr/bin/flatpak run org.gnome.FileRoller "${@}"

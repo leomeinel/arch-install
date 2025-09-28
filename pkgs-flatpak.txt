@@ -5,11 +5,11 @@ com.obsproject.Studio
 com.saivert.pwvucontrol
 de.haeckerfelix.Fragments
 io.freetubeapp.FreeTube
-io.github.peazip.PeaZip
 io.github.ungoogled_software.ungoogled_chromium
 io.gitlab.librewolf-community
 org.gimp.GIMP
 org.gnome.Decibels
+org.gnome.FileRoller
 org.gnome.Loupe
 org.gnome.Music
 org.gnome.Papers
