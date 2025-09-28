@@ -15,11 +15,13 @@ blueman
 bluez
 bluez-utils
 brightnessctl
+budgie-backgrounds
 cdrtools
 clang
 cmake
 cmake-extras
 cups
+cutefish-wallpapers
 dbus
 devtools
 dosfstools
