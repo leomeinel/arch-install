@@ -24,7 +24,7 @@ print_header() {
 if [[ -n "$(/usr/bin/pacman -Qen)" ]] >/dev/null 2>&1; then
     file=/var/log/pkglist-explicit.pacman.log
     tmpfile="$(/usr/bin/mktemp /tmp/"$(/usr/bin/basename "${0}")"-XXXXXX)"
-    cp "${file}" "${tmpfile}"
+    cp "${file}" "${tmpfile}" || true
     {
         /usr/bin/cat "${tmpfile}"
         print_header
@@ -35,7 +35,7 @@ fi
 if [[ -n "$(/usr/bin/pacman -Qem)" ]] >/dev/null 2>&1; then
     file=/var/log/pkglist-foreign.pacman.log
     tmpfile="$(/usr/bin/mktemp /tmp/"$(/usr/bin/basename "${0}")"-XXXXXX)"
-    cp "${file}" "${tmpfile}"
+    cp "${file}" "${tmpfile}" || true
     {
         /usr/bin/cat "${tmpfile}"
         print_header
@@ -46,7 +46,7 @@ fi
 if [[ -n "$(/usr/bin/pacman -Qd)" ]] >/dev/null 2>&1; then
     file=/var/log/pkglist-deps.pacman.log
     tmpfile="$(/usr/bin/mktemp /tmp/"$(/usr/bin/basename "${0}")"-XXXXXX)"
-    cp "${file}" "${tmpfile}"
+    cp "${file}" "${tmpfile}" || true
     {
         /usr/bin/cat "${tmpfile}"
         print_header
