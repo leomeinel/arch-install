@@ -528,35 +528,71 @@ UPGRADE_HOME="$(
 # Fail on error
 set -e
 
+# Define functions
 log_err() {
     /usr/bin/logger -s -p local0.err <<<"$(basename "${0}"): ${*}"
 }
+var_invalid_err_exit() {
+    log_err "'${1}' is invalid in '${2}'."
+    exit 1
+}
+script_fail_err_exit() {
+    log_err "Script failed for '${1}'."
+    exit 1
+}
 
-# If current user is not UID 1000, don't do anything
-if [[ "${UID}" -ne 1000 ]]; then
-    log_err "You can only run this script as UID 1000."
+# If current user is not in group wheel, don't do anything
+if id -nG "${UID}" | grep -vwq "wheel"; then
+    log_err "You can only run this script if you are in group 'wheel'."
     exit 1
 fi
 
 # Run ~/.config/dot-files/update.sh for each user
-EOF
+SCRIPT="$(
+    cat <<'EOF_'
+# Fail on error
+set -e
+
+# shellcheck source=/dev/null
+# FIXME: Catch with true should not be necessary
+. /etc/profile || true
+# shellcheck source=/dev/null
+. ~/.bash_profile
+cd ~/.config/dot-files
+/usr/bin/git pull --no-gpg-sign --no-edit
+/usr/bin/chmod +x ~/.config/dot-files/update.sh
+/usr/bin/git add .
+/usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true
+~/.config/dot-files/update.sh
+EOF_
 )"
-UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
-UPGRADE_HOME+=$'\n/bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . && { /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
-TMP_USERS=(
-    "${GUESTUSER}"
-    "${HOMEUSER}"
-    "${VIRTUSER}"
-    "${WORKUSER}"
+USERS=(
+REPLACE_USERS
 )
-for user in "${TMP_USERS[@]}"; do
+for user in "${USERS[@]}"; do
+    ## Check if "${user}" is valid
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
-        var_invalid_err_exit "${user}" "TMP_USERS"
-    UPGRADE_HOME+=$'\n/usr/bin/doas /usr/bin/systemd-run -P --wait --user -M '"${user}"'@ /bin/sh -c '"'"'. /etc/profile && . ~/.bash_profile && cd ~/.config/dot-files && /usr/bin/git pull --no-gpg-sign --no-edit && /usr/bin/chmod +x ~/.config/dot-files/update.sh && /usr/bin/git add . &&{ /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true; } && ~/.config/dot-files/update.sh'"'"''
+        var_invalid_err_exit "${user}" "USERS"
+
+    case "$(id -u "${user}")" in
+    0)
+        /usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/"${user}" -M "${user}"@ /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        ;;
+    "${UID}")
+        /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        ;;
+    *)
+        /usr/bin/doas /usr/bin/systemd-run -P --wait --user -M "${user}"@ /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        ;;
+    esac
 done
-echo "${UPGRADE_HOME}" >/usr/local/bin/upgrade-home
+EOF
+)"
+USERS_STRING="$(printf '    "%s"\n' "${USERS[@]}")"
+STRING="REPLACE_USERS"
+echo "${UPGRADE_HOME/${STRING}/"${USERS_STRING}"}" >/usr/local/bin/upgrade-home
 ## Configure snapper
 ### START sed
 STRING0="^ALLOW_GROUPS="
