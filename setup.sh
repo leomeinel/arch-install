@@ -112,10 +112,12 @@ echo "#           at least 1 digit, 1 uppercase character,            #"
 echo "#         1 lowercace character and 1 other character.          #"
 echo "#################################################################"
 for user in "${USERS[@]}"; do
+    ### Check if "${user}" is valid
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
         var_invalid_err_exit "${user}" "USERS"
+
     for i in {1..5}; do
         if [[ "${i}" -eq 5 ]]; then
             log_err "Too many retries."
@@ -256,10 +258,12 @@ FILES=(
     "install.conf"
 )
 for user in "${USERS[@]}"; do
+    ### Check if "${user}" is valid
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
         var_invalid_err_exit "${user}" "USERS"
+
     for tmp_file in "${FILES[@]}"; do
         file="${SCRIPT_DIR}"/"${tmp_file}"
         [[ -f "${file}" ]] ||
