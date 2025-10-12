@@ -1,4 +1,3 @@
 libreoffice-extension-writingtool-bin
 phinger-cursors
 fluent-gtk-theme-git
-
