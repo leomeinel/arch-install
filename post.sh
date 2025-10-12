@@ -349,6 +349,10 @@ paru -S --noprogressbar --noconfirm --needed - <"$SCRIPT_DIR/pkgs-post.txt"
 paru -Scc
 doas /bin/sh -c 'pacman -Qtdq | pacman -Rns -' || true
 
+# Run upgrade-home
+# FIXME: This should not be necessary but we are doing it to also copy theme files from AUR packages
+/usr/local/bin/upgrade-home
+
 # Enable systemd services
 pacman -Qq "nftables" >/dev/null 2>&1 &&
     doas systemctl enable nftables.service
