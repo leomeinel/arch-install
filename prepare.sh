@@ -365,6 +365,7 @@ mount -m -B /mnt/efi /mnt/boot
 chmod 775 /mnt/var/games
 
 # Disable 90-dracut-install.hook
+# FIXME: This does not work for pacstrap here
 # See: https://wiki.archlinux.org/title/Dracut#Generate_a_new_initramfs_on_kernel_upgrade
 mkdir -p /mnt/etc/pacman.d/hooks
 touch /mnt/etc/pacman.d/hooks/60-dracut-remove.hook
@@ -422,6 +423,9 @@ for i in {1..5}; do
         log_warning "'pacstrap' failed. Retrying now."
     fi
 done
+
+# Remove unnecessary images from /efi
+rm -f /mnt/efi/initramfs-*.img /mnt/efi/vmlinuz-*
 
 # Unmount bind mounts to not include wrong mountpoints in /mnt/etc/fstab
 umount /mnt/boot
