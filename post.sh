@@ -36,7 +36,7 @@ for i in {1..5}; do
         log_err "Too many retries."
         exit 1
     fi
-    if doas /bin/sh -c 'echo "permit nopass setenv { LANG LC_ALL } :wheel" >/etc/doas.conf'; then
+    if doas /bin/sh -c "echo ${DOAS_CONF/"persist"/"nopass"} >/etc/doas.conf"; then
         break
     else
         log_warning "You have entered an incorrect password. Retrying now."
