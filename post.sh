@@ -51,7 +51,7 @@ doas localectl --no-convert set-x11-keymap "${KEYLAYOUT}"
 doas timedatectl set-ntp true
 
 # Set default java
-doas archlinux-java set java-21-openjdk
+doas archlinux-java set java-25-openjdk
 
 # Configure nftables
 # References
