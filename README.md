@@ -29,7 +29,7 @@ Follow the `Pre-installation` section of [this guide](https://wiki.archlinux.org
 ```sh
 pacman -Sy git
 # Instead of main, you can also use a tag
-git clone -b main https://github.com/leomeinel/arch-install.git
+git clone -b 4.1.0 https://github.com/leomeinel/arch-install.git
 chmod +x /root/arch-install/prepare.sh
 # Modify install.conf before executing prepare.sh
 vim /root/arch-install/install.conf
