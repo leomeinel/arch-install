@@ -364,6 +364,11 @@ mount -m -B /mnt/efi /mnt/boot
 ## Modify perms
 chmod 775 /mnt/var/games
 
+# Disable 90-dracut-install.hook
+# See: https://wiki.archlinux.org/title/Dracut#Generate_a_new_initramfs_on_kernel_upgrade
+touch /mnt/etc/pacman.d/hooks/60-dracut-remove.hook
+touch /mnt/etc/pacman.d/hooks/90-dracut-install.hook
+
 # Append system packages
 [[ -n "${DISK2}" ]] &&
     echo "mdadm" >>"${SCRIPT_DIR}/pkgs-prepare.txt"
