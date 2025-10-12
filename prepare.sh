@@ -366,6 +366,7 @@ chmod 775 /mnt/var/games
 
 # Disable 90-dracut-install.hook
 # See: https://wiki.archlinux.org/title/Dracut#Generate_a_new_initramfs_on_kernel_upgrade
+mkdir -p /mnt/etc/pacman.d/hooks
 touch /mnt/etc/pacman.d/hooks/60-dracut-remove.hook
 touch /mnt/etc/pacman.d/hooks/90-dracut-install.hook
 
