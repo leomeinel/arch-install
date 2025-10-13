@@ -23,6 +23,10 @@ var_invalid_err_exit() {
     log_err "'${1}' is invalid in '${2}'."
     exit 1
 }
+script_fail_err_exit() {
+    log_err "Script failed for '${1}'."
+    exit 1
+}
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
@@ -304,21 +308,34 @@ case "${choice}" in
 esac
 
 # Configure dot-files
-doas systemd-run -P --wait --system -E HOME=/root -M root@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+SCRIPT="$(
+    cat <<'EOF'
+# Fail on error
+set -e
+
 # shellcheck source=/dev/null
-. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh
-TMP_USERS=(
-    "${GUESTUSER}"
-    "${HOMEUSER}"
-    "${VIRTUSER}"
-    "${WORKUSER}"
-)
-for user in "${TMP_USERS[@]}"; do
+. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+~/dot-files.sh
+EOF
+)"
+for user in "${USERS[@]}"; do
+    ## Check if "${user}" is valid
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
-        var_invalid_err_exit "${user}" "TMP_USERS"
-    doas systemd-run -P --wait --user -M "${user}"@ /bin/sh -c '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && ~/dot-files.sh'
+        var_invalid_err_exit "${user}" "USERS"
+
+    case "$(id -u "${user}")" in
+    0)
+        doas systemd-run -P --wait --system -E HOME=/"${user}" -M "${user}"@ /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        ;;
+    "${UID}")
+        /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        ;;
+    *)
+        doas systemd-run -P --wait --user -M "${user}"@ /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        ;;
+    esac
 done
 
 # Source ~/.bash_profile
