@@ -684,7 +684,6 @@ FILES_755=(
     /usr/local/bin/thunderbird
     /usr/local/bin/upgrade-home
     /usr/local/bin/upgrade-packages
-    /usr/local/bin/upgrade-packages
     /usr/local/bin/xournalpp
 )
 for file in "${FILES_600[@]}"; do
