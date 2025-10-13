@@ -33,7 +33,7 @@ fi
 
 # Run ~/.config/dot-files/update.sh for each user
 SCRIPT="$(
-    cat <<'EOF_'
+    cat <<'EOF'
 # Fail on error
 set -e
 
@@ -48,7 +48,7 @@ cd ~/.config/dot-files
 /usr/bin/git add .
 /usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true
 ~/.config/dot-files/update.sh
-EOF_
+EOF
 )"
 USERS=(
     REPLACE_USERS
