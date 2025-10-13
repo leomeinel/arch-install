@@ -392,10 +392,12 @@ DIRS=(
     "git"
 )
 for user in "${USERS[@]}"; do
+    ## Check if "${user}" is valid
     [[ -n "${user}" ]] ||
         continue
     id "${user}" >/dev/null 2>&1 ||
         var_invalid_err_exit "${user}" "USERS"
+
     for tmp_file in "${FILES[@]}"; do
         file="$(eval echo ~"${user}")"/"${tmp_file}"
         doas /bin/sh -c "[[ -f ${file} ]] || continue"
