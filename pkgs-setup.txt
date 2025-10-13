@@ -46,7 +46,6 @@ gptfdisk
 gradle
 grex
 grim
-gsettings-desktop-schemas
 gutenprint
 gvfs
 hplip
@@ -70,12 +69,10 @@ jpegoptim
 jq
 libavif
 libheif
-libjxl
 libopenraw
 libreoffice-extension-texmaths
 libreoffice-extension-writer2latex
 libreoffice-still
-librsvg
 libsecret
 libvirt
 libwmf
@@ -127,6 +124,7 @@ rkhunter
 rpi-imager
 ruff
 rustup
+sane
 sbsigntools
 screen
 shellcheck

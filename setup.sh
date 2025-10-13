@@ -184,6 +184,8 @@ for i in {1..5}; do
 done
 ## Install optional dependencies
 DEPENDENCIES=""
+pacman -Qq "android-tools" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\nandroid-udev'
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\npython-notify2\npython-psutil'
 pacman -Qq "cmake" >/dev/null 2>&1 &&
