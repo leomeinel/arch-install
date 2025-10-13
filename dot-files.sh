@@ -32,7 +32,7 @@ else
     git clone -b main https://github.com/leomeinel/dot-files.git "${DOT_FILES_DIR}"
 fi
 
-# Append dot-files/install.conf
+# Overwrite dot-files/install.conf
 {
     echo "# arch-install"
     cat "${SCRIPT_DIR}"/install.conf
