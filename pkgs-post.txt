@@ -1,3 +1,4 @@
+fluent-gtk-theme-git
 libreoffice-extension-writingtool-bin
 phinger-cursors
-fluent-gtk-theme-git
+triliumnext-bin
