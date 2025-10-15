@@ -1,7 +1,4 @@
-image: "alpine/git:latest"
-
 stages:
-  - dependencies
   - git_prepare
   - fetch
   - git_push
@@ -14,13 +11,6 @@ variables:
 .rules_update_remote:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
-install_dependencies:
-  stage: dependencies
-  rules:
-    - !reference [.rules_update_remote, rules]
-  script:
-    - apk --no-cache --update add curl
 
 configure_git:
   stage: git_prepare
