@@ -1,0 +1,52 @@
+image: "alpine/git:latest"
+
+stages:
+  - dependencies
+  - git_prepare
+  - fetch
+  - git_push
+
+variables:
+  GIT_STRATEGY: clone
+  SOURCE_BRANCH: "update_remote"
+  TARGET_BRANCH: "main"
+
+.rules_update_remote:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+install_dependencies:
+  stage: dependencies
+  rules:
+    - !reference [.rules_update_remote, rules]
+  script:
+    - apk --no-cache --update add curl
+
+configure_git:
+  stage: git_prepare
+  rules:
+    - !reference [.rules_update_remote, rules]
+  script:
+    - git config user.name "${GITLAB_USER_EMAIL}"
+    - git config user.email "${GITLAB_USER_NAME}"
+    - git remote remove gitlab_origin || true
+    - git remote set-url gitlab_origin https://oauth2:${CI_CD_PUSH_TOKEN}@${CI_PROJECT_URL#https://}.git
+    - git checkout -b "${SOURCE_BRANCH}"
+
+fetch_audit_rules:
+  stage: fetch
+  rules:
+    - !reference [.rules_update_remote, rules]
+  script:
+    - curl -LJo ./etc/audit/rules.d/50-arch-install.rules https://gitlab.com/ndaal_open_source/ndaal_public_auditd/-/raw/main/dataset/audit_best_practices.rules
+    - git add ./etc/audit/rules.d/50-arch-install.rules
+
+git_push:
+  stage: git_push
+  rules:
+    - !reference [.rules_update_remote, rules]
+  script:
+    - DATE="$(date +"%FT%H-%M-%S")"
+    - |
+      git commit -m "Update audit rules [ci skip] ${DATE}" &&
+          git push -f -o ci.skip -o merge_request.create -o merge_request.remove_source_branch -o merge_request.target="${TARGET_BRANCH}" gitlab_origin HEAD:"${SOURCE_BRANCH}"
