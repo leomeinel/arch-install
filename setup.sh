@@ -421,6 +421,44 @@ sed -i "s/${STRING}/#log_group =/g" "${FILE}"
     echo "# arch-install"
     echo "log_group = audit"
 } >>"${FILE}"
+## Configure /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/10-base-config.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/11-loginuid.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/12-cont-fail.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/12-ignore-error.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/21-no32bit.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/22-ignore-chrony.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/23-ignore-filesystems.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-1-create-failed.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-1-create-success.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-2-modify-failed.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-2-modify-success.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-3-access-failed.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-3-access-success.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-4-delete-failed.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-4-delete-success.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-5-perm-change-failed.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-5-perm-change-success.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-6-owner-change-failed.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/30-ospp-v42-6-owner-change-success.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/31-privileged.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/32-power-abuse.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/41-containers.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/42-injection.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/43-module-load.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/44-installers.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/99-finalize.rules /etc/audit/rules.d/
+FILE=/etc/audit/rules.d/31-zz-arch-install.rules
+{
+    find /bin -type f -perm -04000 2>/dev/null | awk '{ printf "-a always,exit -F arch=b64 -F path=%s -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n", $1 }'
+    find /sbin -type f -perm -04000 2>/dev/null | awk '{ printf "-a always,exit -F arch=b64 -F path=%s -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n", $1 }'
+    find /usr/bin -type f -perm -04000 2>/dev/null | awk '{ printf "-a always,exit -F arch=b64 -F path=%s -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n", $1 }'
+    find /usr/sbin -type f -perm -04000 2>/dev/null | awk '{ printf "-a always,exit -F arch=b64 -F path=%s -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n", $1 }'
+    filecap /bin 2>/dev/null | sed '1d' | awk '{ printf "-a always,exit -F path=%s -F arch=b64 -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n", $2 }'
+    filecap /sbin 2>/dev/null | sed '1d' | awk '{ printf "-a always,exit -F path=%s -F arch=b64 -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n", $2 }'
+    filecap /usr/bin 2>/dev/null | sed '1d' | awk '{ printf "-a always,exit -F arch=b64 -F path=%s -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n", $2 }'
+    filecap /usr/sbin 2>/dev/null | sed '1d' | awk '{ printf "-a always,exit -F arch=b64 -F path=%s -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n", $2 }'
+} >"${FILE}"
 ## Configure /etc/libvirt/network.conf
 {
     echo ''
@@ -650,7 +688,7 @@ done
 
 # Create dirs/files and modify perms
 FILES_600=(
-    /etc/audit/rules.d/50-arch-install.rules
+    /etc/audit/rules.d/31-zz-arch-install.rules
     /etc/ssh/sshd_config.d/50-arch-install.conf
 )
 DIRS_700=(
