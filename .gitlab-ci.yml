@@ -20,7 +20,7 @@ configure_git:
     - git config user.name "${GITLAB_USER_EMAIL}"
     - git config user.email "${GITLAB_USER_NAME}"
     - git remote remove gitlab_origin || true
-    - git remote set-url gitlab_origin https://oauth2:${CI_CD_PUSH_TOKEN}@${CI_PROJECT_URL#https://}.git
+    - git remote add gitlab_origin https://oauth2:${CI_CD_PUSH_TOKEN}@${CI_PROJECT_URL#https://}.git
     - git checkout -b "${SOURCE_BRANCH}"
 
 fetch_audit_rules:
