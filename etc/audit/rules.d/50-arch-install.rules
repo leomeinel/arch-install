@@ -29,31 +29,31 @@
 # such as SELinux.
 #
 # Linux Audit
-# The Linux Audit system provides a way to track security-relevant
-# information on your system. Based on pre-configured rules, Audit
-# generates log entries to record as much information about the events that
-# are happening on your system as possible. This information is crucial for
-# mission-critical environments to determine the violator of the security
+# The Linux Audit system provides a way to track security-relevant 
+# information on your system. Based on pre-configured rules, Audit 
+# generates log entries to record as much information about the events that 
+# are happening on your system as possible. This information is crucial for 
+# mission-critical environments to determine the violator of the security 
 # policy and the actions they performed.
 #
-# The following list summarizes some of the information that Audit is
+# The following list summarizes some of the information that Audit is 
 # capable of recording in its log files:
 #
 # - Date and time, type, and outcome of an event.
 # - Sensitivity labels of subjects and objects.
 # - Association of an event with the identity of the user who triggered the
 #   event.
-# - All modifications to Audit configuration and attempts to access Audit
+# - All modifications to Audit configuration and attempts to access Audit 
 #   log files.
-# - All uses of authentication mechanisms, such as SSH, Kerberos, and
+# - All uses of authentication mechanisms, such as SSH, Kerberos, and 
 #   others.
 # - Changes to any trusted database, such as /etc/passwd.
 # - Attempts to import or export information into or from the system.
-# - Include or exclude events based on user identity, subject and object
+# - Include or exclude events based on user identity, subject and object 
 #   labels, and other attributes.
 #
-# The use of the Audit system is also a requirement for a number of
-# security-related certifications. Audit is designed to meet or exceed
+# The use of the Audit system is also a requirement for a number of 
+# security-related certifications. Audit is designed to meet or exceed 
 # the requirements of the following certifications or compliance guides:
 #
 # - Controlled Access Protection Profile (CAPP)
@@ -66,10 +66,10 @@
 #
 # Audit has also been:
 #
-# - Evaluated by National Information Assurance Partnership (NIAP) and
+# - Evaluated by National Information Assurance Partnership (NIAP) and 
 #   Best Security Industries (BSI).
 # - Certified to LSPP/CAPP/RSBAC/EAL4+ on Red Hat Enterprise Linux 5.
-# - Certified to Operating System Protection Profile / Evaluation
+# - Certified to Operating System Protection Profile / Evaluation 
 #   Assurance Level 4+ (OSPP/EAL4+) on Red Hat Enterprise Linux 6.
 #
 # SUSE
@@ -82,7 +82,7 @@
 #
 # DISCUSSION
 # ==========
-## Original lkml thread(s):
+## Original lkml thread(s): 
 ## - https://marc.info/?t=107815888100001&r=1&w=2
 ## - https://marc.info/?t=107901570800002&r=1&w=2
 #
@@ -91,7 +91,7 @@
 # http://www.redhat.com/mailman/listinfo/linux-audit
 #
 # https://github.com/Neo23x0/auditd/issues/98
-##
+## 
 ## sed -i'' 's/\/opt\/filebeat/\/usr\/bin\/filebeat/g' /etc/auditbeat/audit.rules.d/audit.rules
 ## sed -i'' 's/\ \/sbin\/auditctl/\ \/usr\/sbin\/auditctl/g' /etc/auditbeat/audit.rules.d/audit.rules
 ## sed -i'' 's/\=\/sbin\/insmod/\=\/usr\/sbin\/insmod/g' /etc/auditbeat/audit.rules.d/audit.rules
@@ -114,24 +114,24 @@
 ## if [ ! -e $E ] && [ -e /usr$E ]; then echo "Diff $E"; fi
 ## if [ -e $E ] && [ ! -e /usr$E ]; then echo "Norm $E"; fi
 ## if [ ! -e $E ] && [ ! -e /usr$E ]; then echo "Nope $E"; fi
-## if [ -e $E ] && [ -e /usr$E ]; then echo "Both $E"; fi;
+## if [ -e $E ] && [ -e /usr$E ]; then echo "Both $E"; fi; 
 ## done
 #
 # b32 vs b32, b64
-# At a minimum, the audit system should collect file permission changes for all users and root.
-# Note that the "-F arch=b32" lines should be present even on a 64 bit system. These commands identify
+# At a minimum, the audit system should collect file permission changes for all users and root. 
+# Note that the "-F arch=b32" lines should be present even on a 64 bit system. These commands identify 
 # system calls for auditing. Even if the system is 64 bit it can still execute 32 bit system calls.
 #
-## "Adding a rule for both 32 bit and 64 bit is likely to add overhead without any benefit
+## "Adding a rule for both 32 bit and 64 bit is likely to add overhead without any benefit 
 ## considering performance of the system."
 ## https://access.redhat.com/solutions/666333
-##
+## 
 ## https://www.stigviewer.com/stig/oracle_linux_6/2021-12-03/finding/V-208899
 ## If the system is 64-bit and does not return a rule for both "b32" and "b64" architectures, this is a finding.
 ##
 # choose auid!=-1 or auid!=unset
 ## The field auid (Audit User ID) in auditd records the ID of the user who originally logged into the session
-## that generated the event. Sometimes, this value is unset, which means it has no assigned user ID. Internally,
+## that generated the event. Sometimes, this value is unset, which means it has no assigned user ID. Internally, 
 ## auditd represents this unset state by the value -1 (which corresponds to the unsigned 32-bit number 4294967295).
 ##
 ## In auditd rules, when filtering based on auid, one can write auid!=unset or equivalently auid!=-1.
@@ -139,45 +139,45 @@
 ## Why use auid!=-1 for compatibility?
 ## The keyword unset was introduced in newer versions of auditd to make rules easier to read and write.
 ##
-## Older versions of auditd and Linux kernels may not recognize the keyword "unset", but they always
+## Older versions of auditd and Linux kernels may not recognize the keyword "unset", but they always 
 ## interpret the numeric value -1 correctly as "unset".
 ##
-## To maintain backward compatibility with older auditd versions and ensure consistent behavior across
+## To maintain backward compatibility with older auditd versions and ensure consistent behavior across 
 ## many Linux distributions, it is safer to use the numeric value -1 in the rules.
 ##
 ## Functionally, auid!=-1, auid!=4294967295, and auid!=unset all filter out events with an unset audit user ID.
 ##
 ## Summary
 ## Using auid!=-1 is preferred when supporting older auditd setups because it is universally understood, whereas
-## unset might not be recognized everywhere. Both exclude events without a valid logged-in user, helping focus
+## unset might not be recognized everywhere. Both exclude events without a valid logged-in user, helping focus 
 ## auditing on real user actions rather than system or kernel processes.
 #
 # Container
 ## Using **auditd** within a container presents several unique challenges due
-## to its reliance on kernel-level auditing and namespace separation
+## to its reliance on kernel-level auditing and namespace separation 
 ## in containerized environments. While containers can execute auditd, there
-## are important factors to consider to ensure it works as intended and does
+## are important factors to consider to ensure it works as intended and does 
 ##not negatively impact performance or security.[1][3][5]
 ##
 ## ### Kernel-Level Limitations
 ##
-## Auditd interacts directly with the Linux kernel using audit syscall hooks.
+## Auditd interacts directly with the Linux kernel using audit syscall hooks. 
 ## If the container's underlying kernel does not enable audit features, auditd
 ## cannot function properly within that container. Since containers often
-## share the host's kernel, auditd capabilities may be limited or
-## completely unavailable depending on the host's configuration
+## share the host's kernel, auditd capabilities may be limited or 
+## completely unavailable depending on the host's configuration 
 ## and security policies.
 ##
 ## ### Namespace and Capability Issues
 ##
-## - Auditd's rules are configured at the kernel level, so changes within
-##   container namespaces may not apply globally unless the relevant
+## - Auditd's rules are configured at the kernel level, so changes within 
+##   container namespaces may not apply globally unless the relevant 
 ##   capabilities (such as `CAP_AUDIT_CONTROL`) are granted.
 ## - Running auditd for each user namespace (i.e., per container) would
 ##   require complex kernel and orchestration system support, which is
 ##   generally not present in mainstream container technologies like Docker
 ##   or Kubernetes as of 2025.
-## - Attempts to start auditd inside regular containers may fail due
+## - Attempts to start auditd inside regular containers may fail due 
 ##   to missing capabilities or unsupported kernel configurations.
 ##
 ## ### Performance and Data Management
@@ -185,7 +185,7 @@
 ## - Auditd can create significant performance overhead if too many events
 ##   are logged, especially in busy multi-tenant environments like containers.
 ## - Events and log queues may overflow in high-throughput scenarios, leading
-##   to dropped audit records and potential loss of critical
+##   to dropped audit records and potential loss of critical 
 ##   security information.
 ## - It's vital to configure log rotation and buffer management for containers
 ##   to avoid disk space exhaustion and data loss.[7]
@@ -193,14 +193,14 @@
 ## ### Best Practices for Container Environments
 ##
 ## - For auditing container activity, it's often more effective to run auditd
-##   at the **host level**, where it can monitor activities across all
+##   at the **host level**, where it can monitor activities across all 
 ##   containers and correlate events for security analysis.
-## - If container-specific auditing is required, consider complementary or
+## - If container-specific auditing is required, consider complementary or 
 ##   alternative tools that are designed for cloud-native environments such
 ##   as Falco, which understands container context and supports more granular
 ##   Kubernetes-focused detection rules.
 ## - Be specific with audit rules—target critical files and operations rather
-##   than blanket syscall auditing, to reduce overhead and focus
+##   than blanket syscall auditing, to reduce overhead and focus 
 ##   on relevant activity.
 ##
 ## ### Summary Table
@@ -213,9 +213,9 @@
 ## | Host vs. Container    | Host-level auditd often preferable              |
 ## | Alternatives          | Consider Falco for container-specific events    |
 ##
-## In conclusion, running **auditd** inside containers is possible but
-## generally not recommended due to kernel and namespace challenges,
-## performance risks, and limited configurability. Host-level auditing
+## In conclusion, running **auditd** inside containers is possible but 
+## generally not recommended due to kernel and namespace challenges, 
+## performance risks, and limited configurability. Host-level auditing 
 ## and modern container-aware tools should be considered for robust monitoring
 ## in containerized environments.
 #
@@ -224,7 +224,7 @@
 ## rules/10-base-config.rules
 ## This set of rules is to negate the performance effects of the audit system
 ## by preventing syscall auditing to work. You would use this when you want
-## the best system performance without a properly working audit system.
+## the best system performance without a properly working audit system. 
 ## As a result, you only get hardwired events. If you need syscall auditing,
 ## delete this file and install 10-base-config.rules + other files to make
 ## your audit policy.
@@ -375,7 +375,7 @@
 ### 10.5.1 Limit viewing of audit trails to those with a job-related need.
 ### The audit daemon by default limits viewing of the audit trail to root.
 ### If someone that is not an admin has a job related need to see logs, then
-### create a unique group for people with this need and set the log_group
+### create a unique group for people with this need and set the log_group 
 ### configuration item in auditd.conf
 
 ### 10.5.2 Protect audit trail files from unauthorized modifications.
@@ -402,7 +402,7 @@
 
 ### Parameters for auditd (disp*) which were used in RHEL7 do not exist in RHEL8 onwards.
 ### https://access.redhat.com/solutions/6053441
-###
+### 
 # disp_qos = lossless
 # dispatcher = /sbin/audispd
 
@@ -900,9 +900,9 @@
 ## The current rule:
 ## -a always,exit -F arch=b32 -F dir=/var/lib/docker/ -F perm=wa -F key=docker
 ## -a always,exit -F arch=b64 -F dir=/var/lib/docker/ -F perm=wa -F key=docker
-## will create a lot of logs on hosts running docker because
-## the watched dir includes the docker volumes so that actions
-## inside any container running on the hosts will trigger
+## will create a lot of logs on hosts running docker because 
+## the watched dir includes the docker volumes so that actions 
+## inside any container running on the hosts will trigger 
 ## the rule.
 ## https://github.com/Neo23x0/auditd/pull/95
 # -a always,exit -F arch=b32 -F dir=/var/lib/docker/ -F perm=wa -F key=docker
@@ -1264,7 +1264,7 @@
 -a always,exit -F arch=b32 -F path=/etc/kubernetes/scheduler.conf -F perm=wa -F key=k8s-scheduler-config
 -a always,exit -F arch=b64 -F path=/etc/kubernetes/scheduler.conf -F perm=wa -F key=k8s-scheduler-config
 
-### etcd
+### etcd 
 -a always,exit -F arch=b32 -F dir=/etc/kubernetes/pki/etcd/ -F perm=wa -F key=etcd-pki
 -a always,exit -F arch=b64 -F dir=/etc/kubernetes/pki/etcd/ -F perm=wa -F key=etcd-pki
 
@@ -1334,7 +1334,7 @@
 -a always,exit -F arch=b32 -F path=/usr/local/bin/qemu-system-arm -F perm=x -F key=T1497_Virtualization_Sandbox_Evasion
 -a always,exit -F arch=b64 -F path=/usr/local/bin/qemu-system-arm -F perm=x -F key=T1497_Virtualization_Sandbox_Evasion
 
-### UTM
+### UTM 
 #### https://mac.getutm.app/
 -a always,exit -F arch=b32 -F path=/usr/local/bin/utmctl -F perm=x -F key=utm
 -a always,exit -F arch=b64 -F path=/usr/local/bin/utmctl -F perm=x -F key=utm
@@ -1579,17 +1579,17 @@
 #### https://communities.vmware.com/t5/VMware-Fusion-Documents/A-Beginner-s-Guide-to-VMware-Fusion/ta-p/2797381
 #### Fusion UI log ("/Users/yourusername/Library/Logs/VMware Fusion/vmware-vmfusion.log")
 # -w /Users/yourusername/Library/Logs/VMware Fusion -F perm=x -F key=T1497_Virtualization_Sandbox_Evasion
-#### Just as the vmware-vmx process creates vmware.log, the Fusion UI process creates this log.
+#### Just as the vmware-vmx process creates vmware.log, the Fusion UI process creates this log. 
 #### Like vmware.log, this is a rotating log.
-#### You shouldn't normally have to deal with these, Fusion should automatically take care
+#### You shouldn't normally have to deal with these, Fusion should automatically take care 
 #### of connecting them to the guest when you choose Virtual Machine > Install VMware Tools.
-#### User-wide configuration, essentially .vmx defaults. Individual .vmx files override this.
+#### User-wide configuration, essentially .vmx defaults. Individual .vmx files override this. 
 #### ("/Users/yourusername/Library/Preferences/VMware Fusion/config")
 # -w /Users/yourusername/Library/Preferences/VMware -F perm=x -F key=T1497_Virtualization_Sandbox_Evasion
-#### User-wide preferences, mostly UI controls. Individual .vmx settings do not override this because
+#### User-wide preferences, mostly UI controls. Individual .vmx settings do not override this because 
 #### these settings do not apply to individual VMs. ("/Users/yourusername/Library/Preferences/VMware Fusion/preferences")
 # -w /Users/yourusername/Library/Preferences/VMware Fusion/preferences -F perm=x -F key=T1497_Virtualization_Sandbox_Evasion
-#### Note the difference between the config and preferences files is mostly by convention,
+#### Note the difference between the config and preferences files is mostly by convention, 
 #### it's possible (but bad practice) to mix entries between them. This doesn't always work, though.
 
 ### Parallels Desktop on macOS
@@ -1649,8 +1649,8 @@
 -a always,exit -F arch=b64 -S init_module -S delete_module -F key=module_change
 
 ### KVM
-#### Adding -F "auid>=500" -F "auid!=-1" to your auditd rules ensures that
-#### you only log actions performed by “real” user accounts
+#### Adding -F "auid>=500" -F "auid!=-1" to your auditd rules ensures that 
+#### you only log actions performed by “real” user accounts 
 #### (not system services or anonymous users)
 
 #### Monitoring Execution of KVM/QEMU/Libvirt Tools
@@ -1803,7 +1803,7 @@
 ## More information on how to filter events
 ### https://access.redhat.com/solutions/2482221
 
-# Rules
+# Rules 
 
 ## Kernel parameters
 ### Depending on your system and kernel, the sysctl.conf file might be called or located in the following locations:
@@ -1815,7 +1815,7 @@
 ### /run/sysctl.d/*.conf
 ###
 ### /usr/local/lib/sysctl.d/*.conf
-###
+### 
 ### /usr/lib/sysctl.d/*.conf
 ###
 ### /lib/sysctl.d/*.conf
@@ -2409,7 +2409,7 @@
 ## in case someone tries to hand edit the trusted databases
 
 ### /etc/group
-#### In addition to auditing new user and group accounts, these watches will alert the system administrator(s)
+#### In addition to auditing new user and group accounts, these watches will alert the system administrator(s) 
 #### to any modifications. Any unexpected users, groups, or modifications should be investigated for legitimacy.
 #### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_group
 -a always,exit -F arch=b32 -F path=/etc/group -F perm=wa -F key=T1087_Account_Discovery
@@ -2419,7 +2419,7 @@
 -a always,exit -F arch=b32 -F path=/etc/passwd -S open -S openat -F "auid>=500" -F "auid!=-1" -F key=T1087_Account_Discovery
 -a always,exit -F arch=b64 -F path=/etc/passwd -S open -S openat -F "auid>=500" -F "auid!=-1" -F key=T1087_Account_Discovery
 
-#### In addition to auditing new user and group accounts, these watches will alert the system administrator(s)
+#### In addition to auditing new user and group accounts, these watches will alert the system administrator(s) 
 #### to any modifications. Any unexpected users, groups, or modifications should be investigated for legitimacy.
 #### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_passwd
 -a always,exit -F arch=b32 -F path=/etc/passwd -F perm=wra -F key=T1087_Account_Discovery
@@ -2429,20 +2429,20 @@
 -a always,exit -F arch=b32 -F path=/etc/shadow -S open -S openat -F "auid>=500" -F "auid!=-1" -F key=T1087_Account_Discovery
 -a always,exit -F arch=b64 -F path=/etc/shadow -S open -S openat -F "auid>=500" -F "auid!=-1" -F key=T1087_Account_Discovery
 
-#### In addition to auditing new user and group accounts, these watches will alert the system administrator(s)
+#### In addition to auditing new user and group accounts, these watches will alert the system administrator(s) 
 #### to any modifications. Any unexpected users, groups, or modifications should be investigated for legitimacy.
 #### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_shadow
 -a always,exit -F arch=b32 -F path=/etc/shadow -F perm=wa -F key=T1087_Account_Discovery
 -a always,exit -F arch=b64 -F path=/etc/shadow -F perm=wa -F key=T1087_Account_Discovery
 
 ### /etc/gshadow
-#### In addition to auditing new user and group accounts, these watches will alert the system administrator(s)
+#### In addition to auditing new user and group accounts, these watches will alert the system administrator(s) 
 #### to any modifications. Any unexpected users, groups, or modifications should be investigated for legitimacy.
 #### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_gshadow
 -a always,exit -F arch=b32 -F path=/etc/gshadow -F perm=wra -F key=T1087_Account_Discovery
 -a always,exit -F arch=b64 -F path=/etc/gshadow -F perm=wra -F key=T1087_Account_Discovery
 
-### In addition to auditing new user and group accounts, these watches will alert the system administrator(s)
+### In addition to auditing new user and group accounts, these watches will alert the system administrator(s) 
 ### to any modifications. Any unexpected users, groups, or modifications should be investigated for legitimacy.
 ### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_opasswd
 ### -w /etc/security/opasswd -F perm=wa -F key=audit_rules_usergroup_modification
@@ -2521,7 +2521,7 @@
 ## T1169_Sudo
 
 ### Ensure auditd Collects System Administrator Actions
-#### The actions taken by system administrators should be audited to keep a record of what was executed
+#### The actions taken by system administrators should be audited to keep a record of what was executed 
 #### on the system, as well as, for accountability purposes.
 #### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_sysadmin_actions
 -a always,exit -F arch=b32 -F path=/etc/sudoers -F perm=wa -F key=T1169_Sudo
@@ -2760,7 +2760,7 @@
 ## Network Environment
 
 ### Changes to hostname
-#### The network environment should not be modified by anything other than administrator action.
+#### The network environment should not be modified by anything other than administrator action. 
 #### Any change to network parameters should be audited.
 #### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_networkconfig_modification
 -a always,exit -F arch=b32 -S sethostname -S setdomainname -F key=network_modifications
@@ -2935,7 +2935,7 @@
 -a always,exit -F arch=b64 -F path=/proc/sys/net/ipv4/ip_forward -F perm=wa -F key=T1016_System_Network_Configuration_Discovery
 
 ### /etc/sysconfig/network
-#### The network environment should not be modified by anything other than administrator action.
+#### The network environment should not be modified by anything other than administrator action. 
 #### Any change to network parameters should be audited.
 #### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_networkconfig_modification
 -a always,exit -F arch=b32 -F path=/etc/sysconfig/network -F perm=wa -F key=T1016_System_Network_Configuration_Discovery
@@ -2945,7 +2945,7 @@
 -a always,exit -F arch=b64 -F path=/etc/sysconfig/network-scripts/ifcfg-device -F perm=wa -F key=T1016_System_Network_Configuration_Discovery
 
 ### Changes to issue
-### The network environment should not be modified by anything other than administrator action.
+### The network environment should not be modified by anything other than administrator action. 
 ### Any change to network parameters should be audited.
 ### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_networkconfig_modification
 # -w /etc/issue -F perm=wa -F key=etcissue
@@ -3168,7 +3168,7 @@
 -a always,exit -F arch=b64 -F dir=/lib/systemd/system-generators/ -F perm=wa -F key=T1543_Create_or_Modify_System_Process
 
 ## SELinux events that modify the system's Mandatory Access Controls (MAC)
-### The system's mandatory access policy (SELinux) should not be arbitrarily changed by anything
+### The system's mandatory access policy (SELinux) should not be arbitrarily changed by anything 
 ### other than administrator action. All changes to MAC policy should be audited.
 ### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_mac_modification
 -a always,exit -F arch=b32 -F path=/etc/selinux/targeted/setrans.conf -F perm=wa -F key=MAC-policy
@@ -3781,7 +3781,7 @@
 ### -w /var/log/btmp -F perm=wa -F key=session
 ### -w /var/log/wtmp -F perm=wa -F key=session
 
-### Manual editing of these files may indicate nefarious activity, such as an attacker attempting
+### Manual editing of these files may indicate nefarious activity, such as an attacker attempting 
 ### to remove evidence of an intrusion.
 ### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_session_events
 -a always,exit -F arch=b32 -F path=/var/run/utmp -F perm=wa -F key=T1108_Redundant_Access
@@ -4296,16 +4296,16 @@
 ## T1219 Remote Access Tools
 ## credits to Mitre https://attack.mitre.org/techniques/T1219/
 ##
-## An adversary may use legitimate remote access tools to establish an interactive command and control channel within a network.
-## Remote access tools create a session between two trusted hosts through a graphical interface, a command line interaction, a protocol tunnel via development or management software, or hardware-level access such as KVM (Keyboard, Video, Mouse) over IP solutions.
-## Desktop support software (usually graphical interface) and remote management software (typically command line interface) allow a user to control a computer remotely as if they are a local user inheriting the user or software permissions.
-## This software is commonly used for troubleshooting, software installation, and system management.[1][2][3]
+## An adversary may use legitimate remote access tools to establish an interactive command and control channel within a network. 
+## Remote access tools create a session between two trusted hosts through a graphical interface, a command line interaction, a protocol tunnel via development or management software, or hardware-level access such as KVM (Keyboard, Video, Mouse) over IP solutions. 
+## Desktop support software (usually graphical interface) and remote management software (typically command line interface) allow a user to control a computer remotely as if they are a local user inheriting the user or software permissions. 
+## This software is commonly used for troubleshooting, software installation, and system management.[1][2][3] 
 ## Adversaries may similarly abuse response features included in EDR and other defensive tools that enable remote access.
 ##
-## Remote access tools may be installed and used post-compromise as an alternate communications channel for redundant access or to establish an interactive remote desktop session with the target system.
+## Remote access tools may be installed and used post-compromise as an alternate communications channel for redundant access or to establish an interactive remote desktop session with the target system. 
 ## It may also be used as a malware component to establish a reverse connection or back-connect to a service or adversary-controlled system.
 ##
-## Installation of many remote access tools may also include persistence (e.g., the software's installation routine creates a Windows Service).
+## Installation of many remote access tools may also include persistence (e.g., the software's installation routine creates a Windows Service). 
 ## Remote access modules/features may also exist as part of otherwise existing software (e.g., Google Chrome’s Remote Desktop).
 
 ## wget
@@ -4654,14 +4654,14 @@
 
 # T1562 Impair Defenses
 # credits to https://attack.mitre.org/techniques/T1562/
-# Adversaries may maliciously modify components of a victim environment in order to hinder or disable defensive mechanisms.
-# This not only involves impairing preventative defenses, such as firewalls and anti-virus, but also detection capabilities
-# that defenders can use to audit activity and identify malicious behavior. This may also span both native defenses as well
+# Adversaries may maliciously modify components of a victim environment in order to hinder or disable defensive mechanisms. 
+# This not only involves impairing preventative defenses, such as firewalls and anti-virus, but also detection capabilities 
+# that defenders can use to audit activity and identify malicious behavior. This may also span both native defenses as well 
 # as supplemental capabilities installed by users and administrators.
 #
-# Adversaries may also impair routine operations that contribute to defensive hygiene, such as blocking users from logging out,
-# preventing a system from shutting down, or disabling or modifying the update process. Adversaries could also target event
-# aggregation and analysis mechanisms, or otherwise disrupt these procedures by altering other system components.
+# Adversaries may also impair routine operations that contribute to defensive hygiene, such as blocking users from logging out, 
+# preventing a system from shutting down, or disabling or modifying the update process. Adversaries could also target event 
+# aggregation and analysis mechanisms, or otherwise disrupt these procedures by altering other system components. 
 # These restrictions can further enable malicious operations as well as the continued propagation of incidents.
 
 # T1562.004_Impair_Defenses_Disable_or_Modify_System_Firewall
@@ -5705,17 +5705,17 @@
 
 ## pkexec invocation
 ### may indicate privilege escalation CVE-2021-4034
-### A local privilege escalation vulnerability was found on polkit's pkexec
-### utility. The pkexec application is a setuid tool designed to allow
-### unprivileged users to run commands as privileged users according
-### predefined policies. The current version of pkexec doesn't handle the
+### A local privilege escalation vulnerability was found on polkit's pkexec 
+### utility. The pkexec application is a setuid tool designed to allow 
+### unprivileged users to run commands as privileged users according 
+### predefined policies. The current version of pkexec doesn't handle the 
 ### calling parameters count correctly and ends trying to execute environment
-### variables as commands. An attacker can leverage this by crafting
-### environment variables in such a way it'll induce pkexec to execute
+### variables as commands. An attacker can leverage this by crafting 
+### environment variables in such a way it'll induce pkexec to execute 
 ### arbitrary code. When successfully executed the attack can cause a local
-### privilege escalation given unprivileged users administrative rights on
+### privilege escalation given unprivileged users administrative rights on 
 ### the target machine.
-###
+### 
 ### References
 ### https://nvd.nist.gov/vuln/detail/CVE-2021-4034
 ### https://access.redhat.com/security/vulnerabilities/RHSB-2022-001
@@ -5758,8 +5758,8 @@
 ## susp_shell -> T1059.004_Command_and_Scripting_Interpreter_Unix_Shell
 ## T1059 Command and Scripting Interpreter
 ## credits to Mitre https://attack.mitre.org/techniques/T1059/
-## Adversaries may abuse command and script interpreters to execute commands, scripts, or binaries.
-## These interfaces and languages provide ways of interacting with computer systems and are a common feature across many different platforms.
+## Adversaries may abuse command and script interpreters to execute commands, scripts, or binaries. 
+## These interfaces and languages provide ways of interacting with computer systems and are a common feature across many different platforms. 
 ## Most systems come with some built-in command-line interface and scripting capabilities, for example, macOS and Linux distributions include some flavor of Unix Shell while Windows installations include the Windows Command Shell and PowerShell.
 
 ### https://gtfobins.github.io/gtfobins/ash/
@@ -6615,14 +6615,14 @@
 ## T1546 Event Triggered Execution
 ## credits to Mitre https://attack.mitre.org/techniques/T1546/
 ##
-## Adversaries may establish persistence and/or elevate privileges using system mechanisms that trigger execution based on specific events.
-## Various operating systems have means to monitor and subscribe to events such as logons or other user activity such as running specific applications/binaries.
+## Adversaries may establish persistence and/or elevate privileges using system mechanisms that trigger execution based on specific events. 
+## Various operating systems have means to monitor and subscribe to events such as logons or other user activity such as running specific applications/binaries. 
 ## Cloud environments may also support various functions and services that monitor and can be invoked in response to specific cloud events.
 ##
-## Adversaries may abuse these mechanisms as a means of maintaining persistent access to a victim via repeatedly executing malicious code.
+## Adversaries may abuse these mechanisms as a means of maintaining persistent access to a victim via repeatedly executing malicious code. 
 ## After gaining access to a victim system, adversaries may create/modify event triggers to point to malicious content that will be executed whenever the event trigger is invoked.
 ##
-## Since the execution can be proxied by an account with higher permissions, such as SYSTEM or service accounts,
+## Since the execution can be proxied by an account with higher permissions, such as SYSTEM or service accounts, 
 ## an adversary may be able to abuse these triggered execution mechanisms to escalate their privileges.
 ##
 ### https://github.com/bfuzzy/auditd-attack/blob/master/auditd-attack.rules
@@ -6703,15 +6703,15 @@
 ## T1055 Process Injection
 ## credits to Mitre https://attack.mitre.org/techniques/T1055/
 ##
-## Adversaries may inject code into processes in order to evade process-based defenses as well as possibly elevate privileges.
-## Process injection is a method of executing arbitrary code in the address space of a separate live process.
-## Running code in the context of another process may allow access to the process's memory, system/network resources, and possibly elevated privileges.
+## Adversaries may inject code into processes in order to evade process-based defenses as well as possibly elevate privileges. 
+## Process injection is a method of executing arbitrary code in the address space of a separate live process. 
+## Running code in the context of another process may allow access to the process's memory, system/network resources, and possibly elevated privileges. 
 ## Execution via process injection may also evade detection from security products since the execution is masked under a legitimate process.
 ##
-## There are many different ways to inject code into a process, many of which abuse legitimate functionalities.
+## There are many different ways to inject code into a process, many of which abuse legitimate functionalities. 
 ## These implementations exist for every major OS but are typically platform specific.
 ##
-## More sophisticated samples may perform multiple process injections to segment modules and further evade detection,
+## More sophisticated samples may perform multiple process injections to segment modules and further evade detection, 
 ## utilizing named pipes or other inter-process communication (IPC) mechanisms as a communication channel.
 
 -a always,exit -F arch=b32 -S ptrace -F key=T1055_Process_Injection
@@ -6762,10 +6762,10 @@
 ## T1011 Exfiltration Over Other Network Medium
 ## credits to Mitre https://attack.mitre.org/techniques/T1011/
 ##
-## Exfiltration consists of techniques that adversaries may use to steal data from your network.
-## Once they’ve collected data, adversaries often package it to avoid detection while removing it.
-## This can include compression and encryption. Techniques for getting data out of a target network
-## typically include transferring it over their command and control channel or an alternate channel
+## Exfiltration consists of techniques that adversaries may use to steal data from your network. 
+## Once they’ve collected data, adversaries often package it to avoid detection while removing it. 
+## This can include compression and encryption. Techniques for getting data out of a target network 
+## typically include transferring it over their command and control channel or an alternate channel 
 ## and may also include putting size limits on the transmission.
 
 -a always,exit -F arch=b32 -S socket -F a0=2 -F key=T1011.001_Exfiltration_Over_Other_Network_Medium
@@ -6783,20 +6783,20 @@
 ## T1072 Software Deployment Tools
 ## credits to Mitre https://attack.mitre.org/techniques/T1072/
 ##
-## Adversaries may gain access to and use centralized software suites installed within an enterprise to execute commands and move laterally through the network.
-## Configuration management and software deployment applications may be used in an enterprise network or cloud environment for routine administration purposes.
+## Adversaries may gain access to and use centralized software suites installed within an enterprise to execute commands and move laterally through the network. 
+## Configuration management and software deployment applications may be used in an enterprise network or cloud environment for routine administration purposes. 
 ## These systems may also be integrated into CI/CD pipelines. Examples of such solutions include: SCCM, HBSS, Altiris, AWS Systems Manager, Microsoft Intune, Azure Arc, and GCP Deployment Manager.
 ##
-## Access to network-wide or enterprise-wide endpoint management software may enable an adversary to achieve remote code execution on all connected systems.
+## Access to network-wide or enterprise-wide endpoint management software may enable an adversary to achieve remote code execution on all connected systems. 
 ## The access may be used to laterally move to other systems, gather information, or cause a specific effect, such as wiping the hard drives on all endpoints.
 ##
-## SaaS-based configuration management services may allow for broad Cloud Administration Command on cloud-hosted instances, as well as the execution of arbitrary commands on on-premises endpoints.
-## For example, Microsoft Configuration Manager allows Global or Intune Administrators to run scripts as SYSTEM on on-premises devices joined to Entra ID.[1]
+## SaaS-based configuration management services may allow for broad Cloud Administration Command on cloud-hosted instances, as well as the execution of arbitrary commands on on-premises endpoints. 
+## For example, Microsoft Configuration Manager allows Global or Intune Administrators to run scripts as SYSTEM on on-premises devices joined to Entra ID.[1] 
 ## Such services may also utilize Web Protocols to communicate back to adversary owned infrastructure.[2]
 ##
 ## Network infrastructure devices may also have configuration management tools that can be similarly abused by adversaries.[3]
 ##
-## The permissions required for this action vary by system configuration; local credentials may be sufficient with direct access to the third-party system, or specific domain credentials may be required.
+## The permissions required for this action vary by system configuration; local credentials may be sufficient with direct access to the third-party system, or specific domain credentials may be required. 
 ## However, the system may require an administrative account to log in or to access specific functionality.
 
 ## RPM (Redhat/CentOS)
@@ -8017,7 +8017,7 @@
 -a always,exit -F arch=b32 -F dir=/home/vagrant/.ansible/ -S openat,open -F perm=wa -F key=T1072_Software_Deployment_Tools
 -a always,exit -F arch=b64 -F dir=/home/vagrant/.ansible/ -S openat,open -F perm=wa -F key=T1072_Software_Deployment_Tools
 
-### Ansible AWX
+### Ansible AWX 
 -a always,exit -F arch=b32 -F dir=/var/lib/awx/projects/ -F perm=wa -F key=T1072_Software_Deployment_Tools
 -a always,exit -F arch=b64 -F dir=/var/lib/awx/projects/ -F perm=wa -F key=T1072_Software_Deployment_Tools
 
@@ -10863,7 +10863,7 @@
 -a always,exit -F arch=b64 -F euid=0 -S execve -F key=T1169_Sudo
 
 ## Monitoring changes to system and network configurations
--a always,exit -F arch=b64 -S setsockopt,socket -F key=network_changes
+-a always,exit -F arch=b64 -S setsockopt,socket -F key=network_changes 
 -a always,exit -F arch=b32 -S setsockopt,socket -F key=network_changes
 
 ## in memory file execution
@@ -10874,13 +10874,13 @@
 ## T1070 Indicator Removal
 ## credits to Mitre https://attack.mitre.org/techniques/T1070/
 ##
-## Adversaries may delete or modify artifacts generated within systems to remove evidence of their presence or hinder defenses.
-## Various artifacts may be created by an adversary or something that can be attributed to an adversary’s actions.
-## Typically these artifacts are used as defensive indicators related to monitored events, such as strings from downloaded files, logs that are generated from user actions, and other data analyzed by defenders.
+## Adversaries may delete or modify artifacts generated within systems to remove evidence of their presence or hinder defenses. 
+## Various artifacts may be created by an adversary or something that can be attributed to an adversary’s actions. 
+## Typically these artifacts are used as defensive indicators related to monitored events, such as strings from downloaded files, logs that are generated from user actions, and other data analyzed by defenders. 
 ## Location, format, and type of artifact (such as command or login history) are often specific to each platform.
 ##
-## Removal of these indicators may interfere with event collection, reporting, or other processes used to detect intrusion activity.
-## This may compromise the integrity of security solutions by causing notable events to go unreported.
+## Removal of these indicators may interfere with event collection, reporting, or other processes used to detect intrusion activity. 
+## This may compromise the integrity of security solutions by causing notable events to go unreported. 
 ## This activity may also impede forensic analysis and incident response, due to lack of sufficient data to determine what occurred.
 
 ### T1070.004_Indicator_Removal_File_Deletion
@@ -11104,15 +11104,15 @@
 ## TT1057 Process Discovery
 ## credits to Mitre https://attack.mitre.org/techniques/T1057/
 ##
-## Adversaries may attempt to get information about running processes on a system.
-## Information obtained could be used to gain an understanding of common software/applications running on systems within the network.
-## Administrator or otherwise elevated access may provide better process details.
-## Adversaries may use the information from Process Discovery during automated discovery to shape follow-on behaviors,
+## Adversaries may attempt to get information about running processes on a system. 
+## Information obtained could be used to gain an understanding of common software/applications running on systems within the network. 
+## Administrator or otherwise elevated access may provide better process details. 
+## Adversaries may use the information from Process Discovery during automated discovery to shape follow-on behaviors, 
 ## including whether or not the adversary fully infects the target and/or attempts specific actions.
 ##
-## In Windows environments, adversaries could obtain details on running processes using the Tasklist utility via cmd or Get-Process via PowerShell.
-## Information about processes can also be extracted from the output of Native API calls such as CreateToolhelp32Snapshot.
-## In Mac and Linux, this is accomplished with the ps command. Adversaries may also opt to enumerate processes via /proc.
+## In Windows environments, adversaries could obtain details on running processes using the Tasklist utility via cmd or Get-Process via PowerShell. 
+## Information about processes can also be extracted from the output of Native API calls such as CreateToolhelp32Snapshot. 
+## In Mac and Linux, this is accomplished with the ps command. Adversaries may also opt to enumerate processes via /proc. 
 ## ESXi also supports use of the ps command, as well as esxcli system process list.[1][2]
 ##
 ## On network devices, Network Device CLI commands such as show processes can be used to display current running processes
@@ -11221,10 +11221,10 @@
 ## T1016 System Network Configuration Discovery
 ## credits to Mitre https://attack.mitre.org/techniques/T1016/
 ##
-## Adversaries may look for details about the network configuration and settings, such as IP and/or MAC addresses, of systems they access or through information discovery of remote systems.
+## Adversaries may look for details about the network configuration and settings, such as IP and/or MAC addresses, of systems they access or through information discovery of remote systems. 
 ## Several operating system administration utilities exist that can be used to gather this information. Examples include Arp, ipconfig/ifconfig, nbtstat, and route.
 ##
-## Adversaries may also leverage a Network Device CLI on network devices to gather information about configurations and settings, such as IP addresses of configured interfaces and static/dynamic routes (e.g. show ip route, show ip interface).[1][2]
+## Adversaries may also leverage a Network Device CLI on network devices to gather information about configurations and settings, such as IP addresses of configured interfaces and static/dynamic routes (e.g. show ip route, show ip interface).[1][2] 
 ## On ESXi, adversaries may leverage esxcli to gather network configuration information. For example, the command esxcli network nic list will retrieve the MAC address, while esxcli network ip interface ipv4 get will retrieve the local IPv4 address.[3]
 ##
 ## Adversaries may use the information from System Network Configuration Discovery during automated discovery to shape follow-on behaviors, including determining certain access within the target network and what actions to do next.
@@ -11248,7 +11248,7 @@
 -a always,exit -F arch=b64 -F path=/etc/resolv.conf -F perm=wa -F key=T1016_System_Network_Configuration_Discovery
 
 ### /etc/hosts
-### The network environment should not be modified by anything other than administrator action.
+### The network environment should not be modified by anything other than administrator action. 
 ### Any change to network parameters should be audited.
 ### https://static.open-scap.org/ssg-guides/ssg-rhel7-guide-C2S.html#xccdf_org.ssgproject.content_rule_audit_rules_networkconfig_modification
 # -w /etc/hosts.allow -F perm=wa -F key=T1016_System_Network_Configuration_Discovery
@@ -14126,17 +14126,17 @@
 -a always,exit -F arch=b32 -F path=/etc/exports -F perm=wa -F key=T1135_Network_Share_Discovery
 -a always,exit -F arch=b64 -F path=/etc/exports -F perm=wa -F key=T1135_Network_Share_Discovery
 
-### A configuration file that defines and configures static
+### A configuration file that defines and configures static 
 ### file system mounts, including options for each mount point.
 -a always,exit -F arch=b32 -F path=/etc/fstab -F perm=wa -F key=T1083_File_and_Directory_Discovery
 -a always,exit -F arch=b64 -F path=/etc/fstab -F perm=wa -F key=T1083_File_and_Directory_Discovery
 
-### A file that lists currently mounted file systems, the information
+### A file that lists currently mounted file systems, the information 
 ### about the device, mount point, and file system type.
 -a always,exit -F arch=b32 -F path=/etc/mtab -F perm=wa -F key=T1083_File_and_Directory_Discovery
 -a always,exit -F arch=b64 -F path=/etc/mtab -F perm=wa -F key=T1083_File_and_Directory_Discovery
-### The configuration file for the mtools package, used for accessing
-### and managing MS-DOS (FAT) file systems, specifying settings
+### The configuration file for the mtools package, used for accessing 
+### and managing MS-DOS (FAT) file systems, specifying settings 
 ### for tools like mcopy and mdir.
 -a always,exit -F arch=b32 -F path=/etc/mtools.conf -F perm=wa -F key=T1083_File_and_Directory_Discovery
 -a always,exit -F arch=b64 -F path=/etc/mtools.conf -F perm=wa -F key=T1083_File_and_Directory_Discovery
@@ -14942,7 +14942,7 @@
 
 # Monitoring GNU Parallel Command Execution
 
-# Monitor direct execution of parallel command from common locations
+## Monitor direct execution of parallel command from common locations
 -a always,exit -F arch=b32 -F path=/bin/parallel -F perm=x -F key=parallel_execution
 -a always,exit -F arch=b64 -F path=/bin/parallel -F perm=x -F key=parallel_execution
 
@@ -15087,7 +15087,7 @@
 ### atftpd
 #### https://sourceforge.net/projects/atftp/
 #### https://github.com/madmartin/atftp
-#### atftp is a client/server implementation of the TFTP protocol that implements RFCs 1350, 2090, 2347, 2348, 2349 and 7440.
+#### atftp is a client/server implementation of the TFTP protocol that implements RFCs 1350, 2090, 2347, 2348, 2349 and 7440. 
 #### The server is multi-threaded and the client presents a friendly interface using libreadline.
 #### T1133_External_Remote_Services
 -a always,exit -F arch=b32 -F path=/usr/bin/atftpd -F perm=x -F key=T1133_External_Remote_Services
@@ -15117,10 +15117,10 @@
 ### uftp
 #### #### T1133_External_Remote_Services
 #### https://sourceforge.net/projects/uftp-multicast/
-#### UFTP is an encrypted multicast file transfer program, designed to securely, reliably,
+#### UFTP is an encrypted multicast file transfer program, designed to securely, reliably, 
 #### and efficiently transfer files to multiple receivers simultaneously.
-#### FTP also has the capability to communicate over disjoint networks separated by one or
-#### more firewalls (NAT traversal) and without full end-to-end multicast capability
+#### FTP also has the capability to communicate over disjoint networks separated by one or 
+#### more firewalls (NAT traversal) and without full end-to-end multicast capability 
 #### (multicast tunneling) through the use of a UFTP proxy server.
 -a always,exit -F arch=b32 -F path=/usr/bin/uftp -F perm=x -F key=T1133_External_Remote_Services
 -a always,exit -F arch=b64 -F path=/usr/bin/uftp -F perm=x -F key=T1133_External_Remote_Services
@@ -17451,7 +17451,7 @@
 -a always,exit -F arch=b64 -F path=/usr/local/sbin/crc32sum -F perm=x -F key=T1140_Deobfuscate_Decode_Files_or_Information
 
 ## Anonymous File Creation
-### These rules watch the use of memfd_create
+### These rules watch the use of memfd_create 
 ### "memfd_create" creates anonymous file and returns a file descriptor to access it
 ### When combined with "fexecve" can be used to stealthily run binaries in memory without touching disk
 ### https://magisterquis.github.io/2018/03/31/in-memory-only-elf-execution.html
@@ -19612,7 +19612,7 @@
 -a always,exit -F arch=b32 -F path=/usr/local/sbin/goss -F perm=wa -F key=goos_binary_modifications
 -a always,exit -F arch=b64 -F path=/usr/bin/goss -F perm=wa -F key=goos_binary_modifications
 
-# GOSS
+# GOSS 
 ## Monitor Go binary installations and modifications
 
 -a always,exit -F arch=b32 -F dir=/usr/local/go/bin/ -F perm=wa -F key=goos_binary_modifications
@@ -19707,7 +19707,7 @@
 -a always,exit -F arch=b32 -F path=/var/log/vmware/vpxd.log -F perm=wa -F key=VMware_vCenter
 -a always,exit -F arch=b64 -F path=/var/log/vmware/vpxd.log -F perm=wa -F key=VMware_vCenter
 
-## vpxd-profiler.log, profiler.log, and scoreboard.log: Profiled metrics
+## vpxd-profiler.log, profiler.log, and scoreboard.log: Profiled metrics 
 ## for operations performed in vCenter Server. Used by the VPX Operational Dashboard (VOD)
 ## accessible at https://VCHostnameOrIPAddress/vod/index.html.
 -a always,exit -F arch=b32 -F path=/var/log/vmware/vpxd-profiler.log -F perm=wa -F key=VMware_vCenter
@@ -19722,24 +19722,24 @@
 ## including communication between vCenter Server and managed hosts' CIM interface.
 -a always,exit -F arch=b32 -F path=/var/log/vmware/cim-diag.log -F perm=wa -F key=VMware_vCenter
 -a always,exit -F arch=b64 -F path=/var/log/vmware/cim-diag.log -F perm=wa -F key=VMware_vCenter
-
+ 
 ## drmdump: Actions proposed and taken by VMware Distributed Resource Scheduler (DRS),
-## grouped by the DRS-enabled cluster managed by vCenter Server.
+## grouped by the DRS-enabled cluster managed by vCenter Server. 
 ## These logs are compressed.
 -a always,exit -F arch=b32 -F path=/var/log/vmware/drmdump -F perm=wa -F key=VMware_vCenter
 -a always,exit -F arch=b64 -F path=/var/log/vmware/drmdump -F perm=wa -F key=VMware_vCenter
-
+ 
 ## ls.log: Health reports for the Licensing Services extension, connectivity logs
 ## to vCenter Server.
 -a always,exit -F arch=b32 -F path=/var/log/vmware/ls.log -F perm=wa -F key=VMware_vCenter
 -a always,exit -F arch=b64 -F path=/var/log/vmware/ls.log -F perm=wa -F key=VMware_vCenter
-
+ 
 ## vimtool.log: Dump of string used during the installation of vCenter Server
 # with hashed information for DNS, username and output for JDBC creation.
 -a always,exit -F arch=b32 -F path=/var/log/vmware/vimtool.log -F perm=wa -F key=VMware_vCenter
 -a always,exit -F arch=b64 -F path=/var/log/vmware/vimtool.log -F perm=wa -F key=VMware_vCenter
-
-## stats.log: Provides information about the historical performance data collection
+ 
+## stats.log: Provides information about the historical performance data collection 
 -a always,exit -F arch=b32 -F path=/var/log/vmware/stats.log -F perm=wa -F key=VMware_vCenter
 -a always,exit -F arch=b64 -F path=/var/log/vmware/stats.log -F perm=wa -F key=VMware_vCenter
 
@@ -19761,12 +19761,12 @@
 ## connectivity logs to vCenter Server
 -a always,exit -F arch=b32 -F path=/var/log/vmware/eam.log -F perm=wa -F key=VMware_vCenter
 -a always,exit -F arch=b64 -F path=/var/log/vmware/eam.log -F perm=wa -F key=VMware_vCenter
-
+ 
 ## catalina.date.log and localhost.date.log: Connectivity information
 ## and status of the VMware Webmanagement Services
 -a always,exit -F arch=b32 -F path=/var/log/vmware/catalina.date.log -F perm=wa -F key=VMware_vCenter
 -a always,exit -F arch=b64 -F path=/var/log/vmware/catalina.date.log -F perm=wa -F key=VMware_vCenter
-
+ 
 ## jointool.log: Health status of the VMwareVCMSDS service and individual ADAM
 ## database objects, internal tasks and events, and replication logs between linked-mode vCenter Servers.
 -a always,exit -F arch=b32 -F path=/var/log/vmware/jointool.log -F perm=wa -F key=VMware_vCenter
@@ -20541,7 +20541,7 @@ Symantec
 ## Monitor nobody loading kernel modules (very suspicious)
 -a always,exit -F arch=b32 -F euid=98 -S init_module -S finit_module -F key=user_nobody_activity
 -a always,exit -F arch=b64 -F euid=98 -S init_module -S finit_module -F key=user_nobody_activity
-
+ 
 -a always,exit -F arch=b32 -F euid=65534 -S init_module -S finit_module -F key=user_nobody_activity
 -a always,exit -F arch=b64 -F euid=65534 -S init_module -S finit_module -F key=user_nobody_activity
 
@@ -20663,7 +20663,7 @@ Symantec
 -a always,exit -F arch=b64 -F euid=1338 -S execve -F key=user_1338_activity
 
 ## Linux UIDs for the anti-virus programs
-## Note: The UIDs used below are examples and may vary depending
+## Note: The UIDs used below are examples and may vary depending 
 ## on the specific installation and configuration of the anti-virus software.
 
 ### Bitdefender: UID: 501/403 (bitdefender)
@@ -20755,7 +20755,7 @@ Symantec
 -a always,exit -F arch=b64 -F euid=513 -S all -F key=avg_activity
 
 ### MS Defender: UID: 514/456 (msdefender)
-### MS tries to shuffle the UID
+### MS tries to shuffle the UID 
 -a always,exit -F arch=b32 -F euid=456 -S all -F key=msdefender_activity
 -a always,exit -F arch=b64 -F euid=456 -S all -F key=msdefender_activity
 
@@ -23109,7 +23109,7 @@ Symantec
 # Syntax: All rules use the explicit '-a always,exit' syscall syntax for
 #         maximum clarity, precision, and consistency.
 # ====================================================================================
-# to prevent duplicates we commented some rules out
+# to prevent duplicates we commented some rules out 
 # ------------------------------------------------------------------------------------
 # Tactic: Kernel Module Loading & Hiding (LKM Activity)
 # The rootkit is a Loadable Kernel Module based on 'khook'. We must monitor
@@ -23254,7 +23254,7 @@ Symantec
 # persistence, library loading, and the use of static binaries for evasion.
 # https://sandflysecurity.com/blog/linux-medusa-rootkit-detection-and-de-cloaking
 # ================================================================================
-# to prevent duplicates we commented some rules out
+# to prevent duplicates we commented some rules out 
 # --------------------------------------------------------------------------------
 # Tactic: Hijack Execution Flow via LD_PRELOAD (Persistence & Execution)
 # The rootkit's primary mechanism is abusing the LD_PRELOAD environment variable
@@ -23464,10 +23464,10 @@ for conveniant to look for busybox
 # RSVP (Resource Reservation Protocol)
 ## https://en.wikipedia.org/wiki/Resource_Reservation_Protocol
 ## Auditing RSVP traffic Unfortunately, the auditd kernel module doesn't natively
-## support RSVP protocol filtering. RSVP is a control protocol that uses
+## support RSVP protocol filtering. RSVP is a control protocol that uses 
 ## IP protocol number 46, but auditd doesn't provide a specific filter for it.
 ##
-## Workaround using IP protocol number One possible workaround is to use the
+## Workaround using IP protocol number One possible workaround is to use the 
 ## proto filter with the IP protocol number 46, which corresponds to RSVP:
 ##
 -a always,exit -F arch=b32 -S socket -F a0=2 -F a1=3 -F key=rsvp_traffic
@@ -23572,7 +23572,7 @@ for conveniant to look for busybox
 ##|		-EPERM The user must have administrator module modification capabilities.
 ##| pivot_root - change the root file system
 ##| 	-EPERM The calling process does not have the CAP_SYS_ADMIN capability.
-##| mount: -EACCES A component of a dir was not searchable;
+##| mount: -EACCES A component of a dir was not searchable; 
 ##| mknod: -EPERM mode requested creation of something other than a regular file, FIFO (named pipe), or Unix domain socket
 ##|
 ##| --------------------------------------------------------------------------------
@@ -23583,32 +23583,32 @@ for conveniant to look for busybox
 -a always,exit -F arch=b64 -S init_module -S delete_module -S mount -S pivot_root -S chroot -S mknod -F key=SYS_OS
 
 # socketcall system call
-# The socketcall system call is a multiplexed system call. Multiplexed means
-# that there is only one system call for all possible calls and that libc
-# passes the actual system call to use as the first argument (a0). Check the
-# manual page of socketcall for possible system calls and refer to
-# /usr/src/linux/include/linux/net.h for a list of possible argument values
-# and system call names. Audit supports filtering for specific system calls
+# The socketcall system call is a multiplexed system call. Multiplexed means 
+# that there is only one system call for all possible calls and that libc 
+# passes the actual system call to use as the first argument (a0). Check the 
+# manual page of socketcall for possible system calls and refer to 
+# /usr/src/linux/include/linux/net.h for a list of possible argument values 
+# and system call names. Audit supports filtering for specific system calls 
 # using a -F a0=SYSCALL_NUMBER.
 
-## Audit the socket(PF_INET6) system call. The -F a0=1 filter matches all
-## socket system calls and the -F a1=10 filter narrows the matches down to
-## socket system calls carrying the IPv6 protocol family domain parameter
-## (PF_INET6). Check /usr/include/linux/net.h for the first argument (a0) and
-## /usr/src/linux/include/linux/socket.h for the second parameter (a1).
-## 64-bit platforms, like AMD64/Intel 64, do not use multiplexing on
-## socketcall system calls. For these platforms, comment the rule and add the
+## Audit the socket(PF_INET6) system call. The -F a0=1 filter matches all 
+## socket system calls and the -F a1=10 filter narrows the matches down to 
+## socket system calls carrying the IPv6 protocol family domain parameter 
+## (PF_INET6). Check /usr/include/linux/net.h for the first argument (a0) and 
+## /usr/src/linux/include/linux/socket.h for the second parameter (a1). 
+## 64-bit platforms, like AMD64/Intel 64, do not use multiplexing on 
+## socketcall system calls. For these platforms, comment the rule and add the 
 ## plain system call rules with a filter on PF_INET6.
 
 # -a always,exit -S socketcall -F a0=1 -F a1=10 -F key=T1043_Commonly_Used_Port
 ## Use this line on x86_64, ia64 instead
 # -a always,exit -S socket -F a0=10 -F key=T1043_Commonly_Used_Port
 
-## Audit the socketcall system call. The filter flag is set to filter for
-## a0=5 as the first argument to socketcall, which translates to the accept
-## system call if you check /usr/include/linux/net.h. 64-bit platforms,
-## like AMD64/Intel 64, do not use multiplexing on socketcall system calls.
-## For these platforms, comment the rule and add the plain system call rule
+## Audit the socketcall system call. The filter flag is set to filter for 
+## a0=5 as the first argument to socketcall, which translates to the accept 
+## system call if you check /usr/include/linux/net.h. 64-bit platforms, 
+## like AMD64/Intel 64, do not use multiplexing on socketcall system calls. 
+## For these platforms, comment the rule and add the plain system call rule 
 ## without argument filtering.
 
 # -a always,exit -S socketcall -F a0=5 -F key=T1043_Commonly_Used_Port
@@ -23617,17 +23617,17 @@ for conveniant to look for busybox
 
 # ipc system call
 # /usr/include/linux/ipc.h
-# The ipc system call is another example of multiplexed system calls. The
-# actual call to invoke is determined by the first argument passed to the
-# ipc system call. Filtering for these arguments helps you focus on those
-# IPC calls of interest to you. Check /usr/include/linux/ipc.h for
+# The ipc system call is another example of multiplexed system calls. The 
+# actual call to invoke is determined by the first argument passed to the 
+# ipc system call. Filtering for these arguments helps you focus on those 
+# IPC calls of interest to you. Check /usr/include/linux/ipc.h for 
 # possible argument values.
 
-## Audit system calls related to IPC SYSV message queues. In this case,
-## the a0 values specify that auditing is added for the msgctl and
-## msgget system calls (14 and 13). 64-bit platforms, like AMD64/Intel 64,
-## do not use multiplexing on ipc system calls. For these platforms,
-## comment the first two rules and add the plain system call rules
+## Audit system calls related to IPC SYSV message queues. In this case, 
+## the a0 values specify that auditing is added for the msgctl and 
+## msgget system calls (14 and 13). 64-bit platforms, like AMD64/Intel 64, 
+## do not use multiplexing on ipc system calls. For these platforms, 
+## comment the first two rules and add the plain system call rules 
 ## without argument filtering.
 
 ## msgctl
@@ -23641,11 +23641,11 @@ for conveniant to look for busybox
 -a always,exit -F arch=b32 -S msgget -F key=T1559_Inter-Process_Communication
 -a always,exit -F arch=b64 -S msgget -F key=T1559_Inter-Process_Communication
 
-## Audit system calls related to IPC SYSV message semaphores. In this case,
-## the a0 values specify that auditing is added for the
-## semctl, semget, semop, and semtimedop system calls (3, 2, 1, and 4).
-## 64-bit platforms, like AMD64/Intel 64, do not use multiplexing on
-## ipc system calls. For these platforms, comment the first four rules and
+## Audit system calls related to IPC SYSV message semaphores. In this case, 
+## the a0 values specify that auditing is added for the 
+## semctl, semget, semop, and semtimedop system calls (3, 2, 1, and 4). 
+## 64-bit platforms, like AMD64/Intel 64, do not use multiplexing on 
+## ipc system calls. For these platforms, comment the first four rules and 
 ## add the plain system call rules without argument filtering.
 
 ## semctl
@@ -23669,10 +23669,10 @@ for conveniant to look for busybox
 -a always,exit -F arch=b32 -S semtimedop -F key=T1559_Inter-Process_Communication
 -a always,exit -F arch=b64 -S semtimedop -F key=T1559_Inter-Process_Communication
 
-## Audit system calls related to IPC SYSV shared memory. In this case, the
-## a0 values specify that auditing is added for the shmctl and shmget
-## system calls (24, 23). 64-bit platforms, like AMD64/Intel 64, do not use
-## multiplexing on ipc system calls. For these platforms, comment the first
+## Audit system calls related to IPC SYSV shared memory. In this case, the 
+## a0 values specify that auditing is added for the shmctl and shmget 
+## system calls (24, 23). 64-bit platforms, like AMD64/Intel 64, do not use 
+## multiplexing on ipc system calls. For these platforms, comment the first 
 ## two rules and add the plain system call rules without argument filtering.
 
 ## shmctl
@@ -24205,16 +24205,16 @@ for conveniant to look for busybox
 # -a always,exit -F arch=b32 -S execve -F key=T1059_Command_and_Scripting_Interpreter
 # -a always,exit -F arch=b64 -S execve -F key=T1059_Command_and_Scripting_Interpreter
 
-## alternative
+## alternative 
 -a always,exit -F arch=b32 -F euid>=500 -S execve -F key=T1059_Command_and_Scripting_Interpreter
 -a always,exit -F arch=b64 -F euid>=500 -S execve -F key=T1059_Command_and_Scripting_Interpreter
 
 # Kill Process
-## Note: bash (and many other shells) has a built-in “kill” command which doesn’t
-## actually run /usr/bin/kill. So if the built-in command is run instead,
-## comm=bash is correct. There is no way to force the system to use the
+## Note: bash (and many other shells) has a built-in “kill” command which doesn’t 
+## actually run /usr/bin/kill. So if the built-in command is run instead, 
+## comm=bash is correct. There is no way to force the system to use the 
 ## /usr/bin/kill external program. comm=kill is not going to happen in all cases,
-## because shells can call the syscall directly without running the external
+## because shells can call the syscall directly without running the external 
 ## program named “kill”
 
 -a always,exit -F arch=b32 -S kill -F key=Kill_Process
