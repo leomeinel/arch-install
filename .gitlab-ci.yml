@@ -17,5 +17,6 @@ update_remote:
     - git add ./etc/audit/rules.d/50-arch-install.rules
     - DATE="$(date +"%FT%H-%M-%S")"
     - |
-      git commit -m "Update audit rules [ci skip] ${DATE}" &&
+      if git commit -m "Update audit rules [ci skip] ${DATE}"; then
           git push -f -o ci.skip -o merge_request.create -o merge_request.remove_source_branch -o merge_request.target="${TARGET_BRANCH}" gitlab_origin HEAD:"${SOURCE_BRANCH}"
+      fi
