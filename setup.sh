@@ -441,11 +441,10 @@ ln -sf /usr/share/audit-rules/30-ospp-v42-6-owner-change-failed.rules /etc/audit
 ln -sf /usr/share/audit-rules/30-ospp-v42-6-owner-change-success.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/32-power-abuse.rules /etc/audit/rules.d/
-#ln -sf /usr/share/audit-rules/41-containers.rules /etc/audit/rules.d/
+ln -sf /usr/share/audit-rules/41-containers.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/42-injection.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/43-module-load.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/44-installers.rules /etc/audit/rules.d/
-ln -sf /usr/share/audit-rules/71-networking.rules /etc/audit/rules.d/
 FILE=/etc/audit/rules.d/31-arch-install-privileged.rules
 {
     find /bin -type f -perm -04000 2>/dev/null | awk '{ printf "-a always,exit -F arch=b64 -F path=%s -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n", $1 }'
