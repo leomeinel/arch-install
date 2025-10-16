@@ -420,6 +420,9 @@ sed -i "s/${STRING}/#log_group =/g" "${FILE}"
     echo ""
     echo "# arch-install"
     echo "log_group = audit"
+    echo "log_format = RAW"
+    echo "max_log_file = 1000"
+    echo "num_logs = 10"
 } >>"${FILE}"
 ## Configure /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/10-base-config.rules /etc/audit/rules.d/
@@ -433,7 +436,6 @@ ln -sf /usr/share/audit-rules/30-ospp-v42-1-create-success.rules /etc/audit/rule
 ln -sf /usr/share/audit-rules/30-ospp-v42-2-modify-failed.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42-2-modify-success.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42-3-access-failed.rules /etc/audit/rules.d/
-ln -sf /usr/share/audit-rules/30-ospp-v42-3-access-success.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42-4-delete-failed.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42-4-delete-success.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42-5-perm-change-failed.rules /etc/audit/rules.d/
