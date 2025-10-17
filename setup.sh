@@ -421,7 +421,7 @@ sed -i "s/${STRING}/#log_group =/g" "${FILE}"
     echo "# arch-install"
     echo "log_group = audit"
     echo "log_format = RAW"
-    echo "max_log_file = 1000"
+    echo "max_log_file = 100"
     echo "num_logs = 10"
 } >>"${FILE}"
 ## Configure /etc/audit/rules.d/
