@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+###
+# File: chromium-access-src
+# Author: Leopold Meinel (leo@meinel.dev)
+# -----
+# Copyright (c) 2025 Leopold Meinel & contributors
+# SPDX ID: MIT
+# URL: https://opensource.org/licenses/MIT
+# -----
+###
+
+# Fail on error
+set -e
+
+# Allow access to ${HOME}/src via flatpak overrides for flatpak
+/usr/bin/flatpak override -u --filesystem=home/src io.github.ungoogled_software.ungoogled_chromium
+
+# Execute flatpak
+/usr/local/bin/chromium "${@}" || true
+
+# Reset flatpak overrides for flatpak
+exec /usr/bin/flatpak override -u --reset io.github.ungoogled_software.ungoogled_chromium
