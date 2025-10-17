@@ -4,12 +4,6 @@ My personal Arch Linux install script using LUKS2 encryption, LVM and btrfs. Wit
 
 Meant for general purpose systems with a GUI.
 
-## Mixed license
-
-This repository is not entirely licensed as MIT.
-
-- [This](https://github.com/leomeinel/arch-install/blob/main/etc/audit/rules.d/50-arch-install.rules) file is taken from [this](https://gitlab.com/ndaal_open_source/ndaal_public_auditd/-/blob/main/dataset/audit_best_practices.rules) repository and is licensed under [Apache-2.0](https://gitlab.com/ndaal_open_source/ndaal_public_auditd/-/blob/6b4ae2d011286eaae92d32efa9361bbf1fa61bb4/LICENSE).
-
 ## Info
 
 :warning: | All data on selected disks will be wiped!
