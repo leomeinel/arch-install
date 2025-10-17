@@ -83,7 +83,7 @@ case "${choice}" in
     ;;
 *)
     ## Prompt user for disk
-    ## NOTE: USB will be valid to allow external SSDs
+    ## INFO: USB will be valid to allow external SSDs
     lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
     read -rp "Which disk do you want to use? (Type '/dev/sdX' fex.): " choice
     if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice}"; then
