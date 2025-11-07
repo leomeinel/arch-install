@@ -1,0 +1,11 @@
+# Exclude events that are redundant or too noiy
+-a always,exclude -F msgtype=AVC
+-a always,exclude -F msgtype=CRYPTO_KEY_USER
+-a always,exclude -F msgtype=CWD
+-a always,exclude -F msgtype=EOE
+-a always,exclude -F msgtype=EXECVE
+-a always,exclude -F msgtype=OBJ_PID
+-a always,exclude -F msgtype=PATH
+-a always,exclude -F msgtype=SOCKADDR
+-a always,exclude -F msgtype=USER_AUTH
+-a always,exclude -F msgtype=USER_LOGIN

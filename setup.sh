@@ -427,7 +427,6 @@ sed -i "s/${STRING}/#log_group =/g" "${FILE}"
 ## Configure /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/10-base-config.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/11-loginuid.rules /etc/audit/rules.d/
-ln -sf /usr/share/audit-rules/12-cont-fail.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/12-ignore-error.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/21-no32bit.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/23-ignore-filesystems.rules /etc/audit/rules.d/
@@ -436,9 +435,7 @@ ln -sf /usr/share/audit-rules/30-ospp-v42-2-modify-failed.rules /etc/audit/rules
 ln -sf /usr/share/audit-rules/30-ospp-v42-3-access-failed.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42-4-delete-failed.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42-5-perm-change-failed.rules /etc/audit/rules.d/
-ln -sf /usr/share/audit-rules/30-ospp-v42-5-perm-change-success.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42-6-owner-change-failed.rules /etc/audit/rules.d/
-ln -sf /usr/share/audit-rules/30-ospp-v42-6-owner-change-success.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/30-ospp-v42.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/32-power-abuse.rules /etc/audit/rules.d/
 ln -sf /usr/share/audit-rules/41-containers.rules /etc/audit/rules.d/
