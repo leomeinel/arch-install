@@ -1,4 +1,5 @@
 7zip
+age
 alacritty
 alsa-utils
 android-tools
@@ -39,6 +40,7 @@ flatpak
 fwupd
 gammastep
 git-delta
+gitleaks
 glow
 gnome-keyring
 go
@@ -133,6 +135,7 @@ signal-desktop
 slurp
 snap-pac
 snapper
+sops
 sshfs
 starship
 sway
