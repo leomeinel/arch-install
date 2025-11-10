@@ -682,6 +682,7 @@ done
 
 # Create dirs/files and modify perms
 FILES_600=(
+    /etc/audit/rules.d/19-arch-install-exclude.rules
     /etc/audit/rules.d/31-arch-install-privileged.rules
     /etc/audit/rules.d/99-arch-install-finalize.rules
     /etc/ssh/sshd_config.d/50-arch-install.conf
