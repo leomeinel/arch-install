@@ -680,19 +680,33 @@ for dir in "${SUBVOLUMES[@]}"; do
     chown :wheel "${dir}".snapshots
 done
 
-# Create dirs/files and modify perms
+# Create dirs and modify perms
+DIRS_700=(
+    /etc/audit/rules.d
+    /etc/encryption/keys
+    /etc/ssh/sshd_config.d
+    /root/backup
+)
+DIRS_750=(
+    /var/log/audit/
+)
+for dir in "${DIRS_700[@]}"; do
+    ! [[ -d "${dir}" ]] &&
+        mkdir -p "${dir}"
+    chmod 700 "${dir}"
+done
+for dir in "${DIRS_750[@]}"; do
+    ! [[ -d "${dir}" ]] &&
+        mkdir -p "${dir}"
+    chmod 700 "${dir}"
+done
+
+# Create files and modify perms
 FILES_600=(
     /etc/audit/rules.d/19-arch-install-exclude.rules
     /etc/audit/rules.d/31-arch-install-privileged.rules
     /etc/audit/rules.d/99-arch-install-finalize.rules
     /etc/ssh/sshd_config.d/50-arch-install.conf
-)
-DIRS_700=(
-    /etc/access/keys
-    /etc/audit/rules.d
-    /etc/encryption/keys
-    /etc/ssh/sshd_config.d
-    /root/backup
 )
 FILES_755=(
     /usr/local/bin/chromium
@@ -733,11 +747,9 @@ for file in "${FILES_755[@]}"; do
         touch "${file}"
     chmod 755 "${file}"
 done
-for dir in "${DIRS_700[@]}"; do
-    ! [[ -d "${dir}" ]] &&
-        mkdir -p "${dir}"
-    chmod 700 "${dir}"
-done
+
+# Modify ownership
+chown root:audit /var/log/audit/
 
 # Enable systemd services
 pacman -Qq "apparmor" >/dev/null 2>&1 &&
