@@ -13,6 +13,7 @@ org.gnome.FileRoller
 org.gnome.Loupe
 org.gnome.Music
 org.gnome.Papers
+org.gnome.Polari
 org.gnome.Shotwell
 org.gnome.Showtime
 org.gnome.SimpleScan
