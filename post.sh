@@ -149,8 +149,6 @@ doas nft 'add rule ip filter input_prerouting tcp dport 995 counter accept'
 ### Accept IMAP & IMAPS
 doas nft 'add rule ip filter input_prerouting tcp dport 143 counter accept'
 doas nft 'add rule ip filter input_prerouting tcp dport 993 counter accept'
-### Accept mDNS
-doas nft 'add rule ip filter input_prerouting udp dport 5353 counter accept'
 ### Accept http & https (for wget)
 doas nft 'add rule ip filter input_prerouting tcp dport 80 counter accept'
 doas nft 'add rule ip filter input_prerouting tcp dport 443 counter accept'
@@ -230,8 +228,6 @@ doas nft 'add rule ip6 filter input_prerouting tcp dport 995 counter accept'
 ### Accept IMAP & IMAPS
 doas nft 'add rule ip6 filter input_prerouting tcp dport 143 counter accept'
 doas nft 'add rule ip6 filter input_prerouting tcp dport 993 counter accept'
-### Accept mDNS
-doas nft 'add rule ip6 filter input_prerouting udp dport 5353 counter accept'
 ### Accept http & https (for wget)
 doas nft 'add rule ip6 filter input_prerouting tcp dport 80 counter accept'
 doas nft 'add rule ip6 filter input_prerouting tcp dport 443 counter accept'

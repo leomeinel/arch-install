@@ -93,7 +93,6 @@ mtools
 network-manager-applet
 nextcloud-client
 npm
-nss-mdns
 ntfs-3g
 nwg-bar
 openbsd-netcat

@@ -467,33 +467,6 @@ FILE=/etc/audit/rules.d/31-arch-install-privileged.rules
     echo '# arch-install'
     echo 'firewall_backend = "nftables"'
 } >>/etc/libvirt/network.conf
-## Configure /etc/nsswitch.conf
-### START sed
-FILE=/etc/nsswitch.conf
-STRING="hosts: mymachines"
-grep -q "${STRING}" "${FILE}" || sed_exit
-sed -i "s/^${STRING}/#hosts: mymachines/g" "${FILE}"
-### END sed
-tmpfile="$(mktemp /tmp/arch-install-XXXXXX)"
-cp "${FILE}" "${tmpfile}" &&
-    {
-        echo ""
-        echo "# arch-install"
-        grep "${STRING}" "${tmpfile}" | sed "s/^.*${STRING}/${STRING} mdns/g"
-    } >>"${FILE}"
-rm -f "${tmpfile}"
-## Configure /etc/avahi/avahi-daemon.conf
-{
-    echo ""
-    echo "# arch-install"
-    echo "[server]"
-    echo "domain-name=${DOMAIN}"
-} >>/etc/avahi/avahi-daemon.conf
-## Configure /etc/mdns.allow
-{
-    echo ".${DOMAIN}"
-    echo ".local"
-} >/etc/mdns.allow
 ## Configure /etc/snap-pac.ini
 {
     echo ""
@@ -764,8 +737,10 @@ pacman -Qq "apparmor" >/dev/null 2>&1 &&
     systemctl enable apparmor.service
 pacman -Qq "audit" >/dev/null 2>&1 &&
     systemctl enable auditd.service
-pacman -Qq "avahi" >/dev/null 2>&1 &&
-    systemctl enable avahi-daemon.service
+if pacman -Qq "avahi" >/dev/null 2>&1; then
+    systemctl disable avahi-daemon.service
+    systemctl disable avahi-daemon.socket
+fi
 pacman -Qq "bluez" >/dev/null 2>&1 &&
     systemctl enable bluetooth.service
 pacman -Qq "containerd" >/dev/null 2>&1 &&
