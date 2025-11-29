@@ -30,6 +30,7 @@ if [[ -n "$(/usr/bin/pacman -Qen)" ]] >/dev/null 2>&1; then
         /usr/bin/pacman -Qen
     } | /usr/bin/awk '/^#/ || !NF || !seen[$0]++' >"${file}"
     SUCCESS="true"
+    rm -f "${tmpfile}"
 fi
 if [[ -n "$(/usr/bin/pacman -Qem)" ]] >/dev/null 2>&1; then
     file=/var/log/pkglist-foreign.pacman.log
@@ -41,6 +42,7 @@ if [[ -n "$(/usr/bin/pacman -Qem)" ]] >/dev/null 2>&1; then
         /usr/bin/pacman -Qem
     } | /usr/bin/awk '/^#/ || !NF || !seen[$0]++' >"${file}"
     SUCCESS="true"
+    rm -f "${tmpfile}"
 fi
 if [[ -n "$(/usr/bin/pacman -Qd)" ]] >/dev/null 2>&1; then
     file=/var/log/pkglist-deps.pacman.log
@@ -52,6 +54,7 @@ if [[ -n "$(/usr/bin/pacman -Qd)" ]] >/dev/null 2>&1; then
         /usr/bin/pacman -Qd
     } | /usr/bin/awk '/^#/ || !NF || !seen[$0]++' >"${file}"
     SUCCESS="true"
+    rm -f "${tmpfile}"
 fi
 
 # Fail only if none of the commands have succeeded
