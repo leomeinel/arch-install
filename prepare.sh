@@ -37,26 +37,18 @@ read -rp "Set up RAID? (Type 'yes' in capital letters): " choice
 case "${choice}" in
 "YES")
     ## Detect disks
-    readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
-    DISKS_LENGTH="${#DISKS[@]}"
-    for ((i = 0; i < DISKS_LENGTH; i++)); do
-        if udevadm info -q property --property=ID_BUS --value "${DISKS[${i}]}" | grep -q "usb"; then
-            unset 'DISKS[${i}]'
-            continue
-        fi
-        DISKS=("${DISKS[@]}")
-    done
+    readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254,179 | tr -d "[:blank:]")
     if [[ "${#DISKS[@]}" -lt 2 ]]; then
         log_err "There are less than 2 disks attached."
         exit 1
     fi
     if [[ "${#DISKS[@]}" -gt 2 ]]; then
         log_warning "There are more than 2 disks attached."
-        lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
+        lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254,179
         ### Prompt user to select 2 RAID members
         read -rp "Which disk should be the first RAID member? (Type '/dev/sdX' fex.): " choice0
         read -rp "Which disk should be the second RAID member? (Type '/dev/sdY' fex.): " choice1
-        if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice0}" "${choice1}"; then
+        if [[ "$(tr -d "[:space:]" <<<"${choice0}")" != "$(tr -d "[:space:]" <<<"${choice1}")" ]] && lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254,179 "${choice0}" "${choice1}"; then
             echo "Using '${choice0}' and '${choice1}' for installation."
             DISKS=(
                 "${choice0}"
@@ -107,9 +99,9 @@ case "${choice}" in
 *)
     ## Prompt user for disk
     ## INFO: USB will be valid to allow external SSDs
-    lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
+    lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254,179
     read -rp "Which disk do you want to erase? (Type '/dev/sdX' fex.): " choice
-    if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice}"; then
+    if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254,179 "${choice}"; then
         ### Set DISK1
         DISK1="${choice}"
         ### Check that the drive is over 10GiB
