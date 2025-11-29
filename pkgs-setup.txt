@@ -26,6 +26,7 @@ cutefish-wallpapers
 dbus
 devtools
 dosfstools
+doxygen
 duf
 dust
 efibootmgr
