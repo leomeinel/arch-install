@@ -10,6 +10,7 @@ autotiling-rs
 bash-completion
 bat
 bc
+binaryen
 blas-openblas
 bleachbit
 blueman
@@ -104,6 +105,7 @@ pacman-contrib
 pam-u2f
 papirus-icon-theme
 pdftk
+perf
 perl-image-exiftool
 perl-rename
 php
