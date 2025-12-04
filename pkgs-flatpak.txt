@@ -2,6 +2,7 @@ app.drey.EarTag
 com.github.johnfactotum.Foliate
 com.github.xournalpp.xournalpp
 com.obsproject.Studio
+com.orama_interactive.Pixelorama
 com.saivert.pwvucontrol
 de.haeckerfelix.Fragments
 io.freetubeapp.FreeTube
