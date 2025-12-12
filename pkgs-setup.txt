@@ -89,6 +89,7 @@ lshw
 lsof
 lzop
 man-db
+mangohud
 mariadb
 maven
 mtools
