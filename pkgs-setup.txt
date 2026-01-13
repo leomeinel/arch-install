@@ -71,7 +71,6 @@ inetutils
 jdk-openjdk
 jpegoptim
 jq
-kotlin
 libavif
 libheif
 libopenraw
