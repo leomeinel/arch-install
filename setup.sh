@@ -3,7 +3,7 @@
 # File: setup.sh
 # Author: Leopold Johannes Meinel (leo@meinel.dev)
 # -----
-# Copyright (c) 2025 Leopold Johannes Meinel & contributors
+# Copyright (c) 2026 Leopold Johannes Meinel & contributors
 # SPDX ID: Apache-2.0
 # URL: https://www.apache.org/licenses/LICENSE-2.0
 ###
@@ -80,9 +80,10 @@ sed -i "s/${STRING}/#SHELL=/g" "${FILE}"
     echo "SHELL=/bin/bash"
 } >>"${FILE}"
 groupadd -r audit
+groupadd -r kvm
 groupadd -r libvirt
-groupadd -r usbguard
 groupadd -r ssh-allow
+groupadd -r usbguard
 [[ -n "${SYSUSER}" ]] ||
     {
         log_err "'SYSUSER' has to be specified."
@@ -92,11 +93,11 @@ useradd -ms /bin/bash -G adm,audit,log,proc,rfkill,ssh-allow,sys,systemd-journal
 [[ -n "${GUESTUSER}" ]] &&
     useradd -ms /bin/bash -G video "${GUESTUSER}"
 [[ -n "${HOMEUSER}" ]] &&
-    useradd -ms /bin/bash -G video "${HOMEUSER}"
+    useradd -ms /bin/bash -G kvm,libvirt,video "${HOMEUSER}"
 [[ -n "${VIRTUSER}" ]] &&
-    useradd -ms /bin/bash -G libvirt,video "${VIRTUSER}"
+    useradd -ms /bin/bash -G kvm,libvirt,video "${VIRTUSER}"
 [[ -n "${WORKUSER}" ]] &&
-    useradd -ms /bin/bash -G libvirt,video "${WORKUSER}"
+    useradd -ms /bin/bash -G kvm,libvirt,video "${WORKUSER}"
 echo "#################################################################"
 echo "#                      _    _           _   _                   #"
 echo "#                     / \  | | ___ _ __| |_| |                  #"
