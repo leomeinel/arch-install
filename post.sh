@@ -3,7 +3,7 @@
 # File: post.sh
 # Author: Leopold Johannes Meinel (leo@meinel.dev)
 # -----
-# Copyright (c) 2025 Leopold Johannes Meinel & contributors
+# Copyright (c) 2026 Leopold Johannes Meinel & contributors
 # SPDX ID: Apache-2.0
 # URL: https://www.apache.org/licenses/LICENSE-2.0
 ###
@@ -54,7 +54,7 @@ doas localectl --no-convert set-x11-keymap "${KEYLAYOUT}"
 doas timedatectl set-ntp true
 
 # Set default java
-doas archlinux-java set java-25-openjdk
+doas archlinux-java set java-17-openjdk
 
 # Configure nftables
 # References
@@ -345,7 +345,7 @@ command -v flatpak >/dev/null 2>&1 &&
 git clone https://aur.archlinux.org/paru.git ~/git/paru
 cd ~/git/paru
 makepkg -sri --noprogressbar --noconfirm --needed
- 
+
 # Configure paru.conf
 doas /bin/sh -c '{
     echo ""

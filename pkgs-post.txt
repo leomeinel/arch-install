@@ -1,3 +1,4 @@
+android-studio
 fluent-gtk-theme-git
 libreoffice-extension-writingtool-bin
 phinger-cursors

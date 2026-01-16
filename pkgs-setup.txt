@@ -69,6 +69,7 @@ hyphen-nl
 imagemagick
 inetutils
 jdk-openjdk
+jdk17-openjdk
 jpegoptim
 jq
 libavif
