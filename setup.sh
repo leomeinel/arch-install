@@ -701,7 +701,6 @@ FILES_755=(
     /usr/local/bin/fragments
     /usr/local/bin/freetube
     /usr/local/bin/gimp
-    /usr/local/bin/inkscape
     /usr/local/bin/kdenlive
     /usr/local/bin/kicad
     /usr/local/bin/librewolf

@@ -17,7 +17,6 @@ org.gnome.Papers
 org.gnome.Shotwell
 org.gnome.Showtime
 org.gnome.SimpleScan
-org.inkscape.Inkscape
 org.kde.kdenlive
 org.kicad.KiCad
 org.mozilla.Thunderbird

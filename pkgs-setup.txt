@@ -68,6 +68,7 @@ hyphen-fr
 hyphen-nl
 imagemagick
 inetutils
+inkscape
 jdk-openjdk
 jdk17-openjdk
 jpegoptim
