@@ -1,4 +1,5 @@
 android-studio
+aseprite
 fluent-gtk-theme-git
 libreoffice-extension-writingtool-bin
 phinger-cursors
