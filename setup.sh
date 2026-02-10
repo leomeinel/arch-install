@@ -708,7 +708,6 @@ FILES_755=(
     /usr/local/bin/music
     /usr/local/bin/obs
     /usr/local/bin/papers
-    /usr/local/bin/pixelorama
     /usr/local/bin/pwvucontrol
     /usr/local/bin/shotwell
     /usr/local/bin/showtime
