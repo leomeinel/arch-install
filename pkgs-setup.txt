@@ -180,4 +180,5 @@ xdg-dbus-proxy
 xdg-user-dirs
 xdg-utils
 yq
+zed
 zram-generator
