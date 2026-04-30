@@ -101,7 +101,7 @@ echo "#       It is mandatory to choose a password matching the       #"
 echo "#                       following specs:                        #"
 echo "#                    At least 12 characters,                    #"
 echo "#           at least 1 digit, 1 uppercase character,            #"
-echo "#         1 lowercace character and 1 other character.          #"
+echo "#         1 lowercase character and 1 other character.          #"
 echo "#################################################################"
 for user in "${USERS[@]}"; do
     ### Check if "${user}" is valid
