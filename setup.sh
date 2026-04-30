@@ -204,6 +204,8 @@ pacman -Qq "thunar" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\ngvfs\nthunar-archive-plugin\nthunar-media-tags-plugin\nthunar-volman\ntumbler'
 pacman -Qq "tlp" >/dev/null 2>&1 &&
     DEPENDENCIES+=$'\nsmartmontools'
+pacman -Qq "zed" >/dev/null 2>&1 &&
+    DEPENDENCIES+=$'\npyright\neslint'
 if [[ -n "${DEPENDENCIES}" ]]; then
     for i in {1..5}; do
         if [[ "${i}" -eq 5 ]]; then
