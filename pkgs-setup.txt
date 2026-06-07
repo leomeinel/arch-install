@@ -32,6 +32,7 @@ duf
 dust
 efibootmgr
 efitools
+eslint
 ethtool
 eza
 fastfetch
@@ -52,6 +53,7 @@ grex
 grim
 gutenprint
 gvfs
+hcloud
 hplip
 htop
 hugo
@@ -120,6 +122,7 @@ postfix
 postgresql
 prettier
 procs
+pyright
 python
 python-poetry
 python-pynitrokey
