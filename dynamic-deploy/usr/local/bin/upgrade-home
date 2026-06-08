@@ -11,10 +11,6 @@ var_invalid_err_exit() {
     log_err "'${1}' is invalid in '${2}'."
     exit 1
 }
-script_fail_err_exit() {
-    log_err "Script failed for '${1}'."
-    exit 1
-}
 
 # If current user is not in group wheel, don't do anything
 if id -nG "${UID}" | grep -vwq "wheel"; then
@@ -22,25 +18,7 @@ if id -nG "${UID}" | grep -vwq "wheel"; then
     exit 1
 fi
 
-# Run ~/.config/dot-files/update.sh for each user
-SCRIPT="$(
-    cat <<'EOF'
-# Fail on error
-set -e
-
-# shellcheck source=/dev/null
-# FIXME: Catch with true should not be necessary
-. /etc/profile || true
-# shellcheck source=/dev/null
-. ~/.bash_profile
-cd ~/.config/dot-files
-/usr/bin/git pull --no-gpg-sign --no-edit
-/usr/bin/chmod +x ~/.config/dot-files/update.sh
-/usr/bin/git add .
-/usr/bin/git commit --no-gpg-sign -m "Prepare files for update" || true
-~/.config/dot-files/update.sh
-EOF
-)"
+# Run chezmoi update for each user
 USERS=(
     REPLACE_USERS
 )
@@ -53,13 +31,13 @@ for user in "${USERS[@]}"; do
 
     case "$(id -u "${user}")" in
     0)
-        /usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/"${user}" -M "${user}"@ /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        /usr/bin/doas /usr/bin/systemd-run -P --wait --system -E HOME=/"${user}" -M "${user}"@ /bin/sh -c 'chezmoi update'
         ;;
     "${UID}")
-        /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        /bin/sh -c 'chezmoi update'
         ;;
     *)
-        /usr/bin/doas /usr/bin/systemd-run -P --wait --user -M "${user}"@ /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        /usr/bin/doas /usr/bin/systemd-run -P --wait --user -M "${user}"@ /bin/sh -c 'chezmoi update'
         ;;
     esac
 done

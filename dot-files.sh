@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# INFO: This file is executed automatically during installation
+# NOTE: This file is executed automatically during installation
 
 # Fail on error
-set -e
+set -eu
 
 # Define functions
 log_warning() {
@@ -12,32 +12,39 @@ log_warning() {
 
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
+set -a
 # shellcheck source=/dev/null
-. "${SCRIPT_DIR}"/install.conf
+. "${SCRIPT_DIR}"/install.env
+set +a
 
 # Clone dot-files
-DOT_FILES_DIR=~/.config/dot-files/
 if [[ "${IS_RELEASE}" == "true" ]]; then
-    git clone -b "${DOTFILES_VERSION}" https://github.com/leomeinel/dot-files.git "${DOT_FILES_DIR}"
+    chezmoi init --branch "${DOTFILES_VERSION}" https://github.com/leomeinel/dot-files.git
 else
-    git clone -b main https://github.com/leomeinel/dot-files.git "${DOT_FILES_DIR}"
+    chezmoi init --branch main https://github.com/leomeinel/dot-files.git
 fi
 
-# Overwrite dot-files/install.conf
-{
-    echo "# arch-install"
-    cat "${SCRIPT_DIR}"/install.conf
-} >"${DOT_FILES_DIR}"/install.conf
-chmod 755 "${DOT_FILES_DIR}"/setup.sh
-
-# Run dot-files
-"${DOT_FILES_DIR}"/setup.sh
-
-# Merge changes to main in detached HEAD state because of using a tagged version
+# Configure dot-files
+CHEZMOI_PATH=~/.local/share/chezmoi
+#shellcheck disable=SC2016
+tomlq -ti '
+    .data.sysuser = $ENV.SYSUSER |
+    .data.keylayout = $ENV.KEYLAYOUT |
+    .data.git_email = $ENV.GIT_EMAIL |
+    .data.git_name = $ENV.GIT_NAME |
+    .data.git_signingkey = $ENV.GIT_SIGNINGKEY |
+    .data.git_gpgsign = $ENV.GIT_GPGSIGN |
+    .data.backlight_device = $ENV.BACKLIGHT_DEVICE |
+    .data.sway_autostart = $ENV.SWAY_AUTOSTART |
+    .data.sway_output = $ENV.SWAY_OUTPUT
+' "${CHEZMOI_PATH}"/home/.chezmoi.toml.tmpl
 if [[ "${IS_RELEASE}" == "true" ]]; then
-    cd "${DOT_FILES_DIR}"
+    cd "${CHEZMOI_PATH}"
     git switch -c tmp
     git checkout main
     git merge --no-gpg-sign --no-edit tmp ||
         log_warning "Couldn't merge changes to main. Please manually merge branch 'tmp' later."
 fi
+
+# Apply dot-files
+chezmoi apply

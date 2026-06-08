@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# INFO: This file is not needed for the installation
+# NOTE: This file is not needed for the installation
 
 # Fail on error
 set -e

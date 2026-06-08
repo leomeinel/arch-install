@@ -22,7 +22,7 @@ script_fail_err_exit() {
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
-. "${SCRIPT_DIR}"/install.conf
+. "${SCRIPT_DIR}"/install.env
 
 # Replace doas.conf with option nopass
 DOAS_CONF="$(doas cat /etc/doas.conf)"
@@ -267,44 +267,7 @@ case "${choice}" in
     ;;
 esac
 
-# Install nix
-## Download nix upstream installation script
-tmpfile="$(mktemp /tmp/arch-install-nixos-XXXXXX.sh)"
-curl --proto '=https' --tlsv1.2 -sSfL https://nixos.org/nix/install -o "${tmpfile}"
-read -rp "Skip confirmation of nix upstream installation script? (Type 'yes' in capital letters): " choice
-case "${choice}" in
-"YES") ;;
-*)
-    ## View nix upstream installation script
-    echo "To exit confirmation hit 'q'."
-    sleep 5
-    bat --decorations auto --color auto "${tmpfile}"
-    read -rp "Execute nix upstream installation script? (Type 'yes' in capital letters): " choice
-    ;;
-esac
-case "${choice}" in
-"YES")
-    ## Execute nix upstream installation script
-    chmod +x "${tmpfile}"
-    doas "${tmpfile}" --daemon --yes --nix-extra-conf-file "${SCRIPT_DIR}"/nix.conf
-    ;;
-*)
-    log_err "User aborted executing nix upstream installation script."
-    exit 1
-    ;;
-esac
-
 # Configure dot-files
-SCRIPT="$(
-    cat <<'EOF'
-# Fail on error
-set -e
-
-# shellcheck source=/dev/null
-. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-~/dot-files.sh
-EOF
-)"
 for user in "${USERS[@]}"; do
     ## Check if "${user}" is valid
     [[ -n "${user}" ]] ||
@@ -314,13 +277,15 @@ for user in "${USERS[@]}"; do
 
     case "$(id -u "${user}")" in
     0)
-        doas systemd-run -P --wait --system -E HOME=/"${user}" -M "${user}"@ /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        # shellcheck disable=SC2088
+        doas systemd-run -P --wait --system -E HOME=/"${user}" -M "${user}"@ /bin/sh -c '~/dot-files.sh' || script_fail_err_exit "${user}"
         ;;
     "${UID}")
-        /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        /bin/sh -c ~/dot-files.sh || script_fail_err_exit "${user}"
         ;;
     *)
-        doas systemd-run -P --wait --user -M "${user}"@ /bin/sh -c "${SCRIPT}" || script_fail_err_exit "${user}"
+        # shellcheck disable=SC2088
+        doas systemd-run -P --wait --user -M "${user}"@ /bin/sh -c '~/dot-files.sh' || script_fail_err_exit "${user}"
         ;;
     esac
 done
@@ -363,18 +328,14 @@ pacman -Qq "nftables" >/dev/null 2>&1 &&
 # Remove user files
 FILES=(
     ".bash_history"
-    ".nix-channels"
     "dot-files.sh"
-    "install.conf"
-    "nix.conf"
+    "install.env"
     "pkgs-flatpak.txt"
     "pkgs-post.txt"
     "post.sh"
 )
 DIRS=(
     ".gnupg"
-    ".nix-defexpr"
-    ".nix-profile"
     "git"
 )
 for user in "${USERS[@]}"; do
@@ -396,9 +357,6 @@ for user in "${USERS[@]}"; do
     done
     doas runuser -l "${user}" -c "rm -f ~/.*.bak"
 done
-
-# Set correct permissions on /nix/.snapshots; the install script also modifies the .snapshots dir
-doas chown :wheel /nix/.snapshots
 
 # Replace doas.conf with default
 doas /bin/sh -c 'echo '"${DOAS_CONF}"' >/etc/doas.conf'

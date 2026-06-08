@@ -19,6 +19,7 @@ bluez-utils
 brightnessctl
 budgie-backgrounds
 cdrtools
+chezmoi
 clang
 cmake
 cmake-extras
@@ -124,6 +125,7 @@ prettier
 procs
 pyright
 python
+python-pipx
 python-poetry
 python-pynitrokey
 qemu-desktop

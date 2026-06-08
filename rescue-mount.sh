@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# INFO: This file is not needed for the installation
+# NOTE: This file is not needed for the installation
 
 # Fail on error
 set -e
@@ -16,7 +16,7 @@ log_warning() {
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
-. "${SCRIPT_DIR}"/install.conf
+. "${SCRIPT_DIR}"/install.env
 
 # Unmount everything from /mnt
 mountpoint -q /mnt &&
@@ -74,7 +74,7 @@ case "${choice}" in
     ;;
 *)
     ## Prompt user for disk
-    ## INFO: USB will be valid to allow external SSDs
+    ## NOTE: USB will be valid to allow external SSDs
     lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254
     read -rp "Which disk do you want to use? (Type '/dev/sdX' fex.): " choice
     if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254 "${choice}"; then
@@ -131,7 +131,6 @@ LV0=/dev/mapper/vg0-lv0
 LV1=/dev/mapper/vg0-lv1
 LV2=/dev/mapper/vg0-lv2
 LV3=/dev/mapper/vg0-lv3
-LV4=/dev/mapper/vg0-lv4
 OPTIONS0="noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS1="nodev,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
 OPTIONS2="nodev,nosuid,noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=/@"
@@ -162,21 +161,19 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     /usr/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS1}" "${LV1}"
         ;;
-    /nix/)
-        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS1}" "${LV2}"
-        ;;
     /var/)
-        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV3}"
+        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV2}"
         ;;
     /home/)
-        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV4}"
+        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV3}"
         ;;
     esac
 done
 ## tmpfs
-mount -m -o "noexec,nodev,nosuid,size=80%" -t tmpfs tmpfs /mnt/dev/shm
-### FIXME: Ideally, /tmp should be noexec; See: https://github.com/NixOS/nix/issues/10492
-mount -m -o "nodev,nosuid,mode=1700,size=80%" -t tmpfs tmpfs /mnt/tmp
+mount -m -o "noexec,nodev,nosuid" -t tmpfs tmpfs /mnt/dev/shm
+### FIXME: Ideally, /tmp should be noexec
+#   Also see: https://www.chezmoi.io/user-guide/frequently-asked-questions/troubleshooting/#chezmoi-reports-chezmoi-forkexec-tmpxxxxxxxxxxxx-permission-denied-when-executing-a-script
+mount -m -o "nodev,nosuid,mode=1700" -t tmpfs tmpfs /mnt/tmp
 ## proc
 mount -m -o "noexec,nodev,nosuid,gid=proc,hidepid=2" -t proc proc /mnt/proc
 ## /efi

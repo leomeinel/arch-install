@@ -25,7 +25,7 @@ var_invalid_warning() {
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
-. "${SCRIPT_DIR}"/install.conf
+. "${SCRIPT_DIR}"/install.env
 
 # Mount /etc/fstab
 mount -a
@@ -249,7 +249,7 @@ fi
 ## All users
 FILES=(
     "dot-files.sh"
-    "install.conf"
+    "install.env"
 )
 for user in "${USERS[@]}"; do
     ### Check if "${user}" is valid
@@ -269,7 +269,6 @@ for user in "${USERS[@]}"; do
 done
 ## SYSUSER
 FILES=(
-    "nix.conf"
     "pkgs-flatpak.txt"
     "pkgs-post.txt"
     "post.sh"

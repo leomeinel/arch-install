@@ -2,5 +2,10 @@ android-studio
 aseprite
 fluent-gtk-theme-git
 libreoffice-extension-writingtool-bin
+ocrmypdf
 phinger-cursors
 triliumnext-bin
+usbguard-notifier
+wl-clipboard-rs
+xdg-ninja
+yaml2json

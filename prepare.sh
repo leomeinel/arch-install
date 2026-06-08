@@ -18,7 +18,7 @@ sed_exit() {
 # Source config
 SCRIPT_DIR="$(dirname -- "$(readlink -f -- "${0}")")"
 # shellcheck source=/dev/null
-. "${SCRIPT_DIR}"/install.conf
+. "${SCRIPT_DIR}"/install.env
 
 # Unmount everything from /mnt
 mountpoint -q /mnt &&
@@ -90,7 +90,7 @@ case "${choice}" in
     ;;
 *)
     ## Prompt user for disk
-    ## INFO: USB will be valid to allow external SSDs
+    ## NOTE: USB will be valid to allow external SSDs
     lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254,179
     read -rp "Which disk do you want to erase? (Type '/dev/sdX' fex.): " choice
     if lsblk -drnpo SIZE,NAME,MODEL,LABEL -I 259,8,254,179 "${choice}"; then
@@ -234,7 +234,6 @@ lvcreate -l "${DISK_ALLOCATION[0]}" vg0 -n lv0
 lvcreate -l "${DISK_ALLOCATION[1]}" vg0 -n lv1
 lvcreate -l "${DISK_ALLOCATION[2]}" vg0 -n lv2
 lvcreate -l "${DISK_ALLOCATION[3]}" vg0 -n lv3
-lvcreate -l "${DISK_ALLOCATION[4]}" vg0 -n lv4
 
 # Format efi
 mkfs.fat -n EFI -F32 "${DISK1P1}"
@@ -264,7 +263,6 @@ LV0=/dev/mapper/vg0-lv0
 LV1=/dev/mapper/vg0-lv1
 LV2=/dev/mapper/vg0-lv2
 LV3=/dev/mapper/vg0-lv3
-LV4=/dev/mapper/vg0-lv4
 for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     case "${SUBVOLUMES[${i}]}" in
     /)
@@ -277,14 +275,11 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     /usr/)
         create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "USR" "${LV1}"
         ;;
-    /nix/)
-        create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "NIX" "${LV2}"
-        ;;
     /var/)
-        create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "VAR" "${LV3}"
+        create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "VAR" "${LV2}"
         ;;
     /home/)
-        create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "HOME" "${LV4}"
+        create_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "HOME" "${LV3}"
         ;;
     esac
 done
@@ -319,21 +314,19 @@ for ((i = 0; i < SUBVOLUMES_LENGTH; i++)); do
     /usr/)
         mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS1}" "${LV1}"
         ;;
-    /nix/)
-        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS1}" "${LV2}"
-        ;;
     /var/)
-        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV3}"
+        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV2}"
         ;;
     /home/)
-        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV4}"
+        mount_subs0 "${SUBVOLUMES[${i}]}" "${CONFIGS[${i}]}" "${OPTIONS2}" "${LV3}"
         ;;
     esac
 done
 ## tmpfs
-mount -m -o "noexec,nodev,nosuid,size=80%" -t tmpfs tmpfs /mnt/dev/shm
-### FIXME: Ideally, /tmp should be noexec; See: https://github.com/NixOS/nix/issues/10492
-mount -m -o "nodev,nosuid,mode=1700,size=80%" -t tmpfs tmpfs /mnt/tmp
+mount -m -o "noexec,nodev,nosuid" -t tmpfs tmpfs /mnt/dev/shm
+### FIXME: Ideally, /tmp should be noexec
+#   Also see: https://www.chezmoi.io/user-guide/frequently-asked-questions/troubleshooting/#chezmoi-reports-chezmoi-forkexec-tmpxxxxxxxxxxxx-permission-denied-when-executing-a-script
+mount -m -o "nodev,nosuid,mode=1700" -t tmpfs tmpfs /mnt/tmp
 ## proc
 mount -m -o "noexec,nodev,nosuid,gid=proc,hidepid=2" -t proc proc /mnt/proc
 ## /efi
