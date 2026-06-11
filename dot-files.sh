@@ -42,6 +42,8 @@ tomlq -ti '
 # Commit changes
 if ! /usr/bin/git diff --quiet; then
     /usr/bin/git add .
+    /usr/bin/git config --global user.email "${GIT_EMAIL}"
+    /usr/bin/git config --global user.name "${GIT_NAME}"
     /usr/bin/git commit --no-gpg-sign -m "config: Add custom config"
 fi
 if [[ "${IS_RELEASE}" == "true" ]]; then
