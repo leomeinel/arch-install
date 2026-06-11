@@ -26,6 +26,7 @@ fi
 
 # Configure dot-files
 CHEZMOI_PATH=~/.local/share/chezmoi
+cd "${CHEZMOI_PATH}"
 #shellcheck disable=SC2016
 tomlq -ti '
     .data.sysuser = $ENV.SYSUSER |
@@ -38,8 +39,10 @@ tomlq -ti '
     .data.sway_autostart = $ENV.SWAY_AUTOSTART |
     .data.sway_output = $ENV.SWAY_OUTPUT
 ' "${CHEZMOI_PATH}"/home/.chezmoi.toml.tmpl
+# Commit changes
+git diff --quiet ||
+    git commit --no-gpg-sign -m "config: Set initial customized config"
 if [[ "${IS_RELEASE}" == "true" ]]; then
-    cd "${CHEZMOI_PATH}"
     git switch -c tmp
     git checkout main
     git merge --no-gpg-sign --no-edit tmp ||
