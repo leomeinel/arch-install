@@ -41,7 +41,7 @@ tomlq -ti '
 ' "${CHEZMOI_PATH}"/home/.chezmoi.toml.tmpl
 # Commit changes
 git diff --quiet ||
-    git commit --no-gpg-sign -m "config: Set initial customized config"
+    git commit --no-gpg-sign -m "config: Add custom config"
 if [[ "${IS_RELEASE}" == "true" ]]; then
     git switch -c tmp
     git checkout main
