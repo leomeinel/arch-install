@@ -40,8 +40,10 @@ tomlq -ti '
     .data.sway_output = $ENV.SWAY_OUTPUT
 ' "${CHEZMOI_PATH}"/home/.chezmoi.toml.tmpl
 # Commit changes
-git diff --quiet ||
-    git commit --no-gpg-sign -m "config: Add custom config"
+if ! /usr/bin/git diff --quiet; then
+    /usr/bin/git add .
+    /usr/bin/git commit --no-gpg-sign -m "config: Add custom config"
+fi
 if [[ "${IS_RELEASE}" == "true" ]]; then
     git switch -c tmp
     git checkout main
