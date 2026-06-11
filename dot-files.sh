@@ -46,5 +46,6 @@ if [[ "${IS_RELEASE}" == "true" ]]; then
         log_warning "Couldn't merge changes to main. Please manually merge branch 'tmp' later."
 fi
 
-# Apply dot-files
+# Reinitialize chezmoi to apply config changes and apply
+chezmoi init
 chezmoi apply
