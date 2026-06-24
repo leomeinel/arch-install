@@ -27,7 +27,7 @@ read -rp "Use RAID? (Type 'yes' in capital letters): " choice
 case "${choice}" in
 "YES")
     ## Detect disks
-    readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
+    mapfile -t DISKS < <(lsblk -drnpo NAME -I 259,8,254 | tr -d "[:blank:]")
     DISKS_LENGTH="${#DISKS[@]}"
     for ((i = 0; i < DISKS_LENGTH; i++)); do
         if udevadm info -q property --property=ID_BUS --value "${DISKS[${i}]}" | grep -q "usb"; then

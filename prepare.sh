@@ -29,7 +29,7 @@ read -rp "Set up RAID? (Type 'yes' in capital letters): " choice
 case "${choice}" in
 "YES")
     ## Detect disks
-    readarray -t DISKS < <(lsblk -drnpo NAME -I 259,8,254,179 | tr -d "[:blank:]")
+    mapfile -t DISKS < <(lsblk -drnpo NAME -I 259,8,254,179 | tr -d "[:blank:]")
     if [[ "${#DISKS[@]}" -lt 2 ]]; then
         log_err "There are less than 2 disks attached."
         exit 1
